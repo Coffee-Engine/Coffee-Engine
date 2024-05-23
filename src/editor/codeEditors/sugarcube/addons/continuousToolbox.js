@@ -34,7 +34,6 @@
       icon.classList.add("categoryBubble");
       icon.style.backgroundColor = this.colour_;
       icon.style.borderColor = this.toolboxItemDef_.colour_secondary;
-      console.log(this);
       return icon;
     }
 

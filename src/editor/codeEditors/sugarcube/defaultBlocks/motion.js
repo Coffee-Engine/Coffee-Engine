@@ -61,6 +61,7 @@
                 ],
                 menus: {
                     direction: {
+                        acceptReporters: true,
                         items:[
                             "yaw",
                             "pitch",
