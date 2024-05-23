@@ -117,7 +117,7 @@
               }
             },
           },
-          "---",
+          "Dynamic Menus",
           {
             opcode: "dynamicMenuNOREP",
             type: sugarcube.BlockType.COMMAND,
