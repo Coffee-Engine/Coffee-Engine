@@ -320,13 +320,13 @@
             }
 
             //Add the blockly block definition
-            this.addBlocklyBlock(id + opcode, type, blockDef);
+            this.addBlocklyBlock(id + opcode, (block.isTerminal && type == "command") ? "terminal" : type, blockDef);
             blockData = defArgs;
             break;
         }
       }
 
-      if (!block.hideFromPallete) {
+      if (!block.hideFromPalette) {
         return blockData;
       }
       return null;
@@ -485,7 +485,6 @@
         });
 
         extension.defaultBlockInfo = createdContentData.contents;
-        console.log(createdContentData);
 
         sugarcube.toolbox.contents.push(createdContentData);
 

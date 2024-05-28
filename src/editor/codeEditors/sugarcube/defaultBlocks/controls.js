@@ -50,22 +50,27 @@
           {
             opcode: "inline",
             type: sugarcube.BlockType.INLINE,
-            text: "inline [dummy] [condition] [dummy2] return [returned]",
+            text: "inline [dummy] [condition]",
             arguments: {
               dummy: {
                 type: sugarcube.ArgumentType.DUMMY,
               },
               condition: {
                 type: sugarcube.ArgumentType.STATEMENT,
-              },
-              dummy2: {
-                type: sugarcube.ArgumentType.DUMMY,
-              },
-              returned: {
-                type: sugarcube.ArgumentType.STRING,
-              },
+              }
             },
           },
+          {
+            opcode: "return",
+            type: sugarcube.BlockType.COMMAND,
+            text: "return [value]",
+            isTerminal: true,
+            arguments: {
+              value: {
+                type: sugarcube.ArgumentType.STRING,
+              }
+            }
+          }
         ],
         menus: {
           keys: {
