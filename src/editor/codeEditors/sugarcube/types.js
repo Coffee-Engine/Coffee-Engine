@@ -34,7 +34,11 @@
 
     COLOR: "color",
 
-    IMAGE: "image"
+    IMAGE: "image",
+
+    DUMMY: "dummy",
+
+    STATEMENT: "statement"
   }
 
   sugarcube.ArgumentShadowConversions = {

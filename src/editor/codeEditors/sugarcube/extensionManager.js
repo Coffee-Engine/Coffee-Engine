@@ -94,8 +94,8 @@
       //if it is an object (Or anything else really)
       else {
         //Get the type and text
-        const type = block.type;
-        const text = block.text;
+        const type = block.type || block.blockType;
+        let text = block.text;
 
         const opcode = block.opcode;
         switch (type) {
@@ -148,6 +148,41 @@
               type: id + opcode,
               inputs: {}
             };
+
+            //For the funny scratch styled branches
+            if (typeof text == "object") {
+              //Joined variable
+              let joined = "";
+
+              //Add the branch count variable if not there.
+              if (!block.branchCount) block.branchCount = 0;
+
+              //Loop through the different text sections
+              for (let textSection = 0; textSection < text.length; textSection++) {
+                //Get the text object
+                const textObject = text[textSection];
+
+                //Join the text
+                joined += textObject + (
+                  //Check for valid conditions
+                  block.branchCount > textSection ? 
+                  ` [__SUGARCUBE__DUMMY__${textSection}] [__SUGARCUBE__CONDITION__${textSection}] ` 
+                  : ""
+                );
+
+                //Add arguments if not there
+                if (!block.arguments) block.arguments = {};
+
+                //Add the conditions if valid
+                if (block.branchCount > textSection) {
+                  block.arguments[`__SUGARCUBE__DUMMY__${textSection}`] = {type:sugarcube.ArgumentType.DUMMY};
+                  block.arguments[`__SUGARCUBE__CONDITION__${textSection}`] = {type:sugarcube.ArgumentType.STATEMENT};
+                }
+              }
+
+              //Make the text be the joined result.
+              text = joined;
+            }
 
             //And the toolbox definition
             let blockDef = {
@@ -219,6 +254,16 @@
                       case "boolean": {
                         argument.check = "Boolean";
                         argument.type = "input_value";
+                        break;
+                      }
+
+                      case "dummy": {
+                        argument.type = "input_dummy";
+                        break;
+                      }
+
+                      case "statement": {
+                        argument.type = "input_statement";
                         break;
                       }
 

@@ -10,54 +10,68 @@
                 color3:"#cf8b17",
                 blocks: [
                     {
-                        opcode: "onStart",
-                        type: sugarcube.BlockType.HAT,
-                        text: "on game start",
-                    },
-                    {
-                        opcode: "whenKeyPressed",
-                        type: sugarcube.BlockType.HAT,
-                        text: "when [key] key pressed",
+                        opcode: "ifStatement",
+                        type: sugarcube.BlockType.CONDITIONAL,
+                        text: "if [condition] then [dummy] [statement]",
                         arguments: {
-                            "key":{
-                                menu: "keys"
+                            condition:{
+                                type:sugarcube.ArgumentType.BOOLEAN
                             },
+                            dummy:{
+                                type:sugarcube.ArgumentType.DUMMY
+                            },
+                            statement:{
+                                type:sugarcube.ArgumentType.STATEMENT
+                            }
                         }
                     },
                     {
-                        opcode: "whenClicked",
-                        type: sugarcube.BlockType.HAT,
-                        text: "when I'm clicked",
+                        opcode: "ifElse_Statement",
+                        type: sugarcube.BlockType.CONDITIONAL,
+                        text: "if [condition] then [dummy] [statement] else [dummy2] [statement2]",
+                        arguments: {
+                            condition:{
+                                type:sugarcube.ArgumentType.BOOLEAN
+                            },
+                            dummy:{
+                                type:sugarcube.ArgumentType.DUMMY
+                            },
+                            statement:{
+                                type:sugarcube.ArgumentType.STATEMENT
+                            },
+                            dummy2:{
+                                type:sugarcube.ArgumentType.DUMMY
+                            },
+                            statement2:{
+                                type:sugarcube.ArgumentType.STATEMENT
+                            }
+                        }
                     },
                     "---",
                     {
-                        opcode: "broadcastRecieve",
-                        type: sugarcube.BlockType.HAT,
-                        text: "when I recieve [message]",
+                        opcode: "inline",
+                        type: sugarcube.BlockType.INLINE,
+                        text: "inline [dummy] [condition] [dummy2] return [returned]",
                         arguments: {
-                            "message":{
-                                menu: "messages"
+                            dummy:{
+                                type:sugarcube.ArgumentType.DUMMY
                             },
-                        }
-                    },
-                    {
-                        opcode: "broadcastSend",
-                        type: sugarcube.BlockType.COMMAND,
-                        text: "broadcast [message]",
-                        arguments: {
-                            "message":{
-                                menu: "messages"
+                            condition: {
+                                type:sugarcube.ArgumentType.STATEMENT
                             },
+                            dummy2:{
+                                type:sugarcube.ArgumentType.DUMMY
+                            },
+                            returned: {
+                                type:sugarcube.ArgumentType.STRING
+                            }
                         }
-                    },
+                    }
                 ],
                 menus: {
                     keys: {
                         items:sugarcube.commonKeys
                     },
-                    messages: {
-                        items:"__getMessages"
-                    }
                 }
             }
         }
