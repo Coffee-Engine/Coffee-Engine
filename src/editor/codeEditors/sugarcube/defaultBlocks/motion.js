@@ -24,23 +24,6 @@
                             },
                         },
                     },
-                    {
-                        opcode: "turnright",
-                        type: sugarcube.BlockType.COMMAND,
-                        text: "turn [icon] [degrees] degrees on the [axis] axis",
-                        arguments: {
-                            "icon":{
-                                type: sugarcube.ArgumentType.IMAGE,
-                                dataURI: icons.turnRight
-                            },
-                            "degrees":{
-                                type: sugarcube.ArgumentType.NUMBER,
-                            },
-                            "axis":{
-                                menu: "direction"
-                            },
-                        },
-                    },
                     "---",
                     {
                         opcode: "gotoxyz",
@@ -57,6 +40,146 @@
                                 type: sugarcube.ArgumentType.NUMBER,
                             },
                         },
+                    },
+                    "---",
+                    {
+                        opcode: "setx",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set x to [x]",
+                        arguments: {
+                            "x":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }
+                        },
+                    },
+                    {
+                        opcode: "sety",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set y to [y]",
+                        arguments: {
+                            "y":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }
+                        },
+                    },
+                    {
+                        opcode: "setz",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set z to [z]",
+                        arguments: {
+                            "z":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }
+                        },
+                    },
+                    {
+                        opcode: "changex",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "change x by [x]",
+                        arguments: {
+                            "x":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }
+                        },
+                    },
+                    {
+                        opcode: "changey",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "change y by [y]",
+                        arguments: {
+                            "y":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }
+                        },
+                    },
+                    {
+                        opcode: "changez",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "change z by [z]",
+                        arguments: {
+                            "z":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "xposition",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "x position",
+                    },
+                    {
+                        opcode: "yposition",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "y position",
+                    },
+                    {
+                        opcode: "zposition",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "z position",
+                    },
+                    "---",
+                    {
+                        opcode: "turnAround",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "turn [icon] [degrees] degrees on the [axis] axis",
+                        arguments: {
+                            "icon":{
+                                type: sugarcube.ArgumentType.IMAGE,
+                                dataURI: icons.turnRight
+                            },
+                            "degrees":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                            "axis":{
+                                menu: "direction"
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setrotation",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set my [axis] to be [degrees] degrees",
+                        arguments: {
+                            "degrees":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                            "axis":{
+                                menu: "direction"
+                            },
+                        },
+                    },
+                    {
+                        opcode: "lookAt",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "look towards x: [x] y: [y] z: [z]",
+                        arguments: {
+                            "x":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                            "y":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                            "z":{
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "yaw",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "yaw",
+                    },
+                    {
+                        opcode: "pitch",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "pitch",
+                    },
+                    {
+                        opcode: "roll",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "roll",
                     },
                 ],
                 menus: {

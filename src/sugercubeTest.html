@@ -10,6 +10,7 @@
   <!--Base sugarcube settings-->
   <script src="editor/codeEditors/sugarcube/sugarcube.js"></script>
   <script src="editor/codeEditors/sugarcube/sugarcubeSettings.js"></script>
+  <script src="editor/codeEditors/sugarcube/commonVariables.js"></script>
   <script src="editor/codeEditors/sugarcube/zelosRenderOverrides.js"></script>
   <script src="editor/codeEditors/sugarcube/types.js"></script>
   <script src="editor/codeEditors/sugarcube/extensionManager.js"></script>
@@ -57,8 +58,15 @@
           metricsManager: sugarcube.ContinuousMetrics,
         },
       });
-      sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
+
+      //Testing category for various block types and menus
+      //Dunno why I called it testCat.js
+      //sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
+      
+      //Load our base categories
+      sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/events.js");
       sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");
+      sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/controls.js");
     }
   </script>
 </body>

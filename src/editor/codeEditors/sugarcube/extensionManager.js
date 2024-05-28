@@ -444,10 +444,11 @@
     }
 
     loadExtension(url) {
-      let testScript = document.createElement("script");
-      testScript.src = url;
+      let loadedScript = document.createElement("script");
+      loadedScript.src = url;
+      loadedScript.async = false;
 
-      document.body.appendChild(testScript);
+      document.body.appendChild(loadedScript);
     }
   };
 
