@@ -8,7 +8,7 @@
             return sugarcube.extensionManager.parseMenuItems({
               items: sugarcube.menus[splitName].function(),
             });
-          }),
+          })
         );
       }
     });

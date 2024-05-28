@@ -33,7 +33,5 @@ sugarcube.blocklyTheme = {
 };
 
 sugarcube.refreshTheme = () => {
-  sugarcube.workspace.setTheme(
-    Blockly.Theme.defineTheme("sugarcube", sugarcube.blocklyTheme),
-  );
+  sugarcube.workspace.setTheme(Blockly.Theme.defineTheme("sugarcube", sugarcube.blocklyTheme));
 };

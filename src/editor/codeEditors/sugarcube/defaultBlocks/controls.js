@@ -77,9 +77,7 @@
 
     //Just for a menu
     __getMessages() {
-      return sugarcube.broadcasts.concat([
-        { text: "New message", value: "____SUGARCUBE__CREATE__BROADCAST____" },
-      ]);
+      return sugarcube.broadcasts.concat([{ text: "New message", value: "____SUGARCUBE__CREATE__BROADCAST____" }]);
     }
   }
 

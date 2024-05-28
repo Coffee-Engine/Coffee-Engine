@@ -207,19 +207,11 @@
           },
           mixedBlocksNOREP: {
             acceptReporters: false,
-            items: [
-              ["Array", "Item1"],
-              { text: "JSON", value: "Item2" },
-              "String",
-            ],
+            items: [["Array", "Item1"], { text: "JSON", value: "Item2" }, "String"],
           },
           mixedBlocks: {
             acceptReporters: true,
-            items: [
-              ["Array", "Item1"],
-              { text: "JSON", value: "Item2" },
-              "String",
-            ],
+            items: [["Array", "Item1"], { text: "JSON", value: "Item2" }, "String"],
           },
           dynamicMenuNOREP: {
             acceptReporters: false,

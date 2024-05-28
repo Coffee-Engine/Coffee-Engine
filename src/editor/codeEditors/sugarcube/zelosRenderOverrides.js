@@ -8,9 +8,7 @@
 
     shapeFor(connection) {
       let check = connection.getCheck();
-      !check &&
-        connection.targetConnection &&
-        (check = connection.targetConnection.getCheck());
+      !check && connection.targetConnection && (check = connection.targetConnection.getCheck());
       switch (connection.type) {
         case Blockly.ConnectionType.OUTPUT_VALUE: {
           switch (check[0]) {
