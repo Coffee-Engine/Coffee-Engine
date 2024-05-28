@@ -51,13 +51,13 @@
         this.rowDiv_.style.backgroundColor = "";
         Blockly.utils.dom.removeClass(
           this.rowDiv_,
-          this.cssConfig_["selected"]
+          this.cssConfig_["selected"],
         );
       }
       Blockly.utils.aria.setState(
         /** @type {!Element} */ (this.htmlDiv_),
         Blockly.utils.aria.State.SELECTED,
-        isSelected
+        isSelected,
       );
     }
   }
@@ -66,7 +66,7 @@
     Blockly.registry.Type.TOOLBOX_ITEM,
     Blockly.ToolboxCategory.registrationName,
     ContinuousCategory,
-    true
+    true,
   );
 
   /**
@@ -116,7 +116,7 @@
       this.recyclingEnabled_ = true;
 
       this.workspace_.setMetricsManager(
-        new ContinuousFlyoutMetrics(this.workspace_, this)
+        new ContinuousFlyoutMetrics(this.workspace_, this),
       );
 
       this.workspace_.addChangeListener((e) => {
@@ -150,14 +150,14 @@
       const categoryLabels = this.buttons_.filter(
         (button) =>
           button.isLabel() &&
-          this.getParentToolbox_().getCategoryByName(button.getButtonText())
+          this.getParentToolbox_().getCategoryByName(button.getButtonText()),
       );
       for (const [index, button] of categoryLabels.entries()) {
         if (button.isLabel()) {
           const position = button.getPosition();
           const adjustedPosition = new Blockly.utils.Coordinate(
             position.x,
-            position.y - this.labelGaps[index]
+            position.y - this.labelGaps[index],
           );
           this.scrollPositions.push({
             name: button.getButtonText(),
@@ -217,7 +217,7 @@
       const metrics = this.workspace_.getMetrics();
       this.scrollTarget = Math.min(
         position * this.workspace_.scale,
-        metrics.scrollHeight - metrics.viewHeight
+        metrics.scrollHeight - metrics.viewHeight,
       );
 
       this.stepScrollAnimation_();
@@ -241,7 +241,7 @@
         return;
       }
       this.workspace_.scrollbar.setY(
-        currentScrollPos + diff * this.scrollAnimationFraction
+        currentScrollPos + diff * this.scrollAnimationFraction,
       );
 
       requestAnimationFrame(this.stepScrollAnimation_.bind(this));
@@ -461,7 +461,7 @@
   Blockly.registry.register(
     Blockly.registry.Type.METRICS_MANAGER,
     "CustomMetricsManager",
-    ContinuousMetrics
+    ContinuousMetrics,
   );
 
   /**
@@ -484,12 +484,12 @@
     getScrollMetrics(
       getWorkspaceCoordinates = undefined,
       cachedViewMetrics = undefined,
-      cachedContentMetrics = undefined
+      cachedContentMetrics = undefined,
     ) {
       const scrollMetrics = super.getScrollMetrics(
         getWorkspaceCoordinates,
         cachedViewMetrics,
-        cachedContentMetrics
+        cachedContentMetrics,
       );
       const contentMetrics =
         cachedContentMetrics || this.getContentMetrics(getWorkspaceCoordinates);
@@ -499,7 +499,7 @@
       if (scrollMetrics) {
         scrollMetrics.height += this.flyout_.calculateBottomPadding(
           contentMetrics,
-          viewMetrics
+          viewMetrics,
         );
       }
       return scrollMetrics;
@@ -591,7 +591,7 @@
     updateFlyout_(_oldItem, newItem) {
       if (newItem) {
         const target = this.getFlyout().getCategoryScrollPosition(
-          newItem.name_
+          newItem.name_,
         ).y;
         this.getFlyout().scrollTo(target);
       }
@@ -615,7 +615,7 @@
         (item) =>
           item instanceof Blockly.ToolboxCategory &&
           item.isSelectable() &&
-          name === item.getName()
+          name === item.getName(),
       );
       if (category) {
         return /** @type {!Blockly.ToolboxCategory} */ (category);

@@ -1,4 +1,4 @@
-(function(){
+(function () {
   sugarcube.BlockType = {
     REPORTER: "reporter",
 
@@ -20,8 +20,8 @@
 
     //These two are the same internally
     CONDITIONAL: "conditional",
-    LOOP: "conditional"
-  }
+    LOOP: "conditional",
+  };
 
   sugarcube.ArgumentType = {
     STRING: "string",
@@ -38,14 +38,14 @@
 
     DUMMY: "dummy",
 
-    STATEMENT: "statement"
-  }
+    STATEMENT: "statement",
+  };
 
   sugarcube.ArgumentShadowConversions = {
     string: "__sugarcube_string_reporter",
 
     number: "__sugarcube_number_reporter",
 
-    color: "__sugarcube_color_reporter"
-  }
+    color: "__sugarcube_color_reporter",
+  };
 })();

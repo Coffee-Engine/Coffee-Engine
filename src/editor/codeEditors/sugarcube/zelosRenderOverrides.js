@@ -36,10 +36,7 @@
     }
   };
 
-  Blockly.blockRendering.register(
-    "sugarcube",
-    sugarcube.customZelosRenderer
-  );
+  Blockly.blockRendering.register("sugarcube", sugarcube.customZelosRenderer);
 
   //Prevent zooming
   Blockly.VerticalFlyout.prototype.getFlyoutScale = function () {
@@ -65,7 +62,7 @@
     flyoutWidth *= this.workspace_.scale;
     flyoutWidth += Blockly.Scrollbar.scrollbarThickness;
 
-    flyoutWidth = Math.max(Math.min(flyoutWidth, 275),275);
+    flyoutWidth = Math.max(Math.min(flyoutWidth, 275), 275);
 
     if (this.width_ !== flyoutWidth) {
       for (let i = 0, block; (block = blocks[i]); i++) {
