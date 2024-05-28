@@ -449,7 +449,9 @@
           kind: "category",
           name: myInfo.name,
           colour: myInfo.color1,
-          colour_secondary: myInfo.color2,
+          colour_secondary: myInfo.color3,
+          menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
+          showColor: myInfo.showColor,
           contents: [],
         };
 

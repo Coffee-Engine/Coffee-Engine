@@ -34,6 +34,22 @@
       icon.classList.add("categoryBubble");
       icon.style.backgroundColor = this.colour_;
       icon.style.borderColor = this.toolboxItemDef_.colour_secondary;
+
+      if (this.toolboxItemDef_.menuIconURI) {
+        if (!this.toolboxItemDef_.showColor) {
+          icon.style.backgroundColor = "#00000000";
+          icon.style.borderColor = "#00000000";
+        }
+        const image = document.createElement("img");
+        image.src = this.toolboxItemDef_.menuIconURI;
+        image.style.position = "relative";
+        image.style.left = "50%";
+        image.style.transform = "translate(-50%,0%)";
+        image.style.width = "100%";
+        image.style.height = "100%";
+        icon.appendChild(image);
+      }
+
       return icon;
     }
 
