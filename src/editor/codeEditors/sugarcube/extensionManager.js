@@ -95,6 +95,7 @@
       else {
         //Get the type and text
         const type = block.type || block.blockType;
+        const style = block.style || id + "blocks";
         let text = block.text;
 
         const opcode = block.opcode;
@@ -184,7 +185,7 @@
             //And the toolbox definition
             let blockDef = {
               message0: text,
-              style: block.style || id + "blocks",
+              style: style,
               args0: [],
               lastDummyAlign0: "LEFT",
               extensions: [],
@@ -211,6 +212,8 @@
                       //Dynamic blocks are not a problem for reporter based menus.
                       if (sugarcube.menus[menuID].isBlock) {
                         argument.type = "input_value";
+
+                        //Define the arguments
                         if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
                         defArgs.inputs[argumentKey].shadow = {
                           type: "__sugarcube_menu_" + menuID,
@@ -268,19 +271,28 @@
                       }
 
                       default: {
+                        //Check for a shadow conversion
                         if (sugarcube.ArgumentShadowConversions[argument.type]) {
+                          //If there is one add argument keys if they don't exist
                           if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
+
+                          //set the shadow values and stuff
                           defArgs.inputs[argumentKey].shadow = {
                             type: sugarcube.ArgumentShadowConversions[argument.type],
                             fields: {
                               VALUE: argument.defaultValue,
                             },
+                            //Make sure the style matches
+                            style:style
                           };
 
+                          //If we have a default value set it
                           if (argument.defaultValue) {
                             defArgs.inputs[argumentKey].shadow.value = argument.defaultValue;
                           }
                         }
+                        
+                        //set the type to input
                         argument.type = "input_value";
                         break;
                       }
