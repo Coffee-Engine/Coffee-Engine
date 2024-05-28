@@ -6,8 +6,8 @@
                 id:"events",
                 name:"Events",
                 color1:"#ffbf00",
-                color2:"#cc9900",
-                color3:"#e6ac00",
+                color2:"#e6ac00",
+                color3:"#cc9900",
                 blocks: [
                     {
                         opcode: "onStart",
@@ -56,6 +56,10 @@
                         items:sugarcube.commonKeys
                     },
                     messages: {
+                        items:"__getMessages"
+                    },
+                    messages: {
+                        acceptReporters:true,
                         items:"__getMessages"
                     }
                 }

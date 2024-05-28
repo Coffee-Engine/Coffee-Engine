@@ -11,8 +11,8 @@
                 id:"motion",
                 name:"Motion",
                 color1:"#4c97ff",
-                color2:"#3373cc",
-                color3:"#4280d7",
+                color2:"#4280d7",
+                color3:"#3373cc",
                 blocks: [
                     {
                         opcode: "movesteps",

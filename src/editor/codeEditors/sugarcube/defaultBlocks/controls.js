@@ -5,9 +5,9 @@
             return {
                 id:"controls",
                 name:"Controls",
-                color1:"#ffbf00",
-                color2:"#cc9900",
-                color3:"#e6ac00",
+                color1:"#ffab19",
+                color2:"#ec9c13",
+                color3:"#cf8b17",
                 blocks: [
                     {
                         opcode: "onStart",
