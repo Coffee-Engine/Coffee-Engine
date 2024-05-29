@@ -12,6 +12,10 @@
         ],
       });
 
+      sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block,generator) => {
+        return [block.getFieldValue("VALUE"), 0];
+      }
+
       this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
         message0: " %1 ",
         args0: [
@@ -24,6 +28,10 @@
         ],
       });
 
+      sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block,generator) => {
+        return [block.getFieldValue("VALUE"), 0];
+      }
+
       this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
         message0: " %1 ",
         args0: [
@@ -35,6 +43,12 @@
           },
         ],
       });
+
+      sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block,generator) => {
+        return [block.getFieldValue("VALUE"), 0];
+      }
+
+      sugarcube.extensionInstances = {};
     }
 
     addBlocklyBlock(blockName, type, BlockJson, inline) {
@@ -77,6 +91,70 @@
           this.jsonInit(BlockJson);
         },
       };
+    }
+
+    stringifyFunction(key,val) {
+      if (typeof val === 'function') {
+        return "____SUGAR__CUBE__FUNCTION____"+ val.toString(); // implicitly `toString` it
+      }
+      return val;
+    }
+
+    parseJSONforFunctions(jsonOBJ) {
+      Object.keys(jsonOBJ).forEach(key => {
+        if (typeof jsonOBJ[key] == "string" && jsonOBJ[key].includes("____SUGAR__CUBE__FUNCTION____function anonymous(\n) ")) {
+          jsonOBJ[key] = jsonOBJ[key].replace("____SUGAR__CUBE__FUNCTION____function anonymous(\n) ", "")
+          jsonOBJ[key] = Function(jsonOBJ[key]);
+        }
+      })
+
+      return jsonOBJ;
+    }
+
+    nextBlockToCode(block,generator) {
+      const nextBlock = block.nextConnection && block.nextConnection.targetBlock();
+      if (nextBlock) {
+        return sugarcube.generator.blockToCode(nextBlock);
+      }
+      return "";
+    }
+
+    registerBlockCode(blockType,extensionID,blockOpcode,blockID) {
+      switch (blockType) {
+        case "what":
+          
+          break;
+      
+        default:
+          sugarcube.generator.forBlock[blockID] = (block,generator) => {
+            const args = {};
+
+            if (block.inputList) {
+              block.inputList.forEach(input => {
+                if (!input.connection) return;
+                if (input.connection && input.connection.type == 3) {
+                  args[input.name] = Function(generator.statementToCode(block, input.name));
+                  return;
+                }
+                args[input.name] = generator.valueToCode(block, input.name, 0);
+              });
+            }
+
+            if (block.fieldRow) {
+              block.fieldRow.forEach(field => {
+                args[input.name] = block.getFieldValue(input.name);
+              });
+            }
+
+            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](sugarcube.extensionManager.parseJSONforFunctions(${JSON.stringify(args,this.stringifyFunction)}));`
+
+            if (block.outputConnection) {
+              return [baseBlockCode, 0]
+            }
+            return `${baseBlockCode}\n${this.nextBlockToCode(block,generator)}`
+          }
+          break;
+      }
     }
 
     addBlock(block, extension) {
@@ -319,7 +397,8 @@
               blockDef.mutator = block.mutator;
             }
 
-            //Add the blockly block definition
+            //Add the blockly block definition and register the block compiler
+            this.registerBlockCode(type,extension.id,opcode,id + opcode);
             this.addBlocklyBlock(id + opcode, (block.isTerminal && type == "command") ? "terminal" : type, blockDef);
             blockData = defArgs;
             break;
@@ -329,6 +408,7 @@
       if (!block.hideFromPalette) {
         return blockData;
       }
+
       return null;
     }
 
@@ -445,6 +525,8 @@
     registerExtension(extension) {
       try {
         const myInfo = extension.getInfo();
+
+        sugarcube.extensionInstances[myInfo.id] = extension;
 
         //Snatch the extension's ID
         const id = myInfo.id + "_";

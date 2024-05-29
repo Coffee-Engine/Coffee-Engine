@@ -13,8 +13,8 @@
     <script src="editor/codeEditors/sugarcube/sugarcubeUtils/commonVariables.js"></script>
     <script src="editor/codeEditors/sugarcube/sugarcubeUtils/zelosRenderOverrides.js"></script>
     <script src="editor/codeEditors/sugarcube/types.js"></script>
-    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/extensionManager.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/sugarcubeCodeBuilder.js"></script>
+    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/extensionManager.js"></script>
 
     <!--Blockly Addons for sugarcube-->
     <script src="editor/codeEditors/sugarcube/addons/continuousToolbox.js"></script>
@@ -66,6 +66,8 @@
 
         //Load our base categories
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");
+        sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/looks.js");
+        sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/sounds.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/events.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/controls.js");
       };

@@ -197,6 +197,10 @@
         },
       };
     }
+
+    movesteps(args) {
+      console.log(args);
+    }
   }
 
   sugarcube.extensionManager.registerExtension(new motion());
