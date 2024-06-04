@@ -12,9 +12,9 @@
         ],
       });
 
-      sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block,generator) => {
+      sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
         return [block.getFieldValue("VALUE"), 0];
-      }
+      };
 
       this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
         message0: " %1 ",
@@ -28,9 +28,9 @@
         ],
       });
 
-      sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block,generator) => {
+      sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
         return [block.getFieldValue("VALUE"), 0];
-      }
+      };
 
       this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
         message0: " %1 ",
@@ -44,38 +44,39 @@
         ],
       });
 
-      sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block,generator) => {
+      sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
         return [block.getFieldValue("VALUE"), 0];
-      }
+      };
 
       sugarcube.extensionInstances = {};
     }
 
+    //Block shape definer.
     addBlocklyBlock(blockName, type, BlockJson, inline) {
       inline = inline || true;
       switch (type) {
-        case "hat":
+        case sugarcube.BlockType.HAT:
           BlockJson.nextStatement = BlockJson.nextStatement || "Action";
           break;
 
-        case "reporter":
+        case sugarcube.BlockType.REPORTER:
           BlockJson.output = "NotBoolean";
           break;
 
-        case "inline":
+        case sugarcube.BlockType.INLINE:
           BlockJson.output = ["Inline", "Boolean"];
           break;
 
-        case "boolean":
+        case sugarcube.BlockType.BOOLEAN:
           BlockJson.output = "Boolean";
           break;
 
-        case "command":
+        case sugarcube.BlockType.COMMAND:
           BlockJson.nextStatement = BlockJson.nextStatement || "Action";
           BlockJson.previousStatement = BlockJson.previousStatement || "Action";
           break;
 
-        case "terminal":
+        case sugarcube.BlockType.TERMINAL:
           BlockJson.previousStatement = BlockJson.previousStatement || "Action";
           break;
 
@@ -93,25 +94,16 @@
       };
     }
 
-    stringifyFunction(key,val) {
-      if (typeof val === 'function') {
-        return "____SUGAR__CUBE__FUNCTION____"+ val.toString(); // implicitly `toString` it
+    //Custom stringify argument. Just a function helper.
+    stringifyFunction(key, val) {
+      if (typeof val === "function") {
+        return "____SUGAR__CUBE__FUNCTION____" + val.toString(); // implicitly `toString` it
       }
       return val;
     }
 
-    parseJSONforFunctions(jsonOBJ) {
-      Object.keys(jsonOBJ).forEach(key => {
-        if (typeof jsonOBJ[key] == "string" && jsonOBJ[key].includes("____SUGAR__CUBE__FUNCTION____function anonymous(\n) ")) {
-          jsonOBJ[key] = jsonOBJ[key].replace("____SUGAR__CUBE__FUNCTION____function anonymous(\n) ", "")
-          jsonOBJ[key] = Function(jsonOBJ[key]);
-        }
-      })
-
-      return jsonOBJ;
-    }
-
-    nextBlockToCode(block,generator) {
+    //Gets the code for the next block.
+    nextBlockToCode(block, generator) {
       const nextBlock = block.nextConnection && block.nextConnection.targetBlock();
       if (nextBlock) {
         return sugarcube.generator.blockToCode(nextBlock);
@@ -119,18 +111,20 @@
       return "";
     }
 
-    registerBlockCode(blockJSON,extensionID) {
+    //This just registers the compile code for the block.
+    registerBlockCode(blockJSON, extensionID) {
       const blockType = blockJSON.type;
       const blockOpcode = blockJSON.opcode;
       const blockID = extensionID + "_" + blockOpcode;
 
+      //Certain blocks handle differently.
       switch (blockType) {
         case sugarcube.BlockType.HAT:
-          sugarcube.generator.forBlock[blockID] = (block,generator) => {
+          sugarcube.generator.forBlock[blockID] = (block, generator) => {
             const args = {};
 
             if (block.inputList) {
-              block.inputList.forEach(input => {
+              block.inputList.forEach((input) => {
                 if (!input.connection) return;
                 if (input.connection && input.connection.type == 3) {
                   args[input.name] = Function(generator.statementToCode(block, input.name));
@@ -141,30 +135,31 @@
             }
 
             if (block.fieldRow) {
-              block.fieldRow.forEach(field => {
+              block.fieldRow.forEach((field) => {
                 args[input.name] = block.getFieldValue(input.name);
               });
             }
 
-            const baseBlockCode = `${blockOpcode}() {
-              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args,this.stringifyFunction)
-              //Probably a better way to do this.
-              .replaceAll("\"____SUGAR__CUBE__FUNCTION____function anonymous(\\n","(")
-              .replaceAll(") {",") => {")
-              .replaceAll("\\n}\"","}")
-              .replaceAll("\\\"","\"")
-              .replaceAll("\\n","\n")},this),arguments) {`;
+            const baseBlockCode = `this.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
+              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args, this.stringifyFunction)
+                //Probably a better way to do this.
+                .replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
+                .replaceAll(") {", ") => {")
+                .replaceAll('\\n}"', "}")
+                .replaceAll('\\"', '"')
+                .replaceAll("\\n", "\n")},this,event)) {`;
 
-              return `${baseBlockCode}\n${this.nextBlockToCode(block,generator)}}}`;
-          }
+            return `${baseBlockCode}\n${this.nextBlockToCode(block, generator)}}\n});\n`;
+          };
           break;
 
+        //This is the default. New block types or unknown ones will do this.
         default:
-          sugarcube.generator.forBlock[blockID] = (block,generator) => {
+          sugarcube.generator.forBlock[blockID] = (block, generator) => {
             const args = {};
 
             if (block.inputList) {
-              block.inputList.forEach(input => {
+              block.inputList.forEach((input) => {
                 if (!input.connection) return;
                 if (input.connection && input.connection.type == 3) {
                   args[input.name] = Function(generator.statementToCode(block, input.name));
@@ -175,24 +170,24 @@
             }
 
             if (block.fieldRow) {
-              block.fieldRow.forEach(field => {
+              block.fieldRow.forEach((field) => {
                 args[input.name] = block.getFieldValue(input.name);
               });
             }
 
-            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args,this.stringifyFunction)
-            //Probably a better way to do this.
-            .replaceAll("\"____SUGAR__CUBE__FUNCTION____function anonymous(\\n","(")
-            .replaceAll(") {",") => {")
-            .replaceAll("\\n}\"","}")
-            .replaceAll("\\\"","\"")
-            .replaceAll("\\n","\n")},this);`
+            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args, this.stringifyFunction)
+              //Probably a better way to do this.
+              .replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
+              .replaceAll(") {", ") => {")
+              .replaceAll('\\n}"', "}")
+              .replaceAll('\\"', '"')
+              .replaceAll("\\n", "\n")},this);`;
 
             if (block.outputConnection) {
-              return [baseBlockCode, 0]
+              return [baseBlockCode, 0];
             }
-            return `${baseBlockCode}\n${this.nextBlockToCode(block,generator)}`
-          }
+            return `${baseBlockCode}\n${this.nextBlockToCode(block, generator)}`;
+          };
           break;
       }
     }
@@ -401,7 +396,7 @@
                               VALUE: argument.defaultValue,
                             },
                             //Make sure the style matches
-                            style:style
+                            style: style,
                           };
 
                           //If we have a default value set it
@@ -409,7 +404,7 @@
                             defArgs.inputs[argumentKey].shadow.value = argument.defaultValue;
                           }
                         }
-                        
+
                         //set the type to input
                         argument.type = "input_value";
                         break;
@@ -438,8 +433,8 @@
             }
 
             //Add the blockly block definition and register the block compiler
-            this.registerBlockCode(block,extension.id);
-            this.addBlocklyBlock(id + opcode, (block.isTerminal && type == "command") ? "terminal" : type, blockDef);
+            this.registerBlockCode(block, extension.id);
+            this.addBlocklyBlock(id + opcode, block.isTerminal && type == "command" ? "terminal" : type, blockDef);
             blockData = defArgs;
             break;
         }

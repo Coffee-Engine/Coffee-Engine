@@ -20,6 +20,7 @@
     <script src="editor/codeEditors/sugarcube/addons/continuousToolbox.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/hsvField.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/dynamicMenu.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/disableTopBlocks.js"></script>
 
     <script>
       window.onload = () => {
@@ -59,10 +60,11 @@
             metricsManager: sugarcube.ContinuousMetrics,
           },
         });
+        sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
 
         //Testing category for various block types and menus
         //Dunno why I called it testCat.js
-        //sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
+        sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
 
         //Load our base categories
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");

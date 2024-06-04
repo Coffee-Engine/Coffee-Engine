@@ -6,6 +6,9 @@
 
     BOOLEAN: "boolean",
 
+    //These three are the same internally they are just there for scratch compatibility...
+    CONDITIONAL: "command",
+    LOOP: "command",
     COMMAND: "command",
 
     TERMINAL: "terminal",
@@ -17,10 +20,6 @@
     DUPLICATE: "duplicate",
 
     INLINE: "inline",
-
-    //These two are the same internally
-    CONDITIONAL: "conditional",
-    LOOP: "conditional",
   };
 
   sugarcube.ArgumentType = {

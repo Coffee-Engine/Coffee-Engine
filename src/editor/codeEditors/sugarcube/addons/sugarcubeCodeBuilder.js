@@ -1,3 +1,3 @@
-(function() {
-    sugarcube.generator = new Blockly.Generator('sugarcube');
+(function () {
+  sugarcube.generator = new Blockly.Generator("sugarcube");
 })();

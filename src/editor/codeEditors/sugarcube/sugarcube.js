@@ -407,7 +407,6 @@
     registerComment$$module$build$src$core$contextmenu_items,
     registerInline$$module$build$src$core$contextmenu_items,
     registerCollapseExpandBlock$$module$build$src$core$contextmenu_items,
-    registerDisable$$module$build$src$core$contextmenu_items,
     registerDelete$$module$build$src$core$contextmenu_items,
     registerHelp$$module$build$src$core$contextmenu_items,
     registerBlockOptions_$$module$build$src$core$contextmenu_items,
@@ -5997,37 +5996,6 @@
         }
       );
     };
-  registerDisable$$module$build$src$core$contextmenu_items = function () {
-    ContextMenuRegistry$$module$build$src$core$contextmenu_registry.registry.register(
-      {
-        displayText(a) {
-          return a.block.isEnabled()
-            ? $.Msg$$module$build$src$core$msg.DISABLE_BLOCK
-            : $.Msg$$module$build$src$core$msg.ENABLE_BLOCK;
-        },
-        preconditionFn(a) {
-          a = a.block;
-          return !a.isInFlyout && a.workspace.options.disable && a.isEditable()
-            ? a.getInheritedDisabled()
-              ? "disabled"
-              : "enabled"
-            : "hidden";
-        },
-        callback(a) {
-          a = a.block;
-          const b = $.getGroup$$module$build$src$core$events$utils();
-          b || $.setGroup$$module$build$src$core$events$utils(!0);
-          a.setEnabled(!a.isEnabled());
-          $.setGroup$$module$build$src$core$events$utils(b);
-        },
-        scopeType:
-          ContextMenuRegistry$$module$build$src$core$contextmenu_registry
-            .ScopeType.BLOCK,
-        id: "blockDisable",
-        weight: 5,
-      }
-    );
-  };
   registerDelete$$module$build$src$core$contextmenu_items = function () {
     ContextMenuRegistry$$module$build$src$core$contextmenu_registry.registry.register(
       {
@@ -6086,7 +6054,6 @@
     registerComment$$module$build$src$core$contextmenu_items();
     registerInline$$module$build$src$core$contextmenu_items();
     registerCollapseExpandBlock$$module$build$src$core$contextmenu_items();
-    registerDisable$$module$build$src$core$contextmenu_items();
     registerDelete$$module$build$src$core$contextmenu_items();
     registerHelp$$module$build$src$core$contextmenu_items();
   };
@@ -27829,8 +27796,6 @@ ${b} to its parent, because: ${a}`);
     registerDelete$$module$build$src$core$contextmenu_items;
   module$build$src$core$contextmenu_items.registerDeleteAll =
     registerDeleteAll$$module$build$src$core$contextmenu_items;
-  module$build$src$core$contextmenu_items.registerDisable =
-    registerDisable$$module$build$src$core$contextmenu_items;
   module$build$src$core$contextmenu_items.registerDuplicate =
     registerDuplicate$$module$build$src$core$contextmenu_items;
   module$build$src$core$contextmenu_items.registerExpand =
