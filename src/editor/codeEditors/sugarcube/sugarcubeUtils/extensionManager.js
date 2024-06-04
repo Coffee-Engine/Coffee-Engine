@@ -121,10 +121,40 @@
 
     registerBlockCode(blockType,extensionID,blockOpcode,blockID) {
       switch (blockType) {
-        case "what":
-          
+        case sugarcube.BlockType.HAT:
+          sugarcube.generator.forBlock[blockID] = (block,generator) => {
+            const args = {};
+
+            if (block.inputList) {
+              block.inputList.forEach(input => {
+                if (!input.connection) return;
+                if (input.connection && input.connection.type == 3) {
+                  args[input.name] = Function(generator.statementToCode(block, input.name));
+                  return;
+                }
+                args[input.name] = generator.valueToCode(block, input.name, 0);
+              });
+            }
+
+            if (block.fieldRow) {
+              block.fieldRow.forEach(field => {
+                args[input.name] = block.getFieldValue(input.name);
+              });
+            }
+
+            const baseBlockCode = `${blockOpcode}() {
+              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args,this.stringifyFunction)
+              //Probably a better way to do this.
+              .replaceAll("\"____SUGAR__CUBE__FUNCTION____function anonymous(\\n","(")
+              .replaceAll(") {",") => {")
+              .replaceAll("\\n}\"","}")
+              .replaceAll("\\\"","\"")
+              .replaceAll("\\n","\n")},this),arguments) {`;
+
+              return `${baseBlockCode}\n${this.nextBlockToCode(block,generator)}}}`;
+          }
           break;
-      
+
         default:
           sugarcube.generator.forBlock[blockID] = (block,generator) => {
             const args = {};
@@ -146,7 +176,13 @@
               });
             }
 
-            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](sugarcube.extensionManager.parseJSONforFunctions(${JSON.stringify(args,this.stringifyFunction)}));`
+            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args,this.stringifyFunction)
+            //Probably a better way to do this.
+            .replaceAll("\"____SUGAR__CUBE__FUNCTION____function anonymous(\\n","(")
+            .replaceAll(") {",") => {")
+            .replaceAll("\\n}\"","}")
+            .replaceAll("\\\"","\"")
+            .replaceAll("\\n","\n")},this);`
 
             if (block.outputConnection) {
               return [baseBlockCode, 0]

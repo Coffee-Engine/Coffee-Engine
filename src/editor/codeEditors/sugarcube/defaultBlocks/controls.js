@@ -89,6 +89,10 @@
         args.statement2();
       }
     }
+
+    inline(args) {
+      
+    }
   }
 
   sugarcube.extensionManager.registerExtension(new controls());

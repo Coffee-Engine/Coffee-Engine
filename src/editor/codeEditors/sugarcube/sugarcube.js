@@ -18066,12 +18066,12 @@ ${b} to its parent, because: ${a}`);
           this.svgPath.setAttribute("fill", this.style.colourSecondary));
       }
       updateDisabled_(a) {
-        this.setClass_("blocklyDisabled", a);
+        /*this.setClass_("blocklyDisabled", a);
         a &&
           this.svgPath.setAttribute(
             "fill",
             "url(#" + this.constants.disabledPatternId + ")"
-          );
+          );*/
       }
       updateSelected(a) {
         this.setClass_("blocklySelected", a);

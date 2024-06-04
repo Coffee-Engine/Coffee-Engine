@@ -71,6 +71,10 @@
     __getMessages() {
       return sugarcube.broadcasts.concat(["New message"]);
     }
+
+    onStart() {
+      return true;
+    }
   }
 
   sugarcube.extensionManager.registerExtension(new events());
