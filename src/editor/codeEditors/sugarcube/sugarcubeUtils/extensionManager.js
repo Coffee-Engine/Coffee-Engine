@@ -119,7 +119,11 @@
       return "";
     }
 
-    registerBlockCode(blockType,extensionID,blockOpcode,blockID) {
+    registerBlockCode(blockJSON,extensionID) {
+      const blockType = blockJSON.type;
+      const blockOpcode = blockJSON.opcode;
+      const blockID = extensionID + "_" + blockOpcode;
+
       switch (blockType) {
         case sugarcube.BlockType.HAT:
           sugarcube.generator.forBlock[blockID] = (block,generator) => {
@@ -434,7 +438,7 @@
             }
 
             //Add the blockly block definition and register the block compiler
-            this.registerBlockCode(type,extension.id,opcode,id + opcode);
+            this.registerBlockCode(block,extension.id);
             this.addBlocklyBlock(id + opcode, (block.isTerminal && type == "command") ? "terminal" : type, blockDef);
             blockData = defArgs;
             break;

@@ -19,6 +19,7 @@
             opcode: "whenKeyPressed",
             type: sugarcube.BlockType.HAT,
             text: "when [key] key pressed",
+            runInClassConstructor:true,
             arguments: {
               key: {
                 menu: "keys",
