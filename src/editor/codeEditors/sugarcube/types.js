@@ -6,6 +6,8 @@
 
     BOOLEAN: "boolean",
 
+    OBJECT: "object",
+
     //These three are the same internally they are just there for scratch compatibility...
     CONDITIONAL: "command",
     LOOP: "command",

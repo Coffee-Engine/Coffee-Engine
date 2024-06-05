@@ -79,6 +79,10 @@
         case sugarcube.BlockType.TERMINAL:
           BlockJson.previousStatement = BlockJson.previousStatement || "Action";
           break;
+        
+        case sugarcube.BlockType.OBJECT:
+          BlockJson.output = "Object";
+          break;
 
         default:
           BlockJson.nextStatement = BlockJson.nextStatement || "Action";

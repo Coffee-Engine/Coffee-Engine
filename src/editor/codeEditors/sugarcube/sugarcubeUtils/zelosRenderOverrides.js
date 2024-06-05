@@ -6,6 +6,56 @@
       super.init();
     }
 
+    makeObject() {
+      const maxWidth = this.MAX_DYNAMIC_CONNECTION_SHAPE_WIDTH;
+  
+      function makeMainPath(height, up, right) {
+        const xStep = right ? -25 : 25;
+        const curveStep = right ? -10 : 10;
+        const yStep = (up ? height : -height) / 2;
+        
+        return `
+        m 0 ${up ? -height : height} 
+        c 0 0 ${curveStep} ${yStep} ${xStep} ${yStep} 
+        c 0 0 ${-curveStep * 2} 0 ${-xStep} ${yStep}
+        `;
+        //+ Blockly.utils.svgPaths.lineTo(xStep, yStep) + Blockly.utils.svgPaths.lineTo(-xStep, yStep);
+        //return Blockly.utils.svgPaths.lineTo(xStep, 0) + Blockly.utils.svgPaths.lineTo(xStep, yStep) + Blockly.utils.svgPaths.lineTo(-xStep, yStep);
+      }
+  
+      return {
+        type: this.SHAPES.HEXAGONAL,
+        isDynamic: true,
+        width(height) {
+          const halfHeight = height / 2;
+          return halfHeight > maxWidth ? maxWidth : halfHeight;
+        },
+        height(height) {
+          return height;
+        },
+        connectionOffsetY(connectionHeight) {
+          return connectionHeight / 2;
+        },
+        connectionOffsetX(connectionWidth) {
+          return -connectionWidth / 2;
+        },
+        pathDown(height) {
+          return ``;
+        },
+        pathUp(height) {
+          return makeMainPath(height, true, true);
+        },
+        pathRightDown(height) {
+          return makeMainPath(height, true, false);
+        },
+        pathRightUp(height) {
+          return ``;
+        },
+      };
+    }
+
+    OBJECT = this.makeObject();
+
     shapeFor(connection) {
       let check = connection.getCheck();
       !check && connection.targetConnection && (check = connection.targetConnection.getCheck());
@@ -14,6 +64,10 @@
           switch (check[0]) {
             case "Inline": {
               return this.SQUARED;
+            }
+
+            case "Object": {
+              return this.OBJECT;
             }
 
             default: {
