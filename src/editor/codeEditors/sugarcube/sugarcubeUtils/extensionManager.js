@@ -393,7 +393,7 @@
                           defArgs.inputs[argumentKey].shadow = {
                             type: sugarcube.ArgumentShadowConversions[argument.type],
                             fields: {
-                              VALUE: argument.defaultValue,
+                              VALUE: argument.defaultValue || sugarcube.ArgumentDefaultValues[argument.type] || "",
                             },
                             //Make sure the style matches
                             style: style,

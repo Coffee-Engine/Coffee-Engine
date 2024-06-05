@@ -198,8 +198,10 @@
       };
     }
 
-    movesteps(args) {
-      console.log(args);
+    movesteps(args,util) {
+      util.x += util.forward.x * args.steps;
+      util.y += util.forward.y * args.steps;
+      util.z += util.forward.z * args.steps;
     }
   }
 

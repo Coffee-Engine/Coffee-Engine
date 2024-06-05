@@ -40,6 +40,14 @@
     STATEMENT: "statement",
   };
 
+  sugarcube.ArgumentDefaultValues = {
+    Boolean: false,
+
+    number: 0,
+
+    COLOR: "#ff0000",
+  }
+
   sugarcube.ArgumentShadowConversions = {
     string: "__sugarcube_string_reporter",
 

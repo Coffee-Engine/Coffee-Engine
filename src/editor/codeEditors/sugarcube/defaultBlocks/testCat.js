@@ -18,7 +18,6 @@
       arguments: {
         argument: {
           type: sugarcube.ArgumentType[type],
-          defaultValue: "#ff0000",
         },
       },
     });
