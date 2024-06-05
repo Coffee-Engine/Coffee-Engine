@@ -48,7 +48,7 @@
     number: 0,
 
     color: "#ff0000",
-  }
+  };
 
   sugarcube.ArgumentShadowConversions = {
     string: "__sugarcube_string_reporter",

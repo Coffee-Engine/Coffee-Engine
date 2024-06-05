@@ -7,12 +7,12 @@
 
     makeObject() {
       const maxWidth = this.MAX_DYNAMIC_CONNECTION_SHAPE_WIDTH;
-  
+
       function makeMainPath(height, up, right) {
         const xStep = right ? -25 : 25;
         const curveStep = right ? -10 : 10;
         const yStep = (up ? height : -height) / 2;
-        
+
         return `
         m 0 ${up ? -height : height} 
         c 0 0 ${curveStep} ${yStep} ${xStep} ${yStep} 
@@ -21,7 +21,7 @@
         //+ Blockly.utils.svgPaths.lineTo(xStep, yStep) + Blockly.utils.svgPaths.lineTo(-xStep, yStep);
         //return Blockly.utils.svgPaths.lineTo(xStep, 0) + Blockly.utils.svgPaths.lineTo(xStep, yStep) + Blockly.utils.svgPaths.lineTo(-xStep, yStep);
       }
-  
+
       return {
         type: this.SHAPES.HEXAGONAL,
         isDynamic: true,
