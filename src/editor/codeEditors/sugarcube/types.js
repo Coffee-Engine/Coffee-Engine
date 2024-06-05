@@ -41,11 +41,11 @@
   };
 
   sugarcube.ArgumentDefaultValues = {
-    Boolean: false,
+    boolean: false,
 
     number: 0,
 
-    COLOR: "#ff0000",
+    color: "#ff0000",
   }
 
   sugarcube.ArgumentShadowConversions = {
