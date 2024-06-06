@@ -60,10 +60,10 @@
         right = right ? -1 : 1;
         height = ((up ? -1 : 1) * height) / 2;
         return `
-          l ${-right * 15} 0
+          l ${-right * 30} 0
           c 0 0 ${right * 15} ${height} ${right * 10} ${height}
           c 0 0 ${right * 5} 0 ${-right * 10} ${height}
-          l ${right * 15} 0
+          l ${right * 30} 0
         `;
       }
 
