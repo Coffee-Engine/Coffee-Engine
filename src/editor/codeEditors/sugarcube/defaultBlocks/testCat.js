@@ -155,12 +155,22 @@
               },
             },
             {
-              opcode: "ifStatementreq",
+              opcode: "rLongOBJ",
               type: sugarcube.BlockType.OBJECT,
               text: "like a really long object block, Like a REALLY long one with an object input [obj]",
               arguments: {
                 obj: {
                   type:sugarcube.BlockType.OBJECT
+                },
+              },
+            },
+            {
+              opcode: "rLongARRAY",
+              type: sugarcube.BlockType.ARRAY,
+              text: "like a really long ARRAY block, Like a REALLY long one with an ARRAY input [obj]",
+              arguments: {
+                obj: {
+                  type:sugarcube.BlockType.ARRAY
                 },
               },
             },

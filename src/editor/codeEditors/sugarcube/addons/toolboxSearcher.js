@@ -38,10 +38,10 @@
         createDom_() {
             var _a;
             const dom = super.createDom_();
-            /*this.searchField = document.createElement('input');
+            this.searchField = document.createElement('input');
             this.searchField.type = 'search';
             this.searchField.placeholder = 'Search';
-            this.searchField.style.width = "24px";
+            this.searchField.style.width = "48px";
             this.workspace_.RTL
                 ? (this.searchField.style.marginRight = '8px')
                 : (this.searchField.style.marginLeft = '8px');
@@ -51,20 +51,8 @@
                     return true;
                 }
                 this.matchBlocks();
-            })*/;
-            this.searchField = document.createElement("div");
-            this.searchField.className = "blocklyTreeRow";
-            this.searchField.style.paddingLeft = "0px";
-            this.searchField.style.pointerEvents = "none";
-            this.searchField.innerHTML = `
-            <div class="blocklyTreeRowContentContainer" style="pointer-events: none;">
-                <div class="categoryBubble" role="presentation" style="background-color: rgb(255, 0, 0); border-color: rgb(0, 0, 255); border-width: 0.125rem;">
-                </div>
-                <div id="blockly-n.label" class="blocklyTreeLabel">
-                    Search
-                </div>
-            </div>
-            `;
+            });
+            
             (_a = this.rowContents_) === null || _a === void 0 ? void 0 : _a.replaceChildren(this.searchField);
             return dom;
         }
@@ -149,6 +137,7 @@
             super.setSelected(isSelected);
             if (!this.searchField)
                 return;
+            
             if (isSelected) {
                 this.searchField.focus();
                 this.matchBlocks();
