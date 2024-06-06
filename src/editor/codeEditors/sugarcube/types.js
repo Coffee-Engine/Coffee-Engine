@@ -7,6 +7,7 @@
     BOOLEAN: "boolean",
 
     OBJECT: "object",
+    ARRAY: "array",
 
     //These three are the same internally they are just there for scratch compatibility...
     CONDITIONAL: "command",
@@ -40,6 +41,9 @@
     DUMMY: "dummy",
 
     STATEMENT: "statement",
+
+    OBJECT: "object",
+    ARRAY: "array",
   };
 
   sugarcube.ArgumentDefaultValues = {

@@ -154,6 +154,16 @@
                 },
               },
             },
+            {
+              opcode: "ifStatementreq",
+              type: sugarcube.BlockType.OBJECT,
+              text: "like a really long object block, Like a REALLY long one with an object input [obj]",
+              arguments: {
+                obj: {
+                  type:sugarcube.BlockType.OBJECT
+                },
+              },
+            },
           ]),
         menus: {
           staticNoREP: {

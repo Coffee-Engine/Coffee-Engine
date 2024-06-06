@@ -4,7 +4,13 @@ sugarcube.extensions = {};
 sugarcube.workspace = {};
 sugarcube.toolbox = {
   kind: "categoryToolbox",
-  contents: [],
+  contents: [
+    {
+      'kind': 'search',
+      'name': 'Search',
+      'contents': [],
+    }
+  ],
 };
 sugarcube.menus = {};
 

@@ -1,5 +1,6 @@
 (function () {
   //I'm to lazy to try and extract the zelos renderer so we are replacing it.
+  
   sugarcube.customZelosConstant = class extends Blockly.zelos.ConstantProvider {
     init() {
       super.init();
@@ -8,52 +9,143 @@
     makeObject() {
       const maxWidth = this.MAX_DYNAMIC_CONNECTION_SHAPE_WIDTH;
 
-      function makeMainPath(height, up, right) {
-        const xStep = right ? -25 : 25;
-        const curveStep = right ? -10 : 10;
-        const yStep = (up ? height : -height) / 2;
-
+      function makeShape(height, up, right) {
+        var halfHeight = height / 2;
+        halfHeight = halfHeight > halfHeight ? maxWidth : halfHeight;
+        right = right ? -1 : 1;
+        height = ((up ? -1 : 1) * height) / 2;
         return `
-        m 0 ${up ? -height : height} 
-        c 0 0 ${curveStep} ${yStep} ${xStep} ${yStep} 
-        c 0 0 ${-curveStep * 2} 0 ${-xStep} ${yStep}
+          c 0 0 0 ${height} ${-right * 25} ${height}
+          c 0 0 ${right * 25} 0 ${right * 25} ${height}
         `;
-        //+ Blockly.utils.svgPaths.lineTo(xStep, yStep) + Blockly.utils.svgPaths.lineTo(-xStep, yStep);
-        //return Blockly.utils.svgPaths.lineTo(xStep, 0) + Blockly.utils.svgPaths.lineTo(xStep, yStep) + Blockly.utils.svgPaths.lineTo(-xStep, yStep);
       }
 
       return {
         type: this.SHAPES.HEXAGONAL,
         isDynamic: true,
         width(height) {
-          const halfHeight = height / 2;
-          return halfHeight > maxWidth ? maxWidth : halfHeight;
+          height /= 2;
+          return height > maxWidth ? maxWidth : height;
         },
         height(height) {
           return height;
         },
-        connectionOffsetY(connectionHeight) {
-          return connectionHeight / 2;
+        connectionOffsetY(height) {
+          return height / 2;
         },
-        connectionOffsetX(connectionWidth) {
-          return -connectionWidth / 2;
+        connectionOffsetX(height) {
+          return -height;
         },
         pathDown(height) {
-          return ``;
+          return makeShape(height, false, false);
         },
         pathUp(height) {
-          return makeMainPath(height, true, true);
+          return makeShape(height, true, false);
         },
         pathRightDown(height) {
-          return makeMainPath(height, true, false);
+          return makeShape(height, false, true);
         },
         pathRightUp(height) {
-          return ``;
+          return makeShape(height, false, true);
+        },
+      };
+    }
+    
+    makeArray() {
+      const maxWidth = this.MAX_DYNAMIC_CONNECTION_SHAPE_WIDTH;
+
+      function makeShape(height, up, right) {
+        var halfHeight = height / 2;
+        halfHeight = halfHeight > halfHeight ? maxWidth : halfHeight;
+        right = right ? -1 : 1;
+        height = ((up ? -1 : 1) * height) / 2;
+        return `
+          l ${-right * 15} 0
+          c 0 0 ${right * 15} ${height} ${right * 10} ${height}
+          c 0 0 ${right * 5} 0 ${-right * 10} ${height}
+          l ${right * 15} 0
+        `;
+      }
+
+      return {
+        type: this.SHAPES.HEXAGONAL,
+        isDynamic: true,
+        width(height) {
+          height /= 2;
+          return height > maxWidth ? maxWidth : height;
+        },
+        height(height) {
+          return height;
+        },
+        connectionOffsetY(height) {
+          return height / 2;
+        },
+        connectionOffsetX(height) {
+          return -height;
+        },
+        pathDown(height) {
+          return makeShape(height, false, false);
+        },
+        pathUp(height) {
+          return makeShape(height, true, false);
+        },
+        pathRightDown(height) {
+          return makeShape(height, false, true);
+        },
+        pathRightUp(height) {
+          return makeShape(height, false, true);
         },
       };
     }
 
+    makeCoolShape() {
+      const maxWidth = this.MAX_DYNAMIC_CONNECTION_SHAPE_WIDTH;
+
+      function makeShape(height, up, right) {
+        var halfHeight = height / 2;
+        halfHeight = halfHeight > halfHeight ? maxWidth : halfHeight;
+        right = right ? -1 : 1;
+        height = ((up ? -1 : 1) * height) / 2;
+        return `
+          c 0 0 ${right * 15} 0 ${-right * 25} ${height} 
+          c 0 0 0 ${height} ${right * 25} ${height}
+        `;
+      }
+
+      return {
+        type: this.SHAPES.HEXAGONAL,
+        isDynamic: true,
+        width(height) {
+          height /= 2;
+          return height > maxWidth ? maxWidth : height;
+        },
+        height(height) {
+          return height;
+        },
+        connectionOffsetY(height) {
+          return height / 2;
+        },
+        connectionOffsetX(height) {
+          return -height;
+        },
+        pathDown(height) {
+          return makeShape(height, false, false);
+        },
+        pathUp(height) {
+          return makeShape(height, true, false);
+        },
+        pathRightDown(height) {
+          return makeShape(height, false, true);
+        },
+        pathRightUp(height) {
+          return makeShape(height, false, true);
+        },
+      };
+    }
+
+
     OBJECT = this.makeObject();
+    ARRAY = this.makeArray();
 
     shapeFor(connection) {
       let check = connection.getCheck();
@@ -67,6 +159,26 @@
 
             case "Object": {
               return this.OBJECT;
+            }
+
+            case "Array": {
+              return this.ARRAY;
+            }
+
+            default: {
+              return super.shapeFor(connection);
+            }
+          }
+        }
+        case Blockly.ConnectionType.INPUT_VALUE: {
+          if (!check) return super.shapeFor(connection);
+          switch (check[0]) {
+            case "Object": {
+              return this.OBJECT;
+            }
+
+            case "Array": {
+              return this.ARRAY;
             }
 
             default: {
