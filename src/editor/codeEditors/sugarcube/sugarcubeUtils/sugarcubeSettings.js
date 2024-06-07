@@ -6,10 +6,10 @@ sugarcube.toolbox = {
   kind: "categoryToolbox",
   contents: [
     {
-      'kind': 'search',
-      'name': 'Search',
-      'contents': [],
-    }
+      kind: "search",
+      name: "Search",
+      contents: [],
+    },
   ],
 };
 sugarcube.menus = {};

@@ -27,9 +27,9 @@
             text: "name of [object]",
             arguments: {
               object: {
-                type:sugarcube.ArgumentType.OBJECT
-              }
-            }
+                type: sugarcube.ArgumentType.OBJECT,
+              },
+            },
           },
           {
             opcode: "getChildren",
@@ -37,9 +37,9 @@
             text: "children of [object]",
             arguments: {
               object: {
-                type:sugarcube.ArgumentType.OBJECT
-              }
-            }
+                type: sugarcube.ArgumentType.OBJECT,
+              },
+            },
           },
           "---",
           {
@@ -48,13 +48,13 @@
             text: "variable [var] of [object]",
             arguments: {
               var: {
-                type:sugarcube.ArgumentType.STRING,
-                defaultValue:"variable"
+                type: sugarcube.ArgumentType.STRING,
+                defaultValue: "variable",
               },
               object: {
-                type:sugarcube.ArgumentType.OBJECT
-              }
-            }
+                type: sugarcube.ArgumentType.OBJECT,
+              },
+            },
           },
         ],
       };

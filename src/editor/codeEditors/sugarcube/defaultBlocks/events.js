@@ -17,7 +17,8 @@
           },
           {
             opcode: "whenKeyPressed",
-            eventListenerName: "onKeyDown",
+            eventListenerName: "keydown",
+            eventListenerTarget: "window",
             type: sugarcube.BlockType.HAT,
             text: "when [key] key pressed",
             arguments: {

@@ -148,20 +148,21 @@
               });
             }
 
-            const baseBlockCode = `this.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
+            const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
               if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args, this.stringifyFunction)
                 //Probably a better way to do this.
                 .replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
                 .replaceAll(") {", ") => {")
                 .replaceAll('\\n}"', "}")
                 .replaceAll('\\"', '"')
-                .replaceAll("\\n", "\n")},this,event)) {`;
+                .replaceAll("\\n", "\n")},this,event)) {`
+              .replaceAll(',this);"', ",this)")
+              .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
             return `${baseBlockCode}\n${this.nextBlockToCode(block, generator)}}\n});\n`;
           };
           break;
 
-        //This is the default. New block types or unknown ones will do this.
         default:
           sugarcube.generator.forBlock[blockID] = (block, generator) => {
             const args = {};
@@ -189,7 +190,9 @@
               .replaceAll(") {", ") => {")
               .replaceAll('\\n}"', "}")
               .replaceAll('\\"', '"')
-              .replaceAll("\\n", "\n")},this);`;
+              .replaceAll("\\n", "\n")},this);`
+              .replaceAll(',this);"', ",this)")
+              .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
             if (block.outputConnection) {
               return [baseBlockCode, 0];

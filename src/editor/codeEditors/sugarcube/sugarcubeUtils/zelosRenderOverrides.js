@@ -1,6 +1,6 @@
 (function () {
   //I'm to lazy to try and extract the zelos renderer so we are replacing it.
-  
+
   sugarcube.customZelosConstant = class extends Blockly.zelos.ConstantProvider {
     init() {
       super.init();
@@ -50,7 +50,7 @@
         },
       };
     }
-    
+
     makeArray() {
       const maxWidth = this.MAX_DYNAMIC_CONNECTION_SHAPE_WIDTH;
 
@@ -142,7 +142,6 @@
         },
       };
     }
-
 
     OBJECT = this.makeObject();
     ARRAY = this.makeArray();
