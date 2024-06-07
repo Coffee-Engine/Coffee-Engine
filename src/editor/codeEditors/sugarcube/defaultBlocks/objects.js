@@ -43,6 +43,24 @@
           },
           "---",
           {
+            opcode: "setVariable",
+            type: sugarcube.BlockType.COMMAND,
+            text: "set variable [var] of [object] to [value]",
+            arguments: {
+              var: {
+                type: sugarcube.ArgumentType.STRING,
+                defaultValue: "variable",
+              },
+              object: {
+                type: sugarcube.ArgumentType.OBJECT,
+              },
+              value: {
+                type: sugarcube.ArgumentType.STRING,
+                defaultValue: "0"
+              }
+            },
+          },
+          {
             opcode: "getVariable",
             type: sugarcube.BlockType.REPORTER,
             text: "variable [var] of [object]",

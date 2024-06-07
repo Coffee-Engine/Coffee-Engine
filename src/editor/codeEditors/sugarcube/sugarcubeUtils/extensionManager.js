@@ -591,17 +591,17 @@
 
         //Add the block styles for this category. Each block can have its own override.
         sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
-          colourPrimary: myInfo.color1,
-          colourSecondary: myInfo.color2,
-          colourTertiary: myInfo.color3,
+          colourPrimary: myInfo.color1 || "#0fbd8c",
+          colourSecondary: myInfo.color2 || myInfo.color1 || "#0b8e69",
+          colourTertiary: myInfo.color3 || myInfo.color1 || "#0b8e69",
         };
 
         //Define the category definition here
         let createdContentData = {
           kind: "category",
           name: myInfo.name,
-          colour: myInfo.color1,
-          colour_secondary: myInfo.color3,
+          colour: myInfo.color1 || "#0fbd8c",
+          colour_secondary: myInfo.color3 || myInfo.color1 || "#0b8e69",
           menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
           showColor: myInfo.showColor,
           contents: [],
