@@ -56,8 +56,8 @@
               },
               value: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue: "0"
-              }
+                defaultValue: "0",
+              },
             },
           },
           {

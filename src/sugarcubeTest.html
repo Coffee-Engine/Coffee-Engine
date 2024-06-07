@@ -21,6 +21,10 @@
     <script src="editor/codeEditors/sugarcube/addons/hsvField.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/dynamicMenu.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/disableTopBlocks.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/autoMinimapHider.js"></script>
+
+    <script src="editor/codeEditors/sugarcube/addons/focusRegion.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/minimap.js"></script>
 
     <script src="editor/codeEditors/sugarcube/addons/blockSearcher.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/toolboxSearcher.js"></script>
@@ -63,7 +67,13 @@
             metricsManager: sugarcube.ContinuousMetrics,
           },
         });
+        
+        sugarcube.minimap = new sugarcube.minimapStorage.PositionedMinimap(sugarcube.workspace);
+        sugarcube.minimap.init();
+        sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;
+
         sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
+        sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
 
         //Testing category for various block types and menus
         //Dunno why I called it testCat.js
