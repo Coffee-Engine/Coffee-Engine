@@ -106,6 +106,22 @@
               }
             },
           },
+          {
+            opcode: "repeatUNT",
+            type: sugarcube.BlockType.CONDITIONAL,
+            text: "repeat until [condition] [dummy] [statement]",
+            arguments: {
+              condition: {
+                type: sugarcube.ArgumentType.BOOLEAN,
+              },
+              dummy: {
+                type: sugarcube.ArgumentType.DUMMY,
+              },
+              statement: {
+                type: sugarcube.ArgumentType.STATEMENT,
+              }
+            },
+          },
         ],
       };
     }

@@ -64,7 +64,11 @@
           break;
 
         case sugarcube.BlockType.INLINE:
-          BlockJson.output = ["Inline", "Boolean"];
+          BlockJson.output = ["Inline", "ANY"];
+          break;
+
+        case sugarcube.BlockType.REPORTER_ANY:
+          BlockJson.output = "ANY";
           break;
 
         case sugarcube.BlockType.BOOLEAN:
@@ -127,6 +131,7 @@
 
       //Certain blocks handle differently.
       switch (blockType) {
+        //Hat blocks will be event listeners. No exceptions lol.
         case sugarcube.BlockType.HAT:
           sugarcube.generator.forBlock[blockID] = (block, generator) => {
             const args = {};
@@ -148,6 +153,7 @@
               });
             }
 
+            //Just our block code builder... Should probably standardize this.
             const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
               if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args, this.stringifyFunction)
                 //Probably a better way to do this.
@@ -163,6 +169,7 @@
           };
           break;
 
+        // For every other block
         default:
           sugarcube.generator.forBlock[blockID] = (block, generator) => {
             const args = {};
@@ -370,19 +377,19 @@
                         break;
 
                       case sugarcube.ArgumentType.BOOLEAN: {
-                        argument.check = "Boolean";
+                        argument.check = ["Boolean", "ANY"];
                         argument.type = "input_value";
                         break;
                       }
 
                       case sugarcube.ArgumentType.OBJECT: {
-                        argument.check = "Object";
+                        argument.check = ["Object", "ANY"];
                         argument.type = "input_value";
                         break;
                       }
 
                       case sugarcube.ArgumentType.ARRAY: {
-                        argument.check = "Array";
+                        argument.check = ["Array", "ANY"];
                         argument.type = "input_value";
                         break;
                       }
