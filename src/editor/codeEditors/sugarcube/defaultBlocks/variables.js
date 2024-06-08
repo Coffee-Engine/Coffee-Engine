@@ -12,7 +12,7 @@
         blocks: [
           {
             opcode: "getVariable",
-            type: sugarcube.BlockType.REPORTER,
+            type: sugarcube.BlockType.REPORTER_ANY,
             text: "variable",
             hideFromPalette: false,
           },

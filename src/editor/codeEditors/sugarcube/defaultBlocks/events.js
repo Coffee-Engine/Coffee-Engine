@@ -73,7 +73,7 @@
 
     //Just for a menu
     __getMessages() {
-      return sugarcube.broadcasts.concat(["New message"]);
+      return sugarcube.broadcasts;
     }
 
     onStart() {
