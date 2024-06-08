@@ -11,7 +11,7 @@
         blocks: [
           {
             opcode: "getList",
-            type: sugarcube.BlockType.REPORTER,
+            type: sugarcube.BlockType.ARRAY,
             text: "list",
             hideFromPalette: false,
           },

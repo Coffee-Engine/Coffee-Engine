@@ -77,10 +77,10 @@
           {
             opcode: "repeat",
             type: sugarcube.BlockType.CONDITIONAL,
-            text: "for each item in [array] do [dummy] [statement]",
+            text: "repeat [num] [dummy] [statement]",
             arguments: {
-              array: {
-                type: sugarcube.ArgumentType.ARRAY,
+              num: {
+                type: sugarcube.ArgumentType.NUMBER,
               },
               dummy: {
                 type: sugarcube.ArgumentType.DUMMY,
