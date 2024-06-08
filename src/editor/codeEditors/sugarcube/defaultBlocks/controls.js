@@ -73,6 +73,39 @@
               },
             },
           },
+          "---",
+          {
+            opcode: "repeat",
+            type: sugarcube.BlockType.CONDITIONAL,
+            text: "for each item in [array] do [dummy] [statement]",
+            arguments: {
+              array: {
+                type: sugarcube.ArgumentType.ARRAY,
+              },
+              dummy: {
+                type: sugarcube.ArgumentType.DUMMY,
+              },
+              statement: {
+                type: sugarcube.ArgumentType.STATEMENT,
+              }
+            },
+          },
+          {
+            opcode: "foreach",
+            type: sugarcube.BlockType.CONDITIONAL,
+            text: "for each item in [array] do [dummy] [statement]",
+            arguments: {
+              array: {
+                type: sugarcube.ArgumentType.ARRAY,
+              },
+              dummy: {
+                type: sugarcube.ArgumentType.DUMMY,
+              },
+              statement: {
+                type: sugarcube.ArgumentType.STATEMENT,
+              }
+            },
+          },
         ],
       };
     }
