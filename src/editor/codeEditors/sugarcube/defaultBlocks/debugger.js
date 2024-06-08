@@ -1,5 +1,6 @@
 (function () {
-  class variables {
+  //appearently debugger is a thing in JS???
+  class ext_debugger {
     getInfo() {
       return {
         id: "debugging",
@@ -46,7 +47,19 @@
         ],
       };
     }
+
+    log(args) {
+      console.log(args.ITEM)
+    }
+
+    warn(args) {
+      console.warn(args.ITEM)
+    }
+
+    error(args) {
+      console.error(args.ITEM)
+    }
   }
 
-  sugarcube.extensionManager.registerExtension(new variables());
+  sugarcube.extensionManager.registerExtension(new ext_debugger());
 })();

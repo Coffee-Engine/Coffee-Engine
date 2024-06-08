@@ -123,6 +123,14 @@
       return "";
     }
 
+    fixifyTheArgs(args) {
+      return args.replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
+      .replaceAll(") {", ") => {")
+      .replaceAll('\\n}"', "}")
+      .replaceAll('\\"', '"')
+      .replaceAll("\\n", "\n");
+    }
+
     //This just registers the compile code for the block.
     registerBlockCode(blockJSON, extensionID) {
       const blockType = blockJSON.type;
@@ -155,13 +163,9 @@
 
             //Just our block code builder... Should probably standardize this.
             const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
-              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args, this.stringifyFunction)
-                //Probably a better way to do this.
-                .replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
-                .replaceAll(") {", ") => {")
-                .replaceAll('\\n}"', "}")
-                .replaceAll('\\"', '"')
-                .replaceAll("\\n", "\n")},this,event)) {`
+              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${
+                this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))
+              },this,event)) {`
               .replaceAll(',this);"', ",this)")
               .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
@@ -173,15 +177,18 @@
         default:
           sugarcube.generator.forBlock[blockID] = (block, generator) => {
             const args = {};
+            const recalls = {};
 
             if (block.inputList) {
               block.inputList.forEach((input) => {
                 if (!input.connection) return;
                 if (input.connection && input.connection.type == 3) {
                   args[input.name] = Function(generator.statementToCode(block, input.name));
+                  recalls[input.name] = Function(generator.statementToCode(block, input.name));
                   return;
                 }
                 args[input.name] = generator.valueToCode(block, input.name, 0);
+                recalls[input.name] = Function(generator.valueToCode(block, input.name, 0));
               });
             }
 
@@ -191,13 +198,11 @@
               });
             }
 
-            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${JSON.stringify(args, this.stringifyFunction)
-              //Probably a better way to do this.
-              .replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
-              .replaceAll(") {", ") => {")
-              .replaceAll('\\n}"', "}")
-              .replaceAll('\\"', '"')
-              .replaceAll("\\n", "\n")},this);`
+            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${
+                this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))
+              },this,${
+                this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))
+              });`
               .replaceAll(',this);"', ",this)")
               .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 

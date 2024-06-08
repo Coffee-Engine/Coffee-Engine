@@ -70,6 +70,7 @@
             arguments: {
               value: {
                 type: sugarcube.ArgumentType.STRING,
+                defaultValue: "0"
               },
             },
           },
@@ -81,6 +82,7 @@
             arguments: {
               num: {
                 type: sugarcube.ArgumentType.NUMBER,
+                defaultValue: 10
               },
               dummy: {
                 type: sugarcube.ArgumentType.DUMMY,
