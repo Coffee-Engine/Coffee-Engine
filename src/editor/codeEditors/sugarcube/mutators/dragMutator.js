@@ -7,7 +7,6 @@
       loadExtraState: function (state) {},
 
       mutationToDom: function () {
-        console.log(this);
         if (!this.isInFlyout) this._shouldDuplicate_ = true;
         // You *must* create a <mutation></mutation> element.
         // This element can have children.
