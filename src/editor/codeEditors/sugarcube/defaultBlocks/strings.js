@@ -17,7 +17,7 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
             },
           },
@@ -28,11 +28,11 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
               B: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"banana"
+                defaultValue: "banana",
               },
             },
           },
@@ -44,8 +44,8 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
-              }
+                defaultValue: "apple",
+              },
             },
           },
           {
@@ -55,11 +55,11 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
               B: {
                 type: sugarcube.ArgumentType.NUMBER,
-                defaultValue:1
+                defaultValue: 1,
               },
             },
           },
@@ -70,15 +70,15 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
               B: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple banana"
+                defaultValue: "apple banana",
               },
               C: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"pear"
+                defaultValue: "pear",
               },
             },
           },
@@ -90,11 +90,11 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.NUMBER,
-                defaultValue:1
+                defaultValue: 1,
               },
               B: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
             },
           },
@@ -105,15 +105,15 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.NUMBER,
-                defaultValue:1
+                defaultValue: 1,
               },
               B: {
                 type: sugarcube.ArgumentType.NUMBER,
-                defaultValue:3
+                defaultValue: 3,
               },
               C: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
             },
           },
@@ -124,11 +124,11 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple,banana,pear"
+                defaultValue: "apple,banana,pear",
               },
               B: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:","
+                defaultValue: ",",
               },
             },
           },
@@ -143,12 +143,12 @@
               },
               B: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
               C: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"banana"
-              }
+                defaultValue: "banana",
+              },
             },
           },
           {
@@ -158,10 +158,10 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
               B: {
-                menu:"caseTypes"
+                menu: "caseTypes",
               },
             },
           },
@@ -172,64 +172,60 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"apple"
+                defaultValue: "apple",
               },
               B: {
                 type: sugarcube.ArgumentType.STRING,
-                defaultValue:"a"
+                defaultValue: "a",
               },
             },
           },
         ],
         menus: {
           caseTypes: {
-            items: [
-              "uppercase",
-              "lowercase",
-              "title-case"
-            ]
-          }
-        }
+            items: ["uppercase", "lowercase", "title-case"],
+          },
+        },
       };
     }
 
-    length({A}) {
+    length({ A }) {
       return sugarcube.cast.toString(A).length;
     }
 
-    join({A, B}) {
+    join({ A, B }) {
       return sugarcube.cast.toString(A) + sugarcube.cast.toString(B);
     }
 
-    reverse({A}) {
+    reverse({ A }) {
       return sugarcube.cast.toString(A).split("").reverse().join("");
     }
 
-    repeat({A, B}) {
+    repeat({ A, B }) {
       return sugarcube.cast.toString(A).repeat(sugarcube.cast.toNumber(B));
     }
 
-    replace({A, B, C}) {
-      return sugarcube.cast.toString(B).replaceAll(sugarcube.cast.toString(A),sugarcube.cast.toString(C))
+    replace({ A, B, C }) {
+      return sugarcube.cast.toString(B).replaceAll(sugarcube.cast.toString(A), sugarcube.cast.toString(C));
     }
 
-    characterAt({A, B}) {
+    characterAt({ A, B }) {
       return sugarcube.cast.toString(B).charAt(sugarcube.cast.toNumber(A) - 1) || "";
     }
 
-    charactersBetween({A, B, C}) {
-      return sugarcube.cast.toString(C).substring(sugarcube.cast.toNumber(A) - 1,sugarcube.cast.toNumber(B));
+    charactersBetween({ A, B, C }) {
+      return sugarcube.cast.toString(C).substring(sugarcube.cast.toNumber(A) - 1, sugarcube.cast.toNumber(B));
     }
 
-    split({A, B}) {
+    split({ A, B }) {
       return sugarcube.cast.toString(A).split(sugarcube.cast.toString(B));
     }
 
-    ifThen({A, B, C}) {
+    ifThen({ A, B, C }) {
       return sugarcube.cast.toBoolean(A) ? sugarcube.cast.toString(B) : sugarcube.cast.toString(C);
     }
-    
-    convertToCase({A, B}) {
+
+    convertToCase({ A, B }) {
       A = sugarcube.cast.toString(A);
 
       switch (B) {
@@ -240,19 +236,16 @@
           return A.toLowerCase();
 
         case "title-case":
-          return A.replace(
-            /\w\S*/g,
-            function(txt) {
-              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-            }
-          );
-      
+          return A.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+          });
+
         default:
           return A;
       }
     }
 
-    includes({A, B}) {
+    includes({ A, B }) {
       return sugarcube.cast.toString(A).includes(sugarcube.cast.toString(B));
     }
   }

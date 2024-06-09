@@ -197,7 +197,7 @@
             arguments: {
               A: {
                 type: sugarcube.ArgumentType.NUMBER,
-              }
+              },
             },
           },
           {
@@ -206,103 +206,103 @@
             text: "[A] of [B]",
             arguments: {
               A: {
-                menu: "operations"
+                menu: "operations",
               },
               B: {
                 type: sugarcube.ArgumentType.NUMBER,
-              }
+              },
             },
           },
         ],
         menus: {
           operations: {
             items: [
-              {text: "abs", value:"abs"},
-              {text: "floor", value:"floor"},
-              {text: "ceiling", value:"ceil"},
-              {text: "sqrt", value:"sqrt"},
-              {text: "sin", value:"sin"},
-              {text: "cos", value:"cos"},
-              {text: "tan", value:"tan"},
-              {text: "asin", value:"asin"},
-              {text: "acos", value:"acos"},
-              {text: "atan", value:"atan"},
-              {text: "ln", value:"log"},
-              {text: "log", value:"log10"},
-              {text: "e ^", value:"ePOW"},
-              {text: "10 ^", value:"tenPOW"},
-            ]
-          }
-        }
+              { text: "abs", value: "abs" },
+              { text: "floor", value: "floor" },
+              { text: "ceiling", value: "ceil" },
+              { text: "sqrt", value: "sqrt" },
+              { text: "sin", value: "sin" },
+              { text: "cos", value: "cos" },
+              { text: "tan", value: "tan" },
+              { text: "asin", value: "asin" },
+              { text: "acos", value: "acos" },
+              { text: "atan", value: "atan" },
+              { text: "ln", value: "log" },
+              { text: "log", value: "log10" },
+              { text: "e ^", value: "ePOW" },
+              { text: "10 ^", value: "tenPOW" },
+            ],
+          },
+        },
       };
     }
 
-    add({A, B}) {
+    add({ A, B }) {
       return sugarcube.cast.toNumber(A) + sugarcube.cast.toNumber(B);
     }
 
-    sub({A, B}) {
+    sub({ A, B }) {
       return sugarcube.cast.toNumber(A) - sugarcube.cast.toNumber(B);
     }
 
-    mul({A, B}) {
+    mul({ A, B }) {
       return sugarcube.cast.toNumber(A) * sugarcube.cast.toNumber(B);
     }
 
-    div({A, B}) {
-      return sugarcube.cast.toNumber(A) / (B);
+    div({ A, B }) {
+      return sugarcube.cast.toNumber(A) / B;
     }
 
-    pow({A, B}) {
+    pow({ A, B }) {
       return Math.pow(sugarcube.cast.toNumber(A), sugarcube.cast.toNumber(B));
     }
 
-    randomNumber({A, B}) {
+    randomNumber({ A, B }) {
       A = sugarcube.cast.toNumber(A);
       B = sugarcube.cast.toNumber(B);
-      return A + (Math.random() * (B - A));
+      return A + Math.random() * (B - A);
     }
 
-    notEqual({A, B}) {
-      return (sugarcube.cast.toNumber(A) != sugarcube.cast.toNumber(B));
+    notEqual({ A, B }) {
+      return sugarcube.cast.toNumber(A) != sugarcube.cast.toNumber(B);
     }
 
-    lessThan({A, B}) {
-      return (sugarcube.cast.toNumber(A) < sugarcube.cast.toNumber(B));
+    lessThan({ A, B }) {
+      return sugarcube.cast.toNumber(A) < sugarcube.cast.toNumber(B);
     }
 
-    lessThanEqualTo({A, B}) {
-      return (sugarcube.cast.toNumber(A) <= sugarcube.cast.toNumber(B));
+    lessThanEqualTo({ A, B }) {
+      return sugarcube.cast.toNumber(A) <= sugarcube.cast.toNumber(B);
     }
 
-    equalTo({A, B}) {
-      return (sugarcube.cast.toNumber(A) == sugarcube.cast.toNumber(B));
+    equalTo({ A, B }) {
+      return sugarcube.cast.toNumber(A) == sugarcube.cast.toNumber(B);
     }
 
-    moreThan({A, B}) {
-      return (sugarcube.cast.toNumber(A) > sugarcube.cast.toNumber(B));
+    moreThan({ A, B }) {
+      return sugarcube.cast.toNumber(A) > sugarcube.cast.toNumber(B);
     }
 
-    moreThanEqualTo({A, B}) {
-      return (sugarcube.cast.toNumber(A) >= sugarcube.cast.toNumber(B));
+    moreThanEqualTo({ A, B }) {
+      return sugarcube.cast.toNumber(A) >= sugarcube.cast.toNumber(B);
     }
 
-    modulo({A, B}) {
-      return sugarcube.cast.toNumber(A) % sugarcube.cast.toNumber(B)
+    modulo({ A, B }) {
+      return sugarcube.cast.toNumber(A) % sugarcube.cast.toNumber(B);
     }
 
-    round({A}) {
+    round({ A }) {
       return Math.round(sugarcube.cast.toNumber(A));
     }
-    
-    arithmatic({A, B}) {
+
+    arithmatic({ A, B }) {
       switch (A) {
         case "ePOW":
-          return Math.pow(Math.E,sugarcube.cast.toNumber(B));
+          return Math.pow(Math.E, sugarcube.cast.toNumber(B));
 
         case "tenPOW":
-          return Math.pow(10,sugarcube.cast.toNumber(B));
-      
+          return Math.pow(10, sugarcube.cast.toNumber(B));
+
         default:
           return Math[A](sugarcube.cast.toNumber(B));
       }

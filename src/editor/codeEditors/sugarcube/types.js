@@ -24,7 +24,7 @@
 
     INLINE: "inline",
 
-    REPORTER_ANY: "reporter_any"
+    REPORTER_ANY: "reporter_any",
   };
 
   sugarcube.ArgumentType = {

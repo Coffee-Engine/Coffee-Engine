@@ -24,6 +24,9 @@
     <script src="editor/codeEditors/sugarcube/addons/multilineField.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/autoMinimapHider.js"></script>
 
+    <!--Our Mutators-->
+    <script src="editor/codeEditors/sugarcube/mutators/dragMutator.js"></script>
+
     <script src="editor/codeEditors/sugarcube/addons/focusRegion.js"></script>
     <script src="editor/codeEditors/sugarcube/addons/minimap.js"></script>
 
@@ -68,7 +71,7 @@
             metricsManager: sugarcube.ContinuousMetrics,
           },
         });
-        
+
         sugarcube.minimap = new sugarcube.minimapStorage.PositionedMinimap(sugarcube.workspace);
         sugarcube.minimap.init();
         sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;

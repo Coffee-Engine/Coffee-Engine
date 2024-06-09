@@ -8,8 +8,7 @@
         color2: "#FF4D6A",
         color3: "#FF3355",
         showColor: true,
-        blocks: [
-        ],
+        blocks: [],
       };
     }
   }

@@ -140,11 +140,7 @@
     }
 
     fixifyTheArgs(args) {
-      return args.replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(")
-      .replaceAll(") {", ") => {")
-      .replaceAll('\\n}"', "}")
-      .replaceAll('\\"', '"')
-      .replaceAll("\\n", "\n");
+      return args.replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(").replaceAll(") {", ") => {").replaceAll('\\n}"', "}").replaceAll('\\"', '"').replaceAll("\\n", "\n");
     }
 
     //This just registers the compile code for the block.
@@ -179,9 +175,7 @@
 
             //Just our block code builder... Should probably standardize this.
             const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
-              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${
-                this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))
-              },this,event)) {`
+              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},this,event)) {`
               .replaceAll(',this);"', ",this)")
               .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
@@ -215,13 +209,7 @@
               });
             }
 
-            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${
-                this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))
-              },this,${
-                this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))
-              });`
-              .replaceAll('});"', "})")
-              .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},this,${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))});`.replaceAll('});"', "})").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
             if (block.outputConnection) {
               return [baseBlockCode, 0];

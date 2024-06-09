@@ -174,6 +174,12 @@
                 },
               },
             },
+            {
+              opcode: "mutatedBlock",
+              type: sugarcube.BlockType.HAT,
+              text: "mutatorTest",
+              mutator: "dragMutator"
+            }
           ]),
         menus: {
           staticNoREP: {

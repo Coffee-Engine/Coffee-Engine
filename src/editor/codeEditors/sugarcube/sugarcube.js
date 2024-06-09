@@ -10922,6 +10922,27 @@ ${b} to its parent, because: ${a}`);
             this.creatorWorkspace.options,
             !0
           ))(this.targetBlock, this.startWorkspace_);
+        
+        //If we should duplicate the block. We do.
+        if (this.targetBlock._shouldDuplicate_) {
+            //Copy Data
+            let duplicated = this.targetBlock.toCopyData();
+
+            //If we have copy data duplicate it
+            if (duplicated) {
+              duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
+              duplicated._shouldDuplicate_ = false;
+
+              //Set the block dragger to the duplicate
+              this.blockDragger =
+                new (getClassFromOptions$$module$build$src$core$registry(
+                  Type$$module$build$src$core$registry.BLOCK_DRAGGER,
+                  this.creatorWorkspace.options,
+                  !0
+                ))(duplicated, this.startWorkspace_);
+            }
+        }
+
         this.blockDragger.startDrag(this.currentDragDeltaXY, this.healStack);
         this.blockDragger.drag(this.mostRecentEvent, this.currentDragDeltaXY);
       }

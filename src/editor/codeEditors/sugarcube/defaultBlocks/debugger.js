@@ -49,15 +49,15 @@
     }
 
     log(args) {
-      console.log(args.ITEM)
+      console.log(args.ITEM);
     }
 
     warn(args) {
-      console.warn(args.ITEM)
+      console.warn(args.ITEM);
     }
 
     error(args) {
-      console.error(args.ITEM)
+      console.error(args.ITEM);
     }
   }
 
