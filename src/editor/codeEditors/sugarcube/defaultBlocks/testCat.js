@@ -178,8 +178,8 @@
               opcode: "mutatedBlock",
               type: sugarcube.BlockType.HAT,
               text: "mutatorTest",
-              mutator: "dragMutator"
-            }
+              mutator: "dragMutator",
+            },
           ]),
         menus: {
           staticNoREP: {
