@@ -10932,6 +10932,7 @@ ${b} to its parent, because: ${a}`);
             if (duplicated) {
               duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
               duplicated._shouldDuplicate_ = false;
+              duplicated._isClone_ = true;
 
               //Set the block dragger to the duplicate
               this.blockDragger =
