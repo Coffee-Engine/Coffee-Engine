@@ -48,6 +48,22 @@
         return [block.getFieldValue("VALUE"), 0];
       };
 
+      this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
+        message0: " %1 ",
+        args0: [
+          {
+            type: "field_multilinetext",
+            name: "VALUE",
+            text: "Hello\nWorld!",
+            spellcheck: false,
+          },
+        ],
+      });
+
+      sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
+        return [block.getFieldValue("VALUE"), 0];
+      };
+
       sugarcube.extensionInstances = {};
     }
 
@@ -188,7 +204,8 @@
                   return;
                 }
                 args[input.name] = generator.valueToCode(block, input.name, 0);
-                recalls[input.name] = Function(generator.valueToCode(block, input.name, 0));
+                recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\\n) { ${JSON.stringify(args[input.name])} }`;
+                console.log(recalls[input.name]);
               });
             }
 
@@ -203,7 +220,7 @@
               },this,${
                 this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))
               });`
-              .replaceAll(',this);"', ",this)")
+              .replaceAll('});"', "})")
               .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
             if (block.outputConnection) {

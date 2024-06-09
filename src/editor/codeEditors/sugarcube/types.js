@@ -29,6 +29,7 @@
 
   sugarcube.ArgumentType = {
     STRING: "string",
+    MULTILINE: "multiline",
 
     BOOLEAN: "boolean",
 
@@ -51,6 +52,8 @@
   sugarcube.ArgumentDefaultValues = {
     boolean: false,
 
+    multiline: "Hello\nWorld!",
+
     number: 0,
 
     color: "#ff0000",
@@ -58,6 +61,7 @@
 
   sugarcube.ArgumentShadowConversions = {
     string: "__sugarcube_string_reporter",
+    multiline: "__sugarcube_multiline_string_reporter",
 
     number: "__sugarcube_number_reporter",
 
