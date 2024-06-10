@@ -15,7 +15,6 @@
       },
 
       mutationToDom: function () {
-        if (!this.isInFlyout) this._shouldDuplicate_ = true;
         // You *must* create a <mutation></mutation> element.
         // This element can have children.
         const container = Blockly.utils.xml.createElement("mutation");
@@ -55,7 +54,7 @@
                 });
                 break;
 
-              case "text":
+              case "string":
                 //input thing
                 this.inputFromJson_({
                   type: "input_value",
@@ -83,30 +82,6 @@
                 break;
             }
             inputID += 1;
-          });
-
-          //Add inputs
-          this.customBlockData.arguments.forEach((argument) => {
-            //dummy text
-            this.inputFromJson_({
-              type: "input_dummy",
-              name: "blocklyBlockName",
-            });
-
-            this.inputList[this.inputList.length - 1].appendField(
-              this.fieldFromJson_({
-                type: "field_label",
-                text: argument.name + ":",
-              })
-            );
-
-            //input thing
-            this.inputFromJson_({
-              type: "input_value",
-              name: argument.name,
-            });
-
-            this.inputList[this.inputList.length - 1].setShadowDom(penPlus.stringToDOM(`<shadow type="${__getShadowForArgumentType(argument.type)}"></shadow>`));
           });
         }
       },

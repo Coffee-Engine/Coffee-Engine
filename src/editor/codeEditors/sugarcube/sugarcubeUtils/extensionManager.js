@@ -269,8 +269,8 @@
             };
             if (!Blockly.Blocks[blockData.type]) return;
 
-            if (block.extraData) {
-              blockData.extraState = block.extraData;
+            if (block.extraState) {
+              blockData.extraState = block.extraState;
             }
             break;
 
@@ -470,6 +470,10 @@
             //Note that output only determines what the block puts out.
             if (block.mutator) {
               blockDef.mutator = block.mutator;
+            }
+
+            if (block.extraState) {
+              blockData.extraState = block.extraState;
             }
 
             //Add the blockly block definition and register the block compiler
