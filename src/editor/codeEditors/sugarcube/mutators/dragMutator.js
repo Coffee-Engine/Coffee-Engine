@@ -4,8 +4,8 @@
     {
       saveExtraState: function () {
         return {
-          _isClone_:this._isClone_, 
-          _shouldDuplicate_:this._shouldDuplicate_
+          _isClone_: this._isClone_,
+          _shouldDuplicate_: this._shouldDuplicate_,
         };
       },
 
@@ -20,7 +20,7 @@
         // You *must* create a <mutation></mutation> element.
         // This element can have children.
         const container = Blockly.utils.xml.createElement("mutation");
-        container.setAttribute("cloneData", JSON.stringify({_isClone_:this._isClone_, _shouldDuplicate_:this._shouldDuplicate_}));
+        container.setAttribute("cloneData", JSON.stringify({ _isClone_: this._isClone_, _shouldDuplicate_: this._shouldDuplicate_ }));
         return container;
       },
 

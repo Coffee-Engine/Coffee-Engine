@@ -31,7 +31,7 @@
       updateShape_() {
         if (this.customBlockData) {
           let inputID = 0;
-          this.customBlockData.forEach(item => {
+          this.customBlockData.forEach((item) => {
             switch (item.type) {
               case "text":
                 //create Text
@@ -46,12 +46,12 @@
                   })
                 );
                 break;
-              
+
               case "boolean":
                 this.inputFromJson_({
                   type: "input_value",
                   name: `input_${inputID}`,
-                  check: ["Boolean", "ANY"]
+                  check: ["Boolean", "ANY"],
                 });
                 break;
 
@@ -59,7 +59,7 @@
                 //input thing
                 this.inputFromJson_({
                   type: "input_value",
-                  name: argument.name,
+                  name: `input_${inputID}`,
                 });
 
                 this.inputList[this.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_string_reporter"></shadow>`));
@@ -69,17 +69,21 @@
                 //input thing
                 this.inputFromJson_({
                   type: "input_value",
-                  name: argument.name,
+                  name: `input_${inputID}`,
                 });
 
                 this.inputList[this.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_number_reporter"></shadow>`));
                 break;
-            
+
               default:
+                this.inputFromJson_({
+                  type: "input_value",
+                  name: `input_${inputID}`,
+                });
                 break;
             }
             inputID += 1;
-          })
+          });
 
           //Add inputs
           this.customBlockData.arguments.forEach((argument) => {
