@@ -14,7 +14,14 @@
             type: sugarcube.BlockType.COMMAND,
             text: "",
             mutator: "customBlockMutator",
-            hideFromPallete: true,
+            hideFromPalette: true,
+          },
+          {
+            opcode: "execute_reporter",
+            type: sugarcube.BlockType.REPORTER_ANY,
+            text: "",
+            mutator: "customBlockMutator",
+            hideFromPalette: true,
           },
           {
             type: sugarcube.BlockType.DUPLICATE,
@@ -26,7 +33,27 @@
                 {type:"text",text:"text?"},
                 {type:"string"},
                 {type:"text",text:"number!"},
-                {type:"number"}
+                {type:"number"},
+                {type:"text",text:"color..."},
+                {type:"color"}
+              ]
+            }
+          },
+          {
+            type: sugarcube.BlockType.DUPLICATE,
+            of: "execute_reporter",
+            extraState: {
+              customBlockData: [
+                {type:"text",text:"testing block! boolean"},
+                {type:"boolean"},
+                {type:"text",text:"text?"},
+                {type:"string"},
+                {type:"text",text:"number!"},
+                {type:"number"},
+                {type:"text",text:"color..."},
+                {type:"color"},
+                {type:"text",text:"menu!?!?!"},
+                {type:"menu", items: ["testing","the boys"]}
               ]
             }
           },

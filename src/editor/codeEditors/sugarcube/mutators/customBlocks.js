@@ -74,6 +74,16 @@
                 this.inputList[this.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_number_reporter"></shadow>`));
                 break;
 
+              case "color":
+                //input thing
+                this.inputFromJson_({
+                  type: "input_value",
+                  name: `input_${inputID}`,
+                });
+
+                this.inputList[this.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_color_reporter"></shadow>`));
+                break;
+
               default:
                 this.inputFromJson_({
                   type: "input_value",
