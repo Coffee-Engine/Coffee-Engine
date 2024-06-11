@@ -75,6 +75,10 @@
           BlockJson.nextStatement = BlockJson.nextStatement || "Action";
           break;
 
+        case sugarcube.BlockType.PROCEDURE_DEFINITION:
+          BlockJson.nextStatement = BlockJson.nextStatement || "Action";
+          break;
+
         case sugarcube.BlockType.REPORTER:
           BlockJson.output = "NotBoolean";
           break;
@@ -615,6 +619,7 @@
           colourPrimary: myInfo.color1 || "#0fbd8c",
           colourSecondary: myInfo.color2 || myInfo.color1 || "#0b8e69",
           colourTertiary: myInfo.color3 || myInfo.color1 || "#0b8e69",
+          hat: myInfo.hat || "cap"
         };
 
         //Define the category definition here

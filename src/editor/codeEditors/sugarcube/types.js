@@ -3,6 +3,7 @@
     REPORTER: "reporter",
 
     HAT: "hat",
+    PROCEDURE_DEFINITION: "procedure_def",
 
     BOOLEAN: "boolean",
 

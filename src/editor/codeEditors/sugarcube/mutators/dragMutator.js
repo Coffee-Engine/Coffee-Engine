@@ -16,7 +16,7 @@
       },
 
       mutationToDom: function () {
-        if (!this.isInFlyout && this._isClone_) this._shouldDuplicate_ = true;
+        if (!this._isClone_) this._shouldDuplicate_ = true;
         // You *must* create a <mutation></mutation> element.
         // This element can have children.
         const container = Blockly.utils.xml.createElement("mutation");

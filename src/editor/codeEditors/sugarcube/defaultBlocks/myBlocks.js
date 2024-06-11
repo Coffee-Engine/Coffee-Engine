@@ -8,7 +8,22 @@
         color2: "#FF4D6A",
         color3: "#FF3355",
         showColor: true,
+        hat: "none",
         blocks: [
+          {
+            opcode: "declaration",
+            type: sugarcube.BlockType.PROCEDURE_DEFINITION,
+            text: "Define : ",
+            mutator: "customBlockDeclarationMutator",
+            hideFromPalette: true,
+          },
+          {
+            opcode: "input_string",
+            type: sugarcube.BlockType.REPORTER,
+            text: "test",
+            mutator: "dragMutator",
+            hideFromPalette: true,
+          },
           {
             opcode: "execute_command",
             type: sugarcube.BlockType.COMMAND,
@@ -54,6 +69,24 @@
                 {type:"color"},
                 {type:"text",text:"menu!?!?!"},
                 {type:"menu", items: ["testing","the boys"]}
+              ]
+            }
+          },
+          {
+            type: sugarcube.BlockType.DUPLICATE,
+            of: "declaration",
+            extraState: {
+              customBlockData: [
+                {type:"text",text:"testing block! boolean"},
+                {type:"boolean", name:"testicles"},
+                {type:"text",text:"text?"},
+                {type:"string", name:"balls"},
+                {type:"text",text:"number!"},
+                {type:"number", name:"nuts"},
+                {type:"text",text:"color..."},
+                {type:"color", name:"peas"},
+                {type:"text",text:"menu!?!?!"},
+                {type:"menu", items: ["testing","the boys"], name:"john"}
               ]
             }
           },
