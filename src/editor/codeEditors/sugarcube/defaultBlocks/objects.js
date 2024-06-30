@@ -41,6 +41,16 @@
               },
             },
           },
+          {
+            opcode: "getParent",
+            type: sugarcube.BlockType.ARRAY,
+            text: "parent of [object]",
+            arguments: {
+              object: {
+                type: sugarcube.ArgumentType.OBJECT,
+              },
+            },
+          },
           "---",
           {
             opcode: "setVariable",
