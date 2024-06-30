@@ -25,6 +25,13 @@
             hideFromPalette: true,
           },
           {
+            opcode: "input_bool",
+            type: sugarcube.BlockType.BOOLEAN,
+            text: "test",
+            mutator: "dragMutator",
+            hideFromPalette: true,
+          },
+          {
             opcode: "execute_command",
             type: sugarcube.BlockType.COMMAND,
             text: "",
