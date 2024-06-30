@@ -134,6 +134,7 @@
             this.inputFromJson_({
               type: item.type == "text" ? "input_dummy" : "input_value",
               name: `input_${inputID}`,
+              check: item.type != "text" ? "customBlockArgument" : ""
             });
 
             let block = null;
@@ -158,6 +159,7 @@
             }
 
             if (block != null) {
+              block.customArgData = {text: item.name};
               this.inputList[this.inputList.length - 1].connection.connect_(block.outputConnection);
             }
 
@@ -175,24 +177,35 @@
       saveExtraState: function () {
         return {
           customArgData: this.customArgData,
+          _isClone_: this._isClone_,
+          _shouldDuplicate_: this._shouldDuplicate_,
         };
       },
 
       loadExtraState: function (state) {
         this.customArgData = state["customArgData"];
+        this._isClone_ = state["_isClone_"];
+        this._shouldDuplicate_ = state["_shouldDuplicate_"];
         // This is a helper function which adds or removes inputs from the block.
         this.updateShape_();
       },
 
       mutationToDom: function () {
+        if (!this._isClone_) this._shouldDuplicate_ = true;
+
         // You *must* create a <mutation></mutation> element.
         // This element can have children.
         const container = Blockly.utils.xml.createElement("mutation");
         container.setAttribute("customArgData", JSON.stringify(this.customArgData));
+        container.setAttribute("cloneData", JSON.stringify({ _isClone_: this._isClone_, _shouldDuplicate_: this._shouldDuplicate_ }));
         return container;
       },
 
       domToMutation: function (xmlElement) {
+        const parsed = JSON.parse(xmlElement.getAttribute("cloneData"));
+        this._isClone_ = parsed._isClone_;
+        this._shouldDuplicate_ = parsed._shouldDuplicate_;
+        
         this.customArgData = JSON.parse(xmlElement.getAttribute("customArgData"));
         this.updateShape_();
       },
@@ -200,7 +213,7 @@
       updateShape_() {
         if (this.customArgData) {
           this.inputFromJson_({
-            type: item.type == "input_dummy",
+            type: "input_dummy",
             name: `variableName`,
           });
 

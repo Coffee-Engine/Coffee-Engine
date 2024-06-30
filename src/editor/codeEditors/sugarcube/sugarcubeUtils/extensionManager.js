@@ -80,19 +80,39 @@
           break;
 
         case sugarcube.BlockType.REPORTER:
-          BlockJson.output = "NotBoolean";
+          if (BlockJson.output) {
+            BlockJson.output = ["NotBoolean"].concat(BlockJson.output)
+          }
+          else {
+            BlockJson.output = "NotBoolean";
+          }
           break;
 
         case sugarcube.BlockType.INLINE:
-          BlockJson.output = ["Inline", "ANY"];
+          if (BlockJson.output) {
+            BlockJson.output = ["Inline", "ANY"].concat(BlockJson.output)
+          }
+          else {
+            BlockJson.output = ["Inline", "ANY"];
+          }
           break;
 
         case sugarcube.BlockType.REPORTER_ANY:
-          BlockJson.output = "ANY";
+          if (BlockJson.output) {
+            BlockJson.output = ["ANY"].concat(BlockJson.output)
+          }
+          else {
+            BlockJson.output = "ANY";
+          }
           break;
 
         case sugarcube.BlockType.BOOLEAN:
-          BlockJson.output = "Boolean";
+          if (BlockJson.output) {
+            BlockJson.output = ["Boolean"].concat(BlockJson.output)
+          }
+          else {
+            BlockJson.output = "Boolean";
+          }
           break;
 
         case sugarcube.BlockType.COMMAND:
@@ -105,11 +125,21 @@
           break;
 
         case sugarcube.BlockType.OBJECT:
-          BlockJson.output = "Object";
+          if (BlockJson.output) {
+            BlockJson.output = ["Object"].concat(BlockJson.output)
+          }
+          else {
+            BlockJson.output = "Object";
+          }
           break;
 
         case sugarcube.BlockType.ARRAY:
-          BlockJson.output = "Array";
+          if (BlockJson.output) {
+            BlockJson.output = ["Array"].concat(BlockJson.output)
+          }
+          else {
+            BlockJson.output = "Array";
+          }
           break;
 
         default:
@@ -478,6 +508,10 @@
 
             if (block.extraState) {
               blockData.extraState = block.extraState;
+            }
+
+            if (block.output) {
+              blockDef.output = block.output;
             }
 
             //Add the blockly block definition and register the block compiler

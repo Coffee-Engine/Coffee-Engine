@@ -20,15 +20,17 @@
           {
             opcode: "input_string",
             type: sugarcube.BlockType.REPORTER,
-            text: "test",
-            mutator: "dragMutator",
+            text: "",
+            output: ["customBlockArgument"],
+            mutator: "customBlockArgumentMutator",
             hideFromPalette: true,
           },
           {
             opcode: "input_bool",
             type: sugarcube.BlockType.BOOLEAN,
-            text: "test",
-            mutator: "dragMutator",
+            text: "",
+            output: ["customBlockArgument"],
+            mutator: "customBlockArgumentMutator",
             hideFromPalette: true,
           },
           {
