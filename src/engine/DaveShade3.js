@@ -32,20 +32,65 @@ const DaveShade = {};
         FAILURE:0,
     }
 
-    DaveShade.createInstance = (canvas) => {
-        const GL = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    DaveShade.setters = {
+        //?Float
+        5126: (gl,location,value) => {
+            gl.uniform1fv(location, value);
+        },
+        //?Vec2
+        35664: (gl,location,value) => {
+            gl.uniform2fv(location, value);
+        },
+        //?Vec3
+        35665: (gl,location,value) => {
+            gl.uniform3fv(location, value);
+        },
+        //?Vec4
+        35666: (gl,location,value) => {
+            gl.uniform4fv(location, value);
+        },
 
+        //?Mat2
+        35674: (gl,location,value) => {
+            gl.uniformMatrix2fv(location,false,value);
+        },
+        
+        //?Mat3
+        35674: (gl,location,value) => {
+            gl.uniformMatrix3fv(location,false,value);
+        },
+
+        //?Mat4
+        35674: (gl,location,value) => {
+            gl.uniformMatrix4fv(location,false,value);
+        },
+
+    }
+
+    DaveShade.createInstance = (CANVAS) => {
         const daveShadeInstance = {
-            CANVAS:CANVAS,
-            GL:GL
+            CANVAS:CANVAS
         }
 
+        daveShadeInstance.GL = CANVAS.getContext("webgl2");
+        daveShadeInstance.GL_TYPE = "webgl2";
+        if (!daveShadeInstance.GL) {
+            daveShadeInstance.GL = CANVAS.getContext("webgl");
+            daveShadeInstance.GL_TYPE = "webgl";
+        }
+        const GL = daveShadeInstance.GL;
+
         daveShadeInstance.decomposeShader = (shaderCode) => {
-        
+            return {
+                status:DaveShade.COMPILE_STATUS.FAILURE
+            }
         }
 
         //?Could potentially be better? Maybe less if statement hell.
         daveShadeInstance.clearMemory = (shader) => {
+            if (shader.program) {
+                GL.deleteProgram(shader.program);
+            }
             if (shader.vertex) {
                 GL.deleteShader(shader.vertex.shader);
             }
@@ -72,7 +117,7 @@ const DaveShade = {};
             //? could potentially be better?
             compileStatus = GL.getShaderParameter(shader.vertex.shader, GL.COMPILE_STATUS);
             if (!compileStatus) {
-                console.error(`shader not compiled! clearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
+                console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
                 daveShadeInstance.clearMemory(shader);
                 return {
                     status:DaveShade.COMPILE_STATUS.FAILURE
@@ -90,7 +135,7 @@ const DaveShade = {};
             //? could potentially be better?
             compileStatus = GL.getShaderParameter(shader.vertex.shader, GL.COMPILE_STATUS);
             if (!compileStatus) {
-                console.error(`shader not compiled! clearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
+                console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
                 daveShadeInstance.clearMemory(shader);
                 return {
                     status:DaveShade.COMPILE_STATUS.FAILURE
@@ -102,6 +147,49 @@ const DaveShade = {};
 
             GL.attachShader(shader.program, shader.vertex.shader);
             GL.attachShader(shader.program, shader.fragment.shader);
+
+            GL.linkProgram(shader.program);
+
+            //? could potentially be better?
+            compileStatus = GL.getShaderParameter(shader.vertex.shader, GL.COMPILE_STATUS);
+            if (!compileStatus) {
+                console.error(`shader not compiled!\nerror in program creation!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
+                daveShadeInstance.clearMemory(shader);
+                return {
+                    status:DaveShade.COMPILE_STATUS.FAILURE
+                }
+            }
+
+            //* Set the compile status
+            shader.status = DaveShade.COMPILE_STATUS.SUCCESS;
+
+            //* Grab the uniforms
+            shader.uniformIndicies = [...Array(GL.getProgramParameter(shader.program, GL.ACTIVE_UNIFORMS)).keys()];
+            console.log(shader)
+            shader.activeUniformIDs = GL.getActiveUniforms(shader.program, shader.uniformIndicies, GL.UNIFORM_TYPE);
+            shader.uniforms = {};
+            for (let id = 0; id < shader.activeUniformIDs.length; id++) {
+                const uniformInfo = GL.getActiveUniform(shader.program,id);
+                const location = GL.getUniformLocation(shader.program,uniformInfo.name);
+
+                shader.uniforms[uniformInfo.name] = {
+                    location: location,
+                    type:uniformInfo.type,
+                    "#value":null,
+
+                    set value(value) {
+                        shader.uniforms[uniformInfo.name]["#value"] = value;
+                        DaveShade.setters[uniformInfo.type](GL,location,value);
+                    },
+                    get value() {
+                        return shader.uniforms[uniformInfo.name]["#value"];
+                    }
+                };
+
+                console.log(uniformInfo);
+            }
+
+            return shader;
         }
 
         return daveShadeInstance;
