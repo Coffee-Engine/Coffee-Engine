@@ -19,7 +19,7 @@
    @@@#@@@@     -@@@@###@@@@@@@@@@@@@@#@@@+              
      @@@@@@@@@@@@@@@@@@####%@@@@@@##@@@@@                
         @@@@@@@@@@@# @@@@@@@@@@@@@@@@@         
-        
+
 --===--  Written by : ObviousAlexC / Pinksheep2917  --===--
 */
 
@@ -32,7 +32,7 @@ const DaveShade = {};
     }
 
     DaveShade.REGEX = {
-        ATTRIBUTE:/attribute.*;/
+        ATTRIBUTE:/attribute.*;/g
     }
 
     DaveShade.setters = {
@@ -199,6 +199,20 @@ const DaveShade = {};
                     }
                 };
             }
+
+            //* Grab the attributes
+            const attributes = vertex.match(DaveShade.REGEX.ATTRIBUTE);
+            shader.attributes = {};
+
+            attributes.forEach(attributeDef => {
+                //Lets split the attribute definition
+                const splitDef = attributeDef.replace(";","").split(" ");
+                
+                shader.attributes[splitDef[splitDef.length - 1]] = {
+                    type: splitDef[splitDef.length - 2]
+                }
+                console.log(splitDef);
+            });
 
             return shader;
         }
