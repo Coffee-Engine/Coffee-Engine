@@ -205,14 +205,68 @@ const DaveShade = {};
             shader.attributes = {};
 
             attributes.forEach(attributeDef => {
-                //Lets split the attribute definition
+                //* Lets split the attribute definition
                 const splitDef = attributeDef.replace(";","").split(" ");
-                
-                shader.attributes[splitDef[splitDef.length - 1]] = {
+                const id = splitDef[splitDef.length - 1];
+
+                //? could probably conglomerate better?
+                shader.attributes[id] = {
                     type: splitDef[splitDef.length - 2]
                 }
-                console.log(splitDef);
+
+                //* Attribute Stuff
+                shader.attributes[id].location = GL.getAttribLocation(shader.program, id);
+                shader.attributes[id].buffer = GL.createBuffer();
+                GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
+
+                shader.attributes[id].set = (newValue) => {
+                    GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
+                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
+                };
+
+                //* Assign values dependant on types
+                switch (shader.attributes[id].type) {
+                    case "float":
+                        shader.attributes[id].divisions = 1;
+                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                        break;
+
+                    case "vec2":
+                        shader.attributes[id].divisions = 2;
+                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                        break;
+
+                    case "vec3":
+                        shader.attributes[id].divisions = 3;
+                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                        break;
+
+                    case "vec4":
+                        shader.attributes[id].divisions = 4;
+                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                        break;
+
+                    default:
+                        shader.attributes[id].divisions = 1;
+                        break;
+                }
             });
+
+            //* The buffer setter! the Big ONE!
+            shader.setBuffers = (attributeJSON) => {
+                //* Attribute keys. Whoopee
+                const attributeKeys = Object.keys(attributeJSON);
+
+                //? Loop through the keys
+                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
+                    const key = attributeKeys[keyID];
+                    
+                    //* if it exists set the attribute
+                    if (shader.attributes[key]) {
+                        shader.attributes[key].set(attributeJSON[key]);
+                    }
+                }
+            }
 
             return shader;
         }
