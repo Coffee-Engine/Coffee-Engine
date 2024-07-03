@@ -180,6 +180,9 @@ const DaveShade = {};
             shader.activeUniformIDs = GL.getActiveUniforms(shader.program, shader.uniformIndicies, GL.UNIFORM_TYPE);
             shader.uniforms = {};
 
+            //* use the program while we assign stuff
+            GL.useProgram(shader.program);
+
             //* Loop through the uniforms
             for (let id = 0; id < shader.activeUniformIDs.length; id++) {
                 const uniformInfo = GL.getActiveUniform(shader.program,id);
@@ -216,6 +219,9 @@ const DaveShade = {};
 
                 //* Attribute Stuff
                 shader.attributes[id].location = GL.getAttribLocation(shader.program, id);
+                GL.enableVertexAttribArray(shader.attributes[id].location);
+
+                //* Create the buffer
                 shader.attributes[id].buffer = GL.createBuffer();
                 GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
 
@@ -250,6 +256,8 @@ const DaveShade = {};
                         shader.attributes[id].divisions = 1;
                         break;
                 }
+                
+                GL.vertexAttribPointer(shader.attributes[id].location,shader.attributes[id].divisions,GL.FLOAT,false,0,0);
             });
 
             //* The buffer setter! the Big ONE!
@@ -266,6 +274,12 @@ const DaveShade = {};
                         shader.attributes[key].set(attributeJSON[key]);
                     }
                 }
+            }
+
+            shader.drawFromBuffers = (triAmount) => {
+                GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
+                GL.useProgram(shader.program);
+                GL.drawArrays(GL.TRIANGLES,0,triAmount);
             }
 
             return shader;
