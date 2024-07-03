@@ -65,6 +65,15 @@ const DaveShade = {};
             gl.uniformMatrix4fv(location,false,value);
         },
 
+        //?Sampler2D
+        35678: (gl,location,value) => {
+            gl.uniform1i(location,value);
+        },
+
+        //?SamplerCube
+        35679: (gl,location,value) => {
+            gl.uniform1iv(location,value);
+        }
     }
 
     DaveShade.createInstance = (CANVAS) => {
@@ -165,9 +174,10 @@ const DaveShade = {};
 
             //* Grab the uniforms
             shader.uniformIndicies = [...Array(GL.getProgramParameter(shader.program, GL.ACTIVE_UNIFORMS)).keys()];
-            console.log(shader)
             shader.activeUniformIDs = GL.getActiveUniforms(shader.program, shader.uniformIndicies, GL.UNIFORM_TYPE);
             shader.uniforms = {};
+
+            //* Loop through the uniforms
             for (let id = 0; id < shader.activeUniformIDs.length; id++) {
                 const uniformInfo = GL.getActiveUniform(shader.program,id);
                 const location = GL.getUniformLocation(shader.program,uniformInfo.name);
@@ -185,8 +195,6 @@ const DaveShade = {};
                         return shader.uniforms[uniformInfo.name]["#value"];
                     }
                 };
-
-                console.log(uniformInfo);
             }
 
             return shader;
