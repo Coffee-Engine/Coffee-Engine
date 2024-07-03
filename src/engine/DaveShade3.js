@@ -19,9 +19,8 @@
    @@@#@@@@     -@@@@###@@@@@@@@@@@@@@#@@@+              
      @@@@@@@@@@@@@@@@@@####%@@@@@@##@@@@@                
         @@@@@@@@@@@# @@@@@@@@@@@@@@@@@         
-
-----  DAVE SHADE 3.0 IS A OBVIOUS STUDIOS LIBRARY  ----
-       Written by : ObviousAlexC / Pinksheep2917
+        
+--===--  Written by : ObviousAlexC / Pinksheep2917  --===--
 */
 
 const DaveShade = {};
@@ -30,6 +29,10 @@ const DaveShade = {};
     DaveShade.COMPILE_STATUS = {
         SUCCESS:0,
         FAILURE:0,
+    }
+
+    DaveShade.REGEX = {
+        ATTRIBUTE:/attribute.*;/
     }
 
     DaveShade.setters = {
