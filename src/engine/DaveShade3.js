@@ -225,6 +225,7 @@ const DaveShade = {};
                 shader.attributes[id].buffer = GL.createBuffer();
                 GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
 
+                //* The setter
                 shader.attributes[id].set = (newValue) => {
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
