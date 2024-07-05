@@ -40,18 +40,31 @@
         }
 
         cross() {
-            return new coffeeEngine.vector3(this.y,-this.x);
+            return new coffeeEngine.vector3(
+                this.y*b.z - this.z*b.y,
+                this.z*b.x - this.x*b.z,
+                this.x*b.y - this.y*b.x
+            );
         }
 
-        rotate(rad) {
-            return new coffeeEngine.vector3(
-                this.y * Math.sin(rad) + this.x * Math.cos(rad),
-                this.y * Math.cos(rad) - this.x * Math.sin(rad)
-            )
+        rotate(yaw,pitch,roll) {
+            const returned = new coffeeEngine.vector3(
+                this.z * Math.sin(yaw) + this.x * Math.cos(yaw),
+                this.y,
+                this.z * Math.cos(yaw) - this.x * Math.sin(yaw)
+            );
+            
+            returned.y = returned.z * Math.sin(pitch) + returned.y * Math.cos(pitch);
+            returned.z = returned.z * Math.cos(pitch) - returned.y * Math.sin(pitch);
+            
+            returned.x = returned.y * Math.sin(roll) + returned.x * Math.cos(roll);
+            returned.y = returned.y * Math.cos(roll) - returned.x * Math.sin(roll);
+
+            return returned;
         }
 
         webGLValue() {
-            return [this.x,this.y,this.z]
+            return [this.x,this.y,this.z];
         }
     }
 })();

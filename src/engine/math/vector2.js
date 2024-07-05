@@ -46,11 +46,11 @@
             return new coffeeEngine.vector2(
                 this.y * Math.sin(rad) + this.x * Math.cos(rad),
                 this.y * Math.cos(rad) - this.x * Math.sin(rad)
-            )
+            );
         }
 
         webGLValue() {
-            return [this.x,this.y]
+            return [this.x,this.y];
         }
     }
 })();
