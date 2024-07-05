@@ -52,7 +52,6 @@
             ])
             return this.multiply(rotator);
         }
-
         /*
         ? Generated the table below using this function
 (function(){
