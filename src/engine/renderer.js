@@ -10,19 +10,19 @@
             `
             precision highp float;
 
-            attribute highp vec4 a_position;
-            attribute highp vec4 a_color;
+            attribute vec4 a_position;
+            attribute vec4 a_color;
             
-            attribute highp vec3 a_normal;
+            attribute vec3 a_normal;
 
-            attribute highp vec2 a_texCoord;
+            attribute vec2 a_texCoord;
 
-            varying highp vec4 v_color;
-            varying highp vec3 v_normal;
-            varying highp vec2 v_texCoord;
+            varying vec4 v_color;
+            varying vec3 v_normal;
+            varying vec2 v_texCoord;
 
-            uniform highp mat4 u_model;
-            uniform highp mat4 u_camera;
+            uniform mat4 u_model;
+            uniform mat4 u_camera;
 
             uniform sampler2D u_texture;
 
@@ -41,9 +41,9 @@
             `
             precision highp float;
 
-            varying highp vec4 v_color;
-            varying highp vec3 v_normal;
-            varying highp vec2 v_texCoord;
+            varying vec4 v_color;
+            varying vec3 v_normal;
+            varying vec2 v_texCoord;
 
             uniform sampler2D u_texture;
             
