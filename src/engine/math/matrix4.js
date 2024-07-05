@@ -54,13 +54,24 @@
         }
 
         multiply(matrix) {
-            //LETS GO WRITE OUT THE PROPER FORMULAS FOR MATRIX MULTIPLCATION FOR MAXIMUM SPEED POTENTIAL! YEAH!!!!!!!!!
-            new coffeeEngine.matrix4([
-                1,0,0,x,
-                0,1,0,y,
-                0,0,1,z,
-                0,0,0,1
-            ])
+            //* Screw it, for loop
+            const returned = new coffeeEngine.matrix4([
+                0,0,0,0,
+                0,0,0,0,
+                0,0,0,0,
+                0,0,0,0
+            ]);
+
+            for (let row = 0; row < 4; row++) {
+                for (let column = 0; column < 4; column++) {
+                    returned.contents[row][column] = this.contents[row][0] * matrix.contents[0][column] + 
+                    this.contents[row][1] * matrix.contents[1][column] + 
+                    this.contents[row][2] * matrix.contents[2][column] + 
+                    this.contents[row][3] * matrix.contents[3][column];
+                }
+            }
+
+            return returned;
         }
 
         multiplyVector(vector) {
