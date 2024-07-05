@@ -29,9 +29,9 @@
             }
         }
 
-        update() {
+        update(deltaTime) {
             this.events.update.forEach(event => {
-                event();
+                event(deltaTime);
             });
         }
 
