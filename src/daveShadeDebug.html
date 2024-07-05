@@ -6,7 +6,7 @@
     <title>Document</title>
 </head>
 <body>
-    <canvas id="testCanv"></canvas>
+    <canvas width="800" height="600" id="testCanv"></canvas>
     <script src="engine/DaveShade3.js"></script>
     <script>
         const daveShadeInstance = DaveShade.createInstance(document.getElementById("testCanv"));
@@ -41,8 +41,8 @@
 
         createdShader.setBuffers({
             a_position: new Float32Array([
-                0,0,1,1,
-                0,1,1,1,
+                -1,-1,1,1,
+                -1,1,1,1,
                 1,1,1,1
             ]),
             
