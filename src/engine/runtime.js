@@ -1,6 +1,5 @@
 (function() {
-    coffeeEngine.runtime = {};
-    coffeeEngine.runtime.currentScene = [];
+    coffeeEngine.runtime.currentScene = new coffeeEngine.sceneClass();
 
     coffeeEngine.runtime.update = (deltaTime) => {
         if (coffeeEngine.runtime.currentScene) {

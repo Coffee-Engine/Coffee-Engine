@@ -1,1 +1,5 @@
-const coffeeEngine = {};
+const coffeeEngine = {
+    runtime:{},
+    classes:{},
+    renderer:{}
+};
