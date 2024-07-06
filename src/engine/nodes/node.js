@@ -4,9 +4,7 @@
         #parent;
         set parent(value) {
             if (value.addChild) {
-                this.#parent.removeChild(this);
-
-                value.addChild(this);
+                if (this.parent) this.#parent.removeChild(this);
 
                 this.#parent = value;
 
@@ -14,8 +12,8 @@
                 if (!coffeeEngine.runtime.currentScene.hasEventListener("update", this.update)) {
                     coffeeEngine.runtime.currentScene.addEventListener("update", this.update)
                 }
-                if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", this.update)) {
-                    coffeeEngine.runtime.currentScene.addEventListener("draw", this.update)
+                if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
+                    coffeeEngine.runtime.currentScene.addEventListener("draw", this.draw)
                 }
             }
             else if (typeof value == "undefined" || value == null) {
@@ -23,8 +21,8 @@
                 if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.update)) {
                     coffeeEngine.runtime.currentScene.removeEventListener("update", this.update)
                 }
-                if (coffeeEngine.runtime.currentScene.hasEventListener("draw", this.update)) {
-                    coffeeEngine.runtime.currentScene.removeEventListener("draw", this.update)
+                if (coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
+                    coffeeEngine.runtime.currentScene.removeEventListener("draw", this.draw)
                 }
             }
             else {
@@ -42,11 +40,10 @@
 
         update(deltaTime) {}
 
-        onDraw() {}
+        draw() {}
         
         addChild(child) {
             if (child == this) return;
-            if (!child.hasOwnProperty("parent")) return;
             this.children.push(child);
             child.parent = this;
         }

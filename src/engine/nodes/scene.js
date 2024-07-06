@@ -45,7 +45,6 @@
 
         addChild(child) {
             if (child == this) return;
-            if (!child.hasOwnProperty("parent")) return;
             this.children.push(child);
             child.parent = this;
         }

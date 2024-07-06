@@ -27,7 +27,7 @@ const DaveShade = {};
 (function() {
     //Compile status enum
     DaveShade.COMPILE_STATUS = {
-        SUCCESS:0,
+        SUCCESS:1,
         FAILURE:0,
     }
 
