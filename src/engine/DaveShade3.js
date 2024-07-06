@@ -69,8 +69,10 @@ const DaveShade = {};
         },
 
         //?Sampler2D
-        35678: (gl,location,value) => {
-            gl.uniform1i(location,value);
+        35678: (gl,location,value,uniformInfo) => {
+            gl.activeTexture(gl[`TEXTURE${uniformInfo.samplerID}`]);
+            gl.bindTexture(gl.TEXTURE_2D,value);
+            gl.uniform1i(location,uniformInfo.samplerID);
         },
 
         //?SamplerCube
@@ -179,6 +181,7 @@ const DaveShade = {};
             shader.uniformIndicies = [...Array(GL.getProgramParameter(shader.program, GL.ACTIVE_UNIFORMS)).keys()];
             shader.activeUniformIDs = GL.getActiveUniforms(shader.program, shader.uniformIndicies, GL.UNIFORM_TYPE);
             shader.uniforms = {};
+            shader.textureCount = 0;
 
             //* use the program while we assign stuff
             GL.useProgram(shader.program);
@@ -195,12 +198,17 @@ const DaveShade = {};
 
                     set value(value) {
                         shader.uniforms[uniformInfo.name]["#value"] = value;
-                        DaveShade.setters[uniformInfo.type](GL,location,value);
+                        DaveShade.setters[uniformInfo.type](GL,location,value,uniformInfo);
                     },
                     get value() {
                         return shader.uniforms[uniformInfo.name]["#value"];
                     }
                 };
+
+                if (uniformInfo.type == 35678) {
+                    shader.uniforms[uniformInfo.name].samplerID = shader.textureCount;
+                    shader.textureCount += 1;
+                }
             }
 
             //* Grab the attributes
