@@ -31,16 +31,41 @@
         }
         get parent() {return this.#parent;}
 
+        #script;
+        set script(value) {
+            if (!value) return;
+
+            if (this.#script) {
+                delete this.#script;
+            }
+
+            this.#script = value;
+
+            if (this.#script.ready) {
+                this.#script.ready();
+            }
+        }
+
+        get script() {return this.#script;}
+
         constructor() {
             this.children = [];
             this.name = "node";
         }
 
-        onReady() {};
+        ready() {};
 
-        update(deltaTime) {}
+        update(deltaTime) {
+            if (this.script && this.script.update) {
+                this.script.update(deltaTime);
+            }
+        }
 
-        draw() {}
+        draw() {
+            if (this.script && this.script.draw) {
+                this.script.draw();
+            }
+        }
         
         addChild(child) {
             if (child == this) return;
