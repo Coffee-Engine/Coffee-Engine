@@ -21,11 +21,17 @@
     <script src="engine/runtime/input.js"></script>
     <script src="engine/runtime/main.js"></script>
     <script src="engine/runtime/gameloop.js"></script>
+
     <script src="engine/nodes/node.js"></script>
+    <script src="engine/nodes/node3D.js"></script>
 
     <script>
         //Our gameloop
         coffeeEngine.runtime.startFrameLoop(60);
+
+        coffeeEngine.runtime.currentScene.addChild(
+            new coffeeEngine.classes.node3D()
+        )
     </script>
 </body>
 </html>

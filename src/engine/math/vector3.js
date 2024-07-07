@@ -2,8 +2,8 @@
     coffeeEngine.vector3 = class {
         constructor(x,y,z) {
             this.x = x;
-            this.y = y;
-            this.z = z;
+            this.y = (typeof y == "undefined") ? x : y;
+            this.z = (typeof z == "undefined") ? x : z;
         }
 
         add(b) {

@@ -9,11 +9,11 @@
                 this.#parent = value;
 
                 //* Add our event listeners if they don't exist.
-                if (!coffeeEngine.runtime.currentScene.hasEventListener("update", this.update)) {
-                    coffeeEngine.runtime.currentScene.addEventListener("update", this.update)
+                if (!coffeeEngine.runtime.currentScene.hasEventListener("update", () => {this.update()})) {
+                    coffeeEngine.runtime.currentScene.addEventListener("update", () => {this.update()})
                 }
-                if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
-                    coffeeEngine.runtime.currentScene.addEventListener("draw", this.draw)
+                if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", () => {this.draw()})) {
+                    coffeeEngine.runtime.currentScene.addEventListener("draw", () => {this.draw()})
                 }
             }
             else if (typeof value == "undefined" || value == null) {
@@ -34,7 +34,7 @@
         #script;
         set script(value) {
             this.#script = value;
-            
+
             if (!value) return;
 
             if (this.#script.ready) {
@@ -52,14 +52,14 @@
         ready() {};
 
         update(deltaTime) {
-            if (this.script && this.script.update) {
-                this.script.update(deltaTime);
+            if (this.#script && this.#script.update) {
+                this.#script.update(deltaTime);
             }
         }
 
         draw() {
-            if (this.script && this.script.draw) {
-                this.script.draw();
+            if (this.#script && this.#script.draw) {
+                this.#script.draw();
             }
         }
         

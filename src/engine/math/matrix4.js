@@ -1,7 +1,7 @@
 (function() {
     coffeeEngine.matrix4 = class {
         constructor(contents) {
-            this.contents = Float32Array(contents);
+            this.contents = contents;
         }
 
         identity() {

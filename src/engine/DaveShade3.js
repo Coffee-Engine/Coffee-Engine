@@ -59,12 +59,12 @@ const DaveShade = {};
         },
         
         //?Mat3
-        35674: (gl,location,value) => {
+        35675: (gl,location,value) => {
             gl.uniformMatrix3fv(location,false,value);
         },
 
         //?Mat4
-        35674: (gl,location,value) => {
+        35676: (gl,location,value) => {
             gl.uniformMatrix4fv(location,false,value);
         },
 
