@@ -1,4 +1,4 @@
-#? Various IDEs if any are missing please feel free to add them!
+#? Various IDEs... if any are missing please feel free to add them!
 .vscode                 #* VsCode who would've thunk?
 .idea                   #* IntelliJ/Webstorm
 .sublime-project       #* Sublime Text
