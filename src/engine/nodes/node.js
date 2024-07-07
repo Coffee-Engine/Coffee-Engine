@@ -33,9 +33,9 @@
 
         #script;
         set script(value) {
-            if (!value) return;
-
             this.#script = value;
+            
+            if (!value) return;
 
             if (this.#script.ready) {
                 this.#script.ready();
