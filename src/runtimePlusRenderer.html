@@ -21,5 +21,16 @@
     <script src="engine/runtime/input.js"></script>
     <script src="engine/runtime/main.js"></script>
     <script src="engine/nodes/node.js"></script>
+
+    <script>
+        //Our gameloop
+        setInterval(() => {
+            coffeeEngine.runtime.updateDelta();
+            if (!coffeeEngine.runtime.paused) {
+                coffeeEngine.runtime.update(coffeeEngine.runtime.deltaTime);
+                coffeeEngine.runtime.draw();
+            }
+        },16);
+    </script>
 </body>
 </html>
