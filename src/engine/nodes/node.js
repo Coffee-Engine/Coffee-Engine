@@ -35,10 +35,6 @@
         set script(value) {
             if (!value) return;
 
-            if (this.#script) {
-                delete this.#script;
-            }
-
             this.#script = value;
 
             if (this.#script.ready) {
