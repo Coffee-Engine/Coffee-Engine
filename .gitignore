@@ -1,8 +1,8 @@
 #? Various IDEs... if any are missing please feel free to add them!
 .vscode                 #* VsCode who would've thunk?
 .idea                   #* IntelliJ/Webstorm
-.sublime-project       #* Sublime Text
-.sublime-workspace     #* Sublime Text
+.sublime-project        #* Sublime Text
+.sublime-workspace      #* Sublime Text
 .project                #* Eclipse
 .settings               #* Eclipse
 .swp                    #* Vim
