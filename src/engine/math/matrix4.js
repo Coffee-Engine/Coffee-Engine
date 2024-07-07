@@ -4,51 +4,42 @@
             this.contents = contents;
         }
 
-        identity() {
-            return new coffeeEngine.matrix4([
-                1,0,0,0,
-                0,1,0,0,
-                0,0,1,0,
-                0,0,0,1
-            ]);
-        }
-
         rotationX(rad) {
             const rotator = new coffeeEngine.matrix4([
-                1,0,0,0,
-                0,Math.cos(rad),Math.sin(rad),0,
-                0,-Math.sin(rad),Math.cos(rad),0,
-                0,0,0,1
+                [1,0,0,0],
+                [0,Math.cos(rad),Math.sin(rad),0],
+                [0,-Math.sin(rad),Math.cos(rad),0],
+                [0,0,0,1]
             ])
             return this.multiply(rotator);
         }
 
         rotationY(rad) {
             const rotator = new coffeeEngine.matrix4([
-                Math.cos(rad),0,Math.sin(rad),0,
-                0,1,0,0,
-                -Math.sin(rad),0,Math.cos(rad),0,
-                0,0,0,1
+                [Math.cos(rad),0,Math.sin(rad),0],
+                [0,1,0,0],
+                [-Math.sin(rad),0,Math.cos(rad),0],
+                [0,0,0,1]
             ])
             return this.multiply(rotator);
         }
 
         rotationZ(rad) {
             const rotator = new coffeeEngine.matrix4([
-                Math.cos(rad),Math.sin(rad),0,0,
-                -Math.sin(rad),Math.cos(rad),0,0,
-                0,0,1,0,
-                0,0,0,1
+                [Math.cos(rad),Math.sin(rad),0,0],
+                [-Math.sin(rad),Math.cos(rad),0,0],
+                [0,0,1,0],
+                [0,0,0,1]
             ])
             return this.multiply(rotator);
         }
 
         translate(x,y,z) {
             const rotator = new coffeeEngine.matrix4([
-                1,0,0,x,
-                0,1,0,y,
-                0,0,1,z,
-                0,0,0,1
+                [1,0,0,x],
+                [0,1,0,y],
+                [0,0,1,z],
+                [0,0,0,1]
             ])
             return this.multiply(rotator);
         }
@@ -73,22 +64,22 @@
         multiply(matrix) {
             //* I am speed
             return new coffeeEngine.matrix4([
-                this.contents[0][0] * matrix.contents[0][0] + this.contents[0][1] * matrix.contents[1][0] + this.contents[0][2] * matrix.contents[2][0] + this.contents[0][3] * matrix.contents[3][0],
+                [this.contents[0][0] * matrix.contents[0][0] + this.contents[0][1] * matrix.contents[1][0] + this.contents[0][2] * matrix.contents[2][0] + this.contents[0][3] * matrix.contents[3][0],
                 this.contents[0][0] * matrix.contents[0][1] + this.contents[0][1] * matrix.contents[1][1] + this.contents[0][2] * matrix.contents[2][1] + this.contents[0][3] * matrix.contents[3][1],
                 this.contents[0][0] * matrix.contents[0][2] + this.contents[0][1] * matrix.contents[1][2] + this.contents[0][2] * matrix.contents[2][2] + this.contents[0][3] * matrix.contents[3][2],
-                this.contents[0][0] * matrix.contents[0][3] + this.contents[0][1] * matrix.contents[1][3] + this.contents[0][2] * matrix.contents[2][3] + this.contents[0][3] * matrix.contents[3][3],
-                this.contents[1][0] * matrix.contents[0][0] + this.contents[1][1] * matrix.contents[1][0] + this.contents[1][2] * matrix.contents[2][0] + this.contents[1][3] * matrix.contents[3][0],
+                this.contents[0][0] * matrix.contents[0][3] + this.contents[0][1] * matrix.contents[1][3] + this.contents[0][2] * matrix.contents[2][3] + this.contents[0][3] * matrix.contents[3][3]],
+                [this.contents[1][0] * matrix.contents[0][0] + this.contents[1][1] * matrix.contents[1][0] + this.contents[1][2] * matrix.contents[2][0] + this.contents[1][3] * matrix.contents[3][0],
                 this.contents[1][0] * matrix.contents[0][1] + this.contents[1][1] * matrix.contents[1][1] + this.contents[1][2] * matrix.contents[2][1] + this.contents[1][3] * matrix.contents[3][1],
                 this.contents[1][0] * matrix.contents[0][2] + this.contents[1][1] * matrix.contents[1][2] + this.contents[1][2] * matrix.contents[2][2] + this.contents[1][3] * matrix.contents[3][2],
-                this.contents[1][0] * matrix.contents[0][3] + this.contents[1][1] * matrix.contents[1][3] + this.contents[1][2] * matrix.contents[2][3] + this.contents[1][3] * matrix.contents[3][3],
-                this.contents[2][0] * matrix.contents[0][0] + this.contents[2][1] * matrix.contents[1][0] + this.contents[2][2] * matrix.contents[2][0] + this.contents[2][3] * matrix.contents[3][0],
+                this.contents[1][0] * matrix.contents[0][3] + this.contents[1][1] * matrix.contents[1][3] + this.contents[1][2] * matrix.contents[2][3] + this.contents[1][3] * matrix.contents[3][3]],
+                [this.contents[2][0] * matrix.contents[0][0] + this.contents[2][1] * matrix.contents[1][0] + this.contents[2][2] * matrix.contents[2][0] + this.contents[2][3] * matrix.contents[3][0],
                 this.contents[2][0] * matrix.contents[0][1] + this.contents[2][1] * matrix.contents[1][1] + this.contents[2][2] * matrix.contents[2][1] + this.contents[2][3] * matrix.contents[3][1],
                 this.contents[2][0] * matrix.contents[0][2] + this.contents[2][1] * matrix.contents[1][2] + this.contents[2][2] * matrix.contents[2][2] + this.contents[2][3] * matrix.contents[3][2],
-                this.contents[2][0] * matrix.contents[0][3] + this.contents[2][1] * matrix.contents[1][3] + this.contents[2][2] * matrix.contents[2][3] + this.contents[2][3] * matrix.contents[3][3],
-                this.contents[3][0] * matrix.contents[0][0] + this.contents[3][1] * matrix.contents[1][0] + this.contents[3][2] * matrix.contents[2][0] + this.contents[3][3] * matrix.contents[3][0],
+                this.contents[2][0] * matrix.contents[0][3] + this.contents[2][1] * matrix.contents[1][3] + this.contents[2][2] * matrix.contents[2][3] + this.contents[2][3] * matrix.contents[3][3]],
+                [this.contents[3][0] * matrix.contents[0][0] + this.contents[3][1] * matrix.contents[1][0] + this.contents[3][2] * matrix.contents[2][0] + this.contents[3][3] * matrix.contents[3][0],
                 this.contents[3][0] * matrix.contents[0][1] + this.contents[3][1] * matrix.contents[1][1] + this.contents[3][2] * matrix.contents[2][1] + this.contents[3][3] * matrix.contents[3][1],
                 this.contents[3][0] * matrix.contents[0][2] + this.contents[3][1] * matrix.contents[1][2] + this.contents[3][2] * matrix.contents[2][2] + this.contents[3][3] * matrix.contents[3][2],
-                this.contents[3][0] * matrix.contents[0][3] + this.contents[3][1] * matrix.contents[1][3] + this.contents[3][2] * matrix.contents[2][3] + this.contents[3][3] * matrix.contents[3][3]
+                this.contents[3][0] * matrix.contents[0][3] + this.contents[3][1] * matrix.contents[1][3] + this.contents[3][2] * matrix.contents[2][3] + this.contents[3][3] * matrix.contents[3][3]]
             ]);
         }
 
@@ -100,5 +91,18 @@
             returned.w = vector.x * this.contents[0][3] + vector.y * this.contents[1][3] + vector.z * this.contents[2][3] + vector.w * this.contents[3][3];
             return returned;
         }
+
+        webGLValue() {
+            return this.contents.flat(2);
+        }
+    }
+
+    coffeeEngine.matrix4.identity = () => {
+        return new coffeeEngine.matrix4([
+            [1,0,0,0],
+            [0,1,0,0],
+            [0,0,1,0],
+            [0,0,0,1]
+        ]);
     }
 })();
