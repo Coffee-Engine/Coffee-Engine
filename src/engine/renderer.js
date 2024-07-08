@@ -34,6 +34,7 @@
 
                 //Transform my stuff!
                 gl_Position = a_position * u_model * u_camera;
+                gl_Position.w = gl_Position.z;
             }
             `,
             //Fragment
