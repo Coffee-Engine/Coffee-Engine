@@ -226,14 +226,30 @@
             if (block.inputList) {
               block.inputList.forEach((input) => {
                 if (!input.connection) return;
-                if (input.connection && input.connection.type == 3) {
+                console.log(input.connection)
+                if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
                   args[input.name] = Function(generator.statementToCode(block, input.name));
                   recalls[input.name] = Function(generator.statementToCode(block, input.name));
                   return;
                 }
                 args[input.name] = generator.valueToCode(block, input.name, 0);
-                recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\\n) { ${JSON.stringify(args[input.name])} }`;
-                console.log(recalls[input.name]);
+
+                //Our recall for the rest of the types.
+                //Functionals are easy
+                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
+                  recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${generator.valueToCode(block, input.name,0)}\n}`;
+                }
+                //Now we need to check the rest.
+                else {
+                  //Number
+                  if (!isNaN(Number(generator.valueToCode(block, input.name,0)))) {
+                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${generator.valueToCode(block, input.name,0)}\n}`;
+                    return;
+                  }
+                  
+                  //String
+                  recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${generator.valueToCode(block, input.name,0)}"\n}`;
+                }
               });
             }
 
@@ -243,7 +259,7 @@
               });
             }
 
-            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},this,${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))});`.replaceAll('});"', "})").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+            const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
             if (block.outputConnection) {
               return [baseBlockCode, 0];
@@ -589,7 +605,7 @@
           });
 
           sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-            return [`${block.getFieldValue("field_dropdown")}`, 0];
+            return [`${block.getFieldValue(`${menuID}_____VALUE`)}`, 0];
           }
         } else {
           //Add the data
@@ -631,7 +647,7 @@
         });
 
         sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-          return [`${block.getFieldValue("field_dropdown")}`, 0];
+          return [`${block.getFieldValue("VALUE")}`, 0];
         }
       }
       //Static menus with no reporters
