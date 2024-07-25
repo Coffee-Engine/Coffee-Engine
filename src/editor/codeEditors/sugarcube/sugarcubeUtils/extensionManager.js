@@ -239,7 +239,7 @@
 
             if (block.fieldRow) {
               block.fieldRow.forEach((field) => {
-                args[input.name] = block.getFieldValue(input.name);
+                args[field.name] = block.getFieldValue(field.name);
               });
             }
 
@@ -587,6 +587,10 @@
             ],
             extensions: ["dynamic_menu"],
           });
+
+          sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
+            return [`${block.getFieldValue("field_dropdown")}`, 0];
+          }
         } else {
           //Add the data
           sugarcube.menus[menuID] = menuDat;
@@ -625,6 +629,10 @@
             },
           ],
         });
+
+        sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
+          return [`${block.getFieldValue("field_dropdown")}`, 0];
+        }
       }
       //Static menus with no reporters
       else {

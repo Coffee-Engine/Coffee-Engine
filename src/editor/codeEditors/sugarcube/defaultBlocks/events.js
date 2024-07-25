@@ -16,6 +16,11 @@
             text: "on game start",
           },
           {
+            opcode: "onUpdate",
+            type: sugarcube.BlockType.HAT,
+            text: "on object update",
+          },
+          {
             opcode: "whenKeyPressed",
             eventListenerName: "keydown",
             eventListenerTarget: "window",
