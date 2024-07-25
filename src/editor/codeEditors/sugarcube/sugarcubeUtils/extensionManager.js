@@ -235,20 +235,22 @@
                 args[input.name] = generator.valueToCode(block, input.name, 0);
 
                 //Our recall for the rest of the types.
+
+                const value = generator.valueToCode(block, input.name,0);
                 //Functionals are easy
                 if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
-                  recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${generator.valueToCode(block, input.name,0)}\n}`;
+                  recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
                 }
                 //Now we need to check the rest.
                 else {
                   //Number
-                  if (!isNaN(Number(generator.valueToCode(block, input.name,0)))) {
-                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${generator.valueToCode(block, input.name,0)}\n}`;
+                  if (!isNaN(Number(value))) {
+                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
                     return;
                   }
                   
                   //String
-                  recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${generator.valueToCode(block, input.name,0)}"\n}`;
+                  recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
                 }
               });
             }

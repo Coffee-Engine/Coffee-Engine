@@ -50,32 +50,6 @@
           },
           "---",
           {
-            opcode: "inline",
-            type: sugarcube.BlockType.INLINE,
-            text: "inline [dummy] [condition]",
-            arguments: {
-              dummy: {
-                type: sugarcube.ArgumentType.DUMMY,
-              },
-              condition: {
-                type: sugarcube.ArgumentType.STATEMENT,
-              },
-            },
-          },
-          {
-            opcode: "return",
-            type: sugarcube.BlockType.COMMAND,
-            text: "return [value]",
-            isTerminal: true,
-            arguments: {
-              value: {
-                type: sugarcube.ArgumentType.STRING,
-                defaultValue: "0",
-              },
-            },
-          },
-          "---",
-          {
             opcode: "repeat",
             type: sugarcube.BlockType.CONDITIONAL,
             text: "repeat [num] [dummy] [statement]",
@@ -129,18 +103,24 @@
     }
 
     ifStatement(args) {
-      console.log(args);
+      if (sugarcube.cast.toBoolean(args.condition) == true) {
+        args.statement();
+      } 
     }
 
     ifElse_Statement(args) {
-      if (Boolean(args.condition) == true) {
+      if (sugarcube.cast.toBoolean(args.condition) == true) {
         args.statement();
       } else {
         args.statement2();
       }
     }
 
-    inline(args) {}
+    repeat(args) {
+      for (let index = 0; index < num; index++) {
+        args.statement();
+      }
+    }
   }
 
   sugarcube.extensionManager.registerExtension(new controls());
