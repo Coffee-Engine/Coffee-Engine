@@ -6,36 +6,64 @@
     <title>Runtime + Renderer</title>
 </head>
 <body>
-    <canvas width="800" height="600" id="coffeeEngine-canvas"></canvas>
+    <canvas width="800" height="600" id="coffeeEngine-canvas" style="display: hidden;"></canvas>
 
+    <!--Engine Stuff-->
     <script src="engine/engineInit.js"></script>
     <script src="engine/DaveShade3.js"></script>
     <script src="engine/renderer.js"></script>
 
+    <!--Engine Math-->
     <script src="engine/math/vector2.js"></script>
     <script src="engine/math/vector3.js"></script>
     <script src="engine/math/vector4.js"></script>
     <script src="engine/math/matrix4.js"></script>
 
+    <!--Runtime-->
     <script src="engine/nodes/scene.js"></script>
     <script src="engine/runtime/input.js"></script>
     <script src="engine/runtime/main.js"></script>
     <script src="engine/runtime/gameloop.js"></script>
 
+    <!--Resources-->
     <script src="engine/resources/resource.js"></script>
     <script src="engine/resources/mesh.js"></script>
 
+    <!--Nodes-->
     <script src="engine/nodes/node.js"></script>
     <script src="engine/nodes/node3D.js"></script>
     <script src="engine/nodes/meshDisplay.js"></script>
 
-    <script>
-        //Our gameloop
-        coffeeEngine.runtime.startFrameLoop(60);
+    <!--Editor-->
+    <script src="editor/main.js"></script>
+    <script src="editor/pages/home.js"></script>
 
-        coffeeEngine.runtime.currentScene.addChild(
-            new coffeeEngine.classes.node3D()
-        )
-    </script>
+    <!--Base sugarcube settings-->
+    <script src="editor/codeEditors/sugarcube/sugarcube.js"></script>
+    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/sugarcubeSettings.js"></script>
+    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/commonVariables.js"></script>
+    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/zelosRenderOverrides.js"></script>
+    <script src="editor/codeEditors/sugarcube/types.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/sugarcubeCodeBuilder.js"></script>
+    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/extensionManager.js"></script>
+
+    <!--Blockly Addons for sugarcube-->
+    <script src="editor/codeEditors/sugarcube/addons/continuousToolbox.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/hsvField.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/dynamicMenu.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/disableTopBlocks.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/multilineField.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/autoMinimapHider.js"></script>
+
+    <!--Our Mutators-->
+    <script src="editor/codeEditors/sugarcube/sugarcubeUtils/xmlHelper.js"></script>
+    <script src="editor/codeEditors/sugarcube/mutators/dragMutator.js"></script>
+    <script src="editor/codeEditors/sugarcube/mutators/customBlocks.js"></script>
+
+    <script src="editor/codeEditors/sugarcube/addons/focusRegion.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/minimap.js"></script>
+
+    <script src="editor/codeEditors/sugarcube/addons/blockSearcher.js"></script>
+    <script src="editor/codeEditors/sugarcube/addons/toolboxSearcher.js"></script>
 </body>
 </html>
