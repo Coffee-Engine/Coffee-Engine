@@ -31,7 +31,7 @@
 
                 background-color: var(--background-1);
 
-                padding-bottom:4px;
+                animation: boot 500ms cubic-bezier(0.65, 0, 0.35, 1) 1;
             }
 
             .centerText {
@@ -53,8 +53,51 @@
             .projectInitButton {
                 margin: 4px;
             }
+
+            .projectButton {
+                --childID: 0;
+                width:0%;
+                height: 96px;
+
+                opacity:0%;
+
+                text-align: left;
+
+                margin-left:4px;
+
+                animation: projectAdded 750ms cubic-bezier(0.65, 0, 0.35, 1) 1;
+                animation-fill-mode: forwards;
+                animation-delay: calc(125ms * var(--childID));
+            }
+
+            .noCenterElements {
+                align-content: left;
+                justify-content: left;
+            }
+
+            @keyframes boot {
+                0% {
+                    opacity:0%;
+                    margin-top:7.5%;
+                }
+                100% {
+                    opacity:100%;
+                    margin-top:2.5%;
+                }
+            }
+
+            @keyframes projectAdded {
+                0% {
+                    opacity:0%;
+                    width:0%;
+                }
+                100% {
+                    opacity:100%;
+                    width:75%;
+                }
+            }
         </style>
-        <div class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel">
             <div class="fullWidth">
                 <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
             </div>
@@ -69,13 +112,40 @@
                 <button class="projectInitButton">Load from Folder</button>
             </div>
 
-            <div class="fullWidth">
-                <button class="projectInitButton fullWidth">project test</button>
+            <div class="fullWidth centerText noCenterElements" style="border-top: 4px solid var(--background-3); background-color: var(--background-2); padding-bottom:4px;" id="recentProjects">
+                <h1>No Recent Projects</h1>
             </div>
         </div>
         `;
 
         document.body.appendChild(editor.currentPage.root);
+
+        const recentProjectsPage = document.getElementById("recentProjects");
+        
+        const addRecentProject = (projectJSON) => {
+            projectJSON = projectJSON || {};
+            if (recentProjectsPage.children[0].nodeName.toLowerCase() == "h1") {
+                recentProjectsPage.innerHTML = "";
+            }
+
+            const holder = document.createElement("button");
+            holder.className = "projectInitButton projectButton";
+
+            holder.innerHTML = `
+            <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
+            <p style="margin-top:2px;">Last Edited : ${projectJSON.modified || Date.now()}</p>
+            `;
+
+            holder.style.setProperty("--childID", recentProjectsPage.children.length);
+
+            recentProjectsPage.appendChild(holder);
+
+            recentProjectsPage.innerHTML += "<br>";
+        }
+
+        addRecentProject();
+        addRecentProject();
+        addRecentProject();
     }
 
     editor.home.initilize();
