@@ -1,0 +1,40 @@
+body {
+    --background-1:#46352a;
+    --background-2:#3d2c21;
+    --background-3:#302117;
+    --background-4:#291a10;
+
+    --text-1:#e7cab7;
+    --text-2:#d6ae93;
+    --text-3:#bb8d6e;
+
+    background-color: var(--background-4);
+    color: var(--text-1);
+
+    font-family: monospace;
+}
+
+button {
+    background-color: var(--background-2);
+    color: var(--text-1);
+
+    border-style: solid;
+    border-radius: 2px;
+    border-width: 2px;
+    border-color: var(--background-3);
+
+    transition: all 100ms;
+
+    font-size: large;
+}
+
+button:hover {
+    color: var(--text-2);
+    background-color: var(--background-3);
+}
+
+button:active {
+    color: var(--text-1);
+    background-color: var(--background-4);
+    border-color: var(--background-4);
+}

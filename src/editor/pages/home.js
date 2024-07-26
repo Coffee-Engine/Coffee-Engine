@@ -29,16 +29,44 @@
                 margin-right:20%;
                 margin-top:2.5%;
 
-                background-color: #ff00ff;
+                background-color: var(--background-1);
+
+                padding-bottom:4px;
+            }
+
+            .centerText {
+                text-align: center;
             }
 
             .fullWidth {
                 width:100%;
             }
+
+            .centerContents {
+                align-content: center;
+                justify-content: center;
+
+                display:grid;
+                grid-template-columns: 18.5% 18.5% 18.5%;
+            }
+
+            .projectInitButton {
+                margin: 4px;
+            }
         </style>
         <div class="CenterPanel">
             <div class="fullWidth">
                 <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
+            </div>
+            <div class="fullWidth">
+                <p class="centerText" style="margin:1px;">Splash by ObviousAlexC</p>
+                <h1 class="centerText">Welcome to Coffee Engine</h1>
+            </div>
+
+            <div class="fullWidth centerContents">
+                <button class="projectInitButton">New Project</button>
+                <button class="projectInitButton">Load from File</button>
+                <button class="projectInitButton">Load from Folder</button>
             </div>
         </div>
         `;
