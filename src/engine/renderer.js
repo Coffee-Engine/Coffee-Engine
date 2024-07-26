@@ -58,6 +58,7 @@
     }
 
     coffeeEngine.renderer.dispose = () => {
+        if (!coffeeEngine.renderer.canvas) return;
         coffeeEngine.renderer.canvas.parentElement.removeChild(coffeeEngine.renderer.canvas);
         coffeeEngine.renderer.daveshade.dispose();
         delete coffeeEngine.renderer.mainShaders;
