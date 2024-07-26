@@ -1,9 +1,5 @@
 (function() {
     coffeeEngine.classes.node3D = class extends coffeeEngine.classes.node {
-        position = new coffeeEngine.vector3(0);
-        rotation = new coffeeEngine.vector3(0);
-        matrix = coffeeEngine.matrix4.identity();
-
         update(deltaTime) {
             super.update(deltaTime);
             this.matrix = coffeeEngine.matrix4.identity();
@@ -16,7 +12,9 @@
 
         draw() {
             super.draw();
+            coffeeEngine.renderer.mainShaders.unlit.setBuffers(demoPlane);
             coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
+            coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(3);
         }
     }
 })();
