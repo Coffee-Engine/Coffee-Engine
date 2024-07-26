@@ -68,6 +68,10 @@
                 <button class="projectInitButton">Load from File</button>
                 <button class="projectInitButton">Load from Folder</button>
             </div>
+
+            <div class="fullWidth">
+                <button class="projectInitButton fullWidth">project test</button>
+            </div>
         </div>
         `;
 
