@@ -98,6 +98,22 @@
               },
             },
           },
+          {
+            opcode: "while",
+            type: sugarcube.BlockType.CONDITIONAL,
+            text: "while [condition] [dummy] [statement]",
+            arguments: {
+              condition: {
+                type: sugarcube.ArgumentType.BOOLEAN,
+              },
+              dummy: {
+                type: sugarcube.ArgumentType.DUMMY,
+              },
+              statement: {
+                type: sugarcube.ArgumentType.STATEMENT,
+              },
+            },
+          },
         ],
       };
     }
@@ -118,6 +134,26 @@
 
     repeat(args) {
       for (let index = 0; index < num; index++) {
+        args.statement();
+      }
+    }
+
+    foreach(args) {
+      if (!Array.isArray(args.array)) return;
+
+      args.array.forEach(item => {
+        args.statement();
+      })
+    }
+
+    repeatUNT(args, util) {
+      while(!sugarcube.cast.toBoolean(util.recalls.condition())) {
+        args.statement();
+      }
+    }
+
+    while(args, util) {
+      while(sugarcube.cast.toBoolean(util.recalls.condition())) {
         args.statement();
       }
     }
