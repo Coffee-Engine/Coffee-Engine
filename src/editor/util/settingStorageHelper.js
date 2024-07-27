@@ -22,4 +22,8 @@
         }
         localStorage.setItem(storageKey,value);
     }
+
+    editor.Storage.keyExists = (storageKey) => {
+        return !(localStorage.getItem(storageKey) === null);
+    }
 })();
