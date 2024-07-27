@@ -10,4 +10,11 @@ editor.EnglishLang = {
     "engine.home.loadFolder":"Load from Folder",
     "engine.home.noRecentProjects":"No Recent Projects",
     "engine.home.lastEdited":"Last edited : [TIME]",
+    "engine.home.engineConfig":"Engine Settings",
+
+
+    "engine.settings.welcome":"Engine Settings",
+
+
+    "engine.generic.back": "Back"
 }
