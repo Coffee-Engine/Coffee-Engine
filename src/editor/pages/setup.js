@@ -1,10 +1,11 @@
 (function() {
     editor.setup = {};
 
-    editor.language = editor.Storage.getStorage("language", editor.EnglishLang)
+    editor.language = Object.assign({}, editor.EnglishLang, editor.Storage.getStorage("language", {}));
+    editor.languageName = editor.Storage.getStorage("languageName", "🇬🇧 English");
 
     editor.setup.initilize = () => {
-        console.log("Initilizing Home Page");
+        console.log("Initilizing Setup");
 
         if (editor.currentPage.root) {
             coffeeEngine.renderer.dispose();
@@ -50,6 +51,8 @@
                 background-color: var(--background-3);
                 flex-grow: 1;
 
+                border-top: 8px solid var(--background-4);
+
                 overflow-y: scroll;
             }
 
@@ -90,9 +93,30 @@
                 button.style.width = "100%";
                 button.style.height = "48px";
 
+                button.style.fontSize = "x-Large";
+
                 button.innerHTML = langDef.Name;
 
+                button.setAttribute("languageURL",`https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/LANG/${langDef.File}`);
+
                 languageContainer.appendChild(button);
+
+                button.onclick = () => {
+                    fetch(button.getAttribute("languageURL")).then(response => response.json()).then(response => {
+                        //set the language
+                        editor.Storage.setStorage("language", response);
+                        editor.language = Object.assign({}, editor.EnglishLang, response);
+
+                        //Set the language name
+                        editor.Storage.setStorage("languageName", langDef.Name);
+
+                        editor.home.initilize();
+                    })
+                    .catch(error => {
+                        button.innerText += ` : ${error}`;
+                        button.onclick = () => {};
+                    })
+                }
             });
         })
         .catch(error => {
