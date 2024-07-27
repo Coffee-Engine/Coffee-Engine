@@ -1,3 +1,4 @@
 const editor = {
-    currentPage:{}
+    currentPage:{},
+    language: {},
 };

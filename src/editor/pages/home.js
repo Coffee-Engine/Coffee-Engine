@@ -1,6 +1,8 @@
 (function() {
     editor.home = {};
 
+    editor.home.splashAuthor = "ObviousAlexC";
+
     editor.home.initilize = () => {
         console.log("Initilizing Home Page");
 
@@ -57,7 +59,7 @@
             .projectButton {
                 --childID: 0;
                 width:0%;
-                height: 96px;
+                height:96px;
 
                 opacity:0%;
 
@@ -102,18 +104,18 @@
                 <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
             </div>
             <div class="fullWidth">
-                <p class="centerText" style="margin:1px;">Splash by ObviousAlexC</p>
-                <h1 class="centerText">Welcome to Coffee Engine</h1>
+                <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]",editor.home.splashAuthor)}</p>
+                <h1 class="centerText">${editor.language["engine.home.welcome"]}</h1>
             </div>
 
             <div class="fullWidth centerContents">
-                <button class="projectInitButton">New Project</button>
-                <button class="projectInitButton">Load from File</button>
-                <button class="projectInitButton">Load from Folder</button>
+                <button class="projectInitButton">${editor.language["engine.home.newProject"]}</button>
+                <button class="projectInitButton">${editor.language["engine.home.loadFile"]}</button>
+                <button class="projectInitButton">${editor.language["engine.home.loadFolder"]}</button>
             </div>
 
             <div class="fullWidth centerText noCenterElements" style="border-top: 4px solid var(--background-3); background-color: var(--background-2); padding-bottom:4px;" id="recentProjects">
-                <h1>No Recent Projects</h1>
+                <h1>${editor.language["engine.home.noRecentProjects"]}</h1>
             </div>
         </div>
         `;
@@ -133,7 +135,7 @@
 
             holder.innerHTML = `
             <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
-            <p style="margin-top:2px;">Last Edited : ${projectJSON.modified || Date.now()}</p>
+            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]",(projectJSON.modified || Date.now()))}</p>
             `;
 
             holder.style.setProperty("--childID", recentProjectsPage.children.length);
@@ -147,6 +149,4 @@
         addRecentProject();
         addRecentProject();
     }
-
-    editor.home.initilize();
 })();
