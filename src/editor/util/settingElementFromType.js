@@ -40,6 +40,23 @@
 
                 return input;
             }
+
+            case "color": {
+                const input = document.createElement("input");
+                input.type = "color";
+                input.value =  editor.settings.values[category][setting];
+
+                input.min = elementDefs.min;
+                input.max = elementDefs.max;
+
+                input.onchange = () => {
+                    editor.settings.values[category][setting] = input.value;
+                    if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.value);
+                    editor.Storage.setStorage("settingsValues",editor.settings.values);
+                }
+
+                return input;
+            }
         
             default:
                 break;

@@ -38,5 +38,15 @@ coffeeEngine.defaultThemes = {
         "--text-1":"#6d83ff",
         "--text-2":"#4458c1",
         "--text-3":"#293b9f"
+    },
+    
+    "Davey Special": {
+        "--background-1": "#17171c",
+        "--background-2": "#121216",
+        "--background-3": "#101013",
+        "--background-4": "#0d0d10",
+        "--text-1": "#b62781",
+        "--text-2": "#911f67",
+        "--text-3": "#7f1b5a"
     }
 }

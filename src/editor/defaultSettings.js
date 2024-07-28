@@ -1,7 +1,8 @@
 editor.defaultSettings = {
     Theme: {
         themeColor: "Mocha",
-        backgroundColor: "#46352a"
+        backgroundColor: "#46352a",
+        textColor: "#e7cab7"
     },
     SugarCube: {
         notchWidth:"36", //NOTCH_HEIGHT
@@ -26,26 +27,149 @@ editor.settingDefs = {
                 "Custom"
             ],
             onChange:(value,fromBoot) => {
+                //Check if we are using a custom theme
                 if (value != "Custom") {
+
+                    //If we aren't check if our theme is valid
                     if (coffeeEngine.defaultThemes[value]) {
+
+                        //Loop through keys and determine the right amount
                         Object.keys(coffeeEngine.defaultThemes[value]).forEach(key => {
                             document.body.style.setProperty(key,coffeeEngine.defaultThemes[value][key]);
-                        })
+                        });
+
+                        //Disable Custom Color if possible
+                        if (!fromBoot) {
+                            editor.settings.elements["backgroundColor"].span.style.opacity = "50%";
+                            editor.settings.elements["backgroundColor"].input.disabled = true;
+                            if (coffeeEngine.defaultThemes[value]) {
+                                editor.settings.elements["backgroundColor"].input.value = coffeeEngine.defaultThemes[value]["--background-1"];
+                            }
+
+                            editor.settings.elements["textColor"].span.style.opacity = "50%";
+                            editor.settings.elements["textColor"].input.disabled = true;
+                            if (coffeeEngine.defaultThemes[value]) {
+                                editor.settings.elements["textColor"].input.value = coffeeEngine.defaultThemes[value]["--text-1"];
+                            }
+                        }
                     }
                 }
+                
+                //Enable Custom Color if possible
                 else if (!fromBoot) {
+                    editor.settings.elements["backgroundColor"].span.style.opacity = "100%";
+                    editor.settings.elements["backgroundColor"].input.disabled = false;
+                    editor.settings.elements["backgroundColor"].input.value = editor.settings.values.Theme.backgroundColor;
+                    editor.settingDefs.Theme.backgroundColor.onChange(editor.settings.values.Theme.backgroundColor);
 
+                    editor.settings.elements["textColor"].span.style.opacity = "100%";
+                    editor.settings.elements["textColor"].input.disabled = false;
+                    editor.settings.elements["textColor"].input.value = editor.settings.values.Theme.textColor;
+                    editor.settingDefs.Theme.textColor.onChange(editor.settings.values.Theme.textColor);
                 }
             }
         },
         backgroundColor: {
             type:"color",
-            onChange:() => {
+            onChange:(value,fromBoot) => {
+                if (editor.settings.values.Theme.themeColor == "Custom") { 
+                    document.body.style.setProperty("--background-1",value);
 
+                    //Color Conversions
+                    const split = coffeeEngine.ColorMath.HexToRGB(value);
+
+                    if (coffeeEngine.ColorMath.BrightestChannel(value) > 10) {
+                        document.body.style.setProperty("--background-2",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 0.80,
+                            g:split.g * 0.80,
+                            b:split.b * 0.80
+                        }));
+                        document.body.style.setProperty("--background-3",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 0.70,
+                            g:split.g * 0.70,
+                            b:split.b * 0.70
+                        }));
+                        document.body.style.setProperty("--background-4",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 0.60,
+                            g:split.g * 0.60,
+                            b:split.b * 0.60
+                        }));
+                    }
+                    else {
+                        document.body.style.setProperty("--background-2",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 1.2,
+                            g:split.g * 1.2,
+                            b:split.b * 1.2
+                        }));
+                        document.body.style.setProperty("--background-3",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 1.3,
+                            g:split.g * 1.3,
+                            b:split.b * 1.3
+                        }));
+                        document.body.style.setProperty("--background-4",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 1.4,
+                            g:split.g * 1.4,
+                            b:split.b * 1.4
+                        }));
+                    }
+                }
             },
             menuInit: (previousSettings, elements) => {
+                //Check if custom color is selected
                 if (previousSettings.themeColor != "Custom") {
+                    //If not disable it and make sure the value is the one we want.
                     elements.span.style.opacity = "50%";
+                    elements.input.disabled = true;
+                    if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
+                        elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--background-1"];
+                    }
+                }
+            }
+        },
+        textColor: {
+            type:"color",
+            onChange:(value,fromBoot) => {
+                if (editor.settings.values.Theme.themeColor == "Custom") { 
+                    document.body.style.setProperty("--text-1",value);
+
+                    //Color Conversions
+                    const split = coffeeEngine.ColorMath.HexToRGB(value);
+
+                    if (coffeeEngine.ColorMath.BrightestChannel(value) > 10) {
+                        document.body.style.setProperty("--text-2",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 0.80,
+                            g:split.g * 0.80,
+                            b:split.b * 0.80
+                        }));
+                        document.body.style.setProperty("--text-3",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 0.70,
+                            g:split.g * 0.70,
+                            b:split.b * 0.70
+                        }));
+                    }
+                    else {
+                        document.body.style.setProperty("--text-2",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 1.2,
+                            g:split.g * 1.2,
+                            b:split.b * 1.2
+                        }));
+                        document.body.style.setProperty("--text-3",coffeeEngine.ColorMath.RGBtoHex({
+                            r:split.r * 1.3,
+                            g:split.g * 1.3,
+                            b:split.b * 1.3
+                        }));
+                    }
+                }
+            },
+            menuInit: (previousSettings, elements) => {
+                //Check if custom color is selected
+                if (previousSettings.themeColor != "Custom") {
+                    //If not disable it and make sure the value is the one we want.
+                    elements.span.style.opacity = "50%";
+                    elements.input.disabled = true;
+                    if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
+                        elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--text-1"];
+                    }
                 }
             }
         }
