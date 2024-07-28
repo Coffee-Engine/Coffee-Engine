@@ -14,7 +14,15 @@ editor.EnglishLang = {
 
 
     "engine.settings.welcome":"Engine Settings",
+    "engine.settings.category.Theme":"Theme",
 
+    "engine.settings.category.SugarCube":"SugarCube",
+    "engine.settings.category.SugarCube.notchWidth":"Notch Width",
+    "engine.settings.category.SugarCube.notchHeight":"Notch Height",
+    "engine.settings.category.SugarCube.cornerSize":"Corner Size",
+    "engine.settings.category.SugarCube.padding":"Padding",
+
+    "engine.settings.category.Monaco":"Monaco",
 
     "engine.generic.back": "Back"
 }

@@ -6,11 +6,7 @@
     editor.home.initilize = () => {
         console.log("Initilizing Home Page");
 
-        if (editor.currentPage.root) {
-            coffeeEngine.renderer.dispose();
-            editor.currentPage.root.parentElement.removeChild(editor.currentPage.root);
-            delete editor.currentPage.root;
-        }
+        editor.changePage();
 
         editor.currentPage.root = document.createElement("div");
 

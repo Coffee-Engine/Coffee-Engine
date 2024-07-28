@@ -14,6 +14,8 @@ sugarcube.toolbox = {
 };
 sugarcube.menus = {};
 
+sugarcube.constantOverrides = {};
+
 sugarcube.blocklyTheme = {
   blockStyles: {},
   fontStyle: {

@@ -1,14 +1,12 @@
 (function() {
     editor.settings = {};
 
-    editor.settings.initilize = () => {
-        console.log("Initilizing Setup");
+    editor.settings.values = Object.assign({}, editor.defaultSettings, editor.Storage.getStorage("settingsValues", {}));
 
-        if (editor.currentPage.root) {
-            coffeeEngine.renderer.dispose();
-            editor.currentPage.root.parentElement.removeChild(editor.currentPage.root);
-            delete editor.currentPage.root;
-        }
+    editor.settings.initilize = () => {
+        console.log("Initilizing Settings Page");
+
+        editor.changePage();
 
         editor.currentPage.root = document.createElement("div");
 
@@ -51,10 +49,23 @@
                 border-top: 8px solid var(--background-4);
 
                 overflow-y: scroll;
+                display: flex;
             }
 
             .centerText {
                 text-align: Left;
+            }
+
+            .settingsSidebar {
+                width:196px;
+                height:100%;
+                background-color: var(--background-2);
+                border-right: 8px solid var(--background-4);
+            }
+
+            .settingsPanel {
+                height:100%;
+                flex-grow: 1;
             }
 
             @keyframes boot {
@@ -75,7 +86,10 @@
                 <button id="goBack">${editor.language["engine.generic.back"]}</button>
                 ${editor.language["engine.settings.welcome"]}
             </h1>
-            <div class="innerBox"></div>
+            <div class="innerBox">
+                <div class="settingsSidebar" id="sidebar"></div>
+                <div class="settingsPanel" id="settingsPanel"></div>
+            </div>
         </div>
         `;
 
@@ -84,5 +98,29 @@
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();
         }
+
+        const sidebar = document.getElementById("sidebar");
+        const settingsPanel = document.getElementById("settingsPanel");
+
+        Object.keys(editor.defaultSettings).forEach(key => {
+            const button = document.createElement("button");
+            button.style.width = "100%";
+            button.innerHTML = editor.language[`engine.settings.category.${key}`];
+
+            sidebar.appendChild(button);
+
+            button.onclick = () => {
+                settingsPanel.innerHTML = "";
+
+                Object.keys(editor.defaultSettings[key]).forEach(settingKey => {
+                    const settingSpan = document.createElement("p");
+                    settingSpan.innerHTML = editor.language[`engine.settings.category.${key}.${settingKey}`];
+                    settingSpan.style.fontSize = "Large";
+                    settingSpan.style.margin = "2px";
+
+                    settingsPanel.appendChild(settingSpan);
+                });
+            }
+        });
     }
 })();
