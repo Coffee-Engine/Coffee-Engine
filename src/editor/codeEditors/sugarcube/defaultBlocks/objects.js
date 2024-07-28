@@ -42,8 +42,8 @@
             },
           },
           {
-            opcode: "getParent",
-            type: sugarcube.BlockType.ARRAY,
+            opcode: "getParentOf",
+            type: sugarcube.BlockType.OBJECT,
             text: "parent of [object]",
             arguments: {
               object: {

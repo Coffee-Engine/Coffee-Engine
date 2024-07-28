@@ -1,9 +1,9 @@
 editor.EnglishLang = {
-    "engine.setup.start":"Coffee Engine Setup",
+    "engine.setup.start":"Engine Setup",
     "engine.setup.languageSelect":"Language",
 
 
-    "engine.home.welcome":"Welcome to Coffee Engine",
+    "engine.home.welcome":"Welcome to Engine",
     "engine.home.splashAuthor":"Splash by [AUTHOR]",
     "engine.home.newProject":"New Project",
     "engine.home.loadFile":"Load from File",
@@ -15,6 +15,9 @@ editor.EnglishLang = {
 
     "engine.settings.welcome":"Engine Settings",
     "engine.settings.category.Theme":"Theme",
+    "engine.settings.category.Theme.themeColor":"Editor Color",
+    "engine.settings.category.Theme.backgroundColor":"Background Color",
+    "engine.settings.category.Theme.textColor":"Text Color",
 
     "engine.settings.category.SugarCube":"SugarCube",
     "engine.settings.category.SugarCube.notchWidth":"Notch Width",

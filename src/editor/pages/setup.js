@@ -93,7 +93,7 @@
 
                 button.innerHTML = langDef.Name;
 
-                button.setAttribute("languageURL",`https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/LANG/${langDef.File}`);
+                button.setAttribute("languageURL",`https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/LANG/${langDef.File}.json`);
 
                 languageContainer.appendChild(button);
 

@@ -1,0 +1,18 @@
+input {
+    background-color: var(--background-2);
+    border-color: var(--background-1);
+    border-style: solid;
+
+    color: var(--text-1);
+
+    -moz-appearance: textfield;
+    min-width: 128px;
+}
+
+select {
+    background-color: var(--background-2);
+    border-color: var(--background-1);
+    border-style: solid;
+
+    color: var(--text-1);
+}
