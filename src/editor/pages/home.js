@@ -73,6 +73,30 @@
                 justify-content: left;
             }
 
+            .disabledButton {
+                color: var(--text-2);
+                background-color: var(--background-3);
+
+                border-style: solid;
+                border-radius: 2px;
+                border-width: 2px;
+                border-color: var(--background-3);
+                
+                font-size: large;
+            }
+
+            .disabledButton:active {
+                color: var(--text-2);
+                background-color: var(--background-3);
+
+                border-style: solid;
+                border-radius: 2px;
+                border-width: 2px;
+                border-color: var(--background-3);
+                
+                font-size: large;
+            }
+
             @keyframes boot {
                 0% {
                     opacity:0%;
@@ -105,9 +129,9 @@
             </div>
 
             <div class="fullWidth centerContents">
-                <button class="projectInitButton">${editor.language["engine.home.newProject"]}</button>
-                <button class="projectInitButton">${editor.language["engine.home.loadFile"]}</button>
-                <button class="projectInitButton">${editor.language["engine.home.loadFolder"]}</button>
+                <button class="projectInitButton" id="newProject">${editor.language["engine.home.newProject"]}</button>
+                <button class="projectInitButton" id="loadFile">${editor.language["engine.home.loadFile"]}</button>
+                <button class="projectInitButton" id="loadFolder">${editor.language["engine.home.loadFolder"]}</button>
             </div>
 
             <div class="fullWidth centerContents">
@@ -127,6 +151,26 @@
         document.getElementById("openSettings").onclick = () => {
             editor.settings.initilize()
         }
+
+        const newButton = document.getElementById("newProject");
+        const loadFile = document.getElementById("loadFile");
+        const loadFolder = document.getElementById("loadFolder");
+
+        //For starting a new project
+        newButton.onclick = () => {
+            editor.editorPage.initilize();
+        }
+
+        //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
+        if (editor.safeties.folderPerimissions) {
+            loadFolder.onclick = () => {
+                window.showDirectoryPicker().then(result => {
+                    console.log(result);
+                })
+                .catch(error => {});
+            }
+        }
+        else {loadFolder.className = "projectInitButton disabledButton";}
 
         const recentProjectsPage = document.getElementById("recentProjects");
         

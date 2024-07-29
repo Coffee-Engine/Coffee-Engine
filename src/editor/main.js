@@ -12,5 +12,9 @@ const editor = {
             sugarcube.workspace.dispose();
             delete sugarcube.workspace;
         }
+    },
+    safeties: {
+        secureContext: window.isSecureContext,
+        folderPerimissions: window.showDirectoryPicker != undefined
     }
 };

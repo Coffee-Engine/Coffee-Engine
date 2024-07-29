@@ -1,7 +1,7 @@
 (function() {
-    editor.home = {};
+    editor.editorPage = {};
 
-    editor.home.initilize = () => {
+    editor.editorPage.initilize = () => {
         console.log("Initilizing Home Page");
 
         editor.changePage();
@@ -121,32 +121,5 @@
         `;
 
         document.body.appendChild(editor.currentPage.root);
-
-        document.getElementById("openSettings").onclick = () => {
-            editor.settings.initilize()
-        }
-
-        const recentProjectsPage = document.getElementById("recentProjects");
-        
-        const addRecentProject = (projectJSON) => {
-            projectJSON = projectJSON || {};
-            if (recentProjectsPage.children[0].nodeName.toLowerCase() == "h1") {
-                recentProjectsPage.innerHTML = "";
-            }
-
-            const holder = document.createElement("button");
-            holder.className = "projectInitButton projectButton";
-
-            holder.innerHTML = `
-            <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
-            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]",(projectJSON.modified || Date.now()))}</p>
-            `;
-
-            holder.style.setProperty("--childID", recentProjectsPage.children.length);
-
-            recentProjectsPage.appendChild(holder);
-
-            recentProjectsPage.innerHTML += "<br>";
-        }
     }
 })();
