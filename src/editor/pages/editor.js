@@ -16,110 +16,66 @@
 
         editor.currentPage.root.innerHTML = `
         <style>
-            .CenterPanel {
-                width:60%,
-                min-width:60%;
-                min-height:10%;
+            .window {
+                min-height:32px;
+                min-width:64px;
 
-                margin-left:20%;
-                margin-right:20%;
-                margin-top:2.5%;
+                overflow: hidden;
 
-                background-color: var(--background-1);
-
-                animation: boot 500ms cubic-bezier(0.65, 0, 0.35, 1) 1;
-            }
-
-            .centerText {
-                text-align: center;
-            }
-
-            .fullWidth {
-                width:100%;
-            }
-
-            .centerContents {
-                align-content: center;
-                justify-content: center;
+                background-color:var(--background-3);
 
                 display:grid;
-                grid-template-columns: 18.5% 18.5% 18.5%;
+                grid-template-rows: 24px auto;
             }
 
-            .projectInitButton {
-                margin: 4px;
+            .TaskBar {
+                width:100%;
+                height:24px;
+
+                margin:0px;
+
+                background-color:var(--background-1);
+
+                display:grid;
+                grid-template-columns: auto 24px;
+                
+                line-height: 24px;
+                text-align: center;
+                vertical-align: middle;
+                font-size: Large;
+
+                cursor: grab;
             }
 
-            .projectButton {
-                --childID: 0;
-                width:0%;
-                height:96px;
-
-                opacity:0%;
-
-                text-align: left;
-
-                margin-left:4px;
-
-                animation: projectAdded 750ms cubic-bezier(0.65, 0, 0.35, 1) 1;
-                animation-fill-mode: forwards;
-                animation-delay: calc(125ms * var(--childID));
+            .closeButton {
+                line-height: -24px;
+                text-align: center;
+                vertical-align: middle;
+                font-size: Large;
+                height:100%;
+                border-width:0px;
             }
 
-            .noCenterElements {
-                align-content: left;
-                justify-content: left;
-            }
-
-            @keyframes boot {
+            @keyframes closeWindow {
                 0% {
-                    opacity:0%;
-                    margin-top:7.5%;
+                    min-height:0px;
+                    opacity: 100%;
                 }
-                100% {
-                    opacity:100%;
-                    margin-top:2.5%;
-                }
-            }
 
-            @keyframes projectAdded {
-                0% {
-                    opacity:0%;
-                    width:0%;
+                50% {
+                    opacity: 100%;
                 }
+
                 100% {
-                    opacity:100%;
-                    width:75%;
+                    height:0px;
+                    opacity: 0%;
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
-            <div class="fullWidth">
-                <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
-            </div>
-            <div class="fullWidth">
-                <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]",editor.home.splashAuthor)}</p>
-                <h1 class="centerText">${editor.language["engine.home.welcome"]}</h1>
-            </div>
-
-            <div class="fullWidth centerContents">
-                <button class="projectInitButton">${editor.language["engine.home.newProject"]}</button>
-                <button class="projectInitButton">${editor.language["engine.home.loadFile"]}</button>
-                <button class="projectInitButton">${editor.language["engine.home.loadFolder"]}</button>
-            </div>
-
-            <div class="fullWidth centerContents">
-                <div></div>
-                <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineConfig"]}</button>
-                <div></div>
-            </div>
-
-            <div class="fullWidth centerText noCenterElements" style="border-top: 4px solid var(--background-3); background-color: var(--background-2); padding-bottom:4px;" id="recentProjects">
-                <h1>${editor.language["engine.home.noRecentProjects"]}</h1>
-            </div>
-        </div>
         `;
 
         document.body.appendChild(editor.currentPage.root);
+
+        coffeeEngine.renderer.create
     }
 })();
