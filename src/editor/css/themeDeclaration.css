@@ -14,6 +14,23 @@ body {
     font-family: monospace;
 }
 
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: var(--background-3);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background-color: var(--background-1);
+}
+
 button {
     background-color: var(--background-2);
     color: var(--text-1);
