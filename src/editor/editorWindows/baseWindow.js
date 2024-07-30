@@ -184,6 +184,8 @@
                             this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
                             this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px","")) - moveEvent.movementY}px`
                         }
+
+                        this.resized();
                     }
 
                     return;
@@ -253,17 +255,20 @@
                         this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
                         this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px","")) - moveEvent.movementY}px`
                     }
+
+                    this.resized();
                 }
             }
         }
 
         //Allow us to destroy the window;
-        dispose() {
+        _dispose() {
             if (this.closing) return;
             this.closing = true;
             
             //Now we destory all window objects
             this.windowDiv.onanimationend = () => {
+                this.dispose();
                 this.windowDiv.parentElement.removeChild(this.windowDiv);
                 delete this.windowDiv;
             }
@@ -273,5 +278,7 @@
 
         //Just for the extensions of this class
         init(Content) {}
+        dispose() {}
+        resized() {}
     }
 })();

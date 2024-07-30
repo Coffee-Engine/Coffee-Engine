@@ -53,6 +53,15 @@ editor.settingDefs = {
                             }
                         }
                     }
+
+                    sugarcube.blocklyTheme.componentStyles.workspaceBackgroundColour = document.body.style.getPropertyValue("--background-3");
+                    sugarcube.blocklyTheme.componentStyles.unseenBackground = document.body.style.getPropertyValue("--background-3");
+                    sugarcube.blocklyTheme.componentStyles.flyoutBackgroundColour = document.body.style.getPropertyValue("--background-2");
+                    sugarcube.blocklyTheme.componentStyles.toolboxBackgroundColour = document.body.style.getPropertyValue("--background-1");
+                    sugarcube.blocklyTheme.componentStyles.scrollbarColour = document.body.style.getPropertyValue("--background-4");
+                    
+                    sugarcube.blocklyTheme.componentStyles.flyoutForegroundColour = document.body.style.getPropertyValue("--text-2");
+                    sugarcube.blocklyTheme.componentStyles.toolboxForegroundColour = document.body.style.getPropertyValue("--text-1");
                 }
                 
                 //Enable Custom Color if possible
@@ -112,6 +121,12 @@ editor.settingDefs = {
                             b:split.b * 1.4
                         }));
                     }
+
+                    sugarcube.blocklyTheme.componentStyles.workspaceBackgroundColour = document.body.style.getPropertyValue("--background-3");
+                    sugarcube.blocklyTheme.componentStyles.unseenBackground = document.body.style.getPropertyValue("--background-3");
+                    sugarcube.blocklyTheme.componentStyles.flyoutBackgroundColour = document.body.style.getPropertyValue("--background-2");
+                    sugarcube.blocklyTheme.componentStyles.toolboxBackgroundColour = document.body.style.getPropertyValue("--background-1");
+                    sugarcube.blocklyTheme.componentStyles.scrollbarColour = document.body.style.getPropertyValue("--background-4");
                 }
             },
             menuInit: (previousSettings, elements) => {
@@ -159,6 +174,10 @@ editor.settingDefs = {
                             b:split.b * 1.3
                         }));
                     }
+
+                    
+                    sugarcube.blocklyTheme.componentStyles.flyoutForegroundColour = document.body.style.getPropertyValue("--text-2");
+                    sugarcube.blocklyTheme.componentStyles.toolboxForegroundColour = document.body.style.getPropertyValue("--text-1");
                 }
             },
             menuInit: (previousSettings, elements) => {
@@ -177,7 +196,7 @@ editor.settingDefs = {
     SugarCube: {
         notchWidth:{
             onChange:(value) => {
-                sugarcube.constantOverrides.NOTCH_WIDTH = value;
+                sugarcube.constantOverrides.NOTCH_WIDTH = Number(value);
             },
             type:"number",
             min:"12",
@@ -185,7 +204,7 @@ editor.settingDefs = {
         },
         notchHeight:{
             onChange:(value) => {
-                sugarcube.constantOverrides.NOTCH_HEIGHT = value;
+                sugarcube.constantOverrides.NOTCH_HEIGHT = Number(value);
             },
             type:"number",
             min:"0",
@@ -193,7 +212,7 @@ editor.settingDefs = {
         },
         cornerSize:{
             onChange:(value) => {
-                sugarcube.constantOverrides.CORNER_RADIUS = value;
+                sugarcube.constantOverrides.CORNER_RADIUS = Number(value);
             },
             type:"number",
             min:"0",
@@ -201,7 +220,7 @@ editor.settingDefs = {
         },
         padding:{
             onChange:(value) => {
-                sugarcube.constantOverrides.BETWEEN_STATEMENT_PADDING_Y = value;
+                sugarcube.constantOverrides.BETWEEN_STATEMENT_PADDING_Y = Number(value);
             },
             type:"number",
             min:"0",
