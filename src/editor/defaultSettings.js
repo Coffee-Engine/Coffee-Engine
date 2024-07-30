@@ -1,4 +1,7 @@
 editor.defaultSettings = {
+    Window: {
+        grabSize: 8
+    },
     Theme: {
         themeColor: "Mocha",
         backgroundColor: "#46352a",
@@ -8,7 +11,8 @@ editor.defaultSettings = {
         notchWidth:"36", //NOTCH_HEIGHT
         notchHeight:"8", //NOTCH_WIDTH
         cornerSize:"4", //CORNER_RADIUS
-        padding:"2" //BETWEEN_STATEMENT_PADDING_Y
+        padding:"2", //BETWEEN_STATEMENT_PADDING_Y
+        flyOutOpacity:"50"
     },
     Monaco: {
 
@@ -16,6 +20,16 @@ editor.defaultSettings = {
 }
 
 editor.settingDefs = {
+    Window: {
+        grabSize: {
+            type:"number",
+            min:"2",
+            max:"16",
+            onChange:(value,fromBoot) => {
+                editor.grabDistance = value;
+            }
+        },
+    },
     Theme: {
         themeColor: {
             type:"dropdown",
@@ -225,6 +239,14 @@ editor.settingDefs = {
             type:"number",
             min:"0",
             max:"4"
+        },
+        flyOutOpacity:{
+            onChange:(value) => {
+                sugarcube.blocklyTheme.componentStyles.flyoutOpacity = value / 100;
+            },
+            type:"number",
+            min:"0",
+            max:"100"
         },
     },
     Monaco: {

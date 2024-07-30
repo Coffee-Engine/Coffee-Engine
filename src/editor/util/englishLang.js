@@ -12,8 +12,10 @@ editor.EnglishLang = {
     "engine.home.lastEdited":"Last edited : [TIME]",
     "engine.home.engineConfig":"Engine Settings",
 
-
     "engine.settings.welcome":"Engine Settings",
+    "engine.settings.category.Window":"Window",
+    "engine.settings.category.Window.grabSize":"Window Resize Margin",
+
     "engine.settings.category.Theme":"Theme",
     "engine.settings.category.Theme.themeColor":"Editor Color",
     "engine.settings.category.Theme.backgroundColor":"Background Color",
@@ -24,6 +26,7 @@ editor.EnglishLang = {
     "engine.settings.category.SugarCube.notchHeight":"Notch Height",
     "engine.settings.category.SugarCube.cornerSize":"Corner Size",
     "engine.settings.category.SugarCube.padding":"Padding",
+    "engine.settings.category.SugarCube.flyOutOpacity":"Flyout Opacity",
 
     "engine.settings.category.Monaco":"Monaco",
 

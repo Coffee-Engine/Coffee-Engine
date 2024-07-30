@@ -99,7 +99,7 @@
             this.closeButton.innerHTML = closeButtonSVG;
 
             //Do this so the 'this' context doesn't overlap with the button
-            this.closeButton.onclick = () => {this.dispose()};
+            this.closeButton.onclick = () => {this._dispose()};
 
             //Make the title have no interaction
             this.titleDiv.style.pointerEvents = "none";
@@ -218,10 +218,10 @@
                 const mouseOffsetY = boundingRect.top - downEvent.clientY;
 
                 //Calculate if the mouse is on the edge of the window and what edges it is on
-                const rightEdging = (Math.abs((boundingRect.left + width) - downEvent.clientX) <= 4);
-                const bottomEdging = (Math.abs((boundingRect.top + height) - downEvent.clientY) <= 4);
-                const leftEdging = (Math.abs((boundingRect.left) - downEvent.clientX) <= 4);
-                const topEdging = (Math.abs((boundingRect.top) - downEvent.clientY) <= 4);
+                const rightEdging = (Math.abs((boundingRect.left + width) - downEvent.clientX) <= editor.grabDistance);
+                const bottomEdging = (Math.abs((boundingRect.top + height) - downEvent.clientY) <= editor.grabDistance);
+                const leftEdging = (Math.abs((boundingRect.left) - downEvent.clientX) <= editor.grabDistance);
+                const topEdging = (Math.abs((boundingRect.top) - downEvent.clientY) <= editor.grabDistance);
                 const edging = topEdging || bottomEdging || rightEdging || leftEdging;
 
                 //If we aren't edging return

@@ -32484,6 +32484,12 @@ ${b} to its parent, because: ${a}`);
       this.rowContents_.appendChild(this.iconDom_);
       this.labelDom_ = this.createLabelDom_(this.name_);
       this.rowContents_.appendChild(this.labelDom_);
+
+      this.rowContents_.style.width = "96px";
+      this.rowDiv_.style.width = "96px";
+      this.rowContents_.style.overflowX = "hidden";
+      this.rowDiv_.style.overflowX = "hidden";
+
       const a = this.labelDom_.getAttribute("id");
       a &&
         setState$$module$build$src$core$utils$aria(
@@ -32492,6 +32498,8 @@ ${b} to its parent, because: ${a}`);
           a
         );
       this.addColourBorder_(this.colour_);
+      this.htmlDiv_.style.width = "96px";
+      this.htmlDiv_.style.overflowX = "hidden";
       return this.htmlDiv_;
     }
     createContainer_() {
