@@ -17,7 +17,7 @@
             arguments: {
               key: {
                 type: sugarcube.ArgumentType.STRING,
-                menu: "keys",
+                menu:"keys"
               },
             },
           },
@@ -25,9 +25,9 @@
         menus: {
           keys: {
             items: sugarcube.commonKeys,
-            acceptReporters: true,
+            acceptReporters:true
           },
-        },
+        }
       };
     }
 

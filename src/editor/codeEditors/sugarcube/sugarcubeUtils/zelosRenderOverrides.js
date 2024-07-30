@@ -5,9 +5,9 @@
     init() {
       //Our constant overrider
       const keys = Object.keys(sugarcube.constantOverrides);
-      keys.forEach((key) => {
+      keys.forEach(key => {
         this[key] = sugarcube.constantOverrides[key];
-      });
+      })
 
       super.init();
     }

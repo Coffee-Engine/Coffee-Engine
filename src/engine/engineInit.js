@@ -1,6 +1,6 @@
 const coffeeEngine = {
-  runtime: {},
-  classes: {},
-  resources: {},
-  renderer: {},
+    runtime:{},
+    classes:{},
+    resources:{},
+    renderer:{}
 };

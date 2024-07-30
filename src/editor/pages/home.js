@@ -1,22 +1,22 @@
-(function () {
-  editor.home = {};
+(function() {
+    editor.home = {};
 
-  editor.home.splashAuthor = "ObviousAlexC";
+    editor.home.splashAuthor = "ObviousAlexC";
 
-  editor.home.initilize = () => {
-    console.log("Initilizing Home Page");
+    editor.home.initilize = () => {
+        console.log("Initilizing Home Page");
 
-    editor.changePage();
+        editor.changePage();
 
-    editor.currentPage.root = document.createElement("div");
+        editor.currentPage.root = document.createElement("div");
 
-    editor.currentPage.root.style.position = "absolute";
-    editor.currentPage.root.style.top = "0px";
-    editor.currentPage.root.style.left = "0px";
-    editor.currentPage.root.style.width = "100%";
-    editor.currentPage.root.style.height = "100%";
+        editor.currentPage.root.style.position = "absolute";
+        editor.currentPage.root.style.top = "0px";
+        editor.currentPage.root.style.left = "0px";
+        editor.currentPage.root.style.width = "100%";
+        editor.currentPage.root.style.height = "100%";
 
-    editor.currentPage.root.innerHTML = `
+        editor.currentPage.root.innerHTML = `
         <style>
             .CenterPanel {
                 width:60%,
@@ -124,7 +124,7 @@
                 <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
             </div>
             <div class="fullWidth">
-                <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]", editor.home.splashAuthor)}</p>
+                <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]",editor.home.splashAuthor)}</p>
                 <h1 class="centerText">${editor.language["engine.home.welcome"]}</h1>
             </div>
 
@@ -146,56 +146,53 @@
         </div>
         `;
 
-    document.body.appendChild(editor.currentPage.root);
+        document.body.appendChild(editor.currentPage.root);
 
-    document.getElementById("openSettings").onclick = () => {
-      editor.settings.initilize();
-    };
+        document.getElementById("openSettings").onclick = () => {
+            editor.settings.initilize()
+        }
 
-    const newButton = document.getElementById("newProject");
-    const loadFile = document.getElementById("loadFile");
-    const loadFolder = document.getElementById("loadFolder");
+        const newButton = document.getElementById("newProject");
+        const loadFile = document.getElementById("loadFile");
+        const loadFolder = document.getElementById("loadFolder");
 
-    //For starting a new project
-    newButton.onclick = () => {
-      editor.editorPage.initilize();
-    };
+        //For starting a new project
+        newButton.onclick = () => {
+            editor.editorPage.initilize();
+        }
 
-    //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
-    if (editor.safeties.folderPerimissions) {
-      loadFolder.onclick = () => {
-        window
-          .showDirectoryPicker()
-          .then((result) => {
-            console.log(result);
-          })
-          .catch((error) => {});
-      };
-    } else {
-      loadFolder.className = "projectInitButton disabledButton";
-    }
+        //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
+        if (editor.safeties.folderPerimissions) {
+            loadFolder.onclick = () => {
+                window.showDirectoryPicker().then(result => {
+                    console.log(result);
+                })
+                .catch(error => {});
+            }
+        }
+        else {loadFolder.className = "projectInitButton disabledButton";}
 
-    const recentProjectsPage = document.getElementById("recentProjects");
+        const recentProjectsPage = document.getElementById("recentProjects");
+        
+        const addRecentProject = (projectJSON) => {
+            projectJSON = projectJSON || {};
+            if (recentProjectsPage.children[0].nodeName.toLowerCase() == "h1") {
+                recentProjectsPage.innerHTML = "";
+            }
 
-    const addRecentProject = (projectJSON) => {
-      projectJSON = projectJSON || {};
-      if (recentProjectsPage.children[0].nodeName.toLowerCase() == "h1") {
-        recentProjectsPage.innerHTML = "";
-      }
+            const holder = document.createElement("button");
+            holder.className = "projectInitButton projectButton";
 
-      const holder = document.createElement("button");
-      holder.className = "projectInitButton projectButton";
-
-      holder.innerHTML = `
+            holder.innerHTML = `
             <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
-            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]", projectJSON.modified || Date.now())}</p>
+            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]",(projectJSON.modified || Date.now()))}</p>
             `;
 
-      holder.style.setProperty("--childID", recentProjectsPage.children.length);
+            holder.style.setProperty("--childID", recentProjectsPage.children.length);
 
-      recentProjectsPage.appendChild(holder);
+            recentProjectsPage.appendChild(holder);
 
-      recentProjectsPage.innerHTML += "<br>";
-    };
-  };
+            recentProjectsPage.innerHTML += "<br>";
+        }
+    }
 })();

@@ -1,13 +1,13 @@
-(function () {
-  //Just set up the renderer. Not much to do here.
-  coffeeEngine.renderer.create = (canvas) => {
-    coffeeEngine.renderer.canvas = canvas;
-    coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas);
-
-    coffeeEngine.renderer.mainShaders = {
-      unlit: coffeeEngine.renderer.daveshade.createShader(
-        //Vertex
-        `
+(function() {
+    //Just set up the renderer. Not much to do here.
+    coffeeEngine.renderer.create = (canvas) => {
+        coffeeEngine.renderer.canvas = canvas;
+        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas);
+    
+        coffeeEngine.renderer.mainShaders = {
+            unlit:coffeeEngine.renderer.daveshade.createShader(
+                //Vertex
+                `
                 precision highp float;
     
                 attribute vec4 a_position;
@@ -38,8 +38,8 @@
                     gl_Position.w = gl_Position.z;
                 }
                 `,
-        //Fragment
-        `
+                //Fragment
+                `
                 precision highp float;
     
                 varying vec4 v_color;
@@ -52,18 +52,17 @@
                 {
                     gl_FragColor = v_color;//texture2D(u_texture, v_texCoord) * v_color;
                 }
-                `
-      ),
-      //lit:coffeeEngine.renderer.daveshade.createShader()
-    };
-  };
+                `),
+            //lit:coffeeEngine.renderer.daveshade.createShader()
+        }
+    }
 
-  coffeeEngine.renderer.dispose = () => {
-    if (!coffeeEngine.renderer.canvas) return;
-    coffeeEngine.renderer.canvas.parentElement.removeChild(coffeeEngine.renderer.canvas);
-    coffeeEngine.renderer.daveshade.dispose();
-    delete coffeeEngine.renderer.mainShaders;
-    delete coffeeEngine.renderer.daveshade;
-    delete coffeeEngine.renderer.canvas;
-  };
+    coffeeEngine.renderer.dispose = () => {
+        if (!coffeeEngine.renderer.canvas) return;
+        coffeeEngine.renderer.canvas.parentElement.removeChild(coffeeEngine.renderer.canvas);
+        coffeeEngine.renderer.daveshade.dispose();
+        delete coffeeEngine.renderer.mainShaders;
+        delete coffeeEngine.renderer.daveshade;
+        delete coffeeEngine.renderer.canvas;
+    }
 })();

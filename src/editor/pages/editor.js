@@ -1,20 +1,20 @@
-(function () {
-  editor.editorPage = {};
+(function() {
+    editor.editorPage = {};
 
-  editor.editorPage.initilize = () => {
-    console.log("Initilizing Home Page");
+    editor.editorPage.initilize = () => {
+        console.log("Initilizing Home Page");
 
-    editor.changePage();
+        editor.changePage();
 
-    editor.currentPage.root = document.createElement("div");
+        editor.currentPage.root = document.createElement("div");
 
-    editor.currentPage.root.style.position = "absolute";
-    editor.currentPage.root.style.top = "0px";
-    editor.currentPage.root.style.left = "0px";
-    editor.currentPage.root.style.width = "100%";
-    editor.currentPage.root.style.height = "100%";
+        editor.currentPage.root.style.position = "absolute";
+        editor.currentPage.root.style.top = "0px";
+        editor.currentPage.root.style.left = "0px";
+        editor.currentPage.root.style.width = "100%";
+        editor.currentPage.root.style.height = "100%";
 
-    editor.currentPage.root.innerHTML = `
+        editor.currentPage.root.innerHTML = `
         <style>
             .window {
                 min-height:32px;
@@ -75,8 +75,8 @@
         </style>
         `;
 
-    document.body.appendChild(editor.currentPage.root);
+        document.body.appendChild(editor.currentPage.root);
 
-    coffeeEngine.renderer.create;
-  };
+        coffeeEngine.renderer.create
+    }
 })();
