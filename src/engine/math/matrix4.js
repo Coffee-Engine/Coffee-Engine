@@ -5,6 +5,7 @@
         }
 
         rotationX(rad) {
+            // prettier-ignore
             const rotator = new coffeeEngine.matrix4([
                 [1,0,0,0],
                 [0,Math.cos(rad),Math.sin(rad),0],
@@ -15,6 +16,7 @@
         }
 
         rotationY(rad) {
+            // prettier-ignore
             const rotator = new coffeeEngine.matrix4([
                 [Math.cos(rad),0,Math.sin(rad),0],
                 [0,1,0,0],
@@ -25,6 +27,7 @@
         }
 
         rotationZ(rad) {
+            // prettier-ignore
             const rotator = new coffeeEngine.matrix4([
                 [Math.cos(rad),Math.sin(rad),0,0],
                 [-Math.sin(rad),Math.cos(rad),0,0],
@@ -35,6 +38,7 @@
         }
 
         translate(x,y,z) {
+            // prettier-ignore
             const rotator = new coffeeEngine.matrix4([
                 [1,0,0,x],
                 [0,1,0,y],
@@ -63,6 +67,7 @@
         */
         multiply(matrix) {
             //* I am speed
+            // prettier-ignore
             return new coffeeEngine.matrix4([
                 [this.contents[0][0] * matrix.contents[0][0] + this.contents[0][1] * matrix.contents[1][0] + this.contents[0][2] * matrix.contents[2][0] + this.contents[0][3] * matrix.contents[3][0],
                 this.contents[0][0] * matrix.contents[0][1] + this.contents[0][1] * matrix.contents[1][1] + this.contents[0][2] * matrix.contents[2][1] + this.contents[0][3] * matrix.contents[3][1],
@@ -85,9 +90,13 @@
 
         multiplyVector(vector) {
             const returned = new coffeeEngine.vector4(0,0,0,0);
+            // prettier-ignore
             returned.x = vector.x * this.contents[0][0] + vector.y * this.contents[1][0] + vector.z * this.contents[2][0] + vector.w * this.contents[3][0];
+            // prettier-ignore
             returned.y = vector.x * this.contents[0][1] + vector.y * this.contents[1][1] + vector.z * this.contents[2][1] + vector.w * this.contents[3][1];
+            // prettier-ignore
             returned.z = vector.x * this.contents[0][2] + vector.y * this.contents[1][2] + vector.z * this.contents[2][2] + vector.w * this.contents[3][2];
+            // prettier-ignore
             returned.w = vector.x * this.contents[0][3] + vector.y * this.contents[1][3] + vector.z * this.contents[2][3] + vector.w * this.contents[3][3];
             return returned;
         }
@@ -98,6 +107,7 @@
     }
 
     coffeeEngine.matrix4.identity = () => {
+        // prettier-ignore
         return new coffeeEngine.matrix4([
             [1,0,0,0],
             [0,1,0,0],

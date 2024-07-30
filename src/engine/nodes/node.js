@@ -4,23 +4,28 @@
         #parent;
         set parent(value) {
             if (value.addChild) {
+               // prettier-ignore
                 if (this.parent) this.#parent.removeChild(this);
 
                 this.#parent = value;
 
                 //* Add our event listeners if they don't exist.
+                // prettier-ignore
                 if (!coffeeEngine.runtime.currentScene.hasEventListener("update", () => {this.update()})) {
                     coffeeEngine.runtime.currentScene.addEventListener("update", () => {this.update()})
                 }
+                // prettier-ignore
                 if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", () => {this.draw()})) {
                     coffeeEngine.runtime.currentScene.addEventListener("draw", () => {this.draw()})
                 }
             }
             else if (typeof value == "undefined" || value == null) {
                 //* Remove our event listeners.
+                // prettier-ignore
                 if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.update)) {
                     coffeeEngine.runtime.currentScene.removeEventListener("update", this.update)
                 }
+                // prettier-ignore
                 if (coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
                     coffeeEngine.runtime.currentScene.removeEventListener("draw", this.draw)
                 }
@@ -52,12 +57,14 @@
         ready() {};
 
         update(deltaTime) {
+            // prettier-ignore
             if (this.#script && this.#script.update) {
                 this.#script.update(deltaTime);
             }
         }
 
         draw() {
+            // prettier-ignore
             if (this.#script && this.#script.draw) {
                 this.#script.draw();
             }
