@@ -129,46 +129,67 @@
 
         __createMoveableWindow() {
             this.TaskBar.onmousedown = (downEvent) => {
+                //If we are docked. We do nothing.
                 if (this.docked) return;
 
+                //Move the window layer
                 editor.windowLayer += 1;
                 
+                //Get bounding box for the window
                 const boundingRect = this.TaskBar.getBoundingClientRect();
                 const {width, height} = this.windowDiv.getBoundingClientRect();
 
+                //Calculate the correct offsets
                 const mouseOffsetX = boundingRect.left - downEvent.clientX;
                 const mouseOffsetY = boundingRect.top - downEvent.clientY;
 
-                const edging = (Math.abs(boundingRect.left - downEvent.clientX) <= 2) ||
-                (Math.abs(boundingRect.top - downEvent.clientY) <= 2) ||
-                (Math.abs((boundingRect.left + width) - downEvent.clientX) <= 4) ||
-                (Math.abs((boundingRect.top + height) - downEvent.clientY) <= 4);
-
+                //Calculate if the mouse is on the edge of the window and what edges it is on
                 const rightEdging = (Math.abs((boundingRect.left + width) - downEvent.clientX) <= 4);
                 const bottomEdging = (Math.abs((boundingRect.top + height) - downEvent.clientY) <= 4);
+                const leftEdging = (Math.abs((boundingRect.left) - downEvent.clientX) <= 4);
+                const topEdging = (Math.abs((boundingRect.top) - downEvent.clientY) <= 4);
+                const edging = topEdging || bottomEdging || rightEdging || leftEdging;
 
+                //Move window to initial position and adjust layer accordingly
                 this.windowDiv.style.left = `${downEvent.clientX + mouseOffsetX}px`;
                 this.windowDiv.style.top = `${downEvent.clientY + mouseOffsetY}px`;
                 this.windowDiv.style.zIndex = editor.windowLayer;
 
                 //Clear mouse actions when done;
-                this.TaskBar.onmouseup = () => {
+                document.onmouseup = () => {
                     document.onmousemove = () => {}
                 }
 
+                //If we are on the edge use different behavior.
                 if (edging) {
                     document.onmousemove = (moveEvent) => {
                         if (!this.windowDiv) {
                             document.onmousemove = () => {};
                             return;
                         }
-                        this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
-                        this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
+
+                        if (rightEdging) {
+                            this.windowDiv.style.width = `${moveEvent.clientX + mouseOffsetX}px`
+                        }
+                        else if (leftEdging) {
+                            this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
+                            this.windowDiv.style.width = `${Number(this.windowDiv.style.width.replace("px","")) - moveEvent.movementX}px`
+                        }
+
+                        //I can 100% gaurentee that the width is probably never going to be anything but pixels.
+                        if (bottomEdging) {
+                            this.windowDiv.style.height = `${moveEvent.clientY + mouseOffsetY}px`
+                        }
+                        else if (topEdging) {
+                            this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
+                            this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px","")) - moveEvent.movementY}px`
+                        }
                     }
 
                     return;
                 }
 
+                //Move window if dragging taskbar
                 document.onmousemove = (moveEvent) => {
                     if (!this.windowDiv) {
                         document.onmousemove = () => {};
@@ -176,6 +197,62 @@
                     }
                     this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
                     this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
+                }
+            }
+
+            this.windowDiv.onmousedown = (downEvent) => {
+                //If we are docked. We do nothing.
+                if (this.docked) return;
+
+                //Move the window layer
+                editor.windowLayer += 1;
+
+                //Get bounding box for the window
+                const boundingRect = this.windowDiv.getBoundingClientRect();
+                const {width, height} = boundingRect;
+
+                //Calculate the correct offsets
+                const mouseOffsetX = boundingRect.left - downEvent.clientX;
+                const mouseOffsetY = boundingRect.top - downEvent.clientY;
+
+                //Calculate if the mouse is on the edge of the window and what edges it is on
+                const rightEdging = (Math.abs((boundingRect.left + width) - downEvent.clientX) <= 4);
+                const bottomEdging = (Math.abs((boundingRect.top + height) - downEvent.clientY) <= 4);
+                const leftEdging = (Math.abs((boundingRect.left) - downEvent.clientX) <= 4);
+                const topEdging = (Math.abs((boundingRect.top) - downEvent.clientY) <= 4);
+                const edging = topEdging || bottomEdging || rightEdging || leftEdging;
+
+                //If we aren't edging return
+                if (!edging) return;
+
+                //Clear mouse actions when done;
+                document.onmouseup = () => {
+                    document.onmousemove = () => {}
+                }
+
+                //Normal window resize calculations
+                document.onmousemove = (moveEvent) => {
+                    if (!this.windowDiv) {
+                        document.onmousemove = () => {};
+                        return;
+                    }
+
+                    if (rightEdging) {
+                        this.windowDiv.style.width = `${Number(this.windowDiv.style.width.replace("px","")) + moveEvent.movementX}px`
+                    }
+                    else if (leftEdging) {
+                        this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
+                        this.windowDiv.style.width = `${Number(this.windowDiv.style.width.replace("px","")) - moveEvent.movementX}px`
+                    }
+
+                    //I can 100% gaurentee that the width is probably never going to be anything but pixels.
+                    if (bottomEdging) {
+                        this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px","")) + moveEvent.movementY}px`
+                    }
+                    else if (topEdging) {
+                        this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
+                        this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px","")) - moveEvent.movementY}px`
+                    }
                 }
             }
         }

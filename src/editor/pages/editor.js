@@ -18,7 +18,7 @@
         <style>
             .window {
                 min-height:32px;
-                min-width:64px;
+                min-width:96px;
 
                 overflow: hidden;
 
@@ -38,6 +38,7 @@
 
                 display:grid;
                 grid-template-columns: auto 24px;
+                overflow: hidden;
                 
                 line-height: 24px;
                 text-align: center;
@@ -52,7 +53,7 @@
                 text-align: center;
                 vertical-align: middle;
                 font-size: Large;
-                height:100%;
+                height:24px;
                 border-width:0px;
             }
 
