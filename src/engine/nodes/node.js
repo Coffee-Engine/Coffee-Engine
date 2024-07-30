@@ -1,10 +1,9 @@
-(function() {
+(function () {
     coffeeEngine.classes.node = class {
-
         #parent;
         set parent(value) {
             if (value.addChild) {
-               // prettier-ignore
+                // prettier-ignore
                 if (this.parent) this.#parent.removeChild(this);
 
                 this.#parent = value;
@@ -18,8 +17,7 @@
                 if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", () => {this.draw()})) {
                     coffeeEngine.runtime.currentScene.addEventListener("draw", () => {this.draw()})
                 }
-            }
-            else if (typeof value == "undefined" || value == null) {
+            } else if (typeof value == "undefined" || value == null) {
                 //* Remove our event listeners.
                 // prettier-ignore
                 if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.update)) {
@@ -29,12 +27,13 @@
                 if (coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
                     coffeeEngine.runtime.currentScene.removeEventListener("draw", this.draw)
                 }
-            }
-            else {
-                console.error(`cannot set parent to ${String(value)}`)
+            } else {
+                console.error(`cannot set parent to ${String(value)}`);
             }
         }
-        get parent() {return this.#parent;}
+        get parent() {
+            return this.#parent;
+        }
 
         #script;
         set script(value) {
@@ -47,14 +46,16 @@
             }
         }
 
-        get script() {return this.#script;}
+        get script() {
+            return this.#script;
+        }
 
         constructor() {
             this.children = [];
             this.name = "node";
         }
 
-        ready() {};
+        ready() {}
 
         update(deltaTime) {
             // prettier-ignore
@@ -69,11 +70,11 @@
                 this.#script.draw();
             }
         }
-        
+
         addChild(child) {
             if (child == this) return;
             this.children.push(child);
             child.parent = this;
         }
-    }
+    };
 })();

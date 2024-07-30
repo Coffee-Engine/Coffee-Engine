@@ -1,4 +1,4 @@
-(function() {
+(function () {
     coffeeEngine.resources.resource = class {
         name = "resource";
         data = "";
@@ -12,5 +12,5 @@
         serialize() {
             return String(this.data);
         }
-    }
+    };
 })();

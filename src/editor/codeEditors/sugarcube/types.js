@@ -1,71 +1,71 @@
 (function () {
-  sugarcube.BlockType = {
-    REPORTER: "reporter",
+    sugarcube.BlockType = {
+        REPORTER: "reporter",
 
-    HAT: "hat",
-    PROCEDURE_DEFINITION: "procedure_def",
+        HAT: "hat",
+        PROCEDURE_DEFINITION: "procedure_def",
 
-    BOOLEAN: "boolean",
+        BOOLEAN: "boolean",
 
-    OBJECT: "object",
-    ARRAY: "array",
+        OBJECT: "object",
+        ARRAY: "array",
 
-    //These three are the same internally they are just there for scratch compatibility...
-    CONDITIONAL: "command",
-    LOOP: "command",
-    COMMAND: "command",
+        //These three are the same internally they are just there for scratch compatibility...
+        CONDITIONAL: "command",
+        LOOP: "command",
+        COMMAND: "command",
 
-    TERMINAL: "terminal",
+        TERMINAL: "terminal",
 
-    BUTTON: "button",
+        BUTTON: "button",
 
-    LABEL: "label",
+        LABEL: "label",
 
-    DUPLICATE: "duplicate",
+        DUPLICATE: "duplicate",
 
-    INLINE: "inline",
+        INLINE: "inline",
 
-    REPORTER_ANY: "reporter_any",
-  };
+        REPORTER_ANY: "reporter_any",
+    };
 
-  sugarcube.ArgumentType = {
-    STRING: "string",
-    MULTILINE: "multiline",
+    sugarcube.ArgumentType = {
+        STRING: "string",
+        MULTILINE: "multiline",
 
-    BOOLEAN: "boolean",
+        BOOLEAN: "boolean",
 
-    CUSTOM: "custom",
+        CUSTOM: "custom",
 
-    NUMBER: "number",
+        NUMBER: "number",
 
-    COLOR: "color",
+        COLOR: "color",
 
-    IMAGE: "image",
+        IMAGE: "image",
 
-    DUMMY: "dummy",
+        DUMMY: "dummy",
 
-    STATEMENT: "statement",
+        STATEMENT: "statement",
 
-    OBJECT: "object",
-    ARRAY: "array",
-  };
+        OBJECT: "object",
+        ARRAY: "array",
+    };
 
-  sugarcube.ArgumentDefaultValues = {
-    boolean: false,
+    sugarcube.ArgumentDefaultValues = {
+        boolean: false,
 
-    multiline: "Hello\nWorld!",
+        multiline: "Hello\nWorld!",
 
-    number: 0,
+        number: 0,
 
-    color: "#ff0000",
-  };
+        color: "#ff0000",
+    };
 
-  sugarcube.ArgumentShadowConversions = {
-    string: "__sugarcube_string_reporter",
-    multiline: "__sugarcube_multiline_string_reporter",
+    sugarcube.ArgumentShadowConversions = {
+        string: "__sugarcube_string_reporter",
+        multiline: "__sugarcube_multiline_string_reporter",
 
-    number: "__sugarcube_number_reporter",
+        number: "__sugarcube_number_reporter",
 
-    color: "__sugarcube_color_reporter",
-  };
+        color: "__sugarcube_color_reporter",
+    };
 })();

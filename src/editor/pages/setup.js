@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.setup = {};
 
     editor.language = Object.assign({}, editor.EnglishLang, editor.Storage.getStorage("language", {}));
@@ -82,41 +82,45 @@
 
         const languageContainer = document.getElementById("languages");
 
-        fetch("https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/Languages.json").then(response => response.json()).then(response => {
-            languageContainer.innerHTML = "";
-            response.forEach(langDef => {
-                const button = document.createElement("button");
-                button.style.width = "100%";
-                button.style.height = "48px";
+        fetch("https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/Languages.json")
+            .then((response) => response.json())
+            .then((response) => {
+                languageContainer.innerHTML = "";
+                response.forEach((langDef) => {
+                    const button = document.createElement("button");
+                    button.style.width = "100%";
+                    button.style.height = "48px";
 
-                button.style.fontSize = "x-Large";
+                    button.style.fontSize = "x-Large";
 
-                button.innerHTML = langDef.Name;
+                    button.innerHTML = langDef.Name;
 
-                button.setAttribute("languageURL",`https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/LANG/${langDef.File}.json`);
+                    button.setAttribute("languageURL", `https://raw.githubusercontent.com/ObviousStudios/CE-LANG/main/LANG/${langDef.File}.json`);
 
-                languageContainer.appendChild(button);
+                    languageContainer.appendChild(button);
 
-                button.onclick = () => {
-                    fetch(button.getAttribute("languageURL")).then(response => response.json()).then(response => {
-                        //set the language
-                        editor.Storage.setStorage("language", response);
-                        editor.language = Object.assign({}, editor.EnglishLang, response);
+                    button.onclick = () => {
+                        fetch(button.getAttribute("languageURL"))
+                            .then((response) => response.json())
+                            .then((response) => {
+                                //set the language
+                                editor.Storage.setStorage("language", response);
+                                editor.language = Object.assign({}, editor.EnglishLang, response);
 
-                        //Set the language name
-                        editor.Storage.setStorage("languageName", langDef.Name);
+                                //Set the language name
+                                editor.Storage.setStorage("languageName", langDef.Name);
 
-                        editor.home.initilize();
-                    })
-                    .catch(error => {
-                        button.innerText += ` : ${error}`;
-                        button.onclick = () => {};
-                    })
-                }
+                                editor.home.initilize();
+                            })
+                            .catch((error) => {
+                                button.innerText += ` : ${error}`;
+                                button.onclick = () => {};
+                            });
+                    };
+                });
+            })
+            .catch((error) => {
+                editor.home.initilize();
             });
-        })
-        .catch(error => {
-            editor.home.initilize();
-        });
-    }
+    };
 })();

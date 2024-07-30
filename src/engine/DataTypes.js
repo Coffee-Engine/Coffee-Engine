@@ -1,5 +1,5 @@
 coffeeEngine.DataTypes = {
-    TEXT:"text",
-    
-    BLOB:"blob"
-}
+    TEXT: "text",
+
+    BLOB: "blob",
+};

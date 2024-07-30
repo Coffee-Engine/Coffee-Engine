@@ -1,4 +1,4 @@
-(function() {
+(function () {
     coffeeEngine.matrix4 = class {
         constructor(contents) {
             this.contents = contents;
@@ -37,7 +37,7 @@
             return this.multiply(rotator);
         }
 
-        translate(x,y,z) {
+        translate(x, y, z) {
             // prettier-ignore
             const rotator = new coffeeEngine.matrix4([
                 [1,0,0,x],
@@ -89,7 +89,7 @@
         }
 
         multiplyVector(vector) {
-            const returned = new coffeeEngine.vector4(0,0,0,0);
+            const returned = new coffeeEngine.vector4(0, 0, 0, 0);
             // prettier-ignore
             returned.x = vector.x * this.contents[0][0] + vector.y * this.contents[1][0] + vector.z * this.contents[2][0] + vector.w * this.contents[3][0];
             // prettier-ignore
@@ -104,7 +104,7 @@
         webGLValue() {
             return this.contents.flat(2);
         }
-    }
+    };
 
     coffeeEngine.matrix4.identity = () => {
         // prettier-ignore
@@ -114,10 +114,10 @@
             [0,0,1,0],
             [0,0,0,1]
         ]);
-    }
+    };
 
     coffeeEngine.matrix4.projection = (fov, aspect, near, far) => {
-        const fovRad = 1.0 / Math.tan(fov * 0.5 / 180 * 3.141592682);
+        const fovRad = 1.0 / Math.tan(((fov * 0.5) / 180) * 3.141592682);
 
         const returned = coffeeEngine.matrix4.identity();
 
@@ -129,5 +129,5 @@
         returned.contents[3][3] = 0;
 
         return returned;
-    }
+    };
 })();

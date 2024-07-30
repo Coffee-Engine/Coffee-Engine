@@ -1,5 +1,5 @@
 const editor = {
-    currentPage:{},
+    currentPage: {},
     language: {},
     changePage: () => {
         if (editor.currentPage.root) {
@@ -15,6 +15,6 @@ const editor = {
     },
     safeties: {
         secureContext: window.isSecureContext,
-        folderPerimissions: window.showDirectoryPicker != undefined
-    }
+        folderPerimissions: window.showDirectoryPicker != undefined,
+    },
 };

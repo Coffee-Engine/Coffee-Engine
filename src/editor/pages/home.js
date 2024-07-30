@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.home = {};
 
     editor.home.splashAuthor = "ObviousAlexC";
@@ -124,7 +124,7 @@
                 <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
             </div>
             <div class="fullWidth">
-                <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]",editor.home.splashAuthor)}</p>
+                <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]", editor.home.splashAuthor)}</p>
                 <h1 class="centerText">${editor.language["engine.home.welcome"]}</h1>
             </div>
 
@@ -149,8 +149,8 @@
         document.body.appendChild(editor.currentPage.root);
 
         document.getElementById("openSettings").onclick = () => {
-            editor.settings.initilize()
-        }
+            editor.settings.initilize();
+        };
 
         const newButton = document.getElementById("newProject");
         const loadFile = document.getElementById("loadFile");
@@ -159,21 +159,24 @@
         //For starting a new project
         newButton.onclick = () => {
             editor.editorPage.initilize();
-        }
+        };
 
         //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
         if (editor.safeties.folderPerimissions) {
             loadFolder.onclick = () => {
-                window.showDirectoryPicker().then(result => {
-                    console.log(result);
-                })
-                .catch(error => {});
-            }
+                window
+                    .showDirectoryPicker()
+                    .then((result) => {
+                        console.log(result);
+                    })
+                    .catch((error) => {});
+            };
+        } else {
+            loadFolder.className = "projectInitButton disabledButton";
         }
-        else {loadFolder.className = "projectInitButton disabledButton";}
 
         const recentProjectsPage = document.getElementById("recentProjects");
-        
+
         const addRecentProject = (projectJSON) => {
             projectJSON = projectJSON || {};
             if (recentProjectsPage.children[0].nodeName.toLowerCase() == "h1") {
@@ -185,7 +188,7 @@
 
             holder.innerHTML = `
             <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
-            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]",(projectJSON.modified || Date.now()))}</p>
+            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]", projectJSON.modified || Date.now())}</p>
             `;
 
             holder.style.setProperty("--childID", recentProjectsPage.children.length);
@@ -193,6 +196,6 @@
             recentProjectsPage.appendChild(holder);
 
             recentProjectsPage.innerHTML += "<br>";
-        }
-    }
+        };
+    };
 })();

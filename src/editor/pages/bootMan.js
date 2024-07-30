@@ -1,8 +1,7 @@
-(function() {
+(function () {
     if (!editor.Storage.keyExists("language")) {
         editor.setup.initilize();
-    }
-    else {
+    } else {
         editor.home.initilize();
     }
 })();

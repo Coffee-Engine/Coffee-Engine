@@ -1,6 +1,6 @@
-(function() {
+(function () {
     coffeeEngine.vector4 = class {
-        constructor(x,y,z,w) {
+        constructor(x, y, z, w) {
             this.x = x;
             this.y = y;
             this.z = z;
@@ -28,12 +28,12 @@
         }
 
         lengthSquared() {
-            return Math.pow(this.x,2) + Math.pow(this.y,2) + Math.pow(this.z,2) + Math.pow(this.w,2);
+            return Math.pow(this.x, 2) + Math.pow(this.y, 2) + Math.pow(this.z, 2) + Math.pow(this.w, 2);
         }
 
         normalize() {
             const length = this.length();
-            return this.div({x:length, y:length, z:length, w:length});
+            return this.div({ x: length, y: length, z: length, w: length });
         }
 
         dot(b) {
@@ -45,7 +45,7 @@
         }
 
         webGLValue() {
-            return [this.x,this.y,this.z,this.w];
+            return [this.x, this.y, this.z, this.w];
         }
-    }
+    };
 })();

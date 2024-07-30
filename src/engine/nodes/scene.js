@@ -1,29 +1,29 @@
-(function() {
+(function () {
     coffeeEngine.sceneClass = class {
         constructor() {
             this.children = [];
             this.events = {
-                update:[],
-                draw:[]
-            }
+                update: [],
+                draw: [],
+            };
 
             this.name = "scene";
         }
 
-        addEventListener(event,func) {
+        addEventListener(event, func) {
             if (typeof this.events[event] != "object") return;
 
             this.events[event].push(func);
             return func;
         }
 
-        hasEventListener(event,func) {
+        hasEventListener(event, func) {
             if (typeof this.events[event] != "object") return;
 
             return this.events[event].includes(func);
         }
 
-        removeEventListener(event,func) {
+        removeEventListener(event, func) {
             if (typeof this.events[event] != "object") return;
 
             if (this.events[event].includes(func)) {
@@ -32,13 +32,13 @@
         }
 
         update(deltaTime) {
-            this.events.update.forEach(event => {
+            this.events.update.forEach((event) => {
                 event(deltaTime);
             });
         }
 
         draw() {
-            this.events.draw.forEach(event => {
+            this.events.draw.forEach((event) => {
                 event();
             });
         }
@@ -48,5 +48,5 @@
             this.children.push(child);
             child.parent = this;
         }
-    }
+    };
 })();

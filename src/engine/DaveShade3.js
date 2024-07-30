@@ -24,67 +24,67 @@
 */
 
 const DaveShade = {};
-(function() {
+(function () {
     //Compile status enum
     DaveShade.COMPILE_STATUS = {
-        SUCCESS:1,
-        FAILURE:0,
-    }
+        SUCCESS: 1,
+        FAILURE: 0,
+    };
 
     DaveShade.REGEX = {
-        ATTRIBUTE:/attribute.*;/g
-    }
+        ATTRIBUTE: /attribute.*;/g,
+    };
 
     DaveShade.setters = {
         //?Float
-        5126: (gl,location,value) => {
+        5126: (gl, location, value) => {
             gl.uniform1fv(location, value);
         },
         //?Vec2
-        35664: (gl,location,value) => {
+        35664: (gl, location, value) => {
             gl.uniform2fv(location, value);
         },
         //?Vec3
-        35665: (gl,location,value) => {
+        35665: (gl, location, value) => {
             gl.uniform3fv(location, value);
         },
         //?Vec4
-        35666: (gl,location,value) => {
+        35666: (gl, location, value) => {
             gl.uniform4fv(location, value);
         },
 
         //?Mat2
-        35674: (gl,location,value) => {
-            gl.uniformMatrix2fv(location,false,value);
+        35674: (gl, location, value) => {
+            gl.uniformMatrix2fv(location, false, value);
         },
-        
+
         //?Mat3
-        35675: (gl,location,value) => {
-            gl.uniformMatrix3fv(location,false,value);
+        35675: (gl, location, value) => {
+            gl.uniformMatrix3fv(location, false, value);
         },
 
         //?Mat4
-        35676: (gl,location,value) => {
-            gl.uniformMatrix4fv(location,false,value);
+        35676: (gl, location, value) => {
+            gl.uniformMatrix4fv(location, false, value);
         },
 
         //?Sampler2D
-        35678: (gl,location,value,uniformInfo) => {
+        35678: (gl, location, value, uniformInfo) => {
             gl.activeTexture(gl[`TEXTURE${uniformInfo.samplerID}`]);
-            gl.bindTexture(gl.TEXTURE_2D,value);
-            gl.uniform1i(location,uniformInfo.samplerID);
+            gl.bindTexture(gl.TEXTURE_2D, value);
+            gl.uniform1i(location, uniformInfo.samplerID);
         },
 
         //?SamplerCube
-        35679: (gl,location,value) => {
-            gl.uniform1iv(location,value);
-        }
-    }
+        35679: (gl, location, value) => {
+            gl.uniform1iv(location, value);
+        },
+    };
 
     DaveShade.createInstance = (CANVAS) => {
         const daveShadeInstance = {
-            CANVAS:CANVAS
-        }
+            CANVAS: CANVAS,
+        };
 
         daveShadeInstance.GL = CANVAS.getContext("webgl2");
         daveShadeInstance.GL_TYPE = "webgl2";
@@ -96,9 +96,9 @@ const DaveShade = {};
 
         daveShadeInstance.decomposeShader = (shaderCode) => {
             return {
-                status:DaveShade.COMPILE_STATUS.FAILURE
-            }
-        }
+                status: DaveShade.COMPILE_STATUS.FAILURE,
+            };
+        };
 
         //?Could potentially be better? Maybe less if statement hell.
         daveShadeInstance.clearMemory = (shader) => {
@@ -111,9 +111,9 @@ const DaveShade = {};
             if (shader.fragment) {
                 GL.deleteShader(shader.fragment.shader);
             }
-        }
+        };
 
-        daveShadeInstance.createShader = (vertex,fragment) => {
+        daveShadeInstance.createShader = (vertex, fragment) => {
             //? If we have a single code shader then decompose it.
             let compileStatus = true;
             if (vertex && !fragment) return daveShadeInstance.decomposeShader(vertex);
@@ -122,10 +122,10 @@ const DaveShade = {};
 
             //* Compile the vertex shader
             shader.vertex = {
-                shader:GL.createShader(GL.VERTEX_SHADER),
-                src:vertex
-            }
-            GL.shaderSource(shader.vertex.shader,vertex);
+                shader: GL.createShader(GL.VERTEX_SHADER),
+                src: vertex,
+            };
+            GL.shaderSource(shader.vertex.shader, vertex);
             GL.compileShader(shader.vertex.shader);
 
             //? could potentially be better?
@@ -134,16 +134,16 @@ const DaveShade = {};
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
                 daveShadeInstance.clearMemory(shader);
                 return {
-                    status:DaveShade.COMPILE_STATUS.FAILURE
-                }
+                    status: DaveShade.COMPILE_STATUS.FAILURE,
+                };
             }
 
             //* Compile the fragment shader
             shader.fragment = {
-                shader:GL.createShader(GL.FRAGMENT_SHADER),
-                src:fragment
-            }
-            GL.shaderSource(shader.fragment.shader,fragment);
+                shader: GL.createShader(GL.FRAGMENT_SHADER),
+                src: fragment,
+            };
+            GL.shaderSource(shader.fragment.shader, fragment);
             GL.compileShader(shader.fragment.shader);
 
             //? could potentially be better?
@@ -152,8 +152,8 @@ const DaveShade = {};
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
                 daveShadeInstance.clearMemory(shader);
                 return {
-                    status:DaveShade.COMPILE_STATUS.FAILURE
-                }
+                    status: DaveShade.COMPILE_STATUS.FAILURE,
+                };
             }
 
             //* Get in the oven frank
@@ -170,8 +170,8 @@ const DaveShade = {};
                 console.error(`shader not compiled!\nerror in program creation!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
                 daveShadeInstance.clearMemory(shader);
                 return {
-                    status:DaveShade.COMPILE_STATUS.FAILURE
-                }
+                    status: DaveShade.COMPILE_STATUS.FAILURE,
+                };
             }
 
             //* Set the compile status
@@ -188,21 +188,21 @@ const DaveShade = {};
 
             //* Loop through the uniforms
             for (let id = 0; id < shader.activeUniformIDs.length; id++) {
-                const uniformInfo = GL.getActiveUniform(shader.program,id);
-                const location = GL.getUniformLocation(shader.program,uniformInfo.name);
+                const uniformInfo = GL.getActiveUniform(shader.program, id);
+                const location = GL.getUniformLocation(shader.program, uniformInfo.name);
 
                 shader.uniforms[uniformInfo.name] = {
                     location: location,
-                    type:uniformInfo.type,
-                    "#value":null,
+                    type: uniformInfo.type,
+                    "#value": null,
 
                     set value(value) {
                         shader.uniforms[uniformInfo.name]["#value"] = value;
-                        DaveShade.setters[uniformInfo.type](GL,location,value,uniformInfo);
+                        DaveShade.setters[uniformInfo.type](GL, location, value, uniformInfo);
                     },
                     get value() {
                         return shader.uniforms[uniformInfo.name]["#value"];
-                    }
+                    },
                 };
 
                 if (uniformInfo.type == 35678) {
@@ -215,15 +215,15 @@ const DaveShade = {};
             const attributes = vertex.match(DaveShade.REGEX.ATTRIBUTE);
             shader.attributes = {};
 
-            attributes.forEach(attributeDef => {
+            attributes.forEach((attributeDef) => {
                 //* Lets split the attribute definition
-                const splitDef = attributeDef.replace(";","").split(" ");
+                const splitDef = attributeDef.replace(";", "").split(" ");
                 const id = splitDef[splitDef.length - 1];
 
                 //? could probably conglomerate better?
                 shader.attributes[id] = {
-                    type: splitDef[splitDef.length - 2]
-                }
+                    type: splitDef[splitDef.length - 2],
+                };
 
                 //* Attribute Stuff
                 shader.attributes[id].location = GL.getAttribLocation(shader.program, id);
@@ -265,8 +265,8 @@ const DaveShade = {};
                         shader.attributes[id].divisions = 1;
                         break;
                 }
-                
-                GL.vertexAttribPointer(shader.attributes[id].location,shader.attributes[id].divisions,GL.FLOAT,false,0,0);
+
+                GL.vertexAttribPointer(shader.attributes[id].location, shader.attributes[id].divisions, GL.FLOAT, false, 0, 0);
             });
 
             //* The buffer setter! the Big ONE!
@@ -277,23 +277,23 @@ const DaveShade = {};
                 //? Loop through the keys
                 for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
                     const key = attributeKeys[keyID];
-                    
+
                     //* if it exists set the attribute
                     if (shader.attributes[key]) {
                         shader.attributes[key].set(attributeJSON[key]);
                     }
                 }
-            }
+            };
 
             shader.drawFromBuffers = (triAmount) => {
                 GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
                 GL.useProgram(shader.program);
-                GL.drawArrays(GL.TRIANGLES,0,triAmount);
-            }
+                GL.drawArrays(GL.TRIANGLES, 0, triAmount);
+            };
 
             return shader;
-        }
+        };
 
         return daveShadeInstance;
-    }
+    };
 })();

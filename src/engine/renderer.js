@@ -1,11 +1,11 @@
-(function() {
+(function () {
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas) => {
         coffeeEngine.renderer.canvas = canvas;
         coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas);
-    
+
         coffeeEngine.renderer.mainShaders = {
-            unlit:coffeeEngine.renderer.daveshade.createShader(
+            unlit: coffeeEngine.renderer.daveshade.createShader(
                 //Vertex
                 `
                 precision highp float;
@@ -52,10 +52,11 @@
                 {
                     gl_FragColor = v_color;//texture2D(u_texture, v_texCoord) * v_color;
                 }
-                `),
+                `
+            ),
             //lit:coffeeEngine.renderer.daveshade.createShader()
-        }
-    }
+        };
+    };
 
     coffeeEngine.renderer.dispose = () => {
         if (!coffeeEngine.renderer.canvas) return;
@@ -64,5 +65,5 @@
         delete coffeeEngine.renderer.mainShaders;
         delete coffeeEngine.renderer.daveshade;
         delete coffeeEngine.renderer.canvas;
-    }
+    };
 })();

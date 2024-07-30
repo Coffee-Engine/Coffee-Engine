@@ -1,6 +1,5 @@
-(function() {
+(function () {
     coffeeEngine.classes.node3D = class extends coffeeEngine.classes.node {
-
         mesh;
 
         draw() {
@@ -12,5 +11,5 @@
                 coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(this.mesh.pointCount);
             }
         }
-    }
+    };
 })();

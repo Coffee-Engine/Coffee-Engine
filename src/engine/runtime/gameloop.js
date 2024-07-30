@@ -1,4 +1,4 @@
-(function() {
+(function () {
     coffeeEngine.runtime.frameloopFunction = () => {
         coffeeEngine.runtime.updateDelta();
         if (!coffeeEngine.runtime.paused) {
@@ -12,6 +12,6 @@
             clearInterval(coffeeEngine.runtime.frameloop);
         }
 
-        coffeeEngine.runtime.frameloop = setInterval(coffeeEngine.runtime.frameloopFunction, (1/framerate) * 1000);
-    }
+        coffeeEngine.runtime.frameloop = setInterval(coffeeEngine.runtime.frameloopFunction, (1 / framerate) * 1000);
+    };
 })();

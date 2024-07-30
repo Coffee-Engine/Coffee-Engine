@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.settings = {};
 
     editor.settings.values = Object.assign({}, editor.defaultSettings, editor.Storage.getStorage("settingsValues", {}));
@@ -98,13 +98,13 @@
 
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();
-        }
+        };
 
         const sidebar = document.getElementById("sidebar");
         const settingsPanel = document.getElementById("settingsPanel");
 
         //Loop through categories
-        Object.keys(editor.defaultSettings).forEach(key => {
+        Object.keys(editor.defaultSettings).forEach((key) => {
             const button = document.createElement("button");
             button.style.width = "100%";
             button.innerHTML = editor.language[`engine.settings.category.${key}`];
@@ -117,7 +117,7 @@
                 settingsPanel.innerHTML = "";
 
                 //Loop through settings in that category
-                Object.keys(editor.defaultSettings[key]).forEach(settingKey => {
+                Object.keys(editor.defaultSettings[key]).forEach((settingKey) => {
                     //Create our text for the editor element
                     const settingSpan = document.createElement("p");
                     settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
@@ -125,10 +125,10 @@
                     settingSpan.style.margin = "2px";
 
                     //This is where we get inputs for the setting
-                    const elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type,editor.settingDefs[key][settingKey],key,settingKey);
+                    const elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type, editor.settingDefs[key][settingKey], key, settingKey);
                     editor.settings.elements[settingKey] = {
                         span: settingSpan,
-                        input:elementEditor
+                        input: elementEditor,
                     };
 
                     if (elementEditor) settingSpan.appendChild(elementEditor);
@@ -137,15 +137,15 @@
 
                     if (editor.settingDefs[key][settingKey].menuInit) editor.settingDefs[key][settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
                 });
-            }
+            };
         });
 
         if (sidebar.children[0]) sidebar.children[0].onclick();
-    }
+    };
 
     //For when the editor first boots up.
-    Object.keys(editor.defaultSettings).forEach(key => {
-        Object.keys(editor.defaultSettings[key]).forEach(settingKey => {
+    Object.keys(editor.defaultSettings).forEach((key) => {
+        Object.keys(editor.defaultSettings[key]).forEach((settingKey) => {
             if (editor.settingDefs[key][settingKey].onChange) editor.settingDefs[key][settingKey].onChange(editor.settings.values[key][settingKey], true);
         });
     });

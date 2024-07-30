@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.editorPage = {};
 
     editor.editorPage.initilize = () => {
@@ -77,6 +77,6 @@
 
         document.body.appendChild(editor.currentPage.root);
 
-        coffeeEngine.renderer.create
-    }
+        coffeeEngine.renderer.create;
+    };
 })();
