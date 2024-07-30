@@ -14,7 +14,6 @@
     });
   });
 
-
   //Was going to be used for custom blocks...... still have to figure that out.
   Blockly.Extensions.register("dynamic_menu_W_Function", function () {
     this.inputList.forEach((input) => {
@@ -23,7 +22,7 @@
           new Blockly.FieldDropdown(() => {
             console.log(this);
             return sugarcube.extensionManager.parseMenuItems({
-              items: (this.menuFunc) ? this.menuFunc() : ["whoops"],
+              items: this.menuFunc ? this.menuFunc() : ["whoops"],
             });
           })
         );

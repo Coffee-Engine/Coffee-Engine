@@ -1,16 +1,16 @@
-(function() {
-    coffeeEngine.resources.resource = class {
-        name = "resource";
-        data = "";
+(function () {
+  coffeeEngine.resources.resource = class {
+    name = "resource";
+    data = "";
 
-        constructor() {}
+    constructor() {}
 
-        deserialize(serialized) {
-            this.data = serialized;
-        }
-
-        serialize() {
-            return String(this.data);
-        }
+    deserialize(serialized) {
+      this.data = serialized;
     }
+
+    serialize() {
+      return String(this.data);
+    }
+  };
 })();

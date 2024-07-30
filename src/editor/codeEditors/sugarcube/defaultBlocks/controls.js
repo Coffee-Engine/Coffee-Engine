@@ -121,7 +121,7 @@
     ifStatement(args) {
       if (sugarcube.cast.toBoolean(args.condition) == true) {
         args.statement();
-      } 
+      }
     }
 
     ifElse_Statement(args) {
@@ -141,19 +141,19 @@
     foreach(args) {
       if (!Array.isArray(args.array)) return;
 
-      args.array.forEach(item => {
+      args.array.forEach((item) => {
         args.statement();
-      })
+      });
     }
 
     repeatUNT(args, util) {
-      while(!sugarcube.cast.toBoolean(util.recalls.condition())) {
+      while (!sugarcube.cast.toBoolean(util.recalls.condition())) {
         args.statement();
       }
     }
 
     while(args, util) {
-      while(sugarcube.cast.toBoolean(util.recalls.condition())) {
+      while (sugarcube.cast.toBoolean(util.recalls.condition())) {
         args.statement();
       }
     }

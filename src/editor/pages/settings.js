@@ -1,23 +1,23 @@
-(function() {
-    editor.settings = {};
+(function () {
+  editor.settings = {};
 
-    editor.settings.values = Object.assign({}, editor.defaultSettings, editor.Storage.getStorage("settingsValues", {}));
-    editor.settings.elements = {};
+  editor.settings.values = Object.assign({}, editor.defaultSettings, editor.Storage.getStorage("settingsValues", {}));
+  editor.settings.elements = {};
 
-    editor.settings.initilize = () => {
-        console.log("Initilizing Settings Page");
+  editor.settings.initilize = () => {
+    console.log("Initilizing Settings Page");
 
-        editor.changePage();
+    editor.changePage();
 
-        editor.currentPage.root = document.createElement("div");
+    editor.currentPage.root = document.createElement("div");
 
-        editor.currentPage.root.style.position = "absolute";
-        editor.currentPage.root.style.top = "0px";
-        editor.currentPage.root.style.left = "0px";
-        editor.currentPage.root.style.width = "100%";
-        editor.currentPage.root.style.height = "100%";
+    editor.currentPage.root.style.position = "absolute";
+    editor.currentPage.root.style.top = "0px";
+    editor.currentPage.root.style.left = "0px";
+    editor.currentPage.root.style.width = "100%";
+    editor.currentPage.root.style.height = "100%";
 
-        editor.currentPage.root.innerHTML = `
+    editor.currentPage.root.innerHTML = `
         <style>
             .CenterPanel {
                 width:0%;
@@ -94,59 +94,59 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+    document.body.appendChild(editor.currentPage.root);
 
-        document.getElementById("goBack").onclick = () => {
-            editor.home.initilize();
-        }
+    document.getElementById("goBack").onclick = () => {
+      editor.home.initilize();
+    };
 
-        const sidebar = document.getElementById("sidebar");
-        const settingsPanel = document.getElementById("settingsPanel");
+    const sidebar = document.getElementById("sidebar");
+    const settingsPanel = document.getElementById("settingsPanel");
 
-        //Loop through categories
-        Object.keys(editor.defaultSettings).forEach(key => {
-            const button = document.createElement("button");
-            button.style.width = "100%";
-            button.innerHTML = editor.language[`engine.settings.category.${key}`];
+    //Loop through categories
+    Object.keys(editor.defaultSettings).forEach((key) => {
+      const button = document.createElement("button");
+      button.style.width = "100%";
+      button.innerHTML = editor.language[`engine.settings.category.${key}`];
 
-            sidebar.appendChild(button);
+      sidebar.appendChild(button);
 
-            button.onclick = () => {
-                //Clear elements and html
-                editor.settings.elements = {};
-                settingsPanel.innerHTML = "";
+      button.onclick = () => {
+        //Clear elements and html
+        editor.settings.elements = {};
+        settingsPanel.innerHTML = "";
 
-                //Loop through settings in that category
-                Object.keys(editor.defaultSettings[key]).forEach(settingKey => {
-                    //Create our text for the editor element
-                    const settingSpan = document.createElement("p");
-                    settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
-                    settingSpan.style.fontSize = "Large";
-                    settingSpan.style.margin = "2px";
+        //Loop through settings in that category
+        Object.keys(editor.defaultSettings[key]).forEach((settingKey) => {
+          //Create our text for the editor element
+          const settingSpan = document.createElement("p");
+          settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
+          settingSpan.style.fontSize = "Large";
+          settingSpan.style.margin = "2px";
 
-                    //This is where we get inputs for the setting
-                    const elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type,editor.settingDefs[key][settingKey],key,settingKey);
-                    editor.settings.elements[settingKey] = {
-                        span: settingSpan,
-                        input:elementEditor
-                    };
+          //This is where we get inputs for the setting
+          const elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type, editor.settingDefs[key][settingKey], key, settingKey);
+          editor.settings.elements[settingKey] = {
+            span: settingSpan,
+            input: elementEditor,
+          };
 
-                    if (elementEditor) settingSpan.appendChild(elementEditor);
+          if (elementEditor) settingSpan.appendChild(elementEditor);
 
-                    settingsPanel.appendChild(settingSpan);
+          settingsPanel.appendChild(settingSpan);
 
-                    if (editor.settingDefs[key][settingKey].menuInit) editor.settingDefs[key][settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
-                });
-            }
+          if (editor.settingDefs[key][settingKey].menuInit) editor.settingDefs[key][settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
         });
-
-        if (sidebar.children[0]) sidebar.children[0].onclick();
-    }
-
-    //For when the editor first boots up.
-    Object.keys(editor.defaultSettings).forEach(key => {
-        Object.keys(editor.defaultSettings[key]).forEach(settingKey => {
-            if (editor.settingDefs[key][settingKey].onChange) editor.settingDefs[key][settingKey].onChange(editor.settings.values[key][settingKey], true);
-        });
+      };
     });
+
+    if (sidebar.children[0]) sidebar.children[0].onclick();
+  };
+
+  //For when the editor first boots up.
+  Object.keys(editor.defaultSettings).forEach((key) => {
+    Object.keys(editor.defaultSettings[key]).forEach((settingKey) => {
+      if (editor.settingDefs[key][settingKey].onChange) editor.settingDefs[key][settingKey].onChange(editor.settings.values[key][settingKey], true);
+    });
+  });
 })();

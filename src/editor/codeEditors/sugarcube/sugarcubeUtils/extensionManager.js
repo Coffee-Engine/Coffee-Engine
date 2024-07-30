@@ -81,36 +81,32 @@
 
         case sugarcube.BlockType.REPORTER:
           if (BlockJson.output) {
-            BlockJson.output = ["NotBoolean"].concat(BlockJson.output)
-          }
-          else {
+            BlockJson.output = ["NotBoolean"].concat(BlockJson.output);
+          } else {
             BlockJson.output = "NotBoolean";
           }
           break;
 
         case sugarcube.BlockType.INLINE:
           if (BlockJson.output) {
-            BlockJson.output = ["Inline", "ANY"].concat(BlockJson.output)
-          }
-          else {
+            BlockJson.output = ["Inline", "ANY"].concat(BlockJson.output);
+          } else {
             BlockJson.output = ["Inline", "ANY"];
           }
           break;
 
         case sugarcube.BlockType.REPORTER_ANY:
           if (BlockJson.output) {
-            BlockJson.output = ["ANY"].concat(BlockJson.output)
-          }
-          else {
+            BlockJson.output = ["ANY"].concat(BlockJson.output);
+          } else {
             BlockJson.output = "ANY";
           }
           break;
 
         case sugarcube.BlockType.BOOLEAN:
           if (BlockJson.output) {
-            BlockJson.output = ["Boolean"].concat(BlockJson.output)
-          }
-          else {
+            BlockJson.output = ["Boolean"].concat(BlockJson.output);
+          } else {
             BlockJson.output = "Boolean";
           }
           break;
@@ -126,18 +122,16 @@
 
         case sugarcube.BlockType.OBJECT:
           if (BlockJson.output) {
-            BlockJson.output = ["Object"].concat(BlockJson.output)
-          }
-          else {
+            BlockJson.output = ["Object"].concat(BlockJson.output);
+          } else {
             BlockJson.output = "Object";
           }
           break;
 
         case sugarcube.BlockType.ARRAY:
           if (BlockJson.output) {
-            BlockJson.output = ["Array"].concat(BlockJson.output)
-          }
-          else {
+            BlockJson.output = ["Array"].concat(BlockJson.output);
+          } else {
             BlockJson.output = "Array";
           }
           break;
@@ -226,7 +220,7 @@
             if (block.inputList) {
               block.inputList.forEach((input) => {
                 if (!input.connection) return;
-                console.log(input.connection)
+                console.log(input.connection);
                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
                   args[input.name] = Function(generator.statementToCode(block, input.name));
                   recalls[input.name] = Function(generator.statementToCode(block, input.name));
@@ -236,7 +230,7 @@
 
                 //Our recall for the rest of the types.
 
-                const value = generator.valueToCode(block, input.name,0);
+                const value = generator.valueToCode(block, input.name, 0);
                 //Functionals are easy
                 if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
                   recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
@@ -248,7 +242,7 @@
                     recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
                     return;
                   }
-                  
+
                   //String
                   recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
                 }
@@ -608,7 +602,7 @@
 
           sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
             return [`${block.getFieldValue(`${menuID}_____VALUE`)}`, 0];
-          }
+          };
         } else {
           //Add the data
           sugarcube.menus[menuID] = menuDat;
@@ -650,7 +644,7 @@
 
         sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
           return [`${block.getFieldValue("VALUE")}`, 0];
-        }
+        };
       }
       //Static menus with no reporters
       else {
@@ -679,7 +673,7 @@
           colourPrimary: myInfo.color1 || "#0fbd8c",
           colourSecondary: myInfo.color2 || myInfo.color1 || "#0b8e69",
           colourTertiary: myInfo.color3 || myInfo.color1 || "#0b8e69",
-          hat: myInfo.hat || "cap"
+          hat: myInfo.hat || "cap",
         };
 
         //Define the category definition here

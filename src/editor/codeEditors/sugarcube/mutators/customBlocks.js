@@ -134,7 +134,7 @@
             this.inputFromJson_({
               type: item.type == "text" ? "input_dummy" : "input_value",
               name: `input_${inputID}`,
-              check: item.type != "text" ? "customBlockArgument" : ""
+              check: item.type != "text" ? "customBlockArgument" : "",
             });
 
             let block = null;
@@ -159,7 +159,7 @@
             }
 
             if (block != null) {
-              block.customArgData = {text: item.name};
+              block.customArgData = { text: item.name };
               this.inputList[this.inputList.length - 1].connection.connect_(block.outputConnection);
             }
 
@@ -205,7 +205,7 @@
         const parsed = JSON.parse(xmlElement.getAttribute("cloneData"));
         this._isClone_ = parsed._isClone_;
         this._shouldDuplicate_ = parsed._shouldDuplicate_;
-        
+
         this.customArgData = JSON.parse(xmlElement.getAttribute("customArgData"));
         this.updateShape_();
       },
@@ -227,5 +227,5 @@
       },
     },
     undefined
-  )
+  );
 })();

@@ -1,13 +1,13 @@
-(function() {
-    coffeeEngine.inputs = {
-        keys:{}
-    };
+(function () {
+  coffeeEngine.inputs = {
+    keys: {},
+  };
 
-    window.addEventListener("keydown",(event) => {
-        coffeeEngine.inputs.keys[event.key] = true;
-    });
+  window.addEventListener("keydown", (event) => {
+    coffeeEngine.inputs.keys[event.key] = true;
+  });
 
-    window.addEventListener("keyup",(event) => {
-        coffeeEngine.inputs.keys[event.key] = false;
-    });
+  window.addEventListener("keyup", (event) => {
+    coffeeEngine.inputs.keys[event.key] = false;
+  });
 })();
