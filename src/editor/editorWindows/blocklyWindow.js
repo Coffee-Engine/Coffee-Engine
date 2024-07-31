@@ -1,6 +1,8 @@
 (function () {
     editor.windows.blockly = class extends editor.windows.base {
         init(container) {
+            this.title = "Sugarcube";
+
             container.style.fontSize = "medium";
 
             sugarcube.workspace = Blockly.inject(container, {
