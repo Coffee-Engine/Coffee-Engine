@@ -73,6 +73,11 @@
                 font-weight: bold;
             }
 
+            .italicThing {
+                font-style: italic;
+                color: var(--text-2);
+            }
+
             @keyframes closeWindow {
                 0% {
                     min-height:0px;
