@@ -8,6 +8,11 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#e7cab7",
         "--text-2": "#d6ae93",
         "--text-3": "#bb8d6e",
+        
+        "--warn": "#ffd078",
+        "--error": "#ff7878",
+        "--warn-text": "#503f32",
+        "--error-text": "#503f32"
     },
     Cocoa: {
         "--background-1": "#1b1b1e",
@@ -18,6 +23,11 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#c4cdff",
         "--text-2": "#868ebb",
         "--text-3": "#7079aa",
+        
+        "--warn": "#ffd078",
+        "--error": "#ff7878",
+        "--warn-text": "#323546",
+        "--error-text": "#323546"
     },
     Creme: {
         "--background-1": "#fff0e6",
@@ -28,6 +38,11 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#46352a",
         "--text-2": "#3d2c21",
         "--text-3": "#291a10",
+        
+        "--warn": "#ffd078",
+        "--error": "#ff7878",
+        "--warn-text": "#463e32",
+        "--error-text": "#463e32"
     },
     "Blue Berry": {
         "--background-1": "#151528",
@@ -38,6 +53,11 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#6d83ff",
         "--text-2": "#4458c1",
         "--text-3": "#293b9f",
+        
+        "--warn": "#ffd078",
+        "--error": "#ff7878",
+        "--warn-text": "#323546",
+        "--error-text": "#323546"
     },
 
     "Davey Special": {
@@ -48,5 +68,10 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#b62781",
         "--text-2": "#911f67",
         "--text-3": "#7f1b5a",
+        
+        "--warn": "#ffd078",
+        "--error": "#ff7878",
+        "--warn-text": "#2e2947",
+        "--error-text": "#2e2947"
     },
 };

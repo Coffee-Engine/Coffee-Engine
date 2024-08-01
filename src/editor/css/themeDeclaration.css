@@ -10,6 +10,8 @@ body {
 
     --warn: #ffd078;
     --error: #ff7878;
+    --warn-text: #323546;
+    --error-text: #323546;
 
     background-color: var(--background-4);
     color: var(--text-1);

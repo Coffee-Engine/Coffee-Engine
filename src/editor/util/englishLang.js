@@ -20,6 +20,10 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.themeColor": "Editor Color",
     "engine.settings.category.Theme.backgroundColor": "Background Color",
     "engine.settings.category.Theme.textColor": "Text Color",
+    "engine.settings.category.Theme.warnColor": "Warning Color",
+    "engine.settings.category.Theme.errorColor": "Error Color",
+    "engine.settings.category.Theme.warnTextColor": "Warning Text Color",
+    "engine.settings.category.Theme.errorTextColor": "Error Text Color",
 
     "engine.settings.category.SugarCube": "SugarCube",
     "engine.settings.category.SugarCube.notchWidth": "Notch Width",

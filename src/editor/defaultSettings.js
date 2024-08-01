@@ -8,7 +8,9 @@ editor.defaultSettings = {
         backgroundColor: "#46352a",
         textColor: "#e7cab7",
         warnColor: "#ffd078",
-        errorColor: "#ff7878",
+        warnTextColor: "#46352a",
+        errorColor: "#323546",
+        errorTextColor: "#323546",
     },
     SugarCube: {
         notchWidth: "36", //NOTCH_HEIGHT
@@ -66,6 +68,30 @@ editor.settingDefs = {
                             if (coffeeEngine.defaultThemes[value]) {
                                 editor.settings.elements["textColor"].input.value = coffeeEngine.defaultThemes[value]["--text-1"];
                             }
+
+                            editor.settings.elements["warnColor"].span.style.opacity = "50%";
+                            editor.settings.elements["warnColor"].input.disabled = true;
+                            if (coffeeEngine.defaultThemes[value]) {
+                                editor.settings.elements["warnColor"].input.value = coffeeEngine.defaultThemes[value]["--warn"];
+                            }
+
+                            editor.settings.elements["errorColor"].span.style.opacity = "50%";
+                            editor.settings.elements["errorColor"].input.disabled = true;
+                            if (coffeeEngine.defaultThemes[value]) {
+                                editor.settings.elements["errorColor"].input.value = coffeeEngine.defaultThemes[value]["--error"];
+                            }
+
+                            editor.settings.elements["warnTextColor"].span.style.opacity = "50%";
+                            editor.settings.elements["warnTextColor"].input.disabled = true;
+                            if (coffeeEngine.defaultThemes[value]) {
+                                editor.settings.elements["warnTextColor"].input.value = coffeeEngine.defaultThemes[value]["--warn-text"];
+                            }
+
+                            editor.settings.elements["errorTextColor"].span.style.opacity = "50%";
+                            editor.settings.elements["errorTextColor"].input.disabled = true;
+                            if (coffeeEngine.defaultThemes[value]) {
+                                editor.settings.elements["errorTextColor"].input.value = coffeeEngine.defaultThemes[value]["--error-text"];
+                            }
                         }
                     }
 
@@ -90,6 +116,26 @@ editor.settingDefs = {
                     editor.settings.elements["textColor"].input.disabled = false;
                     editor.settings.elements["textColor"].input.value = editor.settings.values.Theme.textColor;
                     editor.settingDefs.Theme.textColor.onChange(editor.settings.values.Theme.textColor);
+
+                    editor.settings.elements["warnColor"].span.style.opacity = "100%";
+                    editor.settings.elements["warnColor"].input.disabled = false;
+                    editor.settings.elements["warnColor"].input.value = editor.settings.values.Theme.warnColor;
+                    editor.settingDefs.Theme.warnColor.onChange(editor.settings.values.Theme.warnColor);
+
+                    editor.settings.elements["errorColor"].span.style.opacity = "100%";
+                    editor.settings.elements["errorColor"].input.disabled = false;
+                    editor.settings.elements["errorColor"].input.value = editor.settings.values.Theme.errorColor;
+                    editor.settingDefs.Theme.errorColor.onChange(editor.settings.values.Theme.errorColor);
+
+                    editor.settings.elements["warnTextColor"].span.style.opacity = "100%";
+                    editor.settings.elements["warnTextColor"].input.disabled = false;
+                    editor.settings.elements["warnTextColor"].input.value = editor.settings.values.Theme.warnTextColor;
+                    editor.settingDefs.Theme.warnTextColor.onChange(editor.settings.values.Theme.warnTextColor);
+
+                    editor.settings.elements["errorTextColor"].span.style.opacity = "100%";
+                    editor.settings.elements["errorTextColor"].input.disabled = false;
+                    editor.settings.elements["errorTextColor"].input.value = editor.settings.values.Theme.errorTextColor;
+                    editor.settingDefs.Theme.errorTextColor.onChange(editor.settings.values.Theme.errorTextColor);
                 }
             },
         },
@@ -268,6 +314,44 @@ editor.settingDefs = {
                     elements.input.disabled = true;
                     if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
                         elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--error"];
+                    }
+                }
+            },
+        },
+        warnTextColor: {
+            type: "color",
+            onChange: (value, fromBoot) => {
+                if (editor.settings.values.Theme.themeColor == "Custom") {
+                    document.body.style.setProperty("--warn-text", value);
+                }
+            },
+            menuInit: (previousSettings, elements) => {
+                //Check if custom color is selected
+                if (previousSettings.themeColor != "Custom") {
+                    //If not disable it and make sure the value is the one we want.
+                    elements.span.style.opacity = "50%";
+                    elements.input.disabled = true;
+                    if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
+                        elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--warn-text"];
+                    }
+                }
+            },
+        },
+        errorTextColor: {
+            type: "color",
+            onChange: (value, fromBoot) => {
+                if (editor.settings.values.Theme.themeColor == "Custom") {
+                    document.body.style.setProperty("--error-text", value);
+                }
+            },
+            menuInit: (previousSettings, elements) => {
+                //Check if custom color is selected
+                if (previousSettings.themeColor != "Custom") {
+                    //If not disable it and make sure the value is the one we want.
+                    elements.span.style.opacity = "50%";
+                    elements.input.disabled = true;
+                    if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
+                        elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--error-text"];
                     }
                 }
             },
