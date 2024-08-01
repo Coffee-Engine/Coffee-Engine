@@ -1,5 +1,6 @@
 (function () {
     editor.windows.log = class extends editor.windows.base {
+
         init(container) {
             this.title = "Log";
 
@@ -10,8 +11,7 @@
             console.log = (...stuff) => {
                 const displayEl = document.createElement("div");
                 displayEl.innerText = stuff.join("\n");
-
-                displayEl.style.width = "100%";
+                displayEl.className = "logInfo";
 
                 container.appendChild(displayEl);
 
@@ -21,10 +21,7 @@
             window.warn = (...stuff) => {
                 const displayEl = document.createElement("div");
                 displayEl.innerText = stuff.join("\n");
-
-                displayEl.style.width = "100%";
-                displayEl.style.backgroundColor = "var(--warn)";
-                displayEl.style.color = "var(--warn-text)";
+                displayEl.className = "logInfo logWarn";
 
                 container.appendChild(displayEl);
 
@@ -34,26 +31,24 @@
             console.error = (...stuff) => {
                 const displayEl = document.createElement("div");
                 displayEl.innerText = stuff.join("\n");
-
-                displayEl.style.width = "100%";
-                displayEl.style.backgroundColor = "var(--error)";
-                displayEl.style.color = "var(--error-text)";
+                displayEl.className = "logInfo logError";
 
                 container.appendChild(displayEl);
 
                 this.oldError(...stuff);
             }
 
-            window.onerror = (event, source, lineno, colno, error) => {
-                const displayEl = document.createElement("div");
-                displayEl.innerText = error;
+            window.addEventListener("error", (event) => {
+                //The one thing we need from the event
+                const { error, lineno, colno } = event;
 
-                displayEl.style.width = "100%";
-                displayEl.style.backgroundColor = "var(--error)";
-                displayEl.style.color = "var(--error-text)";
+                //The element to display
+                const displayEl = document.createElement("div");
+                displayEl.innerText = `${error}\n ${lineno}/${colno}`;
+                displayEl.className = "logInfo logError";
 
                 container.appendChild(displayEl);
-            }
+            });
         }
 
         resized() {

@@ -57,6 +57,22 @@
                 border-width:0px;
             }
 
+            .logInfo {
+                width: 100%;
+            }
+
+            .logWarn {                
+                background-color: var(--warn);
+                color: var(--warn-text);
+                font-weight: bold;
+            }
+
+            .logError {
+                background-color: var(--error);
+                color: var(--error-text);
+                font-weight: bold;
+            }
+
             @keyframes closeWindow {
                 0% {
                     min-height:0px;

@@ -40,19 +40,64 @@
         //Window width and height managers
         #width = 128;
         #height = 128;
+        minWidth = 128;
+        minHeight = 128;
 
         set width(value) {
-            this.windowDiv.style.width = `${value}px`;
+            this.windowDiv.style.width = `${
+                Math.min(
+                    window.innerWidth - this.x,
+                    Math.max(value,this.minWidth)
+                )
+            }px`;
+            this.#width = Math.max(value,this.minWidth);
         }
         get width() {
             return this.#width;
         }
 
         set height(value) {
-            this.windowDiv.style.height = `${value}px`;
+            this.windowDiv.style.height = `${
+                Math.min(
+                    window.innerHeight - this.y,
+                    Math.max(value,this.minHeight)
+                )
+            }px`;
+            this.#height = Math.max(value,this.minWidth);
         }
         get height() {
             return this.#height;
+        }
+
+        #x = 0;
+        #y = 0;
+
+        set x(value) {
+            this.#x = value;
+            this.windowDiv.style.left = `${
+                Math.min(
+                    window.innerWidth - this.width,
+                    Math.max(value,0)
+                )
+            }px`;
+        }
+
+        get x() {
+            return this.#x;
+        }
+
+        set y(value) {
+            this.#y = value;
+            this.windowDiv.style.top = `${
+                Math.min(
+                    window.innerHeight - this.height,
+                    Math.max(value,0)
+                )
+            }px`;
+        }
+
+        get y() {
+            return this.#y;
         }
 
         #title = "Window";
@@ -176,18 +221,18 @@
                         }
 
                         if (rightEdging) {
-                            this.windowDiv.style.width = `${moveEvent.clientX + mouseOffsetX}px`;
+                            this.width = moveEvent.clientX + mouseOffsetX;
                         } else if (leftEdging) {
-                            this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
-                            this.windowDiv.style.width = `${Number(this.windowDiv.style.width.replace("px", "")) - moveEvent.movementX}px`;
+                            this.x = moveEvent.clientX + mouseOffsetX;
+                            this.width = this.width - moveEvent.movementX;
                         }
 
                         //I can 100% gaurentee that the width is probably never going to be anything but pixels.
                         if (bottomEdging) {
-                            this.windowDiv.style.height = `${moveEvent.clientY + mouseOffsetY}px`;
+                            this.height = moveEvent.clientY + mouseOffsetY;
                         } else if (topEdging) {
-                            this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
-                            this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px", "")) - moveEvent.movementY}px`;
+                            this.y = moveEvent.clientY + mouseOffsetY;
+                            this.height = this.#height - moveEvent.movementY;
                         }
 
                         this.resized();
@@ -202,8 +247,8 @@
                         document.onmousemove = () => {};
                         return;
                     }
-                    this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
-                    this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
+                    this.x = moveEvent.clientX + mouseOffsetX;
+                    this.y = moveEvent.clientY + mouseOffsetY;
                 };
             };
 
@@ -223,11 +268,11 @@
                 const mouseOffsetY = boundingRect.top - downEvent.clientY;
 
                 //Calculate if the mouse is on the edge of the window and what edges it is on
-                const rightEdging = Math.abs(boundingRect.left + width - downEvent.clientX) <= editor.grabDistance;
-                const bottomEdging = Math.abs(boundingRect.top + height - downEvent.clientY) <= editor.grabDistance;
-                const leftEdging = Math.abs(boundingRect.left - downEvent.clientX) <= editor.grabDistance;
-                const topEdging = Math.abs(boundingRect.top - downEvent.clientY) <= editor.grabDistance;
-                const edging = topEdging || bottomEdging || rightEdging || leftEdging;
+                const rightEdge = Math.abs(boundingRect.left + width - downEvent.clientX) <= editor.grabDistance;
+                const bottomEdge = Math.abs(boundingRect.top + height - downEvent.clientY) <= editor.grabDistance;
+                const leftEdge = Math.abs(boundingRect.left - downEvent.clientX) <= editor.grabDistance;
+                const topEdge = Math.abs(boundingRect.top - downEvent.clientY) <= editor.grabDistance;
+                const edging = topEdge || bottomEdge || rightEdge || leftEdge;
 
                 //If we aren't edging return
                 if (!edging) return;
@@ -244,19 +289,19 @@
                         return;
                     }
 
-                    if (rightEdging) {
-                        this.windowDiv.style.width = `${Number(this.windowDiv.style.width.replace("px", "")) + moveEvent.movementX}px`;
-                    } else if (leftEdging) {
-                        this.windowDiv.style.left = `${moveEvent.clientX + mouseOffsetX}px`;
-                        this.windowDiv.style.width = `${Number(this.windowDiv.style.width.replace("px", "")) - moveEvent.movementX}px`;
+                    if (rightEdge) {
+                        this.width = this.width + moveEvent.movementX;
+                    } else if (leftEdge) {
+                        this.x = moveEvent.clientX + mouseOffsetX;
+                        this.width = this.width - moveEvent.movementX;
                     }
 
                     //I can 100% gaurentee that the width is probably never going to be anything but pixels.
-                    if (bottomEdging) {
-                        this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px", "")) + moveEvent.movementY}px`;
-                    } else if (topEdging) {
-                        this.windowDiv.style.top = `${moveEvent.clientY + mouseOffsetY}px`;
-                        this.windowDiv.style.height = `${Number(this.windowDiv.style.height.replace("px", "")) - moveEvent.movementY}px`;
+                    if (bottomEdge) {
+                        this.height = this.height + moveEvent.movementY;
+                    } else if (topEdge) {
+                        this.y = moveEvent.clientY + mouseOffsetY;
+                        this.height = this.height - moveEvent.movementY;
                     }
 
                     this.resized();

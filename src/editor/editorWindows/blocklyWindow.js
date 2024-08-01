@@ -49,9 +49,6 @@
             sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
             sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
 
-            //Testing category for various block types and menus
-            //Dunno why I called it testCat.js
-
             //Load our base categories
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/looks.js");
