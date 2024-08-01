@@ -14,6 +14,8 @@
                 displayEl.style.width = "100%";
 
                 container.appendChild(displayEl);
+
+                this.oldLog(...stuff);
             }
 
             window.warn = (...stuff) => {
@@ -22,8 +24,11 @@
 
                 displayEl.style.width = "100%";
                 displayEl.style.backgroundColor = "var(--warn)";
+                displayEl.style.color = "var(--warn-text)";
 
                 container.appendChild(displayEl);
+
+                this.oldWarn(...stuff);
             }
 
             console.error = (...stuff) => {
@@ -32,17 +37,20 @@
 
                 displayEl.style.width = "100%";
                 displayEl.style.backgroundColor = "var(--error)";
+                displayEl.style.color = "var(--error-text)";
 
                 container.appendChild(displayEl);
+
+                this.oldError(...stuff);
             }
 
             window.onerror = (event, source, lineno, colno, error) => {
-                console.log(arguments)
                 const displayEl = document.createElement("div");
                 displayEl.innerText = error;
 
                 displayEl.style.width = "100%";
                 displayEl.style.backgroundColor = "var(--error)";
+                displayEl.style.color = "var(--error-text)";
 
                 container.appendChild(displayEl);
             }
@@ -52,6 +60,11 @@
         }
 
         dispose() {
+            console.log = this.oldLog;
+            console.warn = this.oldWarn;
+            console.error = this.oldError;
+
+            window.onerror = () => {};
         }
     };
 })();
