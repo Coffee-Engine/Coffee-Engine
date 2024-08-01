@@ -25,22 +25,22 @@
                 background-color:var(--background-3);
 
                 display:grid;
-                grid-template-rows: 24px auto;
+                grid-template-rows: ${editor.taskbarHeight}px auto;
             }
 
             .TaskBar {
                 width:100%;
-                height:24px;
+                height:${editor.taskbarHeight}px;
 
                 margin:0px;
 
                 background-color:var(--background-1);
 
                 display:grid;
-                grid-template-columns: auto 24px;
+                grid-template-columns: auto ${editor.taskbarHeight}px;
                 overflow: hidden;
                 
-                line-height: 24px;
+                line-height: ${editor.taskbarHeight}px;
                 text-align: center;
                 vertical-align: middle;
                 font-size: Large;
@@ -49,11 +49,11 @@
             }
 
             .closeButton {
-                line-height: -24px;
+                line-height: -${editor.taskbarHeight}px;
                 text-align: center;
                 vertical-align: middle;
                 font-size: Large;
-                height:24px;
+                height:${editor.taskbarHeight}px;
                 border-width:0px;
             }
 
@@ -77,6 +77,6 @@
 
         document.body.appendChild(editor.currentPage.root);
 
-        coffeeEngine.renderer.create;
+        new editor.windows.log()
     };
 })();

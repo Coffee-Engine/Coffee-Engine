@@ -8,6 +8,9 @@ body {
     --text-2: #d6ae93;
     --text-3: #bb8d6e;
 
+    --warn: #ffd078;
+    --error: #ff7878;
+
     background-color: var(--background-4);
     color: var(--text-1);
 

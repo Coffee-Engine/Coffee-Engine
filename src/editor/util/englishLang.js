@@ -14,6 +14,7 @@ editor.EnglishLang = {
     "engine.settings.welcome": "Engine Settings",
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
+    "engine.settings.category.Window.barHeight": "Taskbar Height",
 
     "engine.settings.category.Theme": "Theme",
     "engine.settings.category.Theme.themeColor": "Editor Color",
@@ -30,4 +31,6 @@ editor.EnglishLang = {
     "engine.settings.category.Monaco": "Monaco",
 
     "engine.generic.back": "Back",
+
+    "engine.window.log": "Log",
 };

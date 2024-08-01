@@ -1,11 +1,14 @@
 editor.defaultSettings = {
     Window: {
         grabSize: 8,
+        barHeight: 24,
     },
     Theme: {
         themeColor: "Mocha",
         backgroundColor: "#46352a",
         textColor: "#e7cab7",
+        warnColor: "#ffd078",
+        errorColor: "#ff7878",
     },
     SugarCube: {
         notchWidth: "36", //NOTCH_HEIGHT
@@ -23,8 +26,16 @@ editor.settingDefs = {
             type: "number",
             min: "2",
             max: "16",
-            onChange: (value, fromBoot) => {
+            onChange: (value) => {
                 editor.grabDistance = value;
+            },
+        },
+        barHeight: {
+            type: "number",
+            min: "16",
+            max: "64",
+            onChange: (value) => {
+                editor.taskbarHeight = value;
             },
         },
     },
@@ -219,6 +230,44 @@ editor.settingDefs = {
                     elements.input.disabled = true;
                     if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
                         elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--text-1"];
+                    }
+                }
+            },
+        },
+        warnColor: {
+            type: "color",
+            onChange: (value, fromBoot) => {
+                if (editor.settings.values.Theme.themeColor == "Custom") {
+                    document.body.style.setProperty("--warn", value);
+                }
+            },
+            menuInit: (previousSettings, elements) => {
+                //Check if custom color is selected
+                if (previousSettings.themeColor != "Custom") {
+                    //If not disable it and make sure the value is the one we want.
+                    elements.span.style.opacity = "50%";
+                    elements.input.disabled = true;
+                    if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
+                        elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--warn"];
+                    }
+                }
+            },
+        },
+        errorColor: {
+            type: "color",
+            onChange: (value, fromBoot) => {
+                if (editor.settings.values.Theme.themeColor == "Custom") {
+                    document.body.style.setProperty("--error", value);
+                }
+            },
+            menuInit: (previousSettings, elements) => {
+                //Check if custom color is selected
+                if (previousSettings.themeColor != "Custom") {
+                    //If not disable it and make sure the value is the one we want.
+                    elements.span.style.opacity = "50%";
+                    elements.input.disabled = true;
+                    if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
+                        elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--error"];
                     }
                 }
             },

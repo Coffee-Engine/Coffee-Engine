@@ -13,7 +13,38 @@
 
                 displayEl.style.width = "100%";
 
-                container.appendChild(displayEl)
+                container.appendChild(displayEl);
+            }
+
+            window.warn = (...stuff) => {
+                const displayEl = document.createElement("div");
+                displayEl.innerText = stuff.join("\n");
+
+                displayEl.style.width = "100%";
+                displayEl.style.backgroundColor = "var(--warn)";
+
+                container.appendChild(displayEl);
+            }
+
+            console.error = (...stuff) => {
+                const displayEl = document.createElement("div");
+                displayEl.innerText = stuff.join("\n");
+
+                displayEl.style.width = "100%";
+                displayEl.style.backgroundColor = "var(--error)";
+
+                container.appendChild(displayEl);
+            }
+
+            window.onerror = (event, source, lineno, colno, error) => {
+                console.log(arguments)
+                const displayEl = document.createElement("div");
+                displayEl.innerText = error;
+
+                displayEl.style.width = "100%";
+                displayEl.style.backgroundColor = "var(--error)";
+
+                container.appendChild(displayEl);
             }
         }
 
