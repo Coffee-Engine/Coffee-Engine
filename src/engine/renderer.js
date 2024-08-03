@@ -50,7 +50,7 @@
                 
                 void main()
                 {
-                    gl_FragColor = v_color;//texture2D(u_texture, v_texCoord) * v_color;
+                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
                 }
                 `
             ),

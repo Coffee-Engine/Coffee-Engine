@@ -218,6 +218,7 @@ const DaveShade = {};
             shader.attributeIndicies = [...Array(GL.getProgramParameter(shader.program, GL.ACTIVE_ATTRIBUTES)).keys()];
             shader.attributes = {};
 
+            //* Loop through the attributes
             shader.attributeIndicies.forEach((attributeID) => {
                 //* Lets split the attribute definition
                 const attributeDef = GL.getActiveAttrib(shader.program,attributeID);
