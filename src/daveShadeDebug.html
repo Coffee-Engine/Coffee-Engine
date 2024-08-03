@@ -26,10 +26,11 @@
 
             const myFragShader = `
         varying highp vec4 v_color;
+        uniform highp float u_cool[10];
 
         void main()
         {
-            gl_FragColor = v_color;
+            gl_FragColor = v_color * u_cool[7];
             gl_FragColor.rgb *= gl_FragColor.a;
             if (gl_FragColor.a == 0.0) {
                 discard;
@@ -38,6 +39,8 @@
         `;
 
             const createdShader = daveShadeInstance.createShader(myVertShader, myFragShader);
+
+            createdShader.uniforms.u_cool.value = [0,0.25,0.5,0.75,1.0,1.25,1.5,1.75,2.0,2.25];
 
             createdShader.setBuffers({
                 a_position: new Float32Array([-1, -1, 1, 1, -1, 1, 1, 1, 1, 1, 1, 1]),

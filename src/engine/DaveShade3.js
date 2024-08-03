@@ -189,24 +189,27 @@ const DaveShade = {};
             //* Loop through the uniforms
             for (let id = 0; id < shader.activeUniformIDs.length; id++) {
                 const uniformInfo = GL.getActiveUniform(shader.program, id);
-                const location = GL.getUniformLocation(shader.program, uniformInfo.name);
+                const uniformName = uniformInfo.name.split("[")[0];
 
-                shader.uniforms[uniformInfo.name] = {
+                const location = GL.getUniformLocation(shader.program, uniformName);
+
+                shader.uniforms[uniformName] = {
                     location: location,
                     type: uniformInfo.type,
+                    isArray: uniformInfo.name.includes("["),
                     "#value": null,
 
                     set value(value) {
-                        shader.uniforms[uniformInfo.name]["#value"] = value;
+                        shader.uniforms[uniformName]["#value"] = value;
                         DaveShade.setters[uniformInfo.type](GL, location, value, uniformInfo);
                     },
                     get value() {
-                        return shader.uniforms[uniformInfo.name]["#value"];
+                        return shader.uniforms[uniformName]["#value"];
                     },
                 };
 
                 if (uniformInfo.type == 35678) {
-                    shader.uniforms[uniformInfo.name].samplerID = shader.textureCount;
+                    shader.uniforms[uniformName].samplerID = shader.textureCount;
                     shader.textureCount += 1;
                 }
             }
