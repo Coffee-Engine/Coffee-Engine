@@ -113,7 +113,7 @@
                 this.oldLog(...stuff);
             }
 
-            window.warn = (...stuff) => {
+            console.warn = (...stuff) => {
                 stuff.forEach(item => {
                     const displayEl = this.createElementFromObject(item);
                     displayEl.className = "logInfo logWarn";
