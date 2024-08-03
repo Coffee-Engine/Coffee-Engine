@@ -212,61 +212,56 @@ const DaveShade = {};
             }
 
             //* Grab the attributes
-            const attributes = vertex.match(DaveShade.REGEX.ATTRIBUTE);
+            shader.attributeIndicies = [...Array(GL.getProgramParameter(shader.program, GL.ACTIVE_ATTRIBUTES)).keys()];
             shader.attributes = {};
 
-            attributes.forEach((attributeDef) => {
+            shader.attributeIndicies.forEach((attributeID) => {
                 //* Lets split the attribute definition
-                const splitDef = attributeDef.replace(";", "").split(" ");
-                const id = splitDef[splitDef.length - 1];
+                const attributeDef = GL.getActiveAttrib(shader.program,attributeID);
 
                 //? could probably conglomerate better?
-                shader.attributes[id] = {
-                    type: splitDef[splitDef.length - 2],
+                shader.attributes[attributeDef.name] = {
+                    type: attributeDef.type,
                 };
 
                 //* Attribute Stuff
-                shader.attributes[id].location = GL.getAttribLocation(shader.program, id);
-                GL.enableVertexAttribArray(shader.attributes[id].location);
+                shader.attributes[attributeDef.name].location = GL.getAttribLocation(shader.program, attributeDef.name);
+                GL.enableVertexAttribArray(shader.attributes[attributeDef.name].location);
 
                 //* Create the buffer
-                shader.attributes[id].buffer = GL.createBuffer();
-                GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
+                shader.attributes[attributeDef.name].buffer = GL.createBuffer();
+                GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
 
                 //* The setter
-                shader.attributes[id].set = (newValue) => {
-                    GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[id].buffer);
+                shader.attributes[attributeDef.name].set = (newValue) => {
+                    GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
                 };
 
                 //* Assign values dependant on types
-                switch (shader.attributes[id].type) {
-                    case "float":
-                        shader.attributes[id].divisions = 1;
-                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                switch (shader.attributes[attributeDef.name].type) {
+                    case 5126:
+                        shader.attributes[attributeDef.name].divisions = 1;
                         break;
 
-                    case "vec2":
-                        shader.attributes[id].divisions = 2;
-                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                    case 35664:
+                        shader.attributes[attributeDef.name].divisions = 2;
                         break;
 
-                    case "vec3":
-                        shader.attributes[id].divisions = 3;
-                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                    case 35665:
+                        shader.attributes[attributeDef.name].divisions = 3;
                         break;
 
-                    case "vec4":
-                        shader.attributes[id].divisions = 4;
-                        shader.attributes[id].precision = splitDef[splitDef.length - 3];
+                    case 35666:
+                        shader.attributes[attributeDef.name].divisions = 4;
                         break;
 
                     default:
-                        shader.attributes[id].divisions = 1;
+                        shader.attributes[attributeDef.name].divisions = 1;
                         break;
                 }
 
-                GL.vertexAttribPointer(shader.attributes[id].location, shader.attributes[id].divisions, GL.FLOAT, false, 0, 0);
+                GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
             });
 
             //* The buffer setter! the Big ONE!
