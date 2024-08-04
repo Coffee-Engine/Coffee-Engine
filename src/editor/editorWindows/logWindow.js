@@ -99,6 +99,7 @@
         init(container) {
             this.title = "Log";
 
+            //create our shiz
             container.style.display = "grid";
             container.style.gridTemplateRows = "24px auto";
             container.style.margin = "0px";
