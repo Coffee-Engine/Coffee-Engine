@@ -99,6 +99,30 @@
         init(container) {
             this.title = "Log";
 
+            container.style.display = "grid";
+            container.style.gridTemplateRows = "24px auto";
+            container.style.margin = "0px";
+            container.style.overflow = "hidden";
+
+            this.logControls = document.createElement("div");
+            this.logControls.style.width = "100%";
+            this.logControls.style.backgroundColor = "var(--background-2)";
+
+            this.clearButton = document.createElement("button");
+            this.clearButton.innerText = "clear";
+            this.clearButton.style.height = "100%";
+            this.clearButton.onclick = () => {
+                this.logContainer.innerHTML = "";
+            }
+            this.logControls.appendChild(this.clearButton);
+
+            this.logContainer = document.createElement("div");
+            this.logContainer.style.width = "100%";
+            this.logContainer.style.overflowY = "auto";
+
+            container.appendChild(this.logControls);
+            container.appendChild(this.logContainer);
+
             this.eventListener = coffeeEngine.addEventListener("consoleUpdate", (event) => {
                 //The element to display
                 let displayClass = "logInfo";
@@ -115,7 +139,7 @@
                     }
 
                     case "clear": {
-                        container.innerHTML = "";
+                        this.logContainer.innerHTML = "";
                         return;
                     }
 
@@ -129,7 +153,7 @@
                     const displayEl =  (event.info.lineNumber && event.info.columnNumber) ? this.createElementFromObject(`${item}\n ${lineno}/${colno}`) : this.createElementFromObject(item);;
                     displayEl.className = displayClass;
 
-                    container.appendChild(displayEl);
+                    this.logContainer.appendChild(displayEl);
                 });
             });
         }
