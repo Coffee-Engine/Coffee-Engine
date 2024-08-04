@@ -3,6 +3,7 @@
     const oCWARN = console.warn;
     const oCERROR = console.error;
     const oCINFO = console.info;
+    const oCCLEAR = console.clear;
 
     console.log = (...stuff) => {
         coffeeEngine.sendEvent("consoleUpdate",{
@@ -38,6 +39,15 @@
         });
 
         oCINFO(...stuff);
+    }
+
+    console.clear = (...stuff) => {
+        coffeeEngine.sendEvent("consoleUpdate",{
+            type:"clear",
+            info:stuff
+        })
+
+        oCCLEAR(...stuff);
     }
 
     window.addEventListener("error", (event) => {

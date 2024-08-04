@@ -114,6 +114,11 @@
                         break;
                     }
 
+                    case "clear": {
+                        container.innerHTML = "";
+                        return;
+                    }
+
                     default: {
                         displayClass = "logInfo";
                         break;
@@ -133,11 +138,7 @@
         }
 
         dispose() {
-            console.log = this.oldLog;
-            console.warn = this.oldWarn;
-            console.error = this.oldError;
-
-            window.removeEventListener("error",this.eventListener);
+            coffeeEngine.removeEventListener("consoleUpdate",this.eventListener);
         }
     };
 })();
