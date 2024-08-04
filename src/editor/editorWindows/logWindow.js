@@ -99,52 +99,33 @@
         init(container) {
             this.title = "Log";
 
-            this.oldLog = console.log;
-            this.oldWarn = console.warn;
-            this.oldError = console.error;
-
-            console.log = (...stuff) => {
-                stuff.forEach(item => {
-                    const displayEl = this.createElementFromObject(item);
-                    displayEl.className = "logInfo";
-                    container.appendChild(displayEl);
-                });
-
-                this.oldLog(...stuff);
-            }
-
-            console.warn = (...stuff) => {
-                stuff.forEach(item => {
-                    const displayEl = this.createElementFromObject(item);
-                    displayEl.className = "logInfo logWarn";
-                    container.appendChild(displayEl);
-                });
-
-                this.oldWarn(...stuff);
-            }
-
-            console.error = (...stuff) => {
-                stuff.forEach(item => {
-                    const displayEl = this.createElementFromObject(item);
-                    displayEl.className = "logInfo logError";
-                    container.appendChild(displayEl);
-                });
-
-                container.appendChild(displayEl);
-
-                this.oldError(...stuff);
-            }
-
-            this.eventListener = window.addEventListener("error", (event) => {
-                //The one thing we need from the event
-                const { error, lineno, colno } = event;
-
+            this.eventListener = coffeeEngine.addEventListener("consoleUpdate", (event) => {
                 //The element to display
-                const displayEl = document.createElement("div");
-                displayEl.innerText = `${error}\n ${lineno}/${colno}`;
-                displayEl.className = "logInfo logError";
+                let displayClass = "logInfo";
 
-                container.appendChild(displayEl);
+                switch (event.type) {
+                    case "warn": {
+                        displayClass = "logInfo logWarn";
+                        break;
+                    }
+
+                    case "error": {
+                        displayClass = "logInfo logError";
+                        break;
+                    }
+
+                    default: {
+                        displayClass = "logInfo";
+                        break;
+                    }
+                };
+
+                event.info.forEach(item => {
+                    const displayEl =  (event.info.lineNumber && event.info.columnNumber) ? this.createElementFromObject(`${item}\n ${lineno}/${colno}`) : this.createElementFromObject(item);;
+                    displayEl.className = displayClass;
+
+                    container.appendChild(displayEl);
+                });
             });
         }
 
