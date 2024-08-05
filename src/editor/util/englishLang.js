@@ -1,6 +1,7 @@
 editor.EnglishLang = {
     "engine.setup.start": "Engine Setup",
     "engine.setup.languageSelect": "Language",
+    "engine.setup.layoutSelect": "Layout",
 
     "engine.home.welcome": "Welcome to Engine",
     "engine.home.splashAuthor": "Splash by [AUTHOR]",

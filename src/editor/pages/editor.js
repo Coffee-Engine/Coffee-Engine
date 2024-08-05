@@ -98,6 +98,10 @@
 
         document.body.appendChild(editor.currentPage.root);
 
-        new editor.windows.log()
+        new editor.windows.log();
+    };
+
+    editor.editorPage.initilizePanels = () => {
+        console.log("initilizing panels");
     };
 })();
