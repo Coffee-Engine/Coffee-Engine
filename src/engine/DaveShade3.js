@@ -84,6 +84,7 @@ const DaveShade = {};
     DaveShade.createInstance = (CANVAS) => {
         const daveShadeInstance = {
             CANVAS: CANVAS,
+            SHADERS: [],
         };
 
         daveShadeInstance.GL = CANVAS.getContext("webgl2");
@@ -94,6 +95,7 @@ const DaveShade = {};
         }
         const GL = daveShadeInstance.GL;
 
+        //*When we need to split the shader into 2 parts due to it being in a single file. good for keeping storage sizes down
         daveShadeInstance.decomposeShader = (shaderCode) => {
             return {
                 status: DaveShade.COMPILE_STATUS.FAILURE,
@@ -102,6 +104,12 @@ const DaveShade = {};
 
         //?Could potentially be better? Maybe less if statement hell.
         daveShadeInstance.clearMemory = (shader) => {
+            //*Remove the shader from the list
+            if (daveShadeInstance.SHADERS.includes(shader)) {
+                daveShadeInstance.SHADERS.splice(daveShadeInstance.SHADERS.indexOf(shader),1);
+            }
+
+            //*Delete the program and shaders
             if (shader.program) {
                 GL.deleteProgram(shader.program);
             }
@@ -290,7 +298,22 @@ const DaveShade = {};
                 GL.drawArrays(GL.TRIANGLES, 0, triAmount);
             };
 
+            //*Add it to the list of shaders to dispose of when the instance no longer exists.
+            daveShadeInstance.SHADERS.push(shader);
+
             return shader;
+        };
+
+        daveShadeInstance.dispose = () => {
+            daveShadeInstance.SHADERS.forEach(shader => {
+                daveShadeInstance.clearMemory(shader);
+            });
+
+            delete daveShadeInstance.GL;
+            if (daveShadeInstance.CANVAS.parentElement) {
+                daveShadeInstance.CANVAS.parentElement.removeChild(daveShadeInstance.CANVAS);
+            } 
+            delete daveShadeInstance.CANVAS;
         };
 
         return daveShadeInstance;
