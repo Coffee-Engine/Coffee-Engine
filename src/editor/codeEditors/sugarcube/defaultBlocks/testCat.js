@@ -247,6 +247,12 @@
                         items: "dynamicMenuFunc",
                     },
                 },
+                mutators: {
+
+                },
+                fields: {
+
+                }
             };
         }
 
