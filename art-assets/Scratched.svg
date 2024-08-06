@@ -1,0 +1,19 @@
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.91134"
+    height="71.91134" viewBox="0,0,71.91134,71.91134">
+    <g transform="translate(-204.04433,-144.04433)">
+        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="none" stroke-linecap="butt"
+            stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
+            style="mix-blend-mode: normal">
+            <path
+                d="M209.2858,207.0396c0,-11.57945 0,-47.40122 0,-53.9301c0,-1.99676 1.2789,-3.76085 2.65749,-3.76085c4.83497,0 32.68821,0 32.68821,0v61.3027c0,0 -27.07811,0 -32.19338,0c-1.60067,0 -3.15232,-1.33887 -3.15232,-3.61175z"
+                fill="currentcolor" stroke-width="none" />
+            <path
+                d="M246.7035,210.65135v-34.45708h24.0107c0,0 0,22.91722 0,28.81096c0,2.60908 -1.73499,5.64612 -3.3122,5.64612c-3.94276,0 -20.6985,0 -20.6985,0z"
+                fill="currentcolor" stroke-width="0" />
+            <path
+                d="M246.7035,174.41504v-25.06639c0,0 16.00182,0 20.1027,0c1.80812,0 3.908,3.33201 3.908,5.84299c0,4.5545 0,19.2234 0,19.2234z"
+                fill="currentcolor" stroke-width="0" />
+            <path d="M204.04433,215.95567v-71.91134h71.91134v71.91134z" fill="none" stroke-width="0" />
+        </g>
+    </g>
+</svg>
