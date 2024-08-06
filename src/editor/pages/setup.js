@@ -264,15 +264,15 @@
             <h1 class="centerText" style="margin:2px; margin-top:4px;">${editor.language["engine.setup.start"]}</h1>
             <h2 class="centerText" style="margin:2px; margin-bottom:4px;">${editor.language["engine.setup.layoutSelect"]}</h2>
             <div class="innerBox" id="languages">
-                <div class="layoutDiv">
+                <div id="scratched" class="layoutDiv">
                     <h1 class="centerText">Scratched</h1>
                     ${editor.setup.scratchedSVG}
                 </div>
-                <div class="layoutDiv">
+                <div id="caffinated" class="layoutDiv">
                     <h1 class="centerText">Caffinated</h1>
                     ${editor.setup.caffinatedSVG}
                 </div>
-                <div class="layoutDiv">
+                <div id="empty" class="layoutDiv">
                     <h1 class="centerText">Blank</h1>
                 </div>
             </div>
