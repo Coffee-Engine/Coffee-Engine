@@ -248,7 +248,10 @@
                     },
                 },
                 mutators: {
-
+                    mutatorTest: {
+                        serialize:"test_Serialize",
+                        deserialize:"test_Deserialize"
+                    }
                 },
                 fields: {
 
@@ -261,6 +264,15 @@
                 ["this works", "works"],
                 ["for realsies", "for"],
             ].concat([[`${Date.now()}`, "time"]]);
+        }
+
+        //our functions for our mutator
+        test_Serialize() {
+            
+        }
+
+        test_Deserialize() {
+
         }
     }
 
