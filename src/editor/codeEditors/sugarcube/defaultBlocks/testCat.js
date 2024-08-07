@@ -178,7 +178,7 @@
                             opcode: "mutatedBlock",
                             type: sugarcube.BlockType.HAT,
                             text: "mutatorTest",
-                            mutator: "dragMutator",
+                            mutator: "test_mutatorTest",
                         },
                     ]),
                 menus: {
@@ -254,7 +254,10 @@
                     }
                 },
                 fields: {
-
+                    fieldTest: {
+                        isDropdown:true,
+                        
+                    }
                 }
             };
         }
@@ -267,11 +270,11 @@
         }
 
         //our functions for our mutator
-        test_Serialize() {
-            
+        test_Serialize(state, block) {
+            console.log(state, block);
         }
 
-        test_Deserialize() {
+        test_Deserialize(state, block) {
 
         }
     }

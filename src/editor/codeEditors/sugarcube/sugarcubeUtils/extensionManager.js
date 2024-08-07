@@ -687,6 +687,18 @@
                     contents: [],
                 };
 
+                //Create the mutators
+                if (myInfo.mutators) {
+                    Object.keys(myInfo.mutators).forEach((mutator) => {
+                        sugarcube.mutators.makeFromFunction(
+                            myInfo.id,
+                            myInfo.mutators[mutator].serialize, 
+                            myInfo.mutators[mutator].deserialize, 
+                            id + mutator
+                        );
+                    });
+                }
+
                 //Loop Through Menus
                 if (myInfo.menus) {
                     Object.keys(myInfo.menus).forEach((menu) => {
