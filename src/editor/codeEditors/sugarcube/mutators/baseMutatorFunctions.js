@@ -41,28 +41,29 @@
     }
 
     //Our easy creation function
-    sugarcube.mutators.makeFromFunction = (id,serialize,deserialize) => {
+    sugarcube.mutators.makeFromFunction = (extensionID,serialize,deserialize) => {
         let editedState = {};
         return {
             saveExtraState: () => {
+                editedState = sugarcube.extensionInstances[extensionID][serialize](editedState, this);
                 return editedState;
             },
 
             loadExtraState: (state) => {
                 editedState = state;
+                editedState = sugarcube.extensionInstances[extensionID][deserialize](editedState, this);
             },
 
             mutationToDom: () => {
-                if (!this._isClone_) this._shouldDuplicate_ = true;
-                // You *must* create a <mutation></mutation> element.
-                // This element can have children.
+                editedState = sugarcube.extensionInstances[extensionID][serialize](editedState, this);
                 const container = Blockly.utils.xml.createElement("mutationData");
-                container.setAttribute("cloneData", sugarcube.mutators.stringifyItem(editedState));
+                container.setAttribute("storedData", sugarcube.mutators.stringifyItem(editedState));
                 return container;
             },
 
             domToMutation: (xmlElement) => {
-                editedState = sugarcube.mutators.parseItem(xmlElement.getAttribute("mutationData"));
+                editedState = sugarcube.mutators.parseItem(xmlElement.getAttribute("storedData"));
+                editedState = sugarcube.extensionInstances[extensionID][deserialize](editedState, this);
             },
         }
     }
