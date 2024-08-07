@@ -38,14 +38,14 @@
                         opcode: "execute_command",
                         type: sugarcube.BlockType.COMMAND,
                         text: "",
-                        mutator: "customBlockMutator",
+                        mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
                     },
                     {
                         opcode: "execute_reporter",
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: "",
-                        mutator: "customBlockMutator",
+                        mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
                     },
                     {
@@ -59,7 +59,7 @@
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_reporter",
                         extraState: {
-                            customBlockData: [{ type: "text", text: "testing block! boolean" }, { type: "boolean" }, { type: "text", text: "text?" }, { type: "string" }, { type: "text", text: "number!" }, { type: "number" }, { type: "text", text: "color..." }, { type: "color" }, { type: "text", text: "menu!?!?!" }, { type: "menu", items: ["testing", "the boys"] }],
+                            customBlockData: [{ type: "text", text: "testing block! boolean" }, { type: "boolean" }, { type: "text", text: "text?" }, { type: "string" }, { type: "text", text: "number!" }, { type: "number" }, { type: "text", text: "color..." }, { type: "color" }],
                         },
                     },
                     {
@@ -81,7 +81,87 @@
                         },
                     },
                 ],
+                mutators: {
+                    commandBlock_Mutator: {
+                        serialize:"command_Serialize",
+                        deserialize:"command_Deserialize"
+                    }
+                }
             };
+        }
+
+        command_Serialize(state, block) {
+            return state;
+        }
+
+        command_Deserialize(state, block) {
+            if (state.customBlockData) {
+                let inputID = 0;
+                state.customBlockData.forEach((item) => {
+                    switch (item.type) {
+                        case "text":
+                            console.log(block.inputList);
+                            //create Text
+                            block.inputFromJson_({
+                                type: "input_dummy",
+                                name: `input_${inputID}`,
+                            });
+                            block.inputList[block.inputList.length - 1].appendField(
+                                block.fieldFromJson_({
+                                    type: "field_label",
+                                    text: item.text,
+                                })
+                            );
+                            break;
+
+                        case "boolean":
+                            block.inputFromJson_({
+                                type: "input_value",
+                                name: `input_${inputID}`,
+                                check: ["Boolean", "ANY"],
+                            });
+                            break;
+
+                        case "string":
+                            //input thing
+                            block.inputFromJson_({
+                                type: "input_value",
+                                name: `input_${inputID}`,
+                            });
+
+                            block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_string_reporter"></shadow>`));
+                            break;
+
+                        case "number":
+                            //input thing
+                            block.inputFromJson_({
+                                type: "input_value",
+                                name: `input_${inputID}`,
+                            });
+
+                            block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_number_reporter"></shadow>`));
+                            break;
+
+                        case "color":
+                            //input thing
+                            block.inputFromJson_({
+                                type: "input_value",
+                                name: `input_${inputID}`,
+                            });
+
+                            block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_color_reporter"></shadow>`));
+                            break;
+
+                        default:
+                            block.inputFromJson_({
+                                type: "input_value",
+                                name: `input_${inputID}`,
+                            });
+                            break;
+                    }
+                    inputID += 1;
+                });
+            }
         }
     }
 

@@ -66,6 +66,7 @@
                     editedState = sugarcube.mutators.parseItem(xmlElement.getAttribute("storedData")) || {};
                     editedState = sugarcube.extensionInstances[extensionID][deserialize](editedState, this) || {};
                 },
-            });
+            },
+            undefined);
         }
 })();
