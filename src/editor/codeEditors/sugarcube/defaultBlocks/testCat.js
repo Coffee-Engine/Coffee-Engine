@@ -178,7 +178,7 @@
                             opcode: "mutatedBlock",
                             type: sugarcube.BlockType.HAT,
                             text: "mutatorTest",
-                            mutator: "test_mutatorTest",
+                            mutator: "mutatorTest",
                         },
                     ]),
                 menus: {
@@ -257,6 +257,8 @@
                     fieldTest: {
                         isDropdown:true,
                         
+                        serialize:"test_Serialize",
+                        deserialize:"test_Deserialize"
                     }
                 }
             };

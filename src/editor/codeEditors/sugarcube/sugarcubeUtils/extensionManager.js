@@ -515,7 +515,13 @@
                         //If there is an output or tooltip add them to the block definition
                         //Note that output only determines what the block puts out.
                         if (block.mutator) {
-                            blockDef.mutator = block.mutator;
+                            //first we check to see if the mutator + extension ID exists.
+                            if (Blockly.Extensions.TEST_ONLY.allExtensions[id + block.mutator]) {
+                                blockDef.mutator = id + block.mutator;
+                            }
+                            else {
+                                blockDef.mutator = block.mutator;
+                            }
                         }
 
                         if (block.extraState) {
