@@ -15,23 +15,23 @@
                         opcode: "declaration",
                         type: sugarcube.BlockType.PROCEDURE_DEFINITION,
                         text: "Define : ",
-                        mutator: "customBlockDeclarationMutator",
+                        mutator: "hatBlock_Mutator",
                         hideFromPalette: true,
                     },
                     {
                         opcode: "input_string",
                         type: sugarcube.BlockType.REPORTER,
                         text: "",
-                        output: ["customBlockArgument"],
-                        mutator: "customBlockArgumentMutator",
+                        output: ["noClones"],
+                        mutator: "argBlock_Mutator",
                         hideFromPalette: true,
                     },
                     {
                         opcode: "input_bool",
                         type: sugarcube.BlockType.BOOLEAN,
                         text: "",
-                        output: ["customBlockArgument"],
-                        mutator: "customBlockArgumentMutator",
+                        output: ["noClones"],
+                        mutator: "argBlock_Mutator",
                         hideFromPalette: true,
                     },
                     {
@@ -52,14 +52,32 @@
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_command",
                         extraState: {
-                            customBlockData: [{ type: "text", text: "testing block! boolean" }, { type: "boolean" }, { type: "text", text: "text?" }, { type: "string" }, { type: "text", text: "number!" }, { type: "number" }, { type: "text", text: "color..." }, { type: "color" }],
+                            customBlockData: [
+                                { type: "text", text: "testing block! boolean" }, 
+                                { type: "boolean" }, 
+                                { type: "text", text: "text?" }, 
+                                { type: "string" }, 
+                                { type: "text", text: "number!" }, 
+                                { type: "number" }, 
+                                { type: "text", text: "color..." }, 
+                                { type: "color" }
+                            ],
                         },
                     },
                     {
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_reporter",
                         extraState: {
-                            customBlockData: [{ type: "text", text: "testing block! boolean" }, { type: "boolean" }, { type: "text", text: "text?" }, { type: "string" }, { type: "text", text: "number!" }, { type: "number" }, { type: "text", text: "color..." }, { type: "color" }],
+                            customBlockData: [
+                                { type: "text", text: "testing block! boolean" }, 
+                                { type: "boolean" }, 
+                                { type: "text", text: "text?" }, 
+                                { type: "string" }, 
+                                { type: "text", text: "number!" }, 
+                                { type: "number" }, 
+                                { type: "text", text: "color..." }, 
+                                { type: "color" }
+                            ],
                         },
                     },
                     {
@@ -75,22 +93,29 @@
                                 { type: "number", name: "nuts" },
                                 { type: "text", text: "color..." },
                                 { type: "color", name: "peas" },
-                                { type: "text", text: "menu!?!?!" },
-                                { type: "menu", items: ["testing", "the boys"], name: "john" },
                             ],
                         },
                     },
                 ],
                 mutators: {
                     commandBlock_Mutator: {
-                        serialize:"command_Serialize",
+                        serialize:"generic_Serialize",
                         deserialize:"command_Deserialize"
+                    },
+                    hatBlock_Mutator: {
+                        serialize:"generic_Serialize",
+                        deserialize:"hat_Deserialize"
+                    },
+                    argBlock_Mutator: {
+                        serialize:"arg_Serialize",
+                        deserialize:"arg_Deserialize"
                     }
                 }
             };
         }
 
-        command_Serialize(state, block) {
+        //Our universal serialize. it just returns the state.
+        generic_Serialize(state, block) {
             return state;
         }
 
@@ -100,7 +125,6 @@
                 state.customBlockData.forEach((item) => {
                     switch (item.type) {
                         case "text":
-                            console.log(block.inputList);
                             //create Text
                             block.inputFromJson_({
                                 type: "input_dummy",
@@ -161,6 +185,97 @@
                     }
                     inputID += 1;
                 });
+            }
+
+            return state;
+        }
+
+        hat_Deserialize(state, block) {
+            if (state.customBlockData) {
+                let inputID = 0;
+                state.customBlockData.forEach((item) => {
+                    block.inputFromJson_({
+                        type: item.type == "text" ? "input_dummy" : "input_value",
+                        name: `input_${inputID}`,
+                        check: item.type != "text" ? "noClones" : "",
+                    });
+
+                    let blockIN = null;
+
+                    switch (item.type) {
+                        case "text":
+                            block.inputList[block.inputList.length - 1].appendField(
+                                block.fieldFromJson_({
+                                    type: "field_label",
+                                    text: item.text,
+                                })
+                            );
+                            break;
+
+                        case "boolean":
+                            blockIN = sugarcube.workspace.newBlock("myblocks_input_bool");
+                            break;
+
+                        default:
+                            blockIN = sugarcube.workspace.newBlock("myblocks_input_string");
+                            break;
+                    }
+
+                    if (blockIN != null) {
+                        blockIN.customArgData = { text: item.name };
+                        block.inputList[block.inputList.length - 1].connection.connect_(blockIN.outputConnection);
+                    }
+
+                    inputID += 1;
+                });
+            }
+
+            return state;
+        }
+
+        arg_Serialize(state, block) {
+            //Get our info out of the block.
+            state = state || {};
+            state.customArgData = block.customArgData;
+
+            //Set block duplication
+            if (!block._isClone_) block._shouldDuplicate_ = true;
+
+            state._isClone_ = block._isClone_;
+            state._shouldDuplicate_ = block._shouldDuplicate_;
+
+            return state;
+        }
+
+        arg_Deserialize(state, block) {
+            //put our stuff on the block
+            //block._isClone_ = state._isClone_;
+            //block._shouldDuplicate_ = state._shouldDuplicate_;
+            block.customArgData = state.customArgData;
+
+            if (block._isClone_) {
+                if (
+                    block.outputConnection && 
+                    block.outputConnection.check &&
+                    block.outputConnection.check.includes("customBlockArgument")
+                ) {
+                    block.outputConnection.check.splice(block.outputConnection.check.indexOf("customBlockArgument"),1);
+                    console.log("removed custom block argument check")
+                }
+            }
+
+            if (state.customArgData) {
+                block.inputFromJson_({
+                    type: "input_dummy",
+                    name: `variableName`,
+                });
+
+                block.inputList[block.inputList.length - 1].appendField(
+                    block.fieldFromJson_({
+                        type: "field_label",
+                        text: state.customArgData.text,
+                    })
+                );
             }
         }
     }

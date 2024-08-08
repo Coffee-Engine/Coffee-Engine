@@ -10934,6 +10934,14 @@ ${b} to its parent, because: ${a}`);
               duplicated._shouldDuplicate_ = false;
               duplicated._isClone_ = true;
 
+              if (
+                duplicated.outputConnection && 
+                duplicated.outputConnection.check &&
+                duplicated.outputConnection.check.includes("noClones")
+              ) {
+                duplicated.outputConnection.check.splice(duplicated.outputConnection.check.indexOf("noClones"),1);
+              }
+
               //Set the block dragger to the duplicate
               this.blockDragger =
                 new (getClassFromOptions$$module$build$src$core$registry(
