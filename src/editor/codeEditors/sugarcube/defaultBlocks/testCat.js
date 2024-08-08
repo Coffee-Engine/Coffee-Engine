@@ -254,11 +254,23 @@
                     }
                 },
                 fields: {
-                    fieldTest: {
-                        isDropdown:true,
-                        
-                        serialize:"test_Serialize",
-                        deserialize:"test_Deserialize"
+                    //fieldTest: {
+                    //    isDropdown:true,
+                    //    
+                    //    //Our custom editor
+                    //    editor:"test_Editor",
+                    //
+                    //    color1:"#ef0000",
+                    //    color2:"#af101a",
+                    //
+                    //    //If we want a custom validator
+                    //    validate:"test_Validate",
+                    //
+                    //    //Just in case we want to edit how the field is rendered
+                    //    render:"test_Render"
+                    //}
+                    doomField: {
+                        initilize:"doom_render"
                     }
                 }
             };
@@ -278,6 +290,10 @@
 
         test_Deserialize(state, block) {
             return state;
+        }
+
+        doom_render(value, content, field) {
+            console.log(value,content,field);
         }
     }
 
