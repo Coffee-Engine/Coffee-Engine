@@ -273,11 +273,11 @@
 
         //our functions for our mutator
         test_Serialize(state, block) {
-            console.log(state, block);
+            return state;
         }
 
         test_Deserialize(state, block) {
-
+            return state;
         }
     }
 
