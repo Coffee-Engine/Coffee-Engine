@@ -253,17 +253,6 @@
             //block._shouldDuplicate_ = state._shouldDuplicate_;
             block.customArgData = state.customArgData;
 
-            if (block._isClone_) {
-                if (
-                    block.outputConnection && 
-                    block.outputConnection.check &&
-                    block.outputConnection.check.includes("customBlockArgument")
-                ) {
-                    block.outputConnection.check.splice(block.outputConnection.check.indexOf("customBlockArgument"),1);
-                    console.log("removed custom block argument check")
-                }
-            }
-
             if (state.customArgData) {
                 block.inputFromJson_({
                     type: "input_dummy",
