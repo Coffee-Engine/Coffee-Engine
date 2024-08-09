@@ -713,6 +713,7 @@
                             myInfo.fields[field].render, 
                             myInfo.fields[field].initilize, 
                             myInfo.fields[field].validate, 
+                            myInfo.fields[field].sizeOverride, 
                             myInfo.fields[field].isDropdown,
                             id + field
                         );

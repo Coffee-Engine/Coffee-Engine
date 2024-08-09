@@ -3,8 +3,10 @@
         storage:{}
     };
 
-    sugarcube.fields.makeFromFunction = (extensionID,{color1, color2},createFunction,customRender,initilize,validate,isDropdown,fieldName) => {
+    sugarcube.fields.makeFromFunction = (extensionID,{color1, color2},createFunction,customRender,initilize,validate,sizeOverride,isDropdown,fieldName) => {
         sugarcube.fields.storage[fieldName] = class extends Blockly.Field {
+            foreignObject_ = null;
+
             //Our constructor
             constructor(value, validator) {
                 super(value, validator);
@@ -20,6 +22,7 @@
                 if (initilize) {
                     this.initView = () => {
                         sugarcube.extensionInstances[extensionID][initilize](this);
+                        this.updateSize_();
                     }
                 }
 
@@ -29,6 +32,33 @@
 
                         this.textContent_.nodeValue = this.value_;
                         this.updateSize_();
+                    }
+                }
+
+                if (sizeOverride) {
+                    this.updateSize_ = () => {
+                        const newSize = sugarcube.extensionInstances[extensionID][sizeOverride](this.value_,this);
+
+                        if (Array.isArray(newSize)) {
+                            this.size_.width = newSize[0];
+                            this.size_.height = newSize[1];
+                            return;
+                        }
+
+                        switch (typeof newSize) {
+                            case "object":
+                                this.size_.width = newSize.width || 10;
+                                this.size_.height = newSize.height || 10;
+                                break;
+
+                            case "number":
+                                this.size_.width = newSize || 10;
+                                this.size_.height = newSize || 10;
+                                break;
+                        
+                            default:
+                                break;
+                        }
                     }
                 }
 
@@ -62,6 +92,20 @@
             
                 //Make it serialize.
                 this.SERIALIZABLE = true;
+            }
+
+            createForeignObject_(width,height,offsetX,offsetY) {
+                const foreignObject = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+                foreignObject.setAttribute("width", width || 100);
+                foreignObject.setAttribute("height", height || 100);
+                foreignObject.setAttribute("x", offsetX || 0);
+                foreignObject.setAttribute("y", offsetY || 0);
+
+                this.fieldGroup_.appendChild(foreignObject);
+
+                this.foreignObject_ = foreignObject;
+
+                return foreignObject
             }
 
             widgetDispose_() {

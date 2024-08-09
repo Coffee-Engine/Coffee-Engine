@@ -42,29 +42,28 @@
 
     //Our easy creation function
     sugarcube.mutators.makeFromFunction = (extensionID,serialize,deserialize,mutatorName) => {
-        let editedState = {};
         return Blockly.Extensions.registerMutator(mutatorName,
             {
                 saveExtraState: function () {
-                    editedState = sugarcube.extensionInstances[extensionID][serialize](editedState, this) || {};
-                    return editedState;
+                    this.editedState = sugarcube.extensionInstances[extensionID][serialize](this.editedState, this) || {};
+                    return this.editedState;
                 },
 
                 loadExtraState: function (state) {
-                    editedState = state || {};
-                    editedState = sugarcube.extensionInstances[extensionID][deserialize](editedState, this) || {};
+                    this.editedState = state || {};
+                    this.editedState = sugarcube.extensionInstances[extensionID][deserialize](this.editedState, this) || {};
                 },
 
                 mutationToDom: function () {
-                    editedState = sugarcube.extensionInstances[extensionID][serialize](editedState, this) || {};
+                    this.editedState = sugarcube.extensionInstances[extensionID][serialize](this.editedState, this) || {};
                     const container = Blockly.utils.xml.createElement("mutationData");
-                    container.setAttribute("storedData", sugarcube.mutators.stringifyItem(editedState));
+                    container.setAttribute("storedData", sugarcube.mutators.stringifyItem(this.editedState));
                     return container;
                 },
 
                 domToMutation: function (xmlElement) {
-                    editedState = sugarcube.mutators.parseItem(xmlElement.getAttribute("storedData")) || {};
-                    editedState = sugarcube.extensionInstances[extensionID][deserialize](editedState, this) || {};
+                    this.editedState = sugarcube.mutators.parseItem(xmlElement.getAttribute("storedData")) || {};
+                    this.editedState = sugarcube.extensionInstances[extensionID][deserialize](this.editedState, this) || {};
                 },
             },
             undefined);
