@@ -429,7 +429,15 @@
                                     } else {
                                         switch (argument.type) {
                                             case sugarcube.ArgumentType.CUSTOM:
-                                                argument.type = argument.customType || "input_value";
+                                                argument.type = "input_value";
+                                                if (argument.customType) {
+                                                    if (sugarcube.fields[id + argument.customType]) {
+                                                        argument.type = id + argument.customType;
+                                                    }
+                                                    else if (sugarcube.fields[argument.customType]) {
+                                                        argument.type = argument.customType;
+                                                    }
+                                                }
                                                 break;
 
                                             case sugarcube.ArgumentType.BOOLEAN: {

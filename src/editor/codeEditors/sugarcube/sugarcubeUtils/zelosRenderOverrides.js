@@ -158,16 +158,12 @@
             switch (connection.type) {
                 case Blockly.ConnectionType.OUTPUT_VALUE: {
                     switch (check[0]) {
-                        case "Inline": {
-                            return this.SQUARED;
-                        }
-
                         case "Object": {
                             return this.OBJECT;
                         }
 
                         case "Array": {
-                            return this.ARRAY;
+                            return this.SQUARED;
                         }
 
                         default: {

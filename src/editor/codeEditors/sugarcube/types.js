@@ -23,8 +23,6 @@
 
         DUPLICATE: "duplicate",
 
-        INLINE: "inline",
-
         REPORTER_ANY: "reporter_any",
     };
 
