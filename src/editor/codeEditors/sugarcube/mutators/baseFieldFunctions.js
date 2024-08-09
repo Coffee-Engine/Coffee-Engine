@@ -36,29 +36,58 @@
                 }
 
                 if (sizeOverride) {
-                    this.updateSize_ = () => {
-                        const newSize = sugarcube.extensionInstances[extensionID][sizeOverride](this.value_,this);
+                    switch (typeof sizeOverride) {
+                        case "string":
+                            this.updateSize_ = () => {
+                                const newSize = sugarcube.extensionInstances[extensionID][sizeOverride](this.value_,this);
 
-                        if (Array.isArray(newSize)) {
-                            this.size_.width = newSize[0];
-                            this.size_.height = newSize[1];
-                            return;
-                        }
+                                if (Array.isArray(newSize)) {
+                                    this.size_.width = newSize[0];
+                                    this.size_.height = newSize[1];
+                                    return;
+                                }
 
-                        switch (typeof newSize) {
-                            case "object":
-                                this.size_.width = newSize.width || 10;
-                                this.size_.height = newSize.height || 10;
-                                break;
+                                switch (typeof newSize) {
+                                    case "object":
+                                        this.size_.width = newSize.width || 10;
+                                        this.size_.height = newSize.height || 10;
+                                        break;
 
-                            case "number":
-                                this.size_.width = newSize || 10;
-                                this.size_.height = newSize || 10;
+                                    case "number":
+                                        this.size_.width = newSize || 10;
+                                        this.size_.height = newSize || 10;
+                                        break;
+                                
+                                    default:
+                                        break;
+                                }
+                            }
+                            break;
+
+                        case "number":
+                            this.updateSize_ = () => {
+                                this.size_.width = sizeOverride;
+                                this.size_.height = sizeOverride;
+                            }
+                            break;
+
+                        case "object":
+                            if (Array.isArray(sizeOverride)) {
+                                this.updateSize_ = () => {
+                                    this.size_.width = sizeOverride[0];
+                                    this.size_.height = sizeOverride[1];
+                                }
                                 break;
-                        
-                            default:
-                                break;
-                        }
+                            }
+
+                            this.updateSize_ = () => {
+                                this.size_.width = sizeOverride.width;
+                                this.size_.height = sizeOverride.height;
+                            }
+                            break;
+                    
+                        default:
+                            break;
                     }
                 }
 
