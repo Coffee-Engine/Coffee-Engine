@@ -220,7 +220,6 @@
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
-                                console.log(input.connection);
                                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
                                     args[input.name] = Function(generator.statementToCode(block, input.name));
                                     recalls[input.name] = Function(generator.statementToCode(block, input.name));
@@ -431,10 +430,10 @@
                                             case sugarcube.ArgumentType.CUSTOM:
                                                 argument.type = "input_value";
                                                 if (argument.customType) {
-                                                    if (sugarcube.fields[id + argument.customType]) {
+                                                    if (sugarcube.fields.storage[id + argument.customType]) {
                                                         argument.type = id + argument.customType;
                                                     }
-                                                    else if (sugarcube.fields[argument.customType]) {
+                                                    else if (sugarcube.fields.storage[argument.customType]) {
                                                         argument.type = argument.customType;
                                                     }
                                                 }
@@ -700,6 +699,25 @@
                     showColor: myInfo.showColor,
                     contents: [],
                 };
+
+                //Create the mutators
+                if (myInfo.fields) {
+                    Object.keys(myInfo.fields).forEach((field) => {
+                        sugarcube.fields.makeFromFunction(
+                            myInfo.id,
+                            {
+                                color1: myInfo.color1,
+                                color2: myInfo.color3
+                            },
+                            myInfo.fields[field].editor, 
+                            myInfo.fields[field].render, 
+                            myInfo.fields[field].initilize, 
+                            myInfo.fields[field].validate, 
+                            myInfo.fields[field].isDropdown,
+                            id + field
+                        );
+                    });
+                }
 
                 //Create the mutators
                 if (myInfo.mutators) {

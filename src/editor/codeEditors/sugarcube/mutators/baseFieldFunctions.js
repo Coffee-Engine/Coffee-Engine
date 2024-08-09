@@ -19,8 +19,7 @@
                 //If we have a custom render or init function
                 if (initilize) {
                     this.initView = () => {
-                        this.initView.super();
-                        sugarcube.extensionInstances[extensionID][initilize](this.value_, this.textContent_, this);
+                        sugarcube.extensionInstances[extensionID][initilize](this);
                     }
                 }
 
@@ -47,7 +46,7 @@
                             Blockly.DropDownDiv.setColour(color1, color2);
                             
                             Blockly.DropDownDiv.showPositionedByField(
-                                this, this.disposeWidget_.bind(this));
+                                this, this.widgetDispose_.bind(this));
         
                         }
                         else {
@@ -66,6 +65,8 @@
             }
 
             widgetDispose_() {
+                if (!this.editorListeners_) return;
+                
                 for (let i = this.editorListeners_.length, listener;
                     listener = this.editorListeners_[i]; i--) {
                   Blockly.browserEvents.unbind(listener);
@@ -76,7 +77,7 @@
         
         sugarcube.fields.storage[fieldName].fromJson = function(options) {
             const value = Blockly.utils.parsing.replaceMessageReferences(options['value']);
-            return new CustomFields.GenericField(value);
+            return new sugarcube.fields.storage[fieldName](value);
         }
 
         Blockly.fieldRegistry.register(fieldName, sugarcube.fields.storage[fieldName]);

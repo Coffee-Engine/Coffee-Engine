@@ -179,7 +179,7 @@
                         }
 
                         case "Array": {
-                            return this.ARRAY;
+                            return this.SQUARED;
                         }
 
                         default: {
