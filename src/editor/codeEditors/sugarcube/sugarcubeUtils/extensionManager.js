@@ -753,10 +753,12 @@
 
                 sugarcube.toolbox.contents.push(createdContentData);
 
-                sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+                if (sugarcube.workspace) {
+                    sugarcube.workspace.updateToolbox(sugarcube.toolbox);
 
-                sugarcube.workspace.getToolbox().refreshSelection();
-
+                    sugarcube.workspace.getToolbox().refreshSelection();
+                }
+                
                 sugarcube.refreshTheme();
             } catch (error) {
                 console.error(error);
