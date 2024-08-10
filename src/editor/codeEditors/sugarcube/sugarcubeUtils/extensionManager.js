@@ -760,8 +760,7 @@
                 
                 sugarcube.refreshTheme();
             } catch (error) {
-                console.error(error);
-                alert("Error while importing sugarcube extension : " + error);
+                console.error("Error while importing sugarcube extension : " + error);
             }
         }
 
