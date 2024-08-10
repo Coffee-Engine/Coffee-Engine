@@ -3,7 +3,7 @@
         storage:{}
     };
 
-    sugarcube.fields.makeFromFunction = (extensionID,{color1, color2},createFunction,customRender,initilize,validate,sizeOverride,isDropdown,fieldName) => {
+    sugarcube.fields.makeFromFunction = (extensionID,fieldData,fieldName) => {
         sugarcube.fields.storage[fieldName] = class extends Blockly.Field {
             foreignObject_ = null;
 
@@ -12,34 +12,34 @@
                 super(value, validator);
 
                 //Make the validator
-                if (validate) {
+                if (fieldData.validate) {
                     this.doClassValidation_ = (newValue) => {
-                        return sugarcube.extensionInstances[extensionID][validate](newValue);
+                        return sugarcube.extensionInstances[extensionID][fieldData.validate](newValue);
                     }
                 }
                 
                 //If we have a custom render or init function
-                if (initilize) {
+                if (fieldData.initilize) {
                     this.initView = () => {
-                        sugarcube.extensionInstances[extensionID][initilize](this);
+                        sugarcube.extensionInstances[extensionID][fieldData.initilize](this);
                         this.updateSize_();
                     }
                 }
 
-                if (customRender) {
+                if (fieldData.render) {
                     this.render_ = () => {
-                        sugarcube.extensionInstances[extensionID][customRender](this.value_, this.textContent_, this);
+                        sugarcube.extensionInstances[extensionID][fieldData.render](this.value_, this.textContent_, this);
 
                         this.textContent_.nodeValue = this.value_;
                         this.updateSize_();
                     }
                 }
 
-                if (sizeOverride) {
-                    switch (typeof sizeOverride) {
+                if (fieldData.sizeOverride) {
+                    switch (typeof fieldData.sizeOverride) {
                         case "string":
                             this.updateSize_ = () => {
-                                const newSize = sugarcube.extensionInstances[extensionID][sizeOverride](this.value_,this);
+                                const newSize = sugarcube.extensionInstances[extensionID][fieldData.sizeOverride](this.value_,this);
 
                                 if (Array.isArray(newSize)) {
                                     this.size_.width = newSize[0];
@@ -66,23 +66,23 @@
 
                         case "number":
                             this.updateSize_ = () => {
-                                this.size_.width = sizeOverride;
-                                this.size_.height = sizeOverride;
+                                this.size_.width = fieldData.sizeOverride;
+                                this.size_.height = fieldData.sizeOverride;
                             }
                             break;
 
                         case "object":
-                            if (Array.isArray(sizeOverride)) {
+                            if (Array.isArray(fieldData.sizeOverride)) {
                                 this.updateSize_ = () => {
-                                    this.size_.width = sizeOverride[0];
-                                    this.size_.height = sizeOverride[1];
+                                    this.size_.width = fieldData.sizeOverride[0];
+                                    this.size_.height = fieldData.sizeOverride[1];
                                 }
                                 break;
                             }
 
                             this.updateSize_ = () => {
-                                this.size_.width = sizeOverride.width;
-                                this.size_.height = sizeOverride.height;
+                                this.size_.width = fieldData.sizeOverride.width;
+                                this.size_.height = fieldData.sizeOverride.height;
                             }
                             break;
                     
@@ -92,17 +92,17 @@
                 }
 
                 //If we have an editor function
-                if (createFunction) {
+                if (fieldData.editor) {
                     this.showEditor_ = () => {
                         //check if it is a dropdown. if not do not make a dropdown.
-                        if (isDropdown) {
+                        if (fieldData.isDropdown) {
                             // Create the dropdown HTML                    
-                            this.editor_ = sugarcube.extensionInstances[extensionID][createFunction](this,Blockly.DropDownDiv);
+                            this.editor_ = sugarcube.extensionInstances[extensionID][fieldData.editor](this,Blockly.DropDownDiv);
         
                             Blockly.DropDownDiv.getContentDiv().appendChild(this.editor_);
         
                             //Set its colors to match the extension colors
-                            Blockly.DropDownDiv.setColour(color1, color2);
+                            Blockly.DropDownDiv.setColour(fieldData.color1, fieldData.color2);
                             
                             Blockly.DropDownDiv.showPositionedByField(
                                 this, this.widgetDispose_.bind(this));
@@ -113,7 +113,7 @@
                             Blockly.WidgetDiv.show(this, this.sourceBlock_.RTL, this.widgetDispose_.bind(this));
         
                             // Create the widget.
-                            let widget = sugarcube.extensionInstances[extensionID][createFunction](this,Blockly.WidgetDiv);                    
+                            let widget = sugarcube.extensionInstances[extensionID][fieldData.editor](this,Blockly.WidgetDiv);                    
                             Blockly.WidgetDiv.getDiv().appendChild(widget);
                         }
                     }

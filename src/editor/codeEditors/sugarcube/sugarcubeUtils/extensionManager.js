@@ -703,18 +703,17 @@
                 //Create the mutators
                 if (myInfo.fields) {
                     Object.keys(myInfo.fields).forEach((field) => {
+                        //colours
+                        if (!myInfo.fields[field].color1) {
+                            myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
+                        }
+                        if (!myInfo.fields[field].color2) {
+                            myInfo.fields[field].color2 = myInfo.color3, myInfo.color2 || myInfo.color1 || "#0b8e69";
+                        }
+
                         sugarcube.fields.makeFromFunction(
                             myInfo.id,
-                            {
-                                color1: myInfo.color1,
-                                color2: myInfo.color3
-                            },
-                            myInfo.fields[field].editor, 
-                            myInfo.fields[field].render, 
-                            myInfo.fields[field].initilize, 
-                            myInfo.fields[field].validate, 
-                            myInfo.fields[field].sizeOverride, 
-                            myInfo.fields[field].isDropdown,
+                            myInfo.fields[field],
                             id + field
                         );
                     });

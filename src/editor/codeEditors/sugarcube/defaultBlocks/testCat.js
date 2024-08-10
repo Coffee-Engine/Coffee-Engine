@@ -273,7 +273,7 @@
                         initilize:"test_Init",
                     
                         color1:"#ef0000",
-                        color2:"#af101a",
+                        color2:"#0f101a",
                     }
                 }
             };
