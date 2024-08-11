@@ -99,6 +99,7 @@
         document.body.appendChild(editor.currentPage.root);
 
         new editor.windows.log();
+        new editor.windows.blockly(600,400);
     };
 
     editor.editorPage.initilizePanels = () => {

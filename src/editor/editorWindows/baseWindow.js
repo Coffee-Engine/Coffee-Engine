@@ -63,7 +63,7 @@
                     Math.max(value,this.minHeight)
                 )
             }px`;
-            this.#height = Math.max(value,this.minWidth);
+            this.#height = Math.max(value,this.minHeight);
         }
         get height() {
             return this.#height;
@@ -112,7 +112,7 @@
         //Have this so we can't repeat the closing animation
         closing = false;
 
-        constructor(title, width, height) {
+        constructor(width, height, title) {
             //Set up variables
             this.windowDiv = document.createElement("div");
             this.windowDiv.className = "window";

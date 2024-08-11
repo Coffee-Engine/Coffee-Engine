@@ -302,9 +302,10 @@
                         };
 
                         //Register callback code for the button
-                        if (extension[opcode]) {
-                            sugarcube.workspace.registerButtonCallback(id + opcode, extension[opcode]);
-                        }
+                        console.log(extension,opcode,extension[opcode],id + opcode)
+                        sugarcube.workspace.registerButtonCallback(id + opcode, () => {
+                            sugarcube.extensionInstances[extension.id][opcode]()
+                        });
                         break;
 
                     case "duplicate":
