@@ -26,7 +26,8 @@
         }
 
         openVariableMenu() {
-            new editor.windows.variable(600,400);
+            const createdWindow = new editor.windows.variable(400,300);
+            createdWindow.__moveToTop();
         }
     }
 

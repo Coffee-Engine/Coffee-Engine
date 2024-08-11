@@ -273,6 +273,8 @@
                 const leftEdge = Math.abs(boundingRect.left - downEvent.clientX) <= editor.grabDistance;
                 const topEdge = Math.abs(boundingRect.top - downEvent.clientY) <= editor.grabDistance;
                 const edging = topEdge || bottomEdge || rightEdge || leftEdge;
+                
+                this.windowDiv.style.zIndex = editor.windowLayer;
 
                 //If we aren't edging return
                 if (!edging) return;
@@ -307,6 +309,11 @@
                     this.resized();
                 };
             };
+        }
+
+        __moveToTop() {
+            editor.windowLayer += 1;
+            this.windowDiv.style.zIndex = editor.windowLayer;
         }
 
         //Allow us to destroy the window;
