@@ -303,7 +303,7 @@
 
                         //Register callback code for the button
                         sugarcube.workspace.registerButtonCallback(id + opcode, () => {
-                            sugarcube.extensionInstances[extension.id][opcode]()
+                            sugarcube.extensionInstances[extension.id][opcode]();
                         });
                         break;
 
