@@ -676,6 +676,8 @@
             try {
                 const myInfo = extension.getInfo();
 
+                if (sugarcube.extensionInstances[myInfo.id]) return;
+
                 sugarcube.extensionInstances[myInfo.id] = extension;
 
                 //Snatch the extension's ID
@@ -693,6 +695,7 @@
                 let createdContentData = {
                     kind: "category",
                     name: myInfo.name,
+                    id: myInfo.id,
                     colour: myInfo.color1 || "#0fbd8c",
                     colour_secondary: myInfo.color3 || myInfo.color1 || "#0b8e69",
                     menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
@@ -762,6 +765,36 @@
             } catch (error) {
                 console.error("Error while importing sugarcube extension : " + error);
             }
+        }
+
+        removeExtension(extensionID) {
+            if (sugarcube.extensionInstances[extensionID]) {
+                //run the disposal function if it exists
+                if (sugarcube.extensionInstances[extensionID].__extDispose) {
+                    sugarcube.extensionInstances[extensionID].__extDispose();
+                }
+
+                //Get the extension's def
+                const extensionToolboxDef = sugarcube.toolbox.contents.find(item => {
+                    return item.id == extensionID
+                });
+
+                //Remove the extension's toolbox contents
+                sugarcube.toolbox.contents.splice(sugarcube.toolbox.contents.indexOf(extensionToolboxDef),1);
+
+                //Delete the instance.
+                delete sugarcube.extensionInstances[extensionID];
+
+                if (sugarcube.workspace) {
+                    sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+
+                    sugarcube.workspace.getToolbox().refreshSelection();
+                }
+            }
+        }
+
+        hasExtension(extensionID) {
+            return typeof sugarcube.extensionInstances[extensionID] != "undefined";
         }
 
         loadExtension(url) {
