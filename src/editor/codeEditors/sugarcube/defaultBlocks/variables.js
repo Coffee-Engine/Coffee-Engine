@@ -19,8 +19,8 @@
                     {
                         opcode: "getVariable",
                         type: sugarcube.BlockType.REPORTER_ANY,
-                        text: "variable",
-                        hideFromPalette: false,
+                        text: "",
+                        hideFromPalette: true,
                     },
                 ],
             };
@@ -29,6 +29,15 @@
         openVariableMenu() {
             const createdWindow = new editor.windows.variable(400,300);
             createdWindow.__moveToTop();
+        }
+
+        dynamic_category_func() {
+            return [
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getVariable",
+                }
+            ];
         }
     }
 
