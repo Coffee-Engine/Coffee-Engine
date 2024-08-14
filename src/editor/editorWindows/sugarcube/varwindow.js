@@ -4,6 +4,8 @@
         minWidth = 400;
         minHeight = 300;
 
+        variableType = ""
+
         init(container) {
             this.title = editor.language["editor.window.createVar"];
 
@@ -20,6 +22,17 @@
             variableName.placeholder = editor.language["editor.window.createVar.temporaryName"];
 
             container.appendChild(variableName);
+
+            sugarcube.workspace.createVariable(
+                variableName.value,
+                this.variableType,
+                //This is going to be random anyways
+                variableName.value
+            );
+        }
+
+        variableExists(name) {
+            return sugarcube.workspace.getAllVariableNames().includes(name);
         }
 
         resized() {
