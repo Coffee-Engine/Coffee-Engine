@@ -67,6 +67,8 @@
             sugarcube.extensionInstances = {};
         }
 
+        updateFunctions = {};
+
         //Block shape definer.
         addBlocklyBlock(blockName, type, BlockJson, inline) {
             inline = inline || true;
@@ -755,6 +757,23 @@
 
                 sugarcube.toolbox.contents.push(createdContentData);
 
+                if (myInfo.updateBlocks) {
+                    this.updateFunctions[myInfo.id] = () => {
+                        const generatedExtras = sugarcube.extensionInstances[myInfo.id][myInfo.updateBlocks]() || [];
+                        
+                        //Make sure we are getting an array
+                        if (Array.isArray(generatedExtras)) {
+                            //If so parse each block.
+                            for (let genIndex = 0; genIndex < generatedExtras.length; genIndex++) {
+                                generatedExtras[genIndex] = this.addBlock(generatedExtras[genIndex], myInfo);
+                            }
+
+                            //Then concat our two things into a freakish monstrosity, and update the toolbox.
+                            sugarcube.toolbox.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                        }
+                    }
+                }
+
                 if (sugarcube.workspace) {
                     sugarcube.workspace.updateToolbox(sugarcube.toolbox);
 
@@ -767,6 +786,16 @@
             }
         }
 
+        getExtensionIndex(extensionID) {
+            //Find its index
+            return sugarcube.toolbox.contents.indexOf(
+                //Get the extension's def
+                sugarcube.toolbox.contents.find(item => {
+                    return item.id == extensionID;
+                })
+            );
+        }
+
         removeExtension(extensionID) {
             if (sugarcube.extensionInstances[extensionID]) {
                 //run the disposal function if it exists
@@ -774,16 +803,12 @@
                     sugarcube.extensionInstances[extensionID].__extDispose();
                 }
 
-                //Get the extension's def
-                const extensionToolboxDef = sugarcube.toolbox.contents.find(item => {
-                    return item.id == extensionID
-                });
-
                 //Remove the extension's toolbox contents
-                sugarcube.toolbox.contents.splice(sugarcube.toolbox.contents.indexOf(extensionToolboxDef),1);
+                sugarcube.toolbox.contents.splice(getExtensionIndex(extensionID),1);
 
                 //Delete the instance.
                 delete sugarcube.extensionInstances[extensionID];
+                delete this.updateFunctions[extensionID];
 
                 if (sugarcube.workspace) {
                     sugarcube.workspace.updateToolbox(sugarcube.toolbox);
@@ -795,6 +820,21 @@
 
         hasExtension(extensionID) {
             return typeof sugarcube.extensionInstances[extensionID] != "undefined";
+        }
+
+        updateExtensionBlocks(extensionID) {
+            if (!extensionID) {
+                Object.keys(this.updateFunctions).forEach(func => {func()});
+            }
+            else {
+                if (!this.updateFunctions[extensionID]) return;
+                
+                this.updateFunctions[extensionID]();
+            }
+
+            sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+
+            sugarcube.workspace.getToolbox().refreshSelection();
         }
 
         loadExtension(url) {

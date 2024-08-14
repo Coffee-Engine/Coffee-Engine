@@ -5,7 +5,7 @@
         minHeight = 300;
 
         init(container) {
-            this.title = "Create a Variable";
+            this.title = editor.language["editor.window.createVar"];
 
             container.style.display = "grid";
             container.style.gridTemplateRows = "52px 20% 60%";
@@ -17,7 +17,7 @@
             variableName.style.margin = "12px";
             variableName.style.marginLeft = "calc(50% - 22.5%)";
 
-            variableName.placeholder = "Variable Name";
+            variableName.placeholder = editor.language["editor.window.createVar.temporaryName"];
 
             container.appendChild(variableName);
         }

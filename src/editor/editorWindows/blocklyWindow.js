@@ -1,7 +1,7 @@
 (function () {
     editor.windows.blockly = class extends editor.windows.base {
         init(container) {
-            this.title = "Sugarcube";
+            this.title = editor.language["editor.window.sugarcube"];
 
             container.style.fontSize = "medium";
 

@@ -97,7 +97,7 @@
         }
 
         init(container) {
-            this.title = "Log";
+            this.title = editor.language["editor.window.log"];
 
             //create our shiz
             container.style.display = "grid";
@@ -105,18 +105,21 @@
             container.style.margin = "0px";
             container.style.overflow = "hidden";
 
+            //Where log controls are stored
             this.logControls = document.createElement("div");
             this.logControls.style.width = "100%";
             this.logControls.style.backgroundColor = "var(--background-2)";
 
+            //Our clear button. lets us clear the log manually
             this.clearButton = document.createElement("button");
-            this.clearButton.innerText = "clear";
+            this.clearButton.innerText = editor.language["editor.window.log.clear"];
             this.clearButton.style.height = "100%";
             this.clearButton.onclick = () => {
                 this.logContainer.innerHTML = "";
             }
             this.logControls.appendChild(this.clearButton);
 
+            //Where the logs are visualized
             this.logContainer = document.createElement("div");
             this.logContainer.style.width = "100%";
             this.logContainer.style.overflowY = "auto";
@@ -128,6 +131,7 @@
                 //The element to display
                 let displayClass = "logInfo";
 
+                //Just for different types
                 switch (event.type) {
                     case "warn": {
                         displayClass = "logInfo logWarn";

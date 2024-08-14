@@ -37,5 +37,11 @@ editor.EnglishLang = {
 
     "engine.generic.back": "Back",
 
-    "engine.window.log": "Log",
+    "editor.window.log": "Log",
+    "editor.window.log.clear": "clear",
+
+    "editor.window.sugarcube": "SugarCube",
+
+    "editor.window.createVar": "Create a Variable",
+    "editor.window.createVar.temporaryName": "Variable Name",
 };
