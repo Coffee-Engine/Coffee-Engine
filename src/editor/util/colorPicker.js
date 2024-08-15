@@ -41,100 +41,57 @@
         //And then the background and border
         current.style.backgroundColor = "var(--background-1)";
         current.style.borderColor = "var(--background-2)";
-        current.style.borderWidth = "2px";
+        current.style.borderWidth = "4px";
         current.style.borderRadius = "16px";
         current.style.borderStyle = "solid";
 
-        current.style.display = "flex";
+        //Padding
+        current.style.padding = "8px";
 
-        if (hasExtensions) {
-        }
-        else {
-            //Create the BG
-            const brightnessSatAdjuster = document.createElement("div");
-            {
-                brightnessSatAdjuster.innerHTML = editor.colorPicker.colorPickerSVG;
+        //The Grid
+        current.style.display = "grid";
+        current.style.gridTemplateColumns = "3fr 1fr";
+        current.style.gap = "16px";
+        current.style.zIndex = "10000"
 
-                //Size it
-                brightnessSatAdjuster.style.height = "80%";
-                brightnessSatAdjuster.style.marginTop = "7.5%";
-                brightnessSatAdjuster.style.marginLeft = "7.5%";
-                brightnessSatAdjuster.style.padding = "0px";
+        current.innerHTML = `
+        <style>
+            .CE_colorPicker {
+                height:100%;
+                aspect-ratio:1;
 
-                brightnessSatAdjuster.style.position = "relative";
-
-                brightnessSatAdjuster.style.aspectRatio = "1";
-
-                brightnessSatAdjuster.style.borderColor = "var(--background-2)";
-                brightnessSatAdjuster.style.borderWidth = "4px";
-                brightnessSatAdjuster.style.borderRadius = "8px";
-                brightnessSatAdjuster.style.borderStyle = "solid";
-
-                //off tha dome!
-                const picker = document.createElement("div");
-                picker.style.backgroundColor = "var(--background-2)";
-                picker.style.borderColor = "var(--background-3)";
-                picker.style.borderWidth = "2px";
-                picker.style.borderRadius = "50%";
-                picker.style.borderStyle = "solid";
-                //Sizing
-                picker.style.width = "16px";
-                picker.style.height = "16px";
-                picker.style.transform = "translate(-50%,-50%)";
-                //Positional
-                picker.style.position = "absolute";
-                picker.style.top = "0px";
-                picker.style.left = "0px";
-                picker.style.zIndex = "100000";
-
-                brightnessSatAdjuster.appendChild(picker);
+                border-color:var(--background-2);
+                border-radius:4px;
+                border-width:4px;
+                border-style:solid;
             }
 
-            //The Universe
-            const verticalHolder = document.createElement("div");
-            verticalHolder.style.marginTop = "7.5%";
-            verticalHolder.style.height = "80%";
+            .CE_precisionDiv {
+                height:100%;
 
-            const hueAdjuster = document.createElement("div");
-            {
-                //Wowee
-                hueAdjuster.style.backgroundImage = "linear-gradient(to bottom, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%)"
-                
-                //The stuff
-                hueAdjuster.style.height = "80%";
-                hueAdjuster.style.margin = "0%";
-                hueAdjuster.style.marginLeft = "2.5%";
-                hueAdjuster.style.marginRight = "2.5%";
-                hueAdjuster.style.marginBottom = "0%";
-                hueAdjuster.style.padding = "0px";
-                hueAdjuster.style.aspectRatio = "1/5";
-
-                hueAdjuster.style.borderColor = "var(--background-2)";
-                hueAdjuster.style.borderWidth = "4px";
-                hueAdjuster.style.borderRadius = "8px";
-                hueAdjuster.style.borderStyle = "solid";
-
-                hueAdjuster.style.position = "relative";
+                display:grid;
+                grid-template-rows: auto 32px;
             }
 
-            const closeButton = document.createElement("button");
-            {
-                closeButton.innerText = "Done";
-                closeButton.style.height = "20%";
-                closeButton.style.width = "100%";
-                closeButton.style.margin = "0px";
-                closeButton.style.padding = "0px";
+            .CE_hueDiv {
+                background-image: linear-gradient(to bottom, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%);
 
-                closeButton.onclick = () => {
-                    editor.colorPicker.remove();
-                }
+                border-color:var(--background-2);
+                border-radius:4px;
+                border-width:4px;
+                border-style:solid;
             }
-
-            current.appendChild(brightnessSatAdjuster);
-            current.appendChild(verticalHolder);
-            verticalHolder.appendChild(hueAdjuster);
-            verticalHolder.appendChild(closeButton);
-        }
+        </style>
+        <div class="CE_colorPicker">
+            ${editor.colorPicker.colorPickerSVG}
+        </div>
+        <div class="CE_precisionDiv">
+            <div class="CE_hueDiv"></div>
+            <button style="margin-top:4px;">done</button>
+        </div>
+        ` + (hasExtensions ? `
+        
+        ` : "");
 
         document.body.appendChild(current);
     }
