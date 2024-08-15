@@ -44,4 +44,6 @@ editor.EnglishLang = {
 
     "editor.window.createVar": "Create a Variable",
     "editor.window.createVar.temporaryName": "Variable Name",
+    "editor.window.createVar.variable": "Variable",
+    "editor.window.createVar.list": "List",
 };

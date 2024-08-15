@@ -213,7 +213,7 @@
                 };
 
                 //If we are on the edge use different behavior.
-                if (edging) {
+                if (edging && this.resizable) {
                     document.onmousemove = (moveEvent) => {
                         if (!this.windowDiv) {
                             document.onmousemove = () => {};
@@ -277,7 +277,7 @@
                 this.windowDiv.style.zIndex = editor.windowLayer;
 
                 //If we aren't edging return
-                if (!edging) return;
+                if ((!edging) || (!this.resizable)) return;
 
                 //Clear mouse actions when done;
                 document.onmouseup = () => {

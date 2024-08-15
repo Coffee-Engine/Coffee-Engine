@@ -60,3 +60,9 @@ button:active {
     background-color: var(--background-4);
     border-color: var(--background-4);
 }
+
+button:disabled {
+    color: var(--text-1);
+    background-color: var(--background-4);
+    border-color: var(--background-4);
+}

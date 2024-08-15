@@ -1,6 +1,6 @@
 (function () {
     const variableSVG = `
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="69.14851"
+    <svg style="margin:0px; padding:0px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="69.14851"
         height="69.14851" viewBox="0,0,69.14851,69.14851">
         <g transform="translate(-205.42575,-145.42574)">
             <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill="none" fill-rule="nonzero" stroke-linejoin="miter"
@@ -25,14 +25,66 @@
     <!--rotationCenter:34.574250000000006:34.57426000000001-->
     `;
 
+    const listSVG = `
+    <svg style="margin:0px; padding:0px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="72.67051"
+    height="72.67051" viewBox="0,0,72.67051,72.67051">
+        <g transform="translate(-203.66475,-143.66475)">
+            <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke-linejoin="miter"
+                stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" style="mix-blend-mode: normal">
+                <path
+                    d="M210.17759,161.46139c0,-2.76142 2.23858,-5 5,-5c2.76142,0 5,2.23858 5,5c0,2.76142 -2.23858,5 -5,5c-2.76142,0 -5,-2.23858 -5,-5z"
+                    fill="currentColor" stroke="none" stroke-width="0.5" stroke-linecap="butt" />
+                <path d="M227.95171,161.46139h37.32879" fill="none" stroke="currentColor" stroke-width="10"
+                    stroke-linecap="round" />
+                <path
+                    d="M210.17759,180.05411c0,-2.76143 2.23857,-5 5,-5c2.76143,0 5,2.23857 5,5c0,2.76143 -2.23857,5 -5,5c-2.76143,0 -5,-2.23857 -5,-5z"
+                    fill="currentColor" stroke="none" stroke-width="0.5" stroke-linecap="butt" />
+                <path d="M227.9517,180.05411h37.32879" fill="none" stroke="currentColor" stroke-width="10"
+                    stroke-linecap="round" />
+                <path
+                    d="M210.17759,198.53861c0,-2.76143 2.23857,-5 5,-5c2.76143,0 5,2.23857 5,5c0,2.76143 -2.23857,5 -5,5c-2.76143,0 -5,-2.23857 -5,-5z"
+                    fill="currentColor" stroke="none" stroke-width="0.5" stroke-linecap="butt" />
+                <path d="M227.95171,198.53861h37.3288" fill="none" stroke="currentColor" stroke-width="10"
+                    stroke-linecap="round" />
+                <path d="M203.66475,216.33525v-72.67051h72.67051v72.67051z" fill="none" stroke="none" stroke-width="none"
+                    stroke-linecap="butt" />
+            </g>
+        </g>
+    </svg>
+    <!--rotationCenter:36.33525264516135:36.33525264516123-->
+    `;
+
     editor.windows.variable = class extends editor.windows.base {
 
         minWidth = 400;
         minHeight = 300;
 
-        variableType = ""
+        tvariableType = "variable"
+
+        set variableType(value) {
+            this.tvariableType = value;
+
+            switch (value) {
+                case "list":
+                    this.variableButton.disabled = false;
+                    this.listButton.disabled = true;
+                    break;
+            
+                default:
+                    this.variableButton.disabled = true;
+                    this.listButton.disabled = false;
+                    break;
+            }
+        }
+
+        get variableType() {
+            return this.tvariableType;
+        }
 
         init(container) {
+
+            this.resizable = false;
+            console.log(this.resizable);
             this.title = editor.language["editor.window.createVar"];
 
             container.style.display = "grid";
@@ -55,35 +107,44 @@
             typeDiv.style.gridTemplateColumns = "50% 50%";
             //Isolate variables in here.
             {
-                const variableButton = document.createElement("button");
-                const listButton = document.createElement("button");
+                this.variableButton = document.createElement("button");
+                this.listButton = document.createElement("button");
 
-                variableButton.style.margin = "4px";
-                variableButton.innerHTML = variableSVG;
-                listButton.style.margin = "4px";
+                this.variableButton.onclick = () => {
+                    this.variableType = "variable";
+                }
 
-                typeDiv.appendChild(variableButton);
-                typeDiv.appendChild(listButton);
+                this.listButton.onclick = () => {
+                    this.variableType = "list";
+                }
+
+                this.variableButton.style.margin = "4px";
+                this.variableButton.style.gridAutoColumns = "auto 16px";
+                this.variableButton.innerHTML = `${variableSVG}<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.variable"]}</p>`;
+
+                this.listButton.style.margin = "4px";
+                this.listButton.style.gridAutoColumns = "auto 16px";
+                this.listButton.innerHTML = `${listSVG}<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.list"]}</p>`;
+
+                typeDiv.appendChild(this.variableButton);
+                typeDiv.appendChild(this.listButton);
             }
+
+            console.log(this.variableType)
 
             container.appendChild(variableName);
             container.appendChild(typeDiv);
 
-            sugarcube.workspace.createVariable(
-                variableName.value,
-                this.variableType,
-                //This is going to be random anyways
-                variableName.value
-            );
+            //sugarcube.workspace.createVariable(
+            //    variableName.value,
+            //    this.variableType,
+            //    //This is going to be random anyways
+            //    variableName.value
+            //);
         }
 
         variableExists(name) {
             return sugarcube.workspace.getAllVariableNames().includes(name);
-        }
-
-        resized() {
-            this.width = 400;
-            this.height = 300;
         }
     }
 })()

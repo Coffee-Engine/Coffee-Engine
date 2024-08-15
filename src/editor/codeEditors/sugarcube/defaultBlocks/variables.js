@@ -29,6 +29,7 @@
         openVariableMenu() {
             const createdWindow = new editor.windows.variable(400,300);
             createdWindow.__moveToTop();
+            createdWindow.variableType = "variable"
         }
 
         dynamic_category_func() {
