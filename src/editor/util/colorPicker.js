@@ -162,9 +162,6 @@
 
         document.body.appendChild(current);
 
-        //Events
-        let upEvent, moveEvent = null;
-
         //Our inputs and values that change
         const redInput = document.getElementById("ce_redChannel");
         const greenInput = document.getElementById("ce_greenChannel");
@@ -229,7 +226,10 @@
         }
 
         //Now for the scrubbers
-        HueScrubber.onmousedown = () => {            
+        HueScrubber.onmousedown = () => {
+            //Events
+            let upEvent, moveEvent = null;
+            
             upEvent = () => {
                 document.removeEventListener("mouseup", upEvent);
                 document.removeEventListener("mousemove", moveEvent);
@@ -244,15 +244,41 @@
                 HSV.h = Math.min(Math.max(HSV.h, 0), 359) % 360;
                 split = coffeeEngine.ColorMath.HSVToRGB(HSV);
 
-                console.log(HSV.h);
-
                 updateColors();
             }
 
             document.addEventListener("mouseup", upEvent);
             document.addEventListener("mousemove", moveEvent);
+        }
+        
+        ValSatScrubber.onmousedown = () => {
+            //Events
+            let upEvent, moveEvent = null;
 
-            console.log("what", upEvent, moveEvent);
+            upEvent = () => {
+                document.removeEventListener("mouseup", upEvent);
+                document.removeEventListener("mousemove", moveEvent);
+            }
+    
+            moveEvent = (event) => {
+                const rect = colorBackground.getBoundingClientRect();
+    
+                const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
+    
+                HSV.v = ((event.clientY - rect.top) / rect.height);
+                HSV.v = Math.min(Math.max(1 - HSV.v, 0), 1);
+    
+                HSV.s = ((event.clientX - rect.left) / rect.width) ;
+                HSV.s = Math.min(Math.max(HSV.s, 0), 1);
+
+    
+                split = coffeeEngine.ColorMath.HSVToRGB(HSV);
+    
+                updateColors();
+            }
+    
+            document.addEventListener("mouseup", upEvent);
+            document.addEventListener("mousemove", moveEvent);
         }
 
         updateColors();
