@@ -62,10 +62,12 @@
         current.innerHTML = `
         <style>
             .CE_colorPicker {
+                --hue: 45deg;
+
                 height:100%;
                 position:relative;
 
-                background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,0,0,1) 100%);
+                background: linear-gradient(90deg, rgba(255,255,255,1) 0%, HSL(var(--hue),100%,50%) 100%);
 
                 border-color:var(--background-2);
                 border-radius:4px;
@@ -108,6 +110,8 @@
                 border-radius:8px;
                 border-width:4px;
                 border-style:solid;
+
+                position:relative;
             }
 
             .CE_numInputList {
@@ -116,21 +120,37 @@
                 gap: 2px;
             }
 
+            .CE_scrubber {
+                width:1vw;
+                aspect-ratio:1;
+                position:absolute;
+
+                background-color:var(--background-1);
+
+                border-color:var(--background-3);
+                border-radius:50%;
+                border-width:4px;
+                border-style:solid;
+            }
+
             .CE_numInput {
                 min-width: 0px;
             }
         </style>
-        <div class="CE_colorPicker">
+        <div id="ce_colorBG" class="CE_colorPicker">
             <div class="CE_colorPickerDark"></div>
+            <div id="ce_SVScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%);"></div>
         </div>
         <div class="CE_precisionDiv">
             <div class="CE_upperPrecision">
-                <div class="CE_hueDiv"></div>
+                <div class="CE_hueDiv">
+                    <div id="ce_HScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%); left:50%;"></div>
+                </div>
                 <div class="CE_numInputList">
-                    <input class="CE_numInput" style="color:#ff0000;" value="${split.r}" type="number"></input>
-                    <input class="CE_numInput" style="color:#00ff00;" value="${split.g}" type="number"></input>
-                    <input class="CE_numInput" style="color:#0000ff;" value="${split.b}" type="number"></input>
-                    <input class="CE_numInput" value="${color}" type="text"></input>
+                    <input id="ce_redChannel" class="CE_numInput" style="color:#ff0000;" value="${split.r}" type="number"></input>
+                    <input id="ce_greenChannel" class="CE_numInput" style="color:#00ff00;" value="${split.g}" type="number"></input>
+                    <input id="ce_blueChannel" class="CE_numInput" style="color:#0000ff;" value="${split.b}" type="number"></input>
+                    <input id="ce_hexChannel" class="CE_numInput" value="${color}" type="text"></input>
                 </div>
             </div>
 
@@ -141,6 +161,56 @@
         ` : "");
 
         document.body.appendChild(current);
+
+        //Our inputs and values that change
+        const redInput = document.getElementById("ce_redChannel");
+        const greenInput = document.getElementById("ce_greenChannel");
+        const blueInput = document.getElementById("ce_blueChannel");
+        
+        const hexInput = document.getElementById("ce_hexChannel");
+        const colorBackground = document.getElementById("ce_colorBG");
+
+        //Grab out scrubbers
+        const HueScrubber = document.getElementById("ce_HScrubber");
+        const ValSatScrubber = document.getElementById("ce_SVScrubber");
+
+        //An update function we can call
+        const updateColors = () => {
+            const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
+
+            //Adjust the backgrounds
+            colorBackground.style.setProperty("--hue", `${HSV.h}deg`);
+
+            //Move the scrubbers
+            HueScrubber.style.top = `${HSV.h / 3.6}%`;
+
+            ValSatScrubber.style.top = `${(1 - HSV.v) * 100}%`;
+            ValSatScrubber.style.left = `${HSV.s * 100}%`;
+
+            //Set the inputs
+            redInput.value = split.r;
+            greenInput.value = split.g;
+            blueInput.value = split.b;
+
+            hexInput.value = coffeeEngine.ColorMath.RGBtoHex(split);
+        }
+
+        redInput.onchange = () => {
+            split.r = redInput.value;
+            updateColors();
+        }
+
+        greenInput.onchange = () => {
+            split.g = greenInput.value;
+            updateColors();
+        }
+
+        blueInput.onchange = () => {
+            split.b = blueInput.value;
+            updateColors();
+        }
+
+        updateColors();
     }
 
     editor.colorPicker.remove = () => {

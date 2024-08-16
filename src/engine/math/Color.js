@@ -140,7 +140,11 @@
                 H = 0;
             }
 
-            //Return
+            //Revert & Return
+            RGB.r *= 255;
+            RGB.g *= 255;
+            RGB.b *= 255;
+            
             return {
                 h:H,
                 s:S,
