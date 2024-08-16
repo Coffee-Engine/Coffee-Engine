@@ -2,7 +2,7 @@
     editor.colorPicker = {
         current: null,
         colorPickerSVG: `
-        <svg style="width:100%; height:100%; margin:0px; padding:0px; border-radius:4px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="127.80309" height="127.80309" viewBox="0,0,127.80309,127.80309">
+        <svg class="CE_colorPicker" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="127.80309" height="127.80309" viewBox="0,0,127.80309,127.80309">
             <defs>
                 <linearGradient x1="176.09846" y1="180" x2="303.90154" y2="180" gradientUnits="userSpaceOnUse" id="color-1">
                 <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#ff0000"/>
@@ -23,6 +23,10 @@
     };
 
     editor.colorPicker.create = (x,y,{ color, hasExtensions }) => {
+        //Channel 3 and Channel 15
+        color = color || "#0000ff";
+        let split = coffeeEngine.ColorMath.HexToRGB(color);
+
         //Create the new panel
         editor.colorPicker.remove();
         const current = document.createElement("div")
@@ -32,6 +36,7 @@
         current.style.width = `${hasExtensions ? 25 : 20}vw`;
         current.style.height = "auto";
         current.style.aspectRatio = `${hasExtensions ? 5 : 4}/3`;
+        current.style.overflow = "hidden";
 
         //Move the positions
         current.style.position = "absolute";
@@ -50,15 +55,17 @@
 
         //The Grid
         current.style.display = "grid";
-        current.style.gridTemplateColumns = "3fr 1fr";
-        current.style.gap = "16px";
+        current.style.gridTemplateColumns = "3fr 1fr" + (hasExtensions ? " 1fr" : "");
+        current.style.gap = "4px";
         current.style.zIndex = "10000"
 
         current.innerHTML = `
         <style>
             .CE_colorPicker {
                 height:100%;
-                aspect-ratio:1;
+                position:relative;
+
+                background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(255,0,0,1) 100%);
 
                 border-color:var(--background-2);
                 border-radius:4px;
@@ -66,28 +73,68 @@
                 border-style:solid;
             }
 
+            .CE_colorPickerDark {
+                width:100%;
+                height:100%;
+                top:0px;
+                left:0px;
+
+                position:absolute;
+
+                margin:0px;
+                padding:0px;
+                background: linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+            }
+
             .CE_precisionDiv {
                 height:100%;
+                position:relative;
 
                 display:grid;
                 grid-template-rows: auto 32px;
+                gap: 4px;
+            }
+
+            .CE_upperPrecision {
+                display:grid;
+                grid-template-columns: 0.9fr 1.1fr;
+                gap: 2px;
             }
 
             .CE_hueDiv {
                 background-image: linear-gradient(to bottom, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%);
 
                 border-color:var(--background-2);
-                border-radius:4px;
+                border-radius:8px;
                 border-width:4px;
                 border-style:solid;
             }
+
+            .CE_numInputList {
+                display:grid;
+                grid-template-rows: 1fr 1fr 1fr 1fr;
+                gap: 2px;
+            }
+
+            .CE_numInput {
+                min-width: 0px;
+            }
         </style>
         <div class="CE_colorPicker">
-            ${editor.colorPicker.colorPickerSVG}
+            <div class="CE_colorPickerDark"></div>
         </div>
         <div class="CE_precisionDiv">
-            <div class="CE_hueDiv"></div>
-            <button style="margin-top:4px;">done</button>
+            <div class="CE_upperPrecision">
+                <div class="CE_hueDiv"></div>
+                <div class="CE_numInputList">
+                    <input class="CE_numInput" style="color:#ff0000;" value="${split.r}" type="number"></input>
+                    <input class="CE_numInput" style="color:#00ff00;" value="${split.g}" type="number"></input>
+                    <input class="CE_numInput" style="color:#0000ff;" value="${split.b}" type="number"></input>
+                    <input class="CE_numInput" value="${color}" type="text"></input>
+                </div>
+            </div>
+
+            <button>done</button>
         </div>
         ` + (hasExtensions ? `
         

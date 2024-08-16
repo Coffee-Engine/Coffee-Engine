@@ -48,29 +48,154 @@
             if (typeof Color == "string") {
                 const split = coffeeEngine.ColorMath.HexToRGB(Color);
 
-                if (split.r > split.g && split.r > split.b) {
-                    return split.r;
+                let brightest = split.r
+
+                if (brightest < split.g) {
+                    brightest = split.g;
                 }
-                if (split.g > split.r && split.g > split.b) {
-                    return split.g;
-                }
-                if (split.b > split.r && split.b > split.g) {
-                    return split.b;
+                if (brightest < split.b) {
+                    brightest = split.b;
                 }
 
-                return 0;
+                return brightest;
             }
 
-            if (Color.r > Color.g && Color.r > Color.b) {
-                return Color.r;
+            let brightest = Color.r
+
+            if (brightest < Color.g) {
+                brightest = Color.g;
             }
-            if (Color.g > Color.r && Color.g > Color.b) {
-                return Color.g;
+            if (brightest < Color.b) {
+                brightest = Color.b;
             }
-            if (Color.b > Color.r && Color.b > Color.g) {
-                return Color.b;
-            }
-            return 0;
+
+            return brightest;
         },
+
+        DarkestChannel: (Color) => {
+            if (typeof Color == "string") {
+                const split = coffeeEngine.ColorMath.HexToRGB(Color);
+
+                let brightest = split.r
+
+                if (brightest > split.g) {
+                    brightest = split.g;
+                }
+                if (brightest > split.b) {
+                    brightest = split.b;
+                }
+
+                return brightest;
+            }
+
+            let brightest = Color.r
+
+            if (brightest > Color.g) {
+                brightest = Color.g;
+            }
+            if (brightest > Color.b) {
+                brightest = Color.b;
+            }
+
+            return brightest;
+        },
+
+        HexToHSV: (Hex) => {
+            return coffeeEngine.ColorMath.RGBToHSV(coffeeEngine.ColorMath.HexToRGB(Hex));
+        },
+
+        RGBToHSV: (RGB) => {
+            //Divide the RGB by 255
+            RGB.r /= 255;
+            RGB.g /= 255;
+            RGB.b /= 255;
+
+            //Get the brightest and darkest channels
+            const CMax = coffeeEngine.ColorMath.BrightestChannel(RGB);
+            const CMin = coffeeEngine.ColorMath.DarkestChannel(RGB);
+
+            const Delta = CMax - CMin;
+
+            let H = 0;
+
+            //Multiply and get the Hue
+            if (CMax == RGB.r) {
+                H = 60 * (((RGB.g-RGB.b)/Delta)%6);
+            }
+            if (CMax == RGB.g) {
+                H = 60 * (((RGB.b-RGB.r)/Delta)+2);
+            }
+            if (CMax == RGB.b) {
+                H = 60 * (((RGB.r-RGB.g)/Delta)+4);
+            }
+
+            //Set the saturation
+            let S = 0;
+            if (CMax != 0) {
+                S = Delta/CMax;
+            }
+
+            //Make sure the hue isn't NaN
+            if (isNaN(H)) {
+                H = 0;
+            }
+
+            //Return
+            return {
+                h:H,
+                s:S,
+                v:CMax
+            }
+        },
+
+        HSVToRGB: (HSV) => {
+            const h = HSV.h;
+
+            //Some math to get C and X
+            const C = HSV.v * HSV.s;
+            const X = C * (1 - Math.abs(((h / 60) % 2) - 1));
+
+            const m = HSV.v - C;
+
+            //Make our returned objects
+            const RGB = {r:0,g:0,b:0};
+
+            //And the if statements
+            if (0 <= h && h < 60) {
+                RGB.r = C;
+                RGB.g = X;
+            }
+            else if (60 <= h && h < 120) {
+                RGB.r = X;
+                RGB.g = C;
+            }
+            else if (120 <= h && h < 180) {
+                RGB.g = C;
+                RGB.b = X;
+            }
+            else if (180 <= h && h < 240) {
+                RGB.g = X;
+                RGB.b = C;
+            }
+            else if (240 <= h && h < 300) {
+                RGB.b = C;
+                RGB.r = X;
+            }
+            else if (300 <= h && h < 360) {
+                RGB.b = X;
+                RGB.r = C;
+            }
+
+            //Then convert
+            RGB.r = (RGB.r + m) * 255;
+            RGB.g = (RGB.g + m) * 255;
+            RGB.b = (RGB.b + m) * 255;
+
+            return RGB;
+        },
+
+        HSVToHex: (HSV) => {
+            return coffeeEngine.ColorMath.RGBtoHex(coffeeEngine.ColorMath.HSVToRGB(HSV));
+        }
     };
 })();
