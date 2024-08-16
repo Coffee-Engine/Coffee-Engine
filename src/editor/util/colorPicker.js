@@ -143,7 +143,7 @@
         </div>
         <div class="CE_precisionDiv">
             <div class="CE_upperPrecision">
-                <div class="CE_hueDiv">
+                <div id="ce_hueBG" class="CE_hueDiv">
                     <div id="ce_HScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%); left:50%;"></div>
                 </div>
                 <div class="CE_numInputList">
@@ -162,6 +162,9 @@
 
         document.body.appendChild(current);
 
+        //Events
+        let upEvent, moveEvent = null;
+
         //Our inputs and values that change
         const redInput = document.getElementById("ce_redChannel");
         const greenInput = document.getElementById("ce_greenChannel");
@@ -169,6 +172,7 @@
         
         const hexInput = document.getElementById("ce_hexChannel");
         const colorBackground = document.getElementById("ce_colorBG");
+        const hueBackground = document.getElementById("ce_hueBG");
 
         //Grab out scrubbers
         const HueScrubber = document.getElementById("ce_HScrubber");
@@ -182,7 +186,10 @@
             colorBackground.style.setProperty("--hue", `${HSV.h}deg`);
 
             //Move the scrubbers
-            HueScrubber.style.top = `${HSV.h / 3.6}%`;
+            if (HSV.h < 0) {
+                HSV.h += 360;
+            }
+            HueScrubber.style.top = `${(HSV.h / 3.6) % 100}%`;
 
             ValSatScrubber.style.top = `${(1 - HSV.v) * 100}%`;
             ValSatScrubber.style.left = `${HSV.s * 100}%`;
@@ -195,6 +202,7 @@
             hexInput.value = coffeeEngine.ColorMath.RGBtoHex(split);
         }
 
+        //Simple input controls
         redInput.onchange = () => {
             split.r = redInput.value;
             updateColors();
@@ -208,6 +216,43 @@
         blueInput.onchange = () => {
             split.b = blueInput.value;
             updateColors();
+        }
+
+        hexInput.onchange = () => {
+            if (hexInput.value.length == 4 || hexInput.value.length == 7) {
+                const result = coffeeEngine.ColorMath.HexToRGB(hexInput.value);
+                if (!result) return;
+
+                split = result;
+                updateColors();
+            }
+        }
+
+        //Now for the scrubbers
+        HueScrubber.onmousedown = () => {            
+            upEvent = () => {
+                document.removeEventListener("mouseup", upEvent);
+                document.removeEventListener("mousemove", moveEvent);
+            }
+
+            moveEvent = (event) => {
+                const rect = hueBackground.getBoundingClientRect();
+
+                const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
+
+                HSV.h = ((event.clientY - rect.top) / rect.height) * 360;
+                HSV.h = Math.min(Math.max(HSV.h, 0), 359) % 360;
+                split = coffeeEngine.ColorMath.HSVToRGB(HSV);
+
+                console.log(HSV.h);
+
+                updateColors();
+            }
+
+            document.addEventListener("mouseup", upEvent);
+            document.addEventListener("mousemove", moveEvent);
+
+            console.log("what", upEvent, moveEvent);
         }
 
         updateColors();
