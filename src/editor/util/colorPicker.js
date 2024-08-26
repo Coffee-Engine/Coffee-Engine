@@ -27,6 +27,11 @@
         color = color || "#0000ff";
         let split = coffeeEngine.ColorMath.HexToRGB(color);
 
+        let promise = new Promise((resolve,reject) => {
+            editor.colorPicker.resolve = resolve;
+            editor.colorPicker.reject = reject;
+        })
+
         //Create the new panel
         editor.colorPicker.remove();
         const current = document.createElement("div")
@@ -154,7 +159,7 @@
                 </div>
             </div>
 
-            <button>done</button>
+            <button id="doneButton">done</button>
         </div>
         ` + (hasExtensions ? `
         
@@ -175,6 +180,9 @@
         const HueScrubber = document.getElementById("ce_HScrubber");
         const ValSatScrubber = document.getElementById("ce_SVScrubber");
 
+        //Done button
+        const doneButton = document.getElementById("doneButton");
+
         //An update function we can call
         const updateColors = () => {
             const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
@@ -190,6 +198,7 @@
 
             ValSatScrubber.style.top = `${(1 - HSV.v) * 100}%`;
             ValSatScrubber.style.left = `${HSV.s * 100}%`;
+            ValSatScrubber.style.backgroundColor = coffeeEngine.ColorMath.RGBtoHex(split);
 
             //Set the inputs
             redInput.value = split.r;
@@ -281,12 +290,22 @@
             document.addEventListener("mousemove", moveEvent);
         }
 
+        doneButton.onclick = () => {
+            editor.colorPicker.resolve(coffeeEngine.ColorMath.RGBtoHex(split));
+            editor.colorPicker.remove();
+        }
+
         updateColors();
+
+        return promise;
     }
 
     editor.colorPicker.remove = () => {
         if (editor.colorPicker.current) {
             editor.colorPicker.current.parentElement.removeChild(editor.colorPicker.current);
+            if (editor.colorPicker.reject) {
+                editor.colorPicker.reject();
+            }
             delete editor.colorPicker.current;
         }
     }
