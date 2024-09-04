@@ -11,3 +11,6 @@
 
 #? The node libraries used for this project!
 node_modules/           #* NodeJS
+
+#? Build Stuff
+build/
