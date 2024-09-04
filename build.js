@@ -36,6 +36,15 @@ else {
     build();
 }
 
+function toDataUri(imgPath) {
+    const bitmap = fs.readFileSync(imgPath);
+
+    const base64Image = Buffer.from(bitmap).toString('base64');
+    // Get image file extension
+    const ext = imgPath.split('.').pop();
+    return `data:image/${ext};base64,${base64Image}`;
+}
+
 function build() {
     //Get build data
     const buildData = fs.readFileSync("build/persist.txt", {
@@ -79,7 +88,10 @@ function build() {
     })
 
     //Grab our scripts and get ready to add the new body stuff.
-    const scripts = html.match(/<script.*src="[\w\d\s\/.]*".*><\/script>/g);
+    const scripts = ["htmlCompilationCompat/customDomBehavior.js"];
+    scripts.push(...html.match(/<script.*src="[\w\d\s\/.]*".*><\/script>/g));
+
+    //Body building!
     let newBody = "";
     scripts.forEach(script => {
         const scriptPath = script.replace(/<script.*src=\"/,"").replace(/".*><\/script>/,"");
