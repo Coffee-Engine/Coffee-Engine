@@ -38,7 +38,6 @@ else {
 
 function toDataUri(imgPath) {
     const bitmap = fs.readFileSync(imgPath);
-
     const base64Image = Buffer.from(bitmap).toString('base64');
     // Get image file extension
     const ext = imgPath.split('.').pop();
@@ -51,6 +50,28 @@ function build() {
         encoding: "utf8",
         flag: "r",
     }).split("\n");
+
+    //Make a virtual filesystem
+    const inRamFS = {};
+    fs.readdirSync("src",{recursive:true}).forEach(filePath => {
+        filePath = filePath.replaceAll("\\","/");
+        if (filePath.includes(".") && !(filePath.includes(".js") || filePath.includes(".html") || filePath.includes(".css"))) {
+            let thing = inRamFS;
+            filePath.split("/").forEach(split => {
+                console.log(split);
+                if (split.includes(".")) {
+                    thing[split] = toDataUri("src/"+filePath);
+                } 
+                else {
+                    if (!thing[split]) {
+                        console.log(split);
+                        thing[split] = {};
+                    }
+                    thing = thing[split];
+                }
+            })
+        }
+    });
 
     //Turn the build number into a number
     buildData[1] = Number(buildData[1]);
@@ -88,11 +109,11 @@ function build() {
     })
 
     //Grab our scripts and get ready to add the new body stuff.
-    const scripts = ["htmlCompilationCompat/customDomBehavior.js"];
+    const scripts = ["htmlCompilationCompat/inEditorFS.js","htmlCompilationCompat/customDomBehavior.js"];
     scripts.push(...html.match(/<script.*src="[\w\d\s\/.]*".*><\/script>/g));
 
     //Body building!
-    let newBody = "";
+    let newBody = `<script>\nwindow.editorFSObject = ${JSON.stringify(inRamFS)}\n</script>\n`;
     scripts.forEach(script => {
         const scriptPath = script.replace(/<script.*src=\"/,"").replace(/".*><\/script>/,"");
         let scriptFile = fs.readFileSync(`src/${scriptPath}`, {
