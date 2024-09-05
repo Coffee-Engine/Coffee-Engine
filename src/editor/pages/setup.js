@@ -280,5 +280,32 @@
         `;
 
         document.body.appendChild(editor.currentPage.root);
+
+        document.getElementById("scratched").onclick = () => {
+            editor.layout = {
+                layout:[],
+                floating:{}
+            };
+            editor.Storage.setStorage("layout", editor.layout);
+            editor.home.initilize();
+        }
+
+        document.getElementById("caffinated").onclick = () => {
+            editor.layout = {
+                layout:[],
+                floating:{}
+            };
+            editor.Storage.setStorage("layout", editor.layout);
+            editor.home.initilize();
+        }
+
+        document.getElementById("empty").onclick = () => {
+            editor.layout = {
+                layout:[],
+                floating:{}
+            };
+            editor.Storage.setStorage("layout", editor.layout);
+            editor.home.initilize();
+        }
     }
 })();
