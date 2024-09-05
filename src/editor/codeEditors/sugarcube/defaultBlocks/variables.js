@@ -29,8 +29,10 @@
         openVariableMenu() {
             const createdWindow = new editor.windows.variable(400,300);
             createdWindow.__moveToTop();
+
             createdWindow.x = window.innerWidth / 2 - 200;
             createdWindow.y = window.innerHeight / 2 - 150;
+            
             createdWindow.variableType = "variable"
         }
 
