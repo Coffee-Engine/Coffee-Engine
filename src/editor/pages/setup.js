@@ -45,9 +45,9 @@
     };
 
     editor.language = Object.assign({}, editor.EnglishLang, editor.Storage.getStorage("language", {}));
-    editor.languageName = editor.Storage.getStorage("languageName", "🇬🇧 English");
+    editor.languageName = editor.Storage.getStorage("languageName", "English");
 
-    editor.layout = editor.EnglishLang, editor.Storage.getStorage("layout", {});
+    editor.layout = editor.Storage.getStorage("layout", {});
 
     editor.setup.initilizeLang = () => {
         console.log("Initilizing Setup");
@@ -293,7 +293,7 @@
         document.getElementById("caffinated").onclick = () => {
             editor.layout = {
                 layout:[],
-                floating:{}
+                floating:[]
             };
             editor.Storage.setStorage("layout", editor.layout);
             editor.home.initilize();

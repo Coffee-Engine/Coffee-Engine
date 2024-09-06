@@ -36,8 +36,11 @@
                 this.windowDiv.style.position = "absolute";
             } else {
                 this.windowDiv.style.position = "static";
+                this.windowDiv.style.width = "auto";
+                this.windowDiv.style.height = "auto";
             }
         }
+
         get docked() {
             return this.#docked;
         }

@@ -78,6 +78,23 @@
                 color: var(--text-2);
             }
 
+            .dockDefault {
+                position:absolute;
+                top:0px;
+                left:0px;
+                padding:0px;
+                margin:0px;
+
+                width:100%;
+                height:100%;
+            
+                display: grid;
+
+                --dockGridHorizontal: 1fr;
+
+                grid-template-columns: var(--dockGridHorizontal)
+            }
+
             @keyframes closeWindow {
                 0% {
                     min-height:0px;
@@ -94,12 +111,51 @@
                 }
             }
         </style>
+        <div class="dockDefault" id="coffeeEngineDock"></div>
         `;
 
         document.body.appendChild(editor.currentPage.root);
 
-        new editor.windows.log();
-        new editor.windows.blockly(600,400);
+        editor.dock = {
+            refreshLayout:() => {
+                editor.dock.element.style.setProperty("--dockGridHorizontal",("1fr ").repeat(editor.layout.layout.length));
+                for (let ID = 0; ID < editor.layout.layout.length; ID++) {
+                    let subDock = editor.dock.element.children[ID];
+                    if (subDock) {
+                        subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
+                    }
+                    else {
+                        subDock = document.createElement("div");
+                        subDock.style.display = "grid";
+                        subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
+
+                        editor.dock.element.appendChild(subDock);
+                    }
+                }
+            },
+
+            dockWindow:(window,column) => {
+                if (window.windowDiv.parentNode) {
+                    window.windowDiv.parentNode.removeChild(window.windowDiv);
+                }
+                
+                window.docked = true;
+                editor.dock.element.children[column].appendChild(window.windowDiv);
+            }
+        };
+
+        editor.dock.element = document.getElementById("coffeeEngineDock");
+
+        //Deserialize our windows
+        editor.dock.refreshLayout();
+        for (let X = 0; X < editor.layout.layout.length; X++) {
+            for (let Y = 0; Y < editor.layout.layout[X].length; Y++) {
+                //Our deserialization!
+                const newWindow = new editor.windows.__Serialization.all[editor.layout.layout[X][Y]];
+                editor.layout.layout[X][Y] = newWindow;
+                editor.dock.dockWindow(newWindow,X);
+            }
+        }
     };
 
     editor.editorPage.initilizePanels = () => {
