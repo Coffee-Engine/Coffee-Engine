@@ -122,7 +122,8 @@
             //Where the logs are visualized
             this.logContainer = document.createElement("div");
             this.logContainer.style.width = "100%";
-            this.logContainer.style.overflowY = "auto";
+            this.logContainer.style.height = "100%";
+            this.logContainer.style.overflowY = "scroll";
 
             container.appendChild(this.logControls);
             container.appendChild(this.logContainer);
