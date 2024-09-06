@@ -170,4 +170,6 @@
             coffeeEngine.removeEventListener("consoleUpdate",this.eventListener);
         }
     };
+
+    editor.windows.__Serialization.register(editor.windows.log,"debugLog");
 })();

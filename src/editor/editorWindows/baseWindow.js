@@ -18,6 +18,14 @@
     editor.windows = {};
 
     //this is the base window class
+    editor.windows.__Serialization ={
+        register: (classOBJ,id) => {
+            editor.windows.__Serialization.all[id] = classOBJ;
+        },
+
+        all:{}
+    };
+
     editor.windows.base = class {
         //Manage our dock status
         #docked = false;
@@ -336,4 +344,6 @@
         dispose() {}
         resized() {}
     };
+
+    editor.windows.__Serialization.register(editor.windows.base,"baseWindow");
 })();

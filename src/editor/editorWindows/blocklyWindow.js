@@ -74,4 +74,6 @@
             sugarcube.workspace.dispose();
         }
     };
+
+    editor.windows.__Serialization.register(editor.windows.blockly,"blockly");
 })();
