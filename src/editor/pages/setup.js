@@ -283,8 +283,20 @@
 
         document.getElementById("scratched").onclick = () => {
             editor.layout = {
-                layout:[],
-                floating:{}
+                layout:[
+                    [
+                        "fileExplorer",
+                        "sceneTree",
+                    ],
+                    [
+                        "blockly",
+                        "debugLog",
+                    ],
+                    [
+                        "properties",
+                    ],
+                ],
+                floating:[]
             };
             editor.Storage.setStorage("layout", editor.layout);
             editor.home.initilize();
@@ -302,7 +314,7 @@
         document.getElementById("empty").onclick = () => {
             editor.layout = {
                 layout:[],
-                floating:{}
+                floating:[]
             };
             editor.Storage.setStorage("layout", editor.layout);
             editor.home.initilize();
