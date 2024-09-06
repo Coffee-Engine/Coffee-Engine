@@ -38,6 +38,8 @@
             } else {
                 this.windowDiv.style.position = "static";
 
+                this.windowDiv.style.zIndex = 1;
+
                 this.windowDiv.style.width = "auto";
                 this.windowDiv.style.height = "auto";
             }
