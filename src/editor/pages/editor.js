@@ -138,8 +138,9 @@
                 if (window.windowDiv.parentNode) {
                     window.windowDiv.parentNode.removeChild(window.windowDiv);
                 }
-                
+
                 window.docked = true;
+                window.dockedColumn = column;
                 editor.dock.element.children[column].appendChild(window.windowDiv);
             }
         };

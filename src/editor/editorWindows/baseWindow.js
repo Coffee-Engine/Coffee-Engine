@@ -28,6 +28,7 @@
 
     editor.windows.base = class {
         //Manage our dock status
+        dockedColumn = 0;
         #docked = false;
         set docked(value) {
             this.#docked = value;
@@ -36,6 +37,7 @@
                 this.windowDiv.style.position = "absolute";
             } else {
                 this.windowDiv.style.position = "static";
+
                 this.windowDiv.style.width = "auto";
                 this.windowDiv.style.height = "auto";
             }
@@ -334,6 +336,12 @@
 
             //Now we destory all window objects
             this.windowDiv.onanimationend = () => {
+                //Handle docked windows
+                if (this.docked) {
+                    editor.layout.layout[this.dockedColumn].splice(editor.layout.layout[this.dockedColumn].indexOf(this));
+                    editor.dock.refreshLayout();
+                }
+
                 this.dispose();
                 this.windowDiv.parentElement.removeChild(this.windowDiv);
                 delete this.windowDiv;

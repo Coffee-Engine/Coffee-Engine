@@ -52,11 +52,11 @@
 
     window.addEventListener("error", (event) => {
         //The one thing we need from the event
-        const { error, lineno, colno } = event;
+        const { message, lineno, colno } = event;
 
         coffeeEngine.sendEvent("consoleUpdate",{
             type:"error",
-            info:[error.message],
+            info:[message],
             lineNumber:lineno,
             columnNumber:colno
         });
