@@ -92,7 +92,7 @@
 
                 --dockGridHorizontal: 1fr;
 
-                grid-template-columns: var(--dockGridHorizontal)
+                grid-template-columns: var(--dockGridHorizontal);
             }
 
             @keyframes closeWindow {
@@ -186,7 +186,21 @@
         for (let X = 0; X < editor.layout.layout.length; X++) {
             for (let Y = 0; Y < editor.layout.layout[X].length; Y++) {
                 //Our deserialization!
-                const newWindow = new editor.windows.__Serialization.all[editor.layout.layout[X][Y]];
+                let windowType = editor.windows.__Serialization.all[editor.layout.layout[X][Y]];
+
+                //If we don't have a valid window just name a blank window after it.
+                let overrideName;
+                if (!windowType) {
+                    overrideName = editor.layout.layout[X][Y];
+                    windowType = editor.windows.base;
+                }
+
+                //Window creation
+                const newWindow = new (windowType)();
+                if (overrideName) {
+                    newWindow.title = overrideName;
+                }
+
                 editor.layout.layout[X][Y] = newWindow;
                 editor.dock.dockWindow(newWindow,X);
             }
