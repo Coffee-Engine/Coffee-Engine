@@ -117,20 +117,54 @@
         document.body.appendChild(editor.currentPage.root);
 
         editor.dock = {
-            refreshLayout:() => {
+            refreshLayout:(initial) => {
+                //Set the horizontal grid layout then loop through each item
                 editor.dock.element.style.setProperty("--dockGridHorizontal",("1fr ").repeat(editor.layout.layout.length));
                 for (let ID = 0; ID < editor.layout.layout.length; ID++) {
+                    //Get the "Sub Dock" which is the vertical part of the dock
                     let subDock = editor.dock.element.children[ID];
-                    if (subDock) {
-                        subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
-                    }
-                    else {
+                    //If there is no "Sub Dock" add one
+                    if (!subDock) {
                         subDock = document.createElement("div");
                         subDock.style.display = "grid";
-                        subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
 
                         editor.dock.element.appendChild(subDock);
                     }
+
+                    //Set the grid property
+                    subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
+                }
+
+                if (initial) return;
+
+                //Check for holes in the layout
+                let backIndent = 0;
+                let hadToRemove = false;
+                for (let X = 0; X < editor.dock.element.children.length; X++) {
+                    //Make sure it has a window or 2 in it
+                    if (editor.dock.element.children[X].children.length > 0) {
+                        //Loop over each window and subtract the indent
+                        editor.layout.layout[X].forEach(window => {
+                            window.dockedColumn -= backIndent;
+                        });
+                    }
+                    //If there are no windows remove them and account for that
+                    else {
+                        editor.dock.element.children[X].parentNode.removeChild(editor.dock.element.children[X]);
+                        editor.layout.layout.splice(X,1);
+                        
+                        //move our X back and add an indent
+                        backIndent += 1;
+                        X -= 1;
+
+                        //tick this for later
+                        hadToRemove = true;
+                    }
+                }
+
+                //If we had to remove something refresh the layout without removal code
+                if (hadToRemove) {
+                    editor.dock.refreshLayout(true);
                 }
             },
 
@@ -148,7 +182,7 @@
         editor.dock.element = document.getElementById("coffeeEngineDock");
 
         //Deserialize our windows
-        editor.dock.refreshLayout();
+        editor.dock.refreshLayout(true);
         for (let X = 0; X < editor.layout.layout.length; X++) {
             for (let Y = 0; Y < editor.layout.layout[X].length; Y++) {
                 //Our deserialization!

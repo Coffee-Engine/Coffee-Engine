@@ -336,14 +336,16 @@
 
             //Now we destory all window objects
             this.windowDiv.onanimationend = () => {
-                //Handle docked windows
-                if (this.docked) {
-                    editor.layout.layout[this.dockedColumn].splice(editor.layout.layout[this.dockedColumn].indexOf(this));
-                    editor.dock.refreshLayout();
-                }
 
                 this.dispose();
                 this.windowDiv.parentElement.removeChild(this.windowDiv);
+
+                //Handle docked windows
+                if (this.docked) {
+                    editor.layout.layout[this.dockedColumn].splice(editor.layout.layout[this.dockedColumn].indexOf(this),1);
+                    editor.dock.refreshLayout();
+                }
+
                 delete this.windowDiv;
             };
 
