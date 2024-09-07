@@ -42,12 +42,13 @@
                 },
             });
 
-            sugarcube.minimap = new sugarcube.minimapStorage.PositionedMinimap(sugarcube.workspace);
-            sugarcube.minimap.init();
-            sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;
+            //Minimap breaks when docked. Will fix sometime and re-add
+            //sugarcube.minimap = new sugarcube.minimapStorage.PositionedMinimap(sugarcube.workspace);
+            //sugarcube.minimap.init();
+            //sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;
 
             sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
-            sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
+            //sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
 
             //Load our base categories
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");

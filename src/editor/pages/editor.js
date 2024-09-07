@@ -131,6 +131,11 @@
                         editor.dock.element.appendChild(subDock);
                     }
 
+                    editor.layout.layout[ID].forEach(window => {
+                        if (!window.resized) return;
+                        window.resized();
+                    })
+
                     //Set the grid property
                     subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
                 }

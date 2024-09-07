@@ -84,7 +84,6 @@
         init(container) {
 
             this.resizable = false;
-            console.log(this.resizable);
             this.title = editor.language["editor.window.createVar"];
 
             container.style.display = "grid";

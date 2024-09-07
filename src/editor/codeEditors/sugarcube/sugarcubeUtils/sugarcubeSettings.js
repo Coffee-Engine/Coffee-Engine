@@ -48,9 +48,9 @@ sugarcube.blocklyTheme = {
 
 sugarcube.refreshTheme = () => {
     sugarcube.workspace.setTheme(Blockly.Theme.defineTheme("sugarcube", sugarcube.blocklyTheme));
-    sugarcube.minimapWorkspace.setTheme(Blockly.Theme.defineTheme("sugarcube", sugarcube.blocklyTheme));
+    //sugarcube.minimapWorkspace.setTheme(Blockly.Theme.defineTheme("sugarcube", sugarcube.blocklyTheme));
 
-    sugarcube.minimapWorkspace.svgBackground_.style.fill = sugarcube.blocklyTheme.componentStyles.unseenBackground;
-    sugarcube.minimapWorkspace.scrollbar.setVisible(false);
-    sugarcube.minimapWorkspace.injectionDiv.parentElement.style.transition = "opacity 500ms";
+    //sugarcube.minimapWorkspace.svgBackground_.style.fill = sugarcube.blocklyTheme.componentStyles.unseenBackground;
+    //sugarcube.minimapWorkspace.scrollbar.setVisible(false);
+    //sugarcube.minimapWorkspace.injectionDiv.parentElement.style.transition = "opacity 500ms";
 };
