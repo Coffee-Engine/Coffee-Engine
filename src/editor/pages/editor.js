@@ -87,6 +87,8 @@
 
                 width:100%;
                 height:100%;
+
+                overflow:hidden;
             
                 display: grid;
 
@@ -119,7 +121,7 @@
         editor.dock = {
             refreshLayout:(initial) => {
                 //Set the horizontal grid layout then loop through each item
-                editor.dock.element.style.setProperty("--dockGridHorizontal",("1fr ").repeat(editor.layout.layout.length));
+                editor.dock.element.style.setProperty("--dockGridHorizontal",(`${100 / editor.layout.layout.length}% `).repeat(editor.layout.layout.length));
                 for (let ID = 0; ID < editor.layout.layout.length; ID++) {
                     //Get the "Sub Dock" which is the vertical part of the dock
                     let subDock = editor.dock.element.children[ID];
@@ -127,6 +129,8 @@
                     if (!subDock) {
                         subDock = document.createElement("div");
                         subDock.style.display = "grid";
+                        subDock.style.height = "100%";
+                        subDock.style.gridTemplateRows = "var(--dockGridVertical)"
 
                         editor.dock.element.appendChild(subDock);
                     }
@@ -137,7 +141,7 @@
                     })
 
                     //Set the grid property
-                    subDock.style.setProperty("--dockGridVertical",("1fr ").repeat(editor.layout.layout[ID].length));
+                    subDock.style.setProperty("--dockGridVertical",(`${100 / editor.layout.layout[ID].length}% `).repeat(editor.layout.layout[ID].length));
                 }
 
                 if (initial) return;
