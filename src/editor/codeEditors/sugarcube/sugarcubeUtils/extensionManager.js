@@ -439,6 +439,7 @@
                                                         argument.type = argument.customType;
                                                     }
                                                 }
+                                                argument.value = argument.defaultValue || "";
                                                 break;
 
                                             case sugarcube.ArgumentType.BOOLEAN: {

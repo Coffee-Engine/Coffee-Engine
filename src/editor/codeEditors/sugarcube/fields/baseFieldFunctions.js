@@ -30,7 +30,9 @@
                     this.render_ = () => {
                         sugarcube.extensionInstances[extensionID][fieldData.render](this.value_, this.textContent_, this);
 
-                        this.textContent_.nodeValue = this.value_;
+                        if (!fieldData.manualNodeValue) {
+                            this.textContent_.nodeValue = this.value_;
+                        }
                         this.updateSize_();
                     }
                 }
@@ -138,8 +140,18 @@
             }
 
             widgetDispose_() {
+                //Let the user customize disposal
+                if (fieldData.editorDisposal) {
+                    if (fieldData.isDropdown) {                   
+                        sugarcube.extensionInstances[extensionID][fieldData.editorDisposal](this,Blockly.DropDownDiv);
+                    }
+                    else {
+                        sugarcube.extensionInstances[extensionID][fieldData.editorDisposal](this,Blockly.WidgetDiv);
+                    }
+                }
+
                 if (!this.editorListeners_) return;
-                
+
                 for (let i = this.editorListeners_.length, listener;
                     listener = this.editorListeners_[i]; i--) {
                   Blockly.browserEvents.unbind(listener);

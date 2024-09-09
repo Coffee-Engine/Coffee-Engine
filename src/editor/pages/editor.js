@@ -16,6 +16,22 @@
 
         editor.currentPage.root.innerHTML = `
         <style>
+            .dockAndDropdowns {
+                position:absolute;
+                top:0px;
+                left:0px;
+
+                width:100%;
+                height:100%;
+
+                display:grid;
+                grid-template-rows: 16px auto;
+            }
+
+            .dropdownsTopbar {
+                background-color: var(--background-2);
+            }
+
             .window {
                 min-height:32px;
                 min-width:96px;
@@ -84,14 +100,12 @@
             }
 
             .dockDefault {
-                position:absolute;
                 top:0px;
                 left:0px;
                 padding:0px;
                 margin:0px;
 
                 width:100%;
-                height:100%;
 
                 overflow:hidden;
             
@@ -118,7 +132,10 @@
                 }
             }
         </style>
-        <div class="dockDefault" id="coffeeEngineDock"></div>
+        <div class="dockAndDropdowns">
+            <div class="dropdownsTopbar" id="coffeeEngineDropdowns">hi</div>
+            <div class="dockDefault" id="coffeeEngineDock"></div>
+        </div>
         `;
 
         document.body.appendChild(editor.currentPage.root);

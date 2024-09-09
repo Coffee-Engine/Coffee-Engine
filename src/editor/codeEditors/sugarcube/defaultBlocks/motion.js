@@ -148,7 +148,9 @@
                         text: "set my [axis] to be [degrees] degrees",
                         arguments: {
                             degrees: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Angle",
+                                defaultValue: 90
                             },
                             axis: {
                                 menu: "direction",
@@ -195,6 +197,22 @@
                         items: ["yaw", "pitch", "roll"],
                     },
                 },
+                fields: {
+                    Angle: {
+                        isDropdown:true,
+                        
+                        //Our custom editor
+                        editor:"angle_Editor",
+                        editorDisposal:"angle_Dispose",
+
+                        initilize:"angle_Init",
+
+                        validate:"angle_Validate",
+                        manualNodeValue:true,
+
+                        render:"angle_Render",
+                    }
+                }
             };
         }
 
@@ -202,6 +220,48 @@
             util.x += util.forward.x * args.steps;
             util.y += util.forward.y * args.steps;
             util.z += util.forward.z * args.steps;
+        }
+
+        //Custom Fields
+        angle_Init(field) {
+            field.createBorderRect_();
+            field.createTextElement_();
+            field.textContent_.nodeValue = "90°";
+        }
+
+        angle_Validate() {
+
+        }
+
+        angle_Editor(field) {
+            const image = document.createElement("img");
+            fetch("https://dog.ceo/api/breeds/image/random").then(response => response.json()).then(json => {
+                image.src = json.message;
+                image.width = 256;
+                image.height = 256;
+            })
+
+            let rotation = 0;
+            this.interval = setInterval(() => {
+                image.style.transform = `rotate(${rotation}deg)`;
+                rotation += 1;
+                field.value_ = rotation;
+                field.isDirty_ = true;
+
+                field.render_();
+            }, 16);
+
+            return image;
+        }
+
+        angle_Dispose() {
+            clearInterval(this.interval);
+        }
+
+        angle_Render(value, text, field) {
+            text.nodeValue = `${value}°`;
+
+            field.updateSize_();
         }
     }
 
