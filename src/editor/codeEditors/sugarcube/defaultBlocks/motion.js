@@ -199,6 +199,7 @@
                 },
                 fields: {
                     Angle: {
+                        acceptReporters: true,
                         isDropdown:true,
                         
                         //Our custom editor
@@ -206,7 +207,7 @@
                         editorDisposal:"angle_Dispose",
 
                         initilize:"angle_Init",
-                        
+
                         manualNodeValue:true,
 
                         render:"angle_Render",

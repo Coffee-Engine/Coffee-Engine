@@ -165,6 +165,10 @@
             return new sugarcube.fields.storage[fieldName](value);
         }
 
+        if (fieldData.acceptReporters) {
+            sugarcube.fields.storage[fieldName].acceptReporters = fieldData.acceptReporters;
+        }
+
         Blockly.fieldRegistry.register(fieldName, sugarcube.fields.storage[fieldName]);
     }
 
