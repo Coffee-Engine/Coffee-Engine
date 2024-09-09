@@ -101,7 +101,7 @@
 
             //create our shiz
             container.style.display = "grid";
-            container.style.gridTemplateRows = "24px auto";
+            container.style.gridTemplateRows = "24px 100%";
             container.style.margin = "0px";
             container.style.overflow = "hidden";
 
@@ -121,8 +121,9 @@
 
             //Where the logs are visualized
             this.logContainer = document.createElement("div");
-            this.logContainer.style.width = "100%";
-            this.logContainer.style.height = "100%";
+            //this.logContainer.style.width = "100%";
+            //this.logContainer.style.height = "100%";
+            this.logContainer.style.overflowX = "scroll";
             this.logContainer.style.overflowY = "scroll";
 
             container.appendChild(this.logControls);

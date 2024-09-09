@@ -21,11 +21,16 @@
                 min-width:96px;
 
                 overflow: hidden;
+                min-width:0px;
+                min-height:0px;
 
                 background-color:var(--background-3);
 
                 display:grid;
                 grid-template-rows: ${editor.taskbarHeight}px auto;
+
+                max-height:100vh;
+                max-width:100vw;
             }
 
             .TaskBar {
@@ -129,7 +134,6 @@
                     if (!subDock) {
                         subDock = document.createElement("div");
                         subDock.style.display = "grid";
-                        subDock.style.height = "100%";
                         subDock.style.gridTemplateRows = "var(--dockGridVertical)"
 
                         editor.dock.element.appendChild(subDock);
@@ -141,7 +145,7 @@
                     })
 
                     //Set the grid property
-                    subDock.style.setProperty("--dockGridVertical",(`${100 / editor.layout.layout[ID].length}% `).repeat(editor.layout.layout[ID].length));
+                    subDock.style.setProperty("--dockGridVertical",(`${100 / editor.layout.layout[ID].length} `).repeat(editor.layout.layout[ID].length));
                 }
 
                 if (initial) return;
