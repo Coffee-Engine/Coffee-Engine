@@ -167,6 +167,23 @@
 
         if (fieldData.acceptReporters) {
             sugarcube.fields.storage[fieldName].acceptReporters = fieldData.acceptReporters;
+            sugarcube.fields.storage[fieldName].blockName = "__sugarcube_field_" + fieldName;
+
+            //Add the block (Not Dynamic)
+            sugarcube.extensionManager.addBlocklyBlock("__sugarcube_field_" + fieldName, "reporter", {
+                message0: "%1",
+                style: extensionID + "_blocks",
+                args0: [
+                    {
+                        type: fieldName,
+                        name: "VALUE",
+                    },
+                ],
+            });
+
+            sugarcube.generator.forBlock["__sugarcube_field_" + fieldName] = (block, generator) => {
+                return [`${block.getFieldValue("VALUE")}`, 0];
+            };
         }
 
         Blockly.fieldRegistry.register(fieldName, sugarcube.fields.storage[fieldName]);

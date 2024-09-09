@@ -432,14 +432,30 @@
                                             case sugarcube.ArgumentType.CUSTOM:
                                                 argument.type = "input_value";
                                                 if (argument.customType) {
+                                                    //let it be global or local
                                                     if (sugarcube.fields.storage[id + argument.customType]) {
                                                         argument.type = id + argument.customType;
                                                     }
                                                     else if (sugarcube.fields.storage[argument.customType]) {
                                                         argument.type = argument.customType;
                                                     }
+
+                                                    //Accept reporters
+                                                    if (sugarcube.fields.storage[argument.type].acceptReporters) {
+                                                        //Eww
+                                                        if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
+                                                        defArgs.inputs[argumentKey].shadow = {
+                                                            type: sugarcube.fields.storage[argument.type].blockName,
+                                                        };
+
+                                                        console.log(sugarcube.fields.storage[argument.type]);
+                                                        console.log(defArgs.inputs);
+
+                                                        //Ughhh
+                                                        argument.type = "input_value";
+                                                    }
                                                 }
-                                                
+
                                                 argument.value = argument.defaultValue || "";
                                                 break;
 
