@@ -145,7 +145,7 @@
                     })
 
                     //Set the grid property
-                    subDock.style.setProperty("--dockGridVertical",(`${100 / editor.layout.layout[ID].length} `).repeat(editor.layout.layout[ID].length));
+                    subDock.style.setProperty("--dockGridVertical",(`${100 / editor.layout.layout[ID].length}% `).repeat(editor.layout.layout[ID].length));
                 }
 
                 if (initial) return;
