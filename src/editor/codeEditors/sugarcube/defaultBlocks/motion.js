@@ -206,8 +206,7 @@
                         editorDisposal:"angle_Dispose",
 
                         initilize:"angle_Init",
-
-                        validate:"angle_Validate",
+                        
                         manualNodeValue:true,
 
                         render:"angle_Render",
@@ -227,10 +226,6 @@
             field.createBorderRect_();
             field.createTextElement_();
             field.textContent_.nodeValue = "90°";
-        }
-
-        angle_Validate() {
-
         }
 
         angle_Editor(field) {
