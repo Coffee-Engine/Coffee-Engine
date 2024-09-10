@@ -105,6 +105,14 @@
                     }
                     break;
 
+                case sugarcube.BlockType.FIELD_REPORTERACCEPTANCE:
+                    if (BlockJson.output) {
+                        BlockJson.output = ["Field_ReporterAcceptance"].concat(BlockJson.output);
+                    } else {
+                        BlockJson.output = "Field_ReporterAcceptance";
+                    }
+                    break;
+
                 case sugarcube.BlockType.BOOLEAN:
                     if (BlockJson.output) {
                         BlockJson.output = ["Boolean"].concat(BlockJson.output);
@@ -309,6 +317,7 @@
                         });
                         break;
 
+                    //For duplicating blocks in the toolbox
                     case "duplicate":
                         blockData = {
                             kind: "block",
@@ -447,9 +456,10 @@
                                                         defArgs.inputs[argumentKey].shadow = {
                                                             type: sugarcube.fields.storage[argument.type].blockName,
                                                         };
-
-                                                        console.log(sugarcube.fields.storage[argument.type]);
-                                                        console.log(defArgs.inputs);
+                                                        
+                                                        if (argument.defaultValue) {
+                                                            defArgs.inputs[argumentKey].shadow.value = argument.defaultValue;
+                                                        }
 
                                                         //Ughhh
                                                         argument.type = "input_value";

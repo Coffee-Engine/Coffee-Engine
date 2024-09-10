@@ -166,6 +166,10 @@
                             return this.SQUARED;
                         }
 
+                        case "Field_ReporterAcceptance": {
+                            return this.SQUARED;
+                        }
+
                         default: {
                             return super.shapeFor(connection);
                         }
@@ -179,6 +183,10 @@
                         }
 
                         case "Array": {
+                            return this.SQUARED;
+                        }
+
+                        case "Field_ReporterAcceptance": {
                             return this.SQUARED;
                         }
 

@@ -4,7 +4,7 @@
     };
 
     sugarcube.fields.makeFromFunction = (extensionID,fieldData,fieldName) => {
-        sugarcube.fields.storage[fieldName] = class extends Blockly.Field {
+        sugarcube.fields.storage[fieldName] = class extends (fieldData.acceptReporters ? Blockly.Field : Blockly.Field) {
             foreignObject_ = null;
 
             //Our constructor
@@ -159,18 +159,20 @@
                 }
             }
         }
-        
         sugarcube.fields.storage[fieldName].fromJson = function(options) {
             const value = Blockly.utils.parsing.replaceMessageReferences(options['value']);
             return new sugarcube.fields.storage[fieldName](value);
         }
 
+        
+        //There is probably some strange, esoteric, f*#ked up way of doing this WITHOUT having to make a new block.
+        //But for the life of me and GOD himself I cannot find it right now.
         if (fieldData.acceptReporters) {
             sugarcube.fields.storage[fieldName].acceptReporters = fieldData.acceptReporters;
             sugarcube.fields.storage[fieldName].blockName = "__sugarcube_field_" + fieldName;
 
             //Add the block (Not Dynamic)
-            sugarcube.extensionManager.addBlocklyBlock("__sugarcube_field_" + fieldName, "reporter", {
+            sugarcube.extensionManager.addBlocklyBlock("__sugarcube_field_" + fieldName, "Field_ReporterAcceptance", {
                 message0: "%1",
                 style: extensionID + "_blocks",
                 args0: [

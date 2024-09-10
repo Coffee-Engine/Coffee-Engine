@@ -24,6 +24,8 @@
         DUPLICATE: "duplicate",
 
         REPORTER_ANY: "reporter_any",
+
+        FIELD_REPORTERACCEPTANCE: "Field_ReporterAcceptance",
     };
 
     sugarcube.ArgumentType = {
