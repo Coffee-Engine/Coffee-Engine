@@ -309,4 +309,37 @@
             delete editor.colorPicker.current;
         }
     }
+
+    editor.colorPicker.class = class extends HTMLDivElement {
+        static observedAttributes = ["color"];
+
+        color = "#ffffff";
+
+        constructor() {
+            super();
+
+            //The color visualizer
+            this.colorVisualizer = document.createElement("div");
+            this.colorVisualizer.style.pointerEvents = "none";
+
+            this.appendChild(this.colorVisualizer);
+        }
+
+        connectedCallback() {            
+            if (this.getAttribute("color")) {
+                this.color = this.getAttribute("color");
+            }
+            
+            this.style.minWidth = "32px";
+            this.style.minHeight = "32px";
+
+            this.colorVisualizer.style.backgroundColor = this.color;
+        }
+
+        onclick(event) {
+            
+        }
+    }
+
+    customElements.define("color-picker", editor.colorPicker.class, { extends: "div" });
 })();

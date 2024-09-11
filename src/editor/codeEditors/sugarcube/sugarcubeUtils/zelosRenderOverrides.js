@@ -148,9 +148,10 @@
                 },
             };
         }
+        
 
         OBJECT = this.makeObject();
-        ARRAY = this.makeArray();
+        SWIRL = this.makeCoolShape();
 
         shapeFor(connection) {
             let check = connection.getCheck();

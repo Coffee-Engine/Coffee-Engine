@@ -129,8 +129,6 @@
                 typeDiv.appendChild(this.listButton);
             }
 
-            console.log(this.variableType)
-
             container.appendChild(variableName);
             container.appendChild(typeDiv);
 

@@ -144,6 +144,8 @@
                 <h1>${editor.language["engine.home.noRecentProjects"]}</h1>
             </div>
         </div>
+
+        <color-picker color="#ffffff"></color-picker>
         `;
 
         document.body.appendChild(editor.currentPage.root);
