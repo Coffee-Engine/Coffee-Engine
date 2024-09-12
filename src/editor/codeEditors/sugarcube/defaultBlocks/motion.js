@@ -28,6 +28,19 @@
                     },
                     "---",
                     {
+                        opcode: "gotoxy",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "go to x:[x] y:[y]",
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                            }, 
+                        },
+                    },
+                    {
                         opcode: "gotoxyz",
                         type: sugarcube.BlockType.COMMAND,
                         text: "go to x:[x] y:[y] z:[z]",
@@ -108,6 +121,7 @@
                         },
                     },
                     "---",
+                    
                     {
                         opcode: "xposition",
                         type: sugarcube.BlockType.REPORTER,
@@ -125,7 +139,47 @@
                     },
                     "---",
                     {
-                        opcode: "turnAround",
+                        opcode: "turnAround2D",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "turn [icon] [degrees] degrees",
+                        arguments: {
+                            icon: {
+                                type: sugarcube.ArgumentType.IMAGE,
+                                dataURI: icons.turnRight,
+                            },
+                            degrees: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 15,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setrotation2D",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set my direction to be [degrees] degrees",
+                        arguments: {
+                            degrees: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Angle",
+                                defaultValue: 90
+                            },
+                        },
+                    },
+                    {
+                        opcode: "lookAtXY",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "look towards x: [x] y: [y]",
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "turnAround3D",
                         type: sugarcube.BlockType.COMMAND,
                         text: "turn [icon] [degrees] degrees on the [axis] axis",
                         arguments: {
@@ -143,7 +197,7 @@
                         },
                     },
                     {
-                        opcode: "setrotation",
+                        opcode: "setrotation3D",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set my [axis] to be [degrees] degrees",
                         arguments: {
@@ -158,7 +212,7 @@
                         },
                     },
                     {
-                        opcode: "lookAt",
+                        opcode: "lookAtXYZ",
                         type: sugarcube.BlockType.COMMAND,
                         text: "look towards x: [x] y: [y] z: [z]",
                         arguments: {
@@ -175,6 +229,11 @@
                         },
                     },
                     "---",
+                    {
+                        opcode: "direction",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "direction",
+                    },
                     {
                         opcode: "yaw",
                         type: sugarcube.BlockType.REPORTER,

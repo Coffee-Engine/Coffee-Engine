@@ -45,6 +45,10 @@
                 const input = document.createElement("color-picker");
                 input.color = editor.settings.values[category][setting];
 
+                input.style.width = "1em";
+                input.style.margin = "0px"
+                input.style.verticalAlign = "top";
+
                 input.onchange = () => {
                     editor.settings.values[category][setting] = input.color;
                     if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.color);

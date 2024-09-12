@@ -44,6 +44,8 @@
 
         DUMMY: "dummy",
 
+        ANGLE: "__sugarcube_field_motion_Angle",
+
         STATEMENT: "statement",
 
         OBJECT: "object",

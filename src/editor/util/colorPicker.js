@@ -373,7 +373,7 @@
                 this.color = this.getAttribute("color");
             }
 
-            this.style.display = "block";
+            this.style.display = "inline-block";
             this.style.borderColor = "var(--background-3)";
             this.style.borderWidth = "4px";
             this.style.borderRadius = "50%";
