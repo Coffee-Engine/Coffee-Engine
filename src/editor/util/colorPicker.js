@@ -38,8 +38,7 @@
         editor.colorPicker.current = current;
 
         //Set the styles
-        current.style.width = `${hasExtensions ? 25 : 20}vw`;
-        current.style.maxWidth = `${hasExtensions ? "500px" : "400px"}`;
+        current.style.width = `${hasExtensions ? 37.5 : 30}vh`;
 
         current.style.height = "auto";
         current.style.aspectRatio = `${hasExtensions ? 5 : 4}/3`;
@@ -128,7 +127,7 @@
             }
 
             .CE_scrubber {
-                width:1vw;
+                width:2vh;
                 aspect-ratio:1;
                 position:absolute;
 
@@ -317,15 +316,40 @@
     }
 
     editor.colorPicker.class = class extends HTMLElement {
-        static observedAttributes = ["color"];
+        static observedAttributes = ["color", "disabled"];
 
-        color = "#ffffff";
+        #color = "#ffffff";
+
+        set color(value) {
+            this.#color = value;
+
+            this.style.backgroundColor = this.#color;
+        }
+
+        get color() {
+            return this.#color;
+        }
+
+        set value(value) {
+            this.color = value;
+        }
+
+        get value() {
+            return this.color;
+        }
+
+        disabled = false;
 
         constructor() {
             super();
 
             this.onmouseenter = () => {
-                this.style.borderColor = "var(--text-3)";
+                if (this.disabled) {
+                    this.style.borderColor = "var(--background-2)";
+                }
+                else {
+                    this.style.borderColor = "var(--text-3)";
+                }
             }
 
             this.onmouseleave = () => {
@@ -333,9 +357,13 @@
             }
 
             this.onclick = (event) => {
+                if (this.disabled) return;
+                
                 editor.colorPicker.create(event.clientX, event.clientY, {color: this.color, callback:(color) => {
                     this.color = color;
-                    this.style.backgroundColor = color;
+                    if (this.onchange) {
+                        this.onchange();
+                    }
                 }});
             }
         }
@@ -350,6 +378,8 @@
             this.style.borderWidth = "4px";
             this.style.borderRadius = "50%";
             this.style.borderStyle = "solid";
+
+            this.style.width = "16px";
 
             this.style.minWidth = "8px";
             this.style.minHeight = "8px";

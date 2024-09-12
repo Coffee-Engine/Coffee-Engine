@@ -42,16 +42,12 @@
             }
 
             case "color": {
-                const input = document.createElement("input");
-                input.type = "color";
-                input.value = editor.settings.values[category][setting];
-
-                input.min = elementDefs.min;
-                input.max = elementDefs.max;
+                const input = document.createElement("color-picker");
+                input.color = editor.settings.values[category][setting];
 
                 input.onchange = () => {
-                    editor.settings.values[category][setting] = input.value;
-                    if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.value);
+                    editor.settings.values[category][setting] = input.color;
+                    if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.color);
                     editor.Storage.setStorage("settingsValues", editor.settings.values);
                 };
 

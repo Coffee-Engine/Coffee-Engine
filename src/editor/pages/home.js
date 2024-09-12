@@ -137,7 +137,6 @@
             <div class="fullWidth centerContents">
                 <div></div>
                 <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineConfig"]}</button>
-                <color-picker color="#ffffff"></color-picker>
                 <div></div>
             </div>
 
