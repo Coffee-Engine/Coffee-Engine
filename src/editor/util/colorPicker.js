@@ -22,7 +22,7 @@
         </svg>`
     };
 
-    editor.colorPicker.create = (x,y,{ color, hasExtensions, isStandalone }) => {
+    editor.colorPicker.create = (x,y,{ color, hasExtensions, isStandalone, callback}) => {
         //Channel 3 and Channel 15
         color = color || "#0000ff";
         let split = coffeeEngine.ColorMath.HexToRGB(color);
@@ -39,6 +39,8 @@
 
         //Set the styles
         current.style.width = `${hasExtensions ? 25 : 20}vw`;
+        current.style.maxWidth = `${hasExtensions ? "500px" : "400px"}`;
+
         current.style.height = "auto";
         current.style.aspectRatio = `${hasExtensions ? 5 : 4}/3`;
         current.style.overflow = "hidden";
@@ -206,6 +208,10 @@
             blueInput.value = split.b;
 
             hexInput.value = coffeeEngine.ColorMath.RGBtoHex(split);
+
+            if (callback) {
+                callback(hexInput.value);
+            }
         }
 
         //Simple input controls
@@ -303,14 +309,14 @@
     editor.colorPicker.remove = () => {
         if (editor.colorPicker.current) {
             editor.colorPicker.current.parentElement.removeChild(editor.colorPicker.current);
-            if (editor.colorPicker.reject) {
-                editor.colorPicker.reject();
+            if (editor.colorPicker.resolve) {
+                editor.colorPicker.resolve();
             }
             delete editor.colorPicker.current;
         }
     }
 
-    editor.colorPicker.class = class extends HTMLDivElement {
+    editor.colorPicker.class = class extends HTMLElement {
         static observedAttributes = ["color"];
 
         color = "#ffffff";
@@ -318,28 +324,43 @@
         constructor() {
             super();
 
-            //The color visualizer
-            this.colorVisualizer = document.createElement("div");
-            this.colorVisualizer.style.pointerEvents = "none";
+            this.onmouseenter = () => {
+                this.style.borderColor = "var(--text-3)";
+            }
 
-            this.appendChild(this.colorVisualizer);
+            this.onmouseleave = () => {
+                this.style.borderColor = "var(--background-3)";
+            }
+
+            this.onclick = (event) => {
+                editor.colorPicker.create(event.clientX, event.clientY, {color: this.color, callback:(color) => {
+                    this.color = color;
+                    this.style.backgroundColor = color;
+                }});
+            }
         }
 
-        connectedCallback() {            
+        connectedCallback() {       
             if (this.getAttribute("color")) {
                 this.color = this.getAttribute("color");
             }
-            
-            this.style.minWidth = "32px";
-            this.style.minHeight = "32px";
 
-            this.colorVisualizer.style.backgroundColor = this.color;
-        }
+            this.style.display = "block";
+            this.style.borderColor = "var(--background-3)";
+            this.style.borderWidth = "4px";
+            this.style.borderRadius = "50%";
+            this.style.borderStyle = "solid";
 
-        onclick(event) {
-            
+            this.style.minWidth = "8px";
+            this.style.minHeight = "8px";
+
+            this.style.aspectRatio = "1";
+
+            this.style.backgroundColor = this.color;
+
+            this.style.transition = "all 150ms"
         }
     }
 
-    customElements.define("color-picker", editor.colorPicker.class, { extends: "div" });
+    customElements.define("color-picker", editor.colorPicker.class);
 })();

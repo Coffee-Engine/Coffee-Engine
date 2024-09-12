@@ -137,6 +137,7 @@
             <div class="fullWidth centerContents">
                 <div></div>
                 <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineConfig"]}</button>
+                <color-picker color="#ffffff"></color-picker>
                 <div></div>
             </div>
 
@@ -144,8 +145,6 @@
                 <h1>${editor.language["engine.home.noRecentProjects"]}</h1>
             </div>
         </div>
-
-        <color-picker color="#ffffff"></color-picker>
         `;
 
         document.body.appendChild(editor.currentPage.root);
