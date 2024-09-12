@@ -156,7 +156,7 @@
                     {
                         opcode: "setrotation2D",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set my direction to be [degrees] degrees",
+                        text: "set my direction to be [degrees]",
                         arguments: {
                             degrees: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -199,7 +199,7 @@
                     {
                         opcode: "setrotation3D",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set my [axis] to be [degrees] degrees",
+                        text: "set my [axis] to be [degrees]",
                         arguments: {
                             degrees: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -263,12 +263,11 @@
                         
                         //Our custom editor
                         editor:"angle_Editor",
-                        editorDisposal:"angle_Dispose",
+                        size: [128,160],
 
+                        //Stuff
                         initilize:"angle_Init",
-
                         manualNodeValue:true,
-
                         render:"angle_Render",
                     }
                 }
@@ -289,28 +288,108 @@
         }
 
         angle_Editor(field) {
-            const image = document.createElement("img");
-            fetch("https://dog.ceo/api/breeds/image/random").then(response => response.json()).then(json => {
-                image.src = json.message;
-                image.width = 256;
-                image.height = 256;
-            })
+            const div = document.createElement("div");
 
-            let rotation = 0;
-            this.interval = setInterval(() => {
-                image.style.transform = `rotate(${rotation}deg)`;
-                rotation += 1;
-                field.value_ = rotation;
-                field.isDirty_ = true;
+            div.style.width = "128px";
+            div.style.height = "160px";
 
-                field.render_();
-            }, 16);
+            //Add our circle
+            const circularContainer = document.createElement("div");
+            //Configure it
+            {
+                circularContainer.style.borderRadius = "50%";
+                circularContainer.style.width = "112px";
+                circularContainer.style.height = "112px";
+                circularContainer.style.margin = "8px";
+                circularContainer.style.position = "relative";
+                circularContainer.style.overflow = "hidden";
 
-            return image;
-        }
+                circularContainer.style.backgroundColor = "#3373cc";
+                div.appendChild(circularContainer);
+            }
 
-        angle_Dispose() {
-            clearInterval(this.interval);
+            //Add our circle
+            const lineStart = document.createElement("div");
+            //Configure it
+            {
+                lineStart.style.width = "4px";
+                lineStart.style.height = "56px";
+
+                lineStart.style.position = "absolute";
+                lineStart.style.left = "50%";
+                lineStart.style.top = "0px";
+                lineStart.style.transform = "translate(-50%,0%)";
+
+                lineStart.style.backgroundColor = "#4280d7";
+                circularContainer.appendChild(lineStart);
+            }
+
+            const angleIndicator = document.createElement("div");
+            {
+                angleIndicator.style.width = "4px";
+                angleIndicator.style.height = "56px";
+
+                angleIndicator.style.position = "absolute";
+                angleIndicator.style.left = "50%";
+                angleIndicator.style.top = "25%";
+                angleIndicator.style.transform = `translate(-50%,0%) rotate(${sugarcube.cast.toNumber(field.value_) + 180}deg) translate(0%,50%)`;
+
+                angleIndicator.style.backgroundColor = "#4c97ff";
+                circularContainer.appendChild(angleIndicator);
+            }
+
+            const centerIndicator = document.createElement("div");
+            {
+                centerIndicator.style.width = "12px";
+                centerIndicator.style.height = "12px";
+
+                centerIndicator.style.position = "absolute";
+                centerIndicator.style.left = "50%";
+                centerIndicator.style.top = "50%";
+                centerIndicator.style.transform = "translate(-50%,-50%)";
+
+                centerIndicator.style.borderRadius = "50%";
+
+                centerIndicator.style.backgroundColor = "#4280d7";
+                circularContainer.appendChild(centerIndicator);
+            }
+            
+            const angleScrubber = document.createElement("div");
+            {
+                angleScrubber.style.width = "16px";
+                angleScrubber.style.height = "16px";
+
+                angleScrubber.style.position = "absolute";
+                angleScrubber.style.left = "50%";
+                angleScrubber.style.top = "100%";
+                angleScrubber.style.transform = "translate(-50%,-100%)";
+
+                angleScrubber.style.borderRadius = "50%";
+                angleScrubber.style.borderColor = "#4c97ff";
+                angleScrubber.style.borderWidth = "4px";
+                angleScrubber.style.borderStyle = "solid";
+                
+                angleScrubber.style.cursor = "grab";
+
+                angleScrubber.style.backgroundColor = "#4280d7";
+                angleIndicator.appendChild(angleScrubber);
+
+                //Arrow image
+                const angleScrubberArrow = document.createElement("img");
+                angleScrubberArrow.src = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI5MC41ODg5IiBoZWlnaHQ9IjkwLjU4ODkiIHZpZXdCb3g9IjAsMCw5MC41ODg5LDkwLjU4ODkiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xOTQuNzA1NTUsLTEzNC43MDU1NSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjI3LjY5Njc1LDE4OS45NTY1MWMwLDAgMCwtNDAuMTQ2MiAwLC00Ni4yMzk2NWMwLC0wLjkxOTAzIDAuODAwNDksLTEuNTg2NDUgMS40MDExOCwtMS41ODY0NWMyLjI2MDA0LDAgMTYuMTUyODEsMCAyMS4yNDIyNiwwYzEuMTYyODEsMCAxLjg2NjA4LDAuOTI0NzIgMS44NjYwOCwyLjEzNTgyYzAsNi44OTMzNCAwLDQ1LjY5MDI4IDAsNDUuNjkwMjh6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9Im5vbmUiLz48cGF0aCBkPSJNMjExLjk5OTYzLDE4Ny4xMjg1YzYuNzcxODMsMCA0NC41MjE4MSwwIDU2LjI0ODkzLDBjMi4xOTMxOCwwIDIuMjI2MjUsMS4yNDk5MyAwLjkwMzg1LDIuNTcyMzRjLTMuNjg4NDEsMy42ODg0MSAtMjEuMjgxNTQsMjEuMjgxNTQgLTI3LjIzMDIsMjcuMjMwMmMtMS4yMzcxOCwxLjIzNzE4IC0yLjY4ODg3LDEuMjUyNTIgLTMuOTAyOTUsMC4wMzg0NGMtNS45NDQ1NSwtNS45NDQ1NSAtMjMuNzc4MDEsLTIzLjc3ODAxIC0yNy40MDkwNiwtMjcuNDA5MDZjLTEuMjU4ODYsLTEuMjU4ODYgLTAuNjQzODMsLTIuNDMxOTMgMS4zODk0MywtMi40MzE5M3oiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMCIvPjxwYXRoIGQ9Ik0xOTQuNzA1NTUsMjI1LjI5NDQ1di05MC41ODg5aDkwLjU4ODl2OTAuNTg4OXoiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjQ1LjI5NDQ0Nzc1MDQ1MzA2OjQ1LjI5NDQ0Nzc1MDQ1My0tPg==";
+                
+                angleScrubberArrow.style.width = "16px";
+                angleScrubberArrow.style.height = "16px";
+                angleScrubberArrow.style.pointerEvents = "none";
+
+                angleScrubberArrow.style.position = "absolute";
+                angleScrubberArrow.style.top = "0px";
+                angleScrubberArrow.style.left = "0px";
+
+                angleScrubber.appendChild(angleScrubberArrow);
+            }
+
+            return div;
         }
 
         angle_Render(value, text, field) {

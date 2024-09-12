@@ -4,7 +4,7 @@
     };
 
     sugarcube.fields.makeFromFunction = (extensionID,fieldData,fieldName) => {
-        sugarcube.fields.storage[fieldName] = class extends (fieldData.acceptReporters ? Blockly.Field : Blockly.Field) {
+        sugarcube.fields.storage[fieldName] = class extends Blockly.Field {
             foreignObject_ = null;
 
             //Our constructor
