@@ -389,7 +389,9 @@
                 angleScrubber.appendChild(angleScrubberArrow);
             }
 
+            //Setting the angle
             angleScrubber.onmousedown = () => {
+                //Our grab function for when we move the mouse
                 const grabFunction = (event) => {
                     //Get bounding rect of the container
                     const circularCenter = circularContainer.getBoundingClientRect();
@@ -404,12 +406,9 @@
 
                     //Set the display
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
-
-                    console.log(field);
-                    field.value_ = Math.floor(angle);
-                    field.isDirty_ = true;
-                    field.render_();
+                    field.value = Math.floor(angle);
                 }
+                //And when we release it we do this!
                 const letGoFunc = () => {
                     document.removeEventListener("mousemove",grabFunction);
                     document.removeEventListener("mouseup",letGoFunc);
@@ -419,6 +418,7 @@
                 document.addEventListener("mouseup",letGoFunc);
             }
 
+            //Return our div so we can put it on the field itself
             return div;
         }
 

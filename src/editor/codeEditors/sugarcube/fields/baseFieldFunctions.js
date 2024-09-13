@@ -158,6 +158,14 @@
                   this.editorListeners_.pop();
                 }
             }
+
+            set value(value) {
+                this.setValue(value);
+            }
+
+            get value() {
+                return this.value_;
+            }
         }
         sugarcube.fields.storage[fieldName].fromJson = function(options) {
             const value = Blockly.utils.parsing.replaceMessageReferences(options['value']);
