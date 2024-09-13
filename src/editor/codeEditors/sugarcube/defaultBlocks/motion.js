@@ -426,6 +426,8 @@
                     angle *= (180 / Math.PI);
                     angle += 90;
 
+                    angle = Math.floor(angle / 15) * 15;
+
                     //Set the display
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
                     field.value = angle;
