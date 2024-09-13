@@ -17,3 +17,7 @@ The engine's new focus is to have a node based object system, but with the simpl
 ### Customizability is key
 
 Coffee Engine should be a very customizable engine. With almost everything being able to be moved around or changed in some way.
+
+## Forking
+
+If you plan to make a fork or mod of the engine please add some link back to the original engine! This is not a requirement just a simple request.
