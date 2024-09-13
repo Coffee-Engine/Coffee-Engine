@@ -19,6 +19,7 @@
                         opcode: "movesteps",
                         type: sugarcube.BlockType.COMMAND,
                         text: "move [steps] steps",
+                        filter: ["node2D","node3D"],
                         arguments: {
                             steps: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -31,6 +32,7 @@
                         opcode: "gotoxy",
                         type: sugarcube.BlockType.COMMAND,
                         text: "go to x:[x] y:[y]",
+                        filter: ["node2D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -44,6 +46,7 @@
                         opcode: "gotoxyz",
                         type: sugarcube.BlockType.COMMAND,
                         text: "go to x:[x] y:[y] z:[z]",
+                        filter: ["node3D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -61,6 +64,7 @@
                         opcode: "setx",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set x to [x]",
+                        filter: ["node2D","node3D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -71,6 +75,7 @@
                         opcode: "sety",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set y to [y]",
+                        filter: ["node2D","node3D"],
                         arguments: {
                             y: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -81,6 +86,7 @@
                         opcode: "setz",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set z to [z]",
+                        filter: ["node3D"],
                         arguments: {
                             z: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -91,6 +97,7 @@
                         opcode: "changex",
                         type: sugarcube.BlockType.COMMAND,
                         text: "change x by [x]",
+                        filter: ["node2D","node3D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -102,6 +109,7 @@
                         opcode: "changey",
                         type: sugarcube.BlockType.COMMAND,
                         text: "change y by [y]",
+                        filter: ["node2D","node3D"],
                         arguments: {
                             y: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -113,6 +121,7 @@
                         opcode: "changez",
                         type: sugarcube.BlockType.COMMAND,
                         text: "change z by [z]",
+                        filter: ["node3D"],
                         arguments: {
                             z: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -126,22 +135,26 @@
                         opcode: "xposition",
                         type: sugarcube.BlockType.REPORTER,
                         text: "x position",
+                        filter: ["node2D","node3D"],
                     },
                     {
                         opcode: "yposition",
                         type: sugarcube.BlockType.REPORTER,
                         text: "y position",
+                        filter: ["node2D","node3D"],
                     },
                     {
                         opcode: "zposition",
                         type: sugarcube.BlockType.REPORTER,
                         text: "z position",
+                        filter: ["node3D"],
                     },
                     "---",
                     {
                         opcode: "turnAround2D",
                         type: sugarcube.BlockType.COMMAND,
                         text: "turn [icon] [degrees] degrees",
+                        filter: ["node2D"],
                         arguments: {
                             icon: {
                                 type: sugarcube.ArgumentType.IMAGE,
@@ -157,6 +170,7 @@
                         opcode: "setrotation2D",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set my direction to be [degrees]",
+                        filter: ["node2D"],
                         arguments: {
                             degrees: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -169,6 +183,7 @@
                         opcode: "lookAtXY",
                         type: sugarcube.BlockType.COMMAND,
                         text: "look towards x: [x] y: [y]",
+                        filter: ["node2D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -182,6 +197,7 @@
                         opcode: "turnAround3D",
                         type: sugarcube.BlockType.COMMAND,
                         text: "turn [icon] [degrees] degrees on the [axis] axis",
+                        filter: ["node3D"],
                         arguments: {
                             icon: {
                                 type: sugarcube.ArgumentType.IMAGE,
@@ -200,6 +216,7 @@
                         opcode: "setrotation3D",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set my [axis] to be [degrees]",
+                        filter: ["node3D"],
                         arguments: {
                             degrees: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -215,6 +232,7 @@
                         opcode: "lookAtXYZ",
                         type: sugarcube.BlockType.COMMAND,
                         text: "look towards x: [x] y: [y] z: [z]",
+                        filter: ["node3D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -233,21 +251,25 @@
                         opcode: "direction",
                         type: sugarcube.BlockType.REPORTER,
                         text: "direction",
+                        filter: ["node2D"],
                     },
                     {
                         opcode: "yaw",
                         type: sugarcube.BlockType.REPORTER,
                         text: "yaw",
+                        filter: ["node3D"],
                     },
                     {
                         opcode: "pitch",
                         type: sugarcube.BlockType.REPORTER,
                         text: "pitch",
+                        filter: ["node3D"],
                     },
                     {
                         opcode: "roll",
                         type: sugarcube.BlockType.REPORTER,
                         text: "roll",
+                        filter: ["node3D"],
                     },
                 ],
                 menus: {
@@ -406,7 +428,7 @@
 
                     //Set the display
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
-                    field.value = Math.floor(angle);
+                    field.value = angle;
                 }
                 //And when we release it we do this!
                 const letGoFunc = () => {
@@ -423,7 +445,7 @@
         }
 
         angle_Render(value, text, field) {
-            text.nodeValue = `${value}°`;
+            text.nodeValue = `${Math.floor(value * 10) / 10}°`;
 
             field.updateSize_();
         }
