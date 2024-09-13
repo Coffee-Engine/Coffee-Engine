@@ -389,6 +389,36 @@
                 angleScrubber.appendChild(angleScrubberArrow);
             }
 
+            angleScrubber.onmousedown = () => {
+                const grabFunction = (event) => {
+                    //Get bounding rect of the container
+                    const circularCenter = circularContainer.getBoundingClientRect();
+
+                    //Angle stuff
+                    let angle = Math.atan2(
+                        event.clientY - (circularCenter.y + (circularCenter.height / 2)), 
+                        event.clientX - (circularCenter.x + (circularCenter.width / 2))
+                    );
+                    angle *= (180 / Math.PI);
+                    angle += 90;
+
+                    //Set the display
+                    angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
+
+                    console.log(field);
+                    field.value_ = Math.floor(angle);
+                    field.isDirty_ = true;
+                    field.render_();
+                }
+                const letGoFunc = () => {
+                    document.removeEventListener("mousemove",grabFunction);
+                    document.removeEventListener("mouseup",letGoFunc);
+                }
+
+                document.addEventListener("mousemove",grabFunction);
+                document.addEventListener("mouseup",letGoFunc);
+            }
+
             return div;
         }
 
