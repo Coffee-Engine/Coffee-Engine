@@ -354,12 +354,14 @@
                 angleIndicator.style.position = "absolute";
                 angleIndicator.style.left = "50%";
                 angleIndicator.style.top = "25%";
-                angleIndicator.style.transform = `translate(-50%,0%) rotate(${sugarcube.cast.toNumber(field.value_) + 180}deg) translate(0%,50%)`;
+                angleIndicator.style.transform = `translate(-50%,0%) rotate(${sugarcube.cast.toNumber(field.value) + 180}deg) translate(0%,50%)`;
 
                 angleIndicator.style.backgroundColor = "#4c97ff";
                 circularContainer.appendChild(angleIndicator);
             }
 
+            
+            //Our text input for the angle
             const centerIndicator = document.createElement("div");
             {
                 centerIndicator.style.width = "12px";
@@ -374,6 +376,27 @@
 
                 centerIndicator.style.backgroundColor = "#4280d7";
                 circularContainer.appendChild(centerIndicator);
+            }
+            
+            //Our text input for the angle
+            const angleTextInput = document.createElement("input");
+            {
+                angleTextInput.type = "number";
+                angleTextInput.value = sugarcube.cast.toNumber(field.value);
+
+                angleTextInput.style.minWidth = "32px";
+                angleTextInput.style.width = "32px";
+                angleTextInput.style.height = "16px";
+
+                angleTextInput.style.borderRadius = "16px";
+                angleTextInput.style.borderColor = "#4280d7";
+                angleTextInput.style.borderWidth = "4px";
+                angleTextInput.style.borderStyle = "solid";
+                angleTextInput.style.padding = "4px";
+
+                angleTextInput.style.backgroundColor = "#ffffff";
+                angleTextInput.style.color = "#3373cc";
+                div.appendChild(angleTextInput);
             }
             
             const angleScrubber = document.createElement("div");
@@ -431,6 +454,7 @@
                     //Set the display
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
                     field.value = angle;
+                    angleTextInput.value = angle;
                 }
                 //And when we release it we do this!
                 const letGoFunc = () => {
