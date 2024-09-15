@@ -344,17 +344,41 @@
         document.getElementById("scratched").onclick = () => {
             editor.layout = {
                 layout:[
-                    [
-                        "fileExplorer",
-                        "sceneTree",
-                    ],
-                    [
-                        "blockly",
-                        "debugLog",
-                    ],
-                    [
-                        "properties",
-                    ],
+                    {
+                        size:20,
+                        contents:[
+                            {
+                                size: 40,
+                                content:"sceneTree"
+                            },
+                            {
+                                size: 60,
+                                content:"fileExplorer"
+                            },
+                        ],
+                    },
+                    {
+                        size:60,
+                        contents:[
+                            {
+                                size: 70,
+                                content:"blockly"
+                            },
+                            {
+                                size: 30,
+                                content:"debugLog"
+                            },
+                        ],
+                    },
+                    {
+                        size:20,
+                        contents:[
+                            {
+                                size: 100,
+                                content:"properties"
+                            },
+                        ],
+                    },
                 ],
                 floating:[]
             };

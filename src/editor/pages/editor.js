@@ -143,8 +143,10 @@
         editor.dock = {
             refreshLayout:(initial) => {
                 //Set the horizontal grid layout then loop through each item
-                editor.dock.element.style.setProperty("--dockGridHorizontal",(`${100 / editor.layout.layout.length}% `).repeat(editor.layout.layout.length));
+                let percentages = "";
                 for (let ID = 0; ID < editor.layout.layout.length; ID++) {
+                    //Add the percentage
+                    percentages += editor.layout.layout[ID].size + "% ";
                     //Get the "Sub Dock" which is the vertical part of the dock
                     let subDock = editor.dock.element.children[ID];
                     //If there is no "Sub Dock" add one
@@ -156,14 +158,18 @@
                         editor.dock.element.appendChild(subDock);
                     }
 
-                    editor.layout.layout[ID].forEach(window => {
-                        if (!window.resized) return;
-                        window.resized();
+                    let rowPercentage = "";
+                    editor.layout.layout[ID].contents.forEach(window => {
+                        if (!window.content.resized) return;
+                        rowPercentage += window.size + "% ";
+                        window.content.resized();
                     })
 
                     //Set the grid property
-                    subDock.style.setProperty("--dockGridVertical",(`${100 / editor.layout.layout[ID].length}% `).repeat(editor.layout.layout[ID].length));
+                    subDock.style.setProperty("--dockGridVertical",rowPercentage);
                 }
+
+                editor.dock.element.style.setProperty("--dockGridHorizontal",percentages);
 
                 if (initial) return;
 
@@ -214,14 +220,15 @@
         //Deserialize our windows
         editor.dock.refreshLayout(true);
         for (let X = 0; X < editor.layout.layout.length; X++) {
-            for (let Y = 0; Y < editor.layout.layout[X].length; Y++) {
+            for (let Y = 0; Y < editor.layout.layout[X].contents.length; Y++) {
                 //Our deserialization!
-                let windowType = editor.windows.__Serialization.all[editor.layout.layout[X][Y]];
+                const content = editor.layout.layout[X].contents[Y].content;
+                let windowType = editor.windows.__Serialization.all[content];
 
                 //If we don't have a valid window just name a blank window after it.
                 let overrideName;
                 if (!windowType) {
-                    overrideName = editor.layout.layout[X][Y];
+                    overrideName = content;
                     windowType = editor.windows.base;
                 }
 
@@ -231,7 +238,7 @@
                     newWindow.title = overrideName;
                 }
 
-                editor.layout.layout[X][Y] = newWindow;
+                editor.layout.layout[X].contents[Y].content = newWindow;
                 editor.dock.dockWindow(newWindow,X);
             }
         }
