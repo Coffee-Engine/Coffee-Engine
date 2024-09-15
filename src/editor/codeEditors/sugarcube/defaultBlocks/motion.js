@@ -350,7 +350,7 @@
             {
                 angleIndicator.style.width = "4px";
                 angleIndicator.style.height = "56px";
-
+ 
                 angleIndicator.style.position = "absolute";
                 angleIndicator.style.left = "50%";
                 angleIndicator.style.top = "25%";
@@ -396,6 +396,14 @@
 
                 angleTextInput.style.backgroundColor = "#ffffff";
                 angleTextInput.style.color = "#3373cc";
+
+                angleTextInput.onchange = () => {
+                    angleTextInput.value = sugarcube.cast.toNumber(angleTextInput.value);
+
+                    angleIndicator.style.transform = `translate(-50%,0%) rotate(${sugarcube.cast.toNumber(angleTextInput.value) + 180}deg) translate(0%,50%)`;
+                    field.value = angleTextInput.value;
+                }
+
                 div.appendChild(angleTextInput);
             }
             
