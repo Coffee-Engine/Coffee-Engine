@@ -330,7 +330,7 @@
                 div.appendChild(circularContainer);
             }
 
-            //Add our circle
+            //The line that indicates the top
             const lineStart = document.createElement("div");
             //Configure it
             {
@@ -346,6 +346,7 @@
                 circularContainer.appendChild(lineStart);
             }
 
+            //This line casts out from the center showing our angle
             const angleIndicator = document.createElement("div");
             {
                 angleIndicator.style.width = "4px";
@@ -361,7 +362,7 @@
             }
 
             
-            //Our text input for the angle
+            //This is what appears in the center to denote. Well the center
             const centerIndicator = document.createElement("div");
             {
                 centerIndicator.style.width = "12px";
@@ -378,14 +379,14 @@
                 circularContainer.appendChild(centerIndicator);
             }
             
-            //Our text input for the angle
+            //The text input that lets us input custom numbers
             const angleTextInput = document.createElement("input");
             {
                 angleTextInput.type = "number";
                 angleTextInput.value = sugarcube.cast.toNumber(field.value);
 
-                angleTextInput.style.minWidth = "32px";
-                angleTextInput.style.width = "32px";
+                angleTextInput.style.minWidth = "24px";
+                angleTextInput.style.width = "24px";
                 angleTextInput.style.height = "16px";
 
                 angleTextInput.style.borderRadius = "16px";
@@ -404,9 +405,52 @@
                     field.value = angleTextInput.value;
                 }
 
+                //The image representation of the parameter
+                const imageREP = document.createElement("img");
+                imageREP.src = "editor/codeEditors/sugarcube/fieldImages/Angle.svg";
+                imageREP.style.width = "24px";
+                imageREP.style.height = "24px";
+                imageREP.style.transform = "translate(0%,25%)";
+
+                div.appendChild(imageREP);
                 div.appendChild(angleTextInput);
             }
+
+            //Then the snapping input which lets us determine the snapping value
+            const angleSnapInput = document.createElement("input");
+            {
+                angleSnapInput.type = "number";
+                angleSnapInput.value = 15;
+
+                angleSnapInput.style.minWidth = "24px";
+                angleSnapInput.style.width = "24px";
+                angleSnapInput.style.height = "16px";
+
+                angleSnapInput.style.borderRadius = "16px";
+                angleSnapInput.style.borderColor = "#4280d7";
+                angleSnapInput.style.borderWidth = "4px";
+                angleSnapInput.style.borderStyle = "solid";
+                angleSnapInput.style.padding = "4px";
+
+                angleSnapInput.style.backgroundColor = "#ffffff";
+                angleSnapInput.style.color = "#3373cc";
+
+                angleSnapInput.onchange = () => {
+                    angleSnapInput.value = sugarcube.cast.toNumber(angleSnapInput.value);
+                }
+
+                //The image representation of the parameter
+                const imageREP = document.createElement("img");
+                imageREP.src = "editor/codeEditors/sugarcube/fieldImages/Snapping.svg";
+                imageREP.style.width = "24px";
+                imageREP.style.height = "24px";
+                imageREP.style.transform = "translate(0%,25%)";
+
+                div.appendChild(imageREP);
+                div.appendChild(angleSnapInput);
+            }
             
+            //And our scrubber that we can drag.
             const angleScrubber = document.createElement("div");
             {
                 angleScrubber.style.width = "16px";
@@ -457,7 +501,10 @@
                     angle *= (180 / Math.PI);
                     angle += 90;
 
-                    angle = Math.floor(angle / 15) * 15;
+                    //Snapping if possible
+                    if (angleSnapInput.value > 0) {
+                        angle = Math.floor(angle / angleSnapInput.value) * angleSnapInput.value;
+                    }
 
                     //Set the display
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
