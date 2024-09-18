@@ -23,7 +23,26 @@
                         hideFromPalette: true,
                         mutator:"variable_Mutator"
                     },
+                    {
+                        opcode:"addItem",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "add [item] to [list]",
+                        arguments: {
+                            item: {
+                                defaultValue:"item",
+                                type:sugarcube.ArgumentType.STRING
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    }
                 ],
+                menus:{
+                    listMenu: {
+                        items:"getLists"
+                    }
+                },
                 mutators: {
                     variable_Mutator: {
                         serialize:"variable_Serialize",
@@ -31,6 +50,19 @@
                     }
                 }
             };
+        }
+
+        getLists() {
+            const variables = sugarcube.workspace.getAllVariables();
+            const returned = [];
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "list") return;
+
+                returned.push([variable.name,variable.name]);
+            });
+
+            return returned;
         }
 
         openVariableMenu() {
