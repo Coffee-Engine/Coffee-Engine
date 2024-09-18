@@ -188,9 +188,8 @@
                         color:this.colorInput.value
                     };
 
-                    console.log(sugarcube.variableExDat);
-
                     sugarcube.extensionManager.updateExtensionBlocks("variables");
+                    sugarcube.extensionManager.updateExtensionBlocks("lists");
 
                     this._dispose();
                 }
