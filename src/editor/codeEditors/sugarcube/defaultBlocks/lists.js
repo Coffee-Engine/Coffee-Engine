@@ -28,6 +28,7 @@
                         opcode:"addItem",
                         type: sugarcube.BlockType.COMMAND,
                         text: "add [item] to [list]",
+                        hideFromPalette: true,
                         arguments: {
                             item: {
                                 defaultValue:"item",
