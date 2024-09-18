@@ -68,11 +68,13 @@
                 case "list":
                     this.variableButton.disabled = false;
                     this.listButton.disabled = true;
+                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.lists_blocks.colourPrimary;
                     break;
             
                 default:
                     this.variableButton.disabled = true;
                     this.listButton.disabled = false;
+                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.variables_blocks.colourPrimary;
                     break;
             }
         }
@@ -104,8 +106,9 @@
             typeDiv.style.width = "100%";
             typeDiv.style.display = "grid";
             typeDiv.style.gridTemplateColumns = "50% 50%";
-            //Isolate variables in here.
+            //Isolate variable types in here.
             {
+                //Creeate the buttons and assign click actions
                 this.variableButton = document.createElement("button");
                 this.listButton = document.createElement("button");
 
@@ -117,6 +120,7 @@
                     this.variableType = "list";
                 }
 
+                //Here are the images. We are also assigning the correct color and translation keys
                 this.variableButton.style.margin = "4px";
                 this.variableButton.style.gridAutoColumns = "auto 16px";
                 this.variableButton.innerHTML = `${variableSVG}<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.variable"]}</p>`;
@@ -125,6 +129,7 @@
                 this.listButton.style.gridAutoColumns = "auto 16px";
                 this.listButton.innerHTML = `${listSVG}<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.list"]}</p>`;
 
+                //Append em
                 typeDiv.appendChild(this.variableButton);
                 typeDiv.appendChild(this.listButton);
             }
@@ -132,12 +137,66 @@
             container.appendChild(variableName);
             container.appendChild(typeDiv);
 
-            //sugarcube.workspace.createVariable(
-            //    variableName.value,
-            //    this.variableType,
-            //    //This is going to be random anyways
-            //    variableName.value
-            //);
+            this.colorInput = document.createElement("color-picker");
+            this.colorInput.setAttribute("hasExtensions",true)
+            container.appendChild(this.colorInput);
+            this.colorInput.style.width = "32px";
+            this.colorInput.style.height = "32px";
+
+            this.colorInput.style.position = "relative";
+            this.colorInput.style.margin = "8px";
+            this.colorInput.style.marginLeft = "50%";
+
+            this.colorInput.style.transform = "translate(-50%,0%)";
+
+            const buttonDiv = document.createElement("div");
+            buttonDiv.style.display = "grid";
+            buttonDiv.style.gridTemplateColumns = "50% 50%";
+            //Isolate buttons
+            {
+                const closeButton = document.createElement("button");
+                closeButton.style.margin = "10%";
+                closeButton.style.marginLeft = "25%";
+                closeButton.style.marginRight = "12.5%"
+                closeButton.innerText = "cancel";
+                buttonDiv.appendChild(closeButton);
+                
+                //Close button functionality
+                closeButton.onclick = () => {
+                    this._dispose();
+                }
+
+                const doneButton = document.createElement("button");
+                doneButton.style.margin = "10%";
+                doneButton.style.marginLeft = "12.5%"
+                doneButton.style.marginRight = "25%";
+                doneButton.innerText = "done";
+                buttonDiv.appendChild(doneButton);
+                
+                //Done button functionality
+                doneButton.onclick = () => {
+                    if (variableName.value.length < 1) return;
+
+                    sugarcube.workspace.createVariable(
+                        variableName.value,
+                        this.variableType,
+                        //This is going to be random anyways
+                        variableName.value
+                    );
+
+                    sugarcube.variableExDat[variableName.value] = {
+                        color:this.colorInput.value
+                    };
+
+                    console.log(sugarcube.variableExDat);
+
+                    sugarcube.extensionManager.updateExtensionBlocks("variables");
+
+                    this._dispose();
+                }
+                
+            }
+            container.appendChild(buttonDiv)
         }
 
         variableExists(name) {

@@ -2,6 +2,7 @@ const sugarcube = {};
 sugarcube.blockStyles = {};
 sugarcube.extensions = {};
 sugarcube.workspace = {};
+sugarcube.variableExDat = {};
 sugarcube.toolbox = {
     kind: "categoryToolbox",
     contents: [

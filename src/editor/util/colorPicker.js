@@ -142,6 +142,38 @@
             .CE_numInput {
                 min-width: 0px;
             }
+
+            .ce_extensionHolder {
+                height:100%;
+                background-color:var(--background-2);
+                position:static;    
+
+                overflow-y:scroll;
+
+                display:grid;
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .ce_extensionColorPreset {
+                --extColor: #ffffff;
+                background-color:var(--extColor);
+                /*
+                width:75%;
+                */
+                margin:12.5%;
+                aspect-ratio:1;
+
+                border-radius:50%;
+                border-width:0px;
+                border-style:solid;
+                border-color:var(--text-1);
+
+                transition: all 150ms;
+            }
+
+            .ce_extensionColorPreset:hover {
+                border-width:4px;
+            }
         </style>
         <div id="ce_colorBG" class="CE_colorPicker">
             <div class="CE_colorPickerDark"></div>
@@ -163,7 +195,7 @@
             <button id="doneButton">done</button>
         </div>
         ` + (hasExtensions ? `
-        
+        <div class="ce_extensionHolder" id="ce_extensionHolder"></div>
         ` : "");
 
         document.body.appendChild(current);
@@ -211,6 +243,27 @@
             if (callback) {
                 callback(hexInput.value);
             }
+        }
+
+        if (hasExtensions) {
+            const extensionHolder = document.getElementById("ce_extensionHolder");
+            Object.keys(sugarcube.blocklyTheme.blockStyles).forEach(extensionID => {
+                const button = document.createElement("div");
+
+                button.className = "ce_extensionColorPreset";
+
+                button.style.setProperty("--extColor",sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
+
+                button.onclick = () => {
+                    const result = coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
+                    if (!result) return;
+
+                    split = result;
+                    updateColors();
+                }
+
+                extensionHolder.appendChild(button);
+            }) 
         }
 
         //Simple input controls
@@ -359,7 +412,7 @@
             this.onclick = (event) => {
                 if (this.disabled) return;
                 
-                editor.colorPicker.create(event.clientX, event.clientY, {color: this.color, callback:(color) => {
+                editor.colorPicker.create(event.clientX, event.clientY, {hasExtensions:this.hasAttribute("hasExtensions"), color: this.color, callback:(color) => {
                     this.color = color;
                     if (this.onchange) {
                         this.onchange();
