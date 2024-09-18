@@ -21,8 +21,15 @@
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: "",
                         hideFromPalette: true,
+                        mutator:"variable_Mutator"
                     },
                 ],
+                mutators: {
+                    variable_Mutator: {
+                        serialize:"variable_Serialize",
+                        deserialize:"variable_Deserialize"
+                    }
+                }
             };
         }
 
@@ -36,13 +43,49 @@
             createdWindow.variableType = "variable"
         }
 
+        variable_Serialize(state, block) {
+            return state;
+        }
+
+        variable_Deserialize(state, block) {
+            if (state.varData) {
+                //create Text
+                block.inputFromJson_({
+                    type: "input_dummy",
+                    name: `text`,
+                });
+                block.inputList[block.inputList.length - 1].appendField(
+                    block.fieldFromJson_({
+                        type: "field_label",
+                        text: state.varData.name,
+                    })
+                );
+
+                block.setColour(state.varData.color);
+            }
+            return state;
+        }
+
         dynamic_category_func() {
-            return [
-                {
+            const variables = sugarcube.workspace.getAllVariables();
+            const returned = [];
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "variable") return;
+                
+                returned.push({
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "getVariable",
-                }
-            ];
+                    extraState: {
+                        varData: {
+                            color: sugarcube.variableExDat[variable.name].color,
+                            name: variable.name,
+                        },
+                    },
+                });
+            });
+
+            return returned;
         }
     }
 
