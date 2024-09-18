@@ -185,7 +185,19 @@
         registerBlockCode(blockJSON, extensionID) {
             const blockType = blockJSON.type;
             const blockOpcode = blockJSON.opcode;
+            const blockCompileFunc = blockJSON.compileFunc;
             const blockID = extensionID + "_" + blockOpcode;
+
+            //Custom compiler instructions.
+            if (blockCompileFunc) {
+                sugarcube.generator.forBlock[blockID] = (block, generator) => {
+                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block,generator);
+                    if (block.outputConnection) {
+                        return [code, 0];
+                    }
+                    return `${code}\n${this.nextBlockToCode(block, generator)}`;
+                }
+            }
 
             //Certain blocks handle differently.
             switch (blockType) {
