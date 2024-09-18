@@ -21,7 +21,8 @@
                         type: sugarcube.BlockType.ARRAY,
                         text: "",
                         hideFromPalette: true,
-                        mutator:"variable_Mutator"
+                        mutator:"variable_Mutator",
+                        compileFunc:"getList_compile"
                     },
                     {
                         opcode:"addItem",
