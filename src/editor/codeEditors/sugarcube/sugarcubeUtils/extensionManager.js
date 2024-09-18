@@ -197,6 +197,8 @@
                     }
                     return `${code}\n${this.nextBlockToCode(block, generator)}`;
                 }
+
+                return;
             }
 
             //Certain blocks handle differently.

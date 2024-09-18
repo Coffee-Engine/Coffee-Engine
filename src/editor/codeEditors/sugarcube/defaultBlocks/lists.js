@@ -120,6 +120,12 @@
 
             return returned;
         }
+
+        getList_compile(block, generator) {
+            //Wierd hack...
+            //I honestly don't know why my compiler wants to do this.
+            return Function(`return this["${block.editedState.varData.name.replaceAll("\"","\\\"")}"]`);
+        }
     }
 
     sugarcube.extensionManager.registerExtension(new lists());
