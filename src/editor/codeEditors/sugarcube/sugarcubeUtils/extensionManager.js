@@ -622,7 +622,11 @@
                     sugarcube.menus[menuID].isBlock = true;
                     sugarcube.menus[menuID].isDynamic = true;
                     sugarcube.menus[menuID].function = function () {
-                        return extensionClass[menuDat.items]();
+                                    const items = extensionClass[menuDat.items]();
+                                    if (items.length == 0) {
+                                        items.push(["",""]);
+                                    }
+                                    return items;
                     };
 
                     this.addBlocklyBlock("__sugarcube_menu_" + menuID, "reporter", {
@@ -636,7 +640,11 @@
                                 //We want to make this a function that derives from the extension's object.
                                 //Or else we will explode.
                                 function: function () {
-                                    return extensionClass[menuDat.items]();
+                                    const items = extensionClass[menuDat.items]();
+                                    if (items.length == 0) {
+                                        items.push(["",""]);
+                                    }
+                                    return items;
                                 },
                             },
                         ],
@@ -652,7 +660,11 @@
                     sugarcube.menus[menuID].isBlock = false;
                     sugarcube.menus[menuID].isDynamic = true;
                     sugarcube.menus[menuID].function = function () {
-                        return extensionClass[menuDat.items]();
+                        const items = extensionClass[menuDat.items]();
+                        if (items.length == 0) {
+                            items.push(["",""]);
+                        }
+                        return items;
                     };
                 }
 
