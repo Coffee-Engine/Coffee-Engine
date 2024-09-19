@@ -23,7 +23,57 @@
                         hideFromPalette: true,
                         mutator:"variable_Mutator"
                     },
+                    {
+                        opcode: "setVariable",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set [var] to [val]",
+                        hideFromPalette: true,
+                        arguments: {
+                            var: {
+                                menu:"varMenu"
+                            },
+                            val: {
+                                type:sugarcube.ArgumentType.STRING,
+                                defaultValue: "cocoa"
+                            }
+                        }
+                    },
+                    {
+                        opcode: "changeVariable",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "change [var] by [val]",
+                        hideFromPalette: true,
+                        arguments: {
+                            var: {
+                                menu:"varMenu"
+                            },
+                            val: {
+                                type:sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        }
+                    },
+                    {
+                        opcode: "multiplyVariable",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "multiply [var] by [val]",
+                        hideFromPalette: true,
+                        arguments: {
+                            var: {
+                                menu:"varMenu"
+                            },
+                            val: {
+                                type:sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 10
+                            }
+                        }
+                    },
                 ],
+                menus:{
+                    varMenu: {
+                        items:"getVars"
+                    }
+                },
                 mutators: {
                     variable_Mutator: {
                         serialize:"variable_Serialize",
@@ -31,6 +81,19 @@
                     }
                 }
             };
+        }
+
+        getVars() {
+            const variables = sugarcube.variables.getAll();
+            const returned = [];
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "variable") return;
+
+                returned.push(variable.name);
+            });
+
+            return returned;
         }
 
         openVariableMenu() {
@@ -69,10 +132,13 @@
         dynamic_category_func() {
             const variables = sugarcube.variables.getAll();
             const returned = [];
+            let varExists = false;
+
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "variable") return;
-                
+            
+                varExists = true;
                 returned.push({
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "getVariable",
@@ -84,6 +150,23 @@
                     },
                 });
             });
+
+            if (!varExists) return returned;
+
+            returned.push(
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "setVariable"
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "changeVariable"
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "multiplyVariable"
+                },
+            )
 
             return returned;
         }
