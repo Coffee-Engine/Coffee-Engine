@@ -38,7 +38,52 @@
                                 menu:"listMenu"
                             }
                         }
-                    }
+                    },
+                    {
+                        opcode:"removeItem",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "remove item [item] from [list]",
+                        hideFromPalette: true,
+                        arguments: {
+                            item: {
+                                defaultValue:1,
+                                type:sugarcube.ArgumentType.NUMBER
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
+                    {
+                        opcode:"clearList",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "clear [list]",
+                        hideFromPalette: true,
+                        arguments: {
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
+                    {
+                        opcode:"insertItem",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "insert [value] before item [item] of [list]",
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                defaultValue:"Hello",
+                                type:sugarcube.ArgumentType.STRING
+                            },
+                            item: {
+                                defaultValue:1,
+                                type:sugarcube.ArgumentType.NUMBER
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
                 ],
                 menus:{
                     listMenu: {
@@ -103,10 +148,14 @@
         dynamic_category_func() {
             const variables = sugarcube.variables.getAll();
             const returned = [];
+            let listExists = false;
+
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "list") return;
                 
+                listExists = true;
+
                 returned.push({
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "getList",
@@ -118,6 +167,22 @@
                     },
                 });
             });
+
+            returned.push(
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "addItem"
+                },
+                "---",
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "removeItem"
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "clearList"
+                },
+            )
 
             return returned;
         }
