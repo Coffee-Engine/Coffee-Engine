@@ -67,6 +67,8 @@
             sugarcube.extensionInstances = {};
         }
 
+        blockArgDefs = {};
+
         updateFunctions = {};
 
         //Block shape definer.
@@ -335,12 +337,19 @@
                     case "duplicate":
                         blockData = {
                             kind: "block",
-                            type: block.extensionID ? block.extensionID + block.of : id + block.of,
+                            type: block.extensionID ? block.extensionID + block.of : id + block.of
                         };
                         if (!Blockly.Blocks[blockData.type]) return;
 
                         if (block.extraState) {
                             blockData.extraState = block.extraState;
+                        }
+
+                        //Wierd block hack
+                        //I wish blockly preserved block inputs inside the actual block itself instead of having
+                        //half in the actual block, half in an outside definition
+                        if (this.blockArgDefs[block.extensionID ? block.extensionID : extension.id][block.of]) {
+                            blockData.inputs = this.blockArgDefs[block.extensionID ? block.extensionID : extension.id][block.of];
                         }
                         break;
 
@@ -591,6 +600,8 @@
                 }
             }
 
+            this.blockArgDefs[extension.id][block.opcode] = blockData.inputs;
+
             if (!block.hideFromPalette) {
                 return blockData;
             }
@@ -799,6 +810,7 @@
 
                 //Loop through each block deciding its fate!
                 extension.defaultBlockInfo = [];
+                this.blockArgDefs[myInfo.id] = {};
                 myInfo.blocks.forEach((block) => {
                     let blockDat = this.addBlock(block, myInfo);
 

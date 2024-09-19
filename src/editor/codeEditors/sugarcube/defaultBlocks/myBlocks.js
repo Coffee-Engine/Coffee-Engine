@@ -48,7 +48,7 @@
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
                     },
-                    {
+                    /*{
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_command",
                         extraState: {
@@ -95,7 +95,7 @@
                                 { type: "color", name: "peas" },
                             ],
                         },
-                    },
+                    },*/
                 ],
                 mutators: {
                     commandBlock_Mutator: {

@@ -103,6 +103,62 @@
                             }
                         }
                     },
+                    {
+                        opcode:"getItem",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "item [item] of [list]",
+                        hideFromPalette: true,
+                        arguments: {
+                            item: {
+                                defaultValue:1,
+                                type:sugarcube.ArgumentType.NUMBER
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
+                    {
+                        opcode:"getItemNumber",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "item # of [value] in [list]",
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                defaultValue:"Hello",
+                                type:sugarcube.ArgumentType.STRING
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
+                    {
+                        opcode:"length",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "length of [list]",
+                        hideFromPalette: true,
+                        arguments: {
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
+                    {
+                        opcode:"getItemContainment",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: "[list] contains [value]",
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                defaultValue:"Hello",
+                                type:sugarcube.ArgumentType.STRING
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
                 ],
                 menus:{
                     listMenu: {
@@ -212,6 +268,22 @@
                     of: "replaceItem"
                 },
                 "---",
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getItem",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getItemNumber",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "length",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getItemContainment",
+                }
             );
 
             return returned;
