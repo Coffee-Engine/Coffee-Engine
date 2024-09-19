@@ -177,17 +177,14 @@
                 doneButton.onclick = () => {
                     if (variableName.value.length < 1) return;
 
-                    sugarcube.workspace.createVariable(
+                    //Create our variable
+                    sugarcube.variables.createVariable(
                         variableName.value,
                         this.variableType,
-                        //This is going to be random anyways
-                        variableName.value
+                        this.colorInput.value
                     );
 
-                    sugarcube.variableExDat[variableName.value] = {
-                        color:this.colorInput.value
-                    };
-
+                    //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("variables");
                     sugarcube.extensionManager.updateExtensionBlocks("lists");
 

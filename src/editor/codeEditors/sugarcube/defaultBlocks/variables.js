@@ -40,7 +40,7 @@
             createdWindow.x = window.innerWidth / 2 - 200;
             createdWindow.y = window.innerHeight / 2 - 150;
             
-            createdWindow.variableType = "variable"
+            createdWindow.variableType = "variable";
         }
 
         variable_Serialize(state, block) {
@@ -67,7 +67,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.workspace.getAllVariables();
+            const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
@@ -78,7 +78,7 @@
                     of: "getVariable",
                     extraState: {
                         varData: {
-                            color: sugarcube.variableExDat[variable.name].color,
+                            color: variable.color,
                             name: variable.name,
                         },
                     },

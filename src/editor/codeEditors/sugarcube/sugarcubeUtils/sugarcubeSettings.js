@@ -2,7 +2,22 @@ const sugarcube = {};
 sugarcube.blockStyles = {};
 sugarcube.extensions = {};
 sugarcube.workspace = {};
-sugarcube.variableExDat = {};
+//Using a custom variable system to store more data.
+//Blockly variables aren't inherently bad. Just limited.
+sugarcube.variables = {
+    storage:{},
+    getAll:() => {
+        return Object.values(sugarcube.variables.storage);
+    },
+    createVariable:(Name,Type,Color,DefaultValue) => {
+        sugarcube.variables.storage[Name] = {
+            name:Name,
+            type:Type,
+            color:Color,
+            defaultValue:DefaultValue || "",
+        }
+    }
+};
 sugarcube.toolbox = {
     kind: "categoryToolbox",
     contents: [

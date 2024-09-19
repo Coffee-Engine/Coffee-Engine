@@ -55,13 +55,13 @@
         }
 
         getLists() {
-            const variables = sugarcube.workspace.getAllVariables();
+            const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "list") return;
 
-                returned.push([variable.name,variable.name]);
+                returned.push(variable.name);
             });
 
             return returned;
@@ -74,7 +74,7 @@
             createdWindow.x = window.innerWidth / 2 - 200;
             createdWindow.y = window.innerHeight / 2 - 150;
             
-            createdWindow.variableType = "list"
+            createdWindow.variableType = "list";
         }
 
         variable_Serialize(state, block) {
@@ -101,7 +101,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.workspace.getAllVariables();
+            const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
@@ -112,7 +112,7 @@
                     of: "getList",
                     extraState: {
                         varData: {
-                            color: sugarcube.variableExDat[variable.name].color,
+                            color: variable.color,
                             name: variable.name,
                         },
                     },
