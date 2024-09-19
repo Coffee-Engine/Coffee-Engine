@@ -84,6 +84,25 @@
                             }
                         }
                     },
+                    {
+                        opcode:"replaceItem",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "replace item [item] of [list] with [value]",
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                defaultValue:"Hello",
+                                type:sugarcube.ArgumentType.STRING
+                            },
+                            item: {
+                                defaultValue:1,
+                                type:sugarcube.ArgumentType.NUMBER
+                            },
+                            list: {
+                                menu:"listMenu"
+                            }
+                        }
+                    },
                 ],
                 menus:{
                     listMenu: {
@@ -168,6 +187,8 @@
                 });
             });
 
+            if (!listExists) return returned;
+
             returned.push(
                 {
                     type: sugarcube.BlockType.DUPLICATE,
@@ -182,7 +203,16 @@
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "clearList"
                 },
-            )
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "insertItem"
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "replaceItem"
+                },
+                "---",
+            );
 
             return returned;
         }
