@@ -89,6 +89,23 @@
                 typeDiv.appendChild(objectButton);
                 typeDiv.appendChild(numberButton);
                 typeDiv.appendChild(labelButton);
+
+                textButton.onclick = () => {
+                    const newParam = {};
+                    const element = document.createElement("input");
+                    element.type = "text";
+                    element.value = editor.language["editor.window.createBlock.addLabel"];
+                    element.style.minWidth = "2ch";
+                    element.style.minHeight = "0px";
+                    element.style.width = `${editor.language["editor.window.createBlock.addLabel"].length}ch`;
+                    
+                    element.onchange = () => {
+                        
+                    }
+
+                    newParam.element = element;
+
+                }
             }
 
             container.appendChild(blockDisplay);
