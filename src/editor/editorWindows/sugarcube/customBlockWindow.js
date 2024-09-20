@@ -12,48 +12,89 @@
             container.style.display = "grid";
             container.style.gridTemplateRows = "100px 52px 52px";
 
-            //Our name value
+            //The div that contains our block display
             const params = [];
             const blockDisplay = document.createElement("div");
             blockDisplay.style.width = "100%";
             blockDisplay.style.backgroundColor = "var(--background-4)";
+            blockDisplay.style.display = "flex";
+            blockDisplay.style.position = "relative";
+
+            //Create our block display
+            const blockDiv = document.createElement("div");
+
+            //Configure our block display
+            blockDiv.style.top = "50%";
+            blockDiv.style.left = "50%";
+            blockDiv.style.position = "absolute";
+            blockDiv.style.backgroundColor = "#FF6680";
+            blockDiv.style.padding = `${editor.settings.values.SugarCube.padding}px`;
+            blockDiv.style.height = "1.75em";
+            blockDiv.style.transform = "translate(-50%,-50%)";
+
+            blockDiv.appendChild((() => {const cool = document.createElement("input"); cool.type = "text"; cool.value = "Wow"; cool.style.minWidth = "2ch"; cool.style.minHeight = "0px"; cool.style.width = "2ch"; return cool;})());
+
+            blockDisplay.appendChild(blockDiv);
 
             //Now our container that holds the variable type
             const typeDiv = document.createElement("div");
             typeDiv.style.width = "100%";
+            typeDiv.style.overflowX = "scroll";
             typeDiv.style.display = "grid";
-            typeDiv.style.gridTemplateColumns = "50% 50%";
+            typeDiv.style.gridTemplateColumns = "33.333% 33.333% 33.333% 33.333% 33.333% 33.333%";
             //Isolate variable types in here.
             {
                 //Creeate the buttons and assign click actions
-                this.variableButton = document.createElement("button");
-                this.listButton = document.createElement("button");
-
-                this.variableButton.onclick = () => {
-                    this.variableType = "variable";
-                }
-
-                this.listButton.onclick = () => {
-                    this.variableType = "list";
-                }
+                const textButton = document.createElement("button");
+                const numberButton = document.createElement("button");
+                const colorButton = document.createElement("button");
+                const labelButton = document.createElement("button");
+                const arrayButton = document.createElement("button");
+                const objectButton = document.createElement("button");
 
                 //Here are the images. We are also assigning the correct color and translation keys
-                this.variableButton.style.margin = "4px";
-                this.variableButton.style.gridAutoColumns = "auto 16px";
-                this.variableButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.variable"]}</p>`;
+                textButton.style.margin = "4px";
+                textButton.style.gridAutoColumns = "auto 16px";
+                textButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.textInput"]}</p>`;
 
-                this.listButton.style.margin = "4px";
-                this.listButton.style.gridAutoColumns = "auto 16px";
-                this.listButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.list"]}</p>`;
+                //Here are the images. We are also assigning the correct color and translation keys
+                numberButton.style.margin = "4px";
+                numberButton.style.gridAutoColumns = "auto 16px";
+                numberButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.numberInput"]}</p>`;
+
+                //Here are the images. We are also assigning the correct color and translation keys
+                colorButton.style.margin = "4px";
+                colorButton.style.gridAutoColumns = "auto 16px";
+                colorButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.colorInput"]}</p>`;
+
+                //Here are the images. We are also assigning the correct color and translation keys
+                labelButton.style.margin = "4px";
+                labelButton.style.gridAutoColumns = "auto 16px";
+                labelButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.addLabel"]}</p>`;
+
+                //Here are the images. We are also assigning the correct color and translation keys
+                arrayButton.style.margin = "4px";
+                arrayButton.style.gridAutoColumns = "auto 16px";
+                arrayButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.arrayInput"]}</p>`;
+
+                //Here are the images. We are also assigning the correct color and translation keys
+                objectButton.style.margin = "4px";
+                objectButton.style.gridAutoColumns = "auto 16px";
+                objectButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.objectInput"]}</p>`;
 
                 //Append em
-                typeDiv.appendChild(this.variableButton);
-                typeDiv.appendChild(this.listButton);
+                typeDiv.appendChild(textButton);
+                typeDiv.appendChild(numberButton);
+                typeDiv.appendChild(colorButton);
+                typeDiv.appendChild(arrayButton);
+                typeDiv.appendChild(objectButton);
+                typeDiv.appendChild(labelButton);
             }
 
             container.appendChild(blockDisplay);
             container.appendChild(typeDiv);
 
+            //This is where we colour the custom block
             const colorInput = document.createElement("color-picker");
             colorInput.setAttribute("hasExtensions",true)
             container.appendChild(colorInput);

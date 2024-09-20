@@ -46,4 +46,12 @@ editor.EnglishLang = {
     "editor.window.createVar.temporaryName": "Variable Name",
     "editor.window.createVar.variable": "Variable",
     "editor.window.createVar.list": "List",
+
+    "editor.window.createBlock": "Create a Block",
+    "editor.window.createBlock.textInput": "Text",
+    "editor.window.createBlock.numberInput": "Number",
+    "editor.window.createBlock.colorInput": "Color",
+    "editor.window.createBlock.arrayInput": "List",
+    "editor.window.createBlock.objectInput": "Object",
+    "editor.window.createBlock.addLabel": "Label",
 };
