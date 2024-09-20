@@ -177,7 +177,7 @@
 
                     element.style.marginLeft = "2px";
                     element.style.marginRight = "2px";
-                    element.style.clipPath = "polygon(8px 0%, calc(100%-8px) 0%, 100% 50%, calc(100%-8px) 100%, 8px 100%, 0% 50%)";
+                    element.style.clipPath = "polygon(8px 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0% 50%)";
                     
                     element.onchange = () => {
                         element.style.width = `${element.value.length}ch`;
