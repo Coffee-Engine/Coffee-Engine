@@ -2,7 +2,7 @@
     editor.windows.myBlock = class extends editor.windows.base {
 
         minWidth = 400;
-        minHeight = 300;
+        minHeight = 350;
 
         init(container) {
 
@@ -10,7 +10,7 @@
             this.title = editor.language["editor.window.createBlock"];
 
             container.style.display = "grid";
-            container.style.gridTemplateRows = "100px 52px 52px";
+            container.style.gridTemplateRows = "100px 100px 52px";
 
             //The div that contains our block display
             const params = [];
@@ -55,39 +55,39 @@
                 //Here are the images. We are also assigning the correct color and translation keys
                 textButton.style.margin = "4px";
                 textButton.style.gridAutoColumns = "auto 16px";
-                textButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.textInput"]}</p>`;
+                textButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/String.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.textInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 numberButton.style.margin = "4px";
                 numberButton.style.gridAutoColumns = "auto 16px";
-                numberButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.numberInput"]}</p>`;
+                numberButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Number.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.numberInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 colorButton.style.margin = "4px";
                 colorButton.style.gridAutoColumns = "auto 16px";
-                colorButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.colorInput"]}</p>`;
+                colorButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Color.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.colorInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 labelButton.style.margin = "4px";
                 labelButton.style.gridAutoColumns = "auto 16px";
-                labelButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.addLabel"]}</p>`;
+                labelButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Label.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.addLabel"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 arrayButton.style.margin = "4px";
                 arrayButton.style.gridAutoColumns = "auto 16px";
-                arrayButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.arrayInput"]}</p>`;
+                arrayButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Array.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.arrayInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 objectButton.style.margin = "4px";
                 objectButton.style.gridAutoColumns = "auto 16px";
-                objectButton.innerHTML = `<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.objectInput"]}</p>`;
+                objectButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Object.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.objectInput"]}</p>`;
 
                 //Append em
                 typeDiv.appendChild(textButton);
-                typeDiv.appendChild(numberButton);
                 typeDiv.appendChild(colorButton);
                 typeDiv.appendChild(arrayButton);
                 typeDiv.appendChild(objectButton);
+                typeDiv.appendChild(numberButton);
                 typeDiv.appendChild(labelButton);
             }
 

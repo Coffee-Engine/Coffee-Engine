@@ -274,11 +274,11 @@
         }
 
         openCustomBlockMenu() {
-            const createdWindow = new editor.windows.myBlock(400,300);
+            const createdWindow = new editor.windows.myBlock(400,350);
             createdWindow.__moveToTop();
 
             createdWindow.x = window.innerWidth / 2 - 200;
-            createdWindow.y = window.innerHeight / 2 - 150;
+            createdWindow.y = window.innerHeight / 2 - 175;
         }
     }
 
