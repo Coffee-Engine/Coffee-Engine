@@ -142,6 +142,8 @@
                     newParam.element = element;
 
                     blockDiv.appendChild(element);
+
+                    params.push(newParam);
                 }
 
                 numberButton.onclick = () => {
@@ -164,6 +166,8 @@
                     newParam.element = element;
 
                     blockDiv.appendChild(element);
+
+                    params.push(newParam);
                 }
 
                 booleanButton.onclick = () => {
@@ -186,6 +190,8 @@
                     newParam.element = element;
 
                     blockDiv.appendChild(element);
+
+                    params.push(newParam);
                 }
 
                 labelButton.onclick = () => {
@@ -207,6 +213,8 @@
                     newParam.element = element;
 
                     blockDiv.appendChild(element);
+
+                    params.push(newParam);
                 }
             }
 
