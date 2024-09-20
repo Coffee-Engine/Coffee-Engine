@@ -12,6 +12,11 @@
                 hat: "none",
                 blocks: [
                     {
+                        opcode:"openCustomBlockMenu",
+                        type: sugarcube.BlockType.BUTTON,
+                        text: "New Block"
+                    },
+                    {
                         opcode: "declaration",
                         type: sugarcube.BlockType.PROCEDURE_DEFINITION,
                         text: "Define : ",
@@ -266,6 +271,14 @@
                     })
                 );
             }
+        }
+
+        openCustomBlockMenu() {
+            const createdWindow = new editor.windows.myBlock(400,300);
+            createdWindow.__moveToTop();
+
+            createdWindow.x = window.innerWidth / 2 - 200;
+            createdWindow.y = window.innerHeight / 2 - 150;
         }
     }
 
