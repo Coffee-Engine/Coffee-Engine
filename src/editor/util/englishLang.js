@@ -53,5 +53,6 @@ editor.EnglishLang = {
     "editor.window.createBlock.colorInput": "Color",
     "editor.window.createBlock.arrayInput": "List",
     "editor.window.createBlock.objectInput": "Object",
+    "editor.window.createBlock.booleanInput": "Boolean",
     "editor.window.createBlock.addLabel": "Label",
 };

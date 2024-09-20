@@ -19,6 +19,7 @@
             blockDisplay.style.backgroundColor = "var(--background-4)";
             blockDisplay.style.display = "flex";
             blockDisplay.style.position = "relative";
+            blockDisplay.style.overflowX = "scroll";
 
             //Create our block display
             const blockDiv = document.createElement("div");
@@ -28,9 +29,10 @@
             blockDiv.style.left = "50%";
             blockDiv.style.position = "absolute";
             blockDiv.style.backgroundColor = "#FF6680";
+            blockDiv.style.display = "flex";
             blockDiv.style.padding = `${editor.settings.values.SugarCube.padding}px`;
             blockDiv.style.height = "1.75em";
-            blockDiv.style.transform = "translate(-50%,-50%)";
+            blockDiv.style.transform = "translate(0%,-50%)";
 
             blockDiv.appendChild((() => {const cool = document.createElement("input"); cool.type = "text"; cool.value = "Wow"; cool.style.minWidth = "2ch"; cool.style.minHeight = "0px"; cool.style.width = "2ch"; return cool;})());
 
@@ -41,7 +43,7 @@
             typeDiv.style.width = "100%";
             typeDiv.style.overflowX = "scroll";
             typeDiv.style.display = "grid";
-            typeDiv.style.gridTemplateColumns = "33.333% 33.333% 33.333% 33.333% 33.333% 33.333%";
+            typeDiv.style.gridTemplateColumns = "33.333% 33.333% 33.333% 33.333% 33.333% 33.333% 33.333%";
             //Isolate variable types in here.
             {
                 //Creeate the buttons and assign click actions
@@ -51,6 +53,7 @@
                 const labelButton = document.createElement("button");
                 const arrayButton = document.createElement("button");
                 const objectButton = document.createElement("button");
+                const booleanButton = document.createElement("button");
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 textButton.style.margin = "4px";
@@ -60,51 +63,150 @@
                 //Here are the images. We are also assigning the correct color and translation keys
                 numberButton.style.margin = "4px";
                 numberButton.style.gridAutoColumns = "auto 16px";
-                numberButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Number.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.numberInput"]}</p>`;
+                numberButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Number.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.numberInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 colorButton.style.margin = "4px";
                 colorButton.style.gridAutoColumns = "auto 16px";
-                colorButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Color.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.colorInput"]}</p>`;
+                colorButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Color.png" style="height:3em;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.colorInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 labelButton.style.margin = "4px";
                 labelButton.style.gridAutoColumns = "auto 16px";
-                labelButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Label.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.addLabel"]}</p>`;
+                labelButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Label.png" style="height:3em;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.addLabel"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 arrayButton.style.margin = "4px";
                 arrayButton.style.gridAutoColumns = "auto 16px";
-                arrayButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Array.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.arrayInput"]}</p>`;
+                arrayButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Array.png" style="height:3em;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.arrayInput"]}</p>`;
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 objectButton.style.margin = "4px";
                 objectButton.style.gridAutoColumns = "auto 16px";
-                objectButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Object.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;"> <p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.objectInput"]}</p>`;
+                objectButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Object.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.objectInput"]}</p>`;
+
+                //Here are the images. We are also assigning the correct color and translation keys
+                booleanButton.style.margin = "4px";
+                booleanButton.style.gridAutoColumns = "auto 16px";
+                booleanButton.innerHTML = `<img src="editor/editorWindows/sugarcube/assets/Boolean.png" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createBlock.booleanInput"]}</p>`;
 
                 //Append em
                 typeDiv.appendChild(textButton);
+                typeDiv.appendChild(booleanButton);
                 typeDiv.appendChild(colorButton);
                 typeDiv.appendChild(arrayButton);
                 typeDiv.appendChild(objectButton);
                 typeDiv.appendChild(numberButton);
                 typeDiv.appendChild(labelButton);
 
+                //Give that functionality. Might make it easier to add stuff like this. For now this is an easy patch on
                 textButton.onclick = () => {
+                    const newParam = {};
+                    const element = document.createElement("input");
+                    element.type = "text";
+                    element.value = editor.language["editor.window.createBlock.textInput"];
+                    element.style.minWidth = "2ch";
+                    element.style.minHeight = "0px";
+                    element.style.width = `${element.value.length}ch`;
+
+                    element.style.marginLeft = "2px";
+                    element.style.marginRight = "2px";
+                    element.style.borderRadius = "1em";
+                    
+                    element.onchange = () => {
+                        element.style.width = `${element.value.length}ch`;
+                    }
+
+                    newParam.element = element;
+
+                    blockDiv.appendChild(element);
+                }
+
+                numberButton.onclick = () => {
+                    const newParam = {};
+                    const element = document.createElement("input");
+                    element.type = "text";
+                    element.value = editor.language["editor.window.createBlock.numberInput"];
+                    element.style.minWidth = "2ch";
+                    element.style.minHeight = "0px";
+                    element.style.width = `${element.value.length}ch`;
+
+                    element.style.marginLeft = "2px";
+                    element.style.marginRight = "2px";
+                    element.style.borderRadius = "1em";
+                    
+                    element.onchange = () => {
+                        element.style.width = `${element.value.length}ch`;
+                    }
+
+                    newParam.element = element;
+
+                    blockDiv.appendChild(element);
+                }
+
+                numberButton.onclick = () => {
+                    const newParam = {};
+                    const element = document.createElement("input");
+                    element.type = "text";
+                    element.value = editor.language["editor.window.createBlock.numberInput"];
+                    element.style.minWidth = "2ch";
+                    element.style.minHeight = "0px";
+                    element.style.width = `${element.value.length}ch`;
+
+                    element.style.marginLeft = "2px";
+                    element.style.marginRight = "2px";
+                    element.style.borderRadius = "1em";
+                    
+                    element.onchange = () => {
+                        element.style.width = `${element.value.length}ch`;
+                    }
+
+                    newParam.element = element;
+
+                    blockDiv.appendChild(element);
+                }
+
+                booleanButton.onclick = () => {
+                    const newParam = {};
+                    const element = document.createElement("input");
+                    element.type = "text";
+                    element.value = editor.language["editor.window.createBlock.numberInput"];
+                    element.style.minWidth = "2ch";
+                    element.style.minHeight = "0px";
+                    element.style.width = `${element.value.length}ch`;
+
+                    element.style.marginLeft = "2px";
+                    element.style.marginRight = "2px";
+                    element.style.clipPath = "polygon(8px 0%, calc(100%-8px) 0%, 100% 50%, calc(100%-8px) 100%, 8px 100%, 0% 50%)";
+                    
+                    element.onchange = () => {
+                        element.style.width = `${element.value.length}ch`;
+                    }
+
+                    newParam.element = element;
+
+                    blockDiv.appendChild(element);
+                }
+
+                labelButton.onclick = () => {
                     const newParam = {};
                     const element = document.createElement("input");
                     element.type = "text";
                     element.value = editor.language["editor.window.createBlock.addLabel"];
                     element.style.minWidth = "2ch";
                     element.style.minHeight = "0px";
-                    element.style.width = `${editor.language["editor.window.createBlock.addLabel"].length}ch`;
+                    element.style.width = `${element.value.length}ch`;
+
+                    element.style.marginLeft = "2px";
+                    element.style.marginRight = "2px";
                     
                     element.onchange = () => {
-                        
+                        element.style.width = `${element.value.length}ch`;
                     }
 
                     newParam.element = element;
 
+                    blockDiv.appendChild(element);
                 }
             }
 
