@@ -55,7 +55,10 @@
                 button.innerHTML = `<img src="${fieldType.Image}" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;">${fieldType.Name}</p>`;
 
                 button.onclick = () => {
-                    const newParam = {};
+                    const newParam = {
+                        type:fieldType.Type,
+                        name:fieldType.Name
+                    };
                     
                     //Create the input
                     const element = document.createElement("input");
