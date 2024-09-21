@@ -290,10 +290,10 @@
             createFunction:(input) => {
                 input.style.borderRadius = "1em";
             },
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 block.inputFromJson_({
                     type: "input_value",
-                    name: `string_${item.name}_${ID}`,
+                    name: item.id,
                 });
             
                 block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_string_reporter"></shadow>`));
@@ -311,10 +311,10 @@
                 input.style.paddingRight = "16px";
                 input.style.clipPath = "polygon(16px 0%, calc(100% - 16px) 0%, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0% 50%)";
             },
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 block.inputFromJson_({
                     type: "input_value",
-                    name: `boolean_${item.name}_${ID}`,
+                    name: item.id,
                     check: ["Boolean", "ANY"],
                 });
             }
@@ -329,10 +329,10 @@
             createFunction:(input) => {
                 input.style.borderRadius = "0.5em";
             },
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 block.inputFromJson_({
                     type: "input_value",
-                    name: `color_${item.name}_${ID}`,
+                    name: item.id,
                 });
 
                 block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_color_reporter"></shadow>`));
@@ -348,10 +348,10 @@
             createFunction:(input) => {
                 input.style.borderRadius = "1em";
             },
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 block.inputFromJson_({
                     type: "input_value",
-                    name: `number_${item.name}_${ID}`,
+                    name: item.id,
                 });
 
                 block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_number_reporter"></shadow>`));
@@ -367,10 +367,10 @@
             createFunction:(input) => {
                 input.style.borderRadius = "0.25em";
             },
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 block.inputFromJson_({
                     type: "input_value",
-                    name: `array_${item.name}_${ID}`,
+                    name: item.id,
                     check: ["Array", "ANY"],
                 });
             }
@@ -387,10 +387,10 @@
                 input.style.paddingRight = "16px";
                 input.style.clipPath = "polygon(4px 37.5%, 12px 25%, 16px 0%, calc(100% - 16px) 0%, calc(100% - 12px) 25%, calc(100% - 4px) 37.5%, 100% 50%, calc(100% - 4px) 62.5%, calc(100% - 12px) 75%, calc(100% - 16px) 100%, 16px 100%,12px 75%, 4px 62.5%, 0% 50%)";
             },
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 block.inputFromJson_({
                     type: "input_value",
-                    name: `object_${item.name}_${ID}`,
+                    name: item.id,
                     check: ["Object", "ANY"],
                 });
             }
@@ -402,11 +402,11 @@
         "label",
         "editor/editorWindows/sugarcube/assets/Label.png",
         {
-            addCustomFieldToPrompt:(block,item,ID) => {
+            addCustomFieldToPrompt:(block,item) => {
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
-                    name: `label_${item.name}_${ID}`,
+                    name: item.id,
                 });
                 block.inputList[block.inputList.length - 1].appendField(
                     block.fieldFromJson_({

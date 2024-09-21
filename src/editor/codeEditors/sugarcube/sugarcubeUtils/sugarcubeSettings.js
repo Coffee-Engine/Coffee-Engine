@@ -24,6 +24,17 @@ sugarcube.customBlocks = {
     fieldTypes:[],
     storage:{},
     blockFromDefinition:(jsonDef) => {
+        const swagStyledBuisness = {};
+
+        jsonDef.parameters.forEach(param => {
+            delete param.element;
+
+            if (!swagStyledBuisness[param.name]) swagStyledBuisness[param.name] = 0;
+
+            swagStyledBuisness[param.name] += 1;
+
+            param.id = `${param.type}_${param.name}_${swagStyledBuisness[param.name]}`;
+        });
         console.log(jsonDef);
     },
     addCustomFieldToPrompt:(Name,Type,ImageURL,ExtraParameters) => {
