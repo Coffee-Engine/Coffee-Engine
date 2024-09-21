@@ -10933,6 +10933,7 @@ ${b} to its parent, because: ${a}`);
               duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
               duplicated._shouldDuplicate_ = false;
               duplicated._isClone_ = true;
+              duplicated.editedState = this.targetBlock.editedState;
 
               if (
                 duplicated.outputConnection && 

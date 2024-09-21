@@ -44,7 +44,7 @@
     sugarcube.mutators.makeFromFunction = (extensionID,serialize,deserialize,mutatorName) => {
         return Blockly.Extensions.registerMutator(mutatorName,
             {
-                saveExtraState: function () {
+                saveExtraState: function (state) {
                     this.editedState = sugarcube.extensionInstances[extensionID][serialize](this.editedState, this) || {};
                     return this.editedState;
                 },

@@ -41,6 +41,22 @@
                         hideFromPalette: true,
                     },
                     {
+                        opcode: "input_array",
+                        type: sugarcube.BlockType.ARRAY,
+                        text: "",
+                        output: ["noClones"],
+                        mutator: "argBlock_Mutator",
+                        hideFromPalette: true,
+                    },
+                    {
+                        opcode: "input_object",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: "",
+                        output: ["noClones"],
+                        mutator: "argBlock_Mutator",
+                        hideFromPalette: true,
+                    },
+                    {
                         opcode: "execute_command",
                         type: sugarcube.BlockType.COMMAND,
                         text: "",
@@ -154,7 +170,6 @@
                     if (index < 0) return;
 
                     //Parse that shit.
-                    console.log(sugarcube.customBlocks.fieldTypes[index]);
                     if (sugarcube.customBlocks.fieldTypes[index].parseFunction) sugarcube.customBlocks.fieldTypes[index].parseFunction(block, item);
                 });
 
@@ -165,6 +180,49 @@
         }
 
         hat_Deserialize(state, block) {
+            if (state.parameters) {
+                state.parameters.forEach((item) => {
+                    const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
+                        return field.Type == item.type;
+                    });
+
+                    //If we don't exist shut up.
+                    //owo
+                    if (index < 0) return;
+
+                    //Parse that shit.
+                    const declaration = sugarcube.customBlocks.fieldTypes[index].declaration;
+                    if (declaration) {
+                        switch (typeof declaration) {
+                            case "string":
+                                block.inputFromJson_({
+                                    type: "input_value",
+                                    name: item.id,
+                                    check: "noClones",
+                                });
+
+                                //Block it up
+                                const blockIN = sugarcube.workspace.newBlock(declaration);
+                                blockIN.editedState = item;
+                                blockIN.initSvg();
+                                blockIN.render();
+                                block.inputList[block.inputList.length - 1].connection.connect_(blockIN.outputConnection);
+                                blockIN.loadExtraState(item);
+                                break;
+
+                            case "function":
+                                sugarcube.customBlocks.fieldTypes[index].declaration(block, item);
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                    };
+                });
+
+                block.setColour(state.color);
+            }
+            /*
             if (state.customBlockData) {
                 let inputID = 0;
                 state.customBlockData.forEach((item) => {
@@ -203,6 +261,7 @@
                     inputID += 1;
                 });
             }
+            */
 
             return state;
         }
@@ -210,7 +269,6 @@
         arg_Serialize(state, block) {
             //Get our info out of the block.
             state = state || {};
-            state.customArgData = block.customArgData;
 
             //Set block duplication
             if (!block._isClone_) block._shouldDuplicate_ = true;
@@ -225,9 +283,8 @@
             //put our stuff on the block
             //block._isClone_ = state._isClone_;
             //block._shouldDuplicate_ = state._shouldDuplicate_;
-            block.customArgData = state.customArgData;
 
-            if (state.customArgData) {
+            if (state.name) {
                 block.inputFromJson_({
                     type: "input_dummy",
                     name: `variableName`,
@@ -236,10 +293,12 @@
                 block.inputList[block.inputList.length - 1].appendField(
                     block.fieldFromJson_({
                         type: "field_label",
-                        text: state.customArgData.text,
+                        text: state.name,
                     })
                 );
             }
+
+            return state;
         }
 
         openCustomBlockMenu() {
@@ -266,7 +325,8 @@
                 });
             
                 block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_string_reporter"></shadow>`));
-            }
+            },
+            declaration:"myblocks_input_string"
         }
     );
 
@@ -286,7 +346,8 @@
                     name: item.id,
                     check: ["Boolean", "ANY"],
                 });
-            }
+            },
+            declaration:"myblocks_input_bool"
         }
     );
 
@@ -305,7 +366,8 @@
                 });
 
                 block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_color_reporter"></shadow>`));
-            }
+            },
+            declaration:"myblocks_input_string"
         }
     );
 
@@ -324,7 +386,8 @@
                 });
 
                 block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_number_reporter"></shadow>`));
-            }
+            },
+            declaration:"myblocks_input_string"
         }
     );
 
@@ -342,7 +405,8 @@
                     name: item.id,
                     check: ["Array", "ANY"],
                 });
-            }
+            },
+            declaration:"myblocks_input_array"
         }
     );
 
@@ -362,7 +426,8 @@
                     name: item.id,
                     check: ["Object", "ANY"],
                 });
-            }
+            },
+            declaration:"myblocks_input_object"
         }
     );
 
@@ -383,7 +448,20 @@
                         text: item.name,
                     })
                 );
-            }
+            },
+            declaration:(block,item) => {
+                //create Text
+                block.inputFromJson_({
+                    type: "input_dummy",
+                    name: item.id,
+                });
+                block.inputList[block.inputList.length - 1].appendField(
+                    block.fieldFromJson_({
+                        type: "field_label",
+                        text: item.name,
+                    })
+                );
+            },
         }
     );
 

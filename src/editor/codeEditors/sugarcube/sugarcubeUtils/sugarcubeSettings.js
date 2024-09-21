@@ -46,6 +46,11 @@ sugarcube.customBlocks = {
         }
 
         sugarcube.customBlocks.storage[conjugatedName] = jsonDef;
+
+        const myBlockDec = sugarcube.workspace.newBlock("myblocks_declaration");
+        myBlockDec.initSvg();
+        myBlockDec.render();
+        myBlockDec.loadExtraState(jsonDef);
     },
     addCustomFieldToPrompt:(Name,Type,ImageURL,ExtraParameters) => {
         const newField = {
@@ -54,6 +59,7 @@ sugarcube.customBlocks = {
             Image:ImageURL,
             createFunction:ExtraParameters.createFunction,
             parseFunction:ExtraParameters.parseFunction,
+            declaration:ExtraParameters.declaration,
         };
 
         sugarcube.customBlocks.fieldTypes.push(newField);
