@@ -181,7 +181,9 @@
 
                     element.style.marginLeft = "2px";
                     element.style.marginRight = "2px";
-                    element.style.clipPath = "polygon(8px 0%, calc(100% - 8px) 0%, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0% 50%)";
+                    element.style.paddingLeft = "16px";
+                    element.style.paddingRight = "16px";
+                    element.style.clipPath = "polygon(16px 0%, calc(100% - 16px) 0%, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0% 50%)";
                     
                     element.onchange = () => {
                         element.style.width = `${element.value.length}ch`;
