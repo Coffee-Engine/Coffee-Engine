@@ -22,6 +22,10 @@ sugarcube.variables = {
 //For custom blocks
 sugarcube.customBlocks = {
     fieldTypes:[],
+    storage:{},
+    blockFromDefinition:(jsonDef) => {
+        console.log(jsonDef);
+    },
     addCustomFieldToPrompt:(Name,Type,ImageURL,ExtraParameters) => {
         const newField = {
             Name:Name,

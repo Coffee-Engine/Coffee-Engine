@@ -368,6 +368,7 @@
         }
     }
 
+    //Bad html class. Might be cool
     editor.colorPicker.class = class extends HTMLElement {
         static observedAttributes = ["color", "disabled"];
 

@@ -34,8 +34,7 @@
             blockDiv.style.height = "1.75em";
             blockDiv.style.transform = "translate(0%,-50%)";
 
-            blockDiv.appendChild((() => {const cool = document.createElement("input"); cool.type = "text"; cool.value = "Wow"; cool.style.minWidth = "2ch"; cool.style.minHeight = "0px"; cool.style.width = "2ch"; return cool;})());
-
+            //Appendix
             blockDisplay.appendChild(blockDiv);
 
             //Now our container that holds the variable type
@@ -75,8 +74,8 @@
                     element.style.marginRight = "2px";
                     
                     //Elements
-                    element.onchange = () => {
-                        element.style.width = `${element.value.length}ch`;
+                    element.oninput = () => {
+                        element.style.width = `${element.value.length + 1}ch`;
                     }
 
                     newParam.element = element;
@@ -87,6 +86,11 @@
                     params.push(newParam);
                 }
 
+                //Click that shit
+                if (fieldType.Type == "label") {
+                    button.onclick();
+                }
+
                 typeDiv.appendChild(button);
             });
 
@@ -95,7 +99,10 @@
 
             //This is where we colour the custom block
             const colorInput = document.createElement("color-picker");
-            colorInput.setAttribute("hasExtensions",true)
+            colorInput.setAttribute("hasExtensions",true);
+            colorInput.onchange = () => {
+                blockDiv.style.backgroundColor = colorInput.value;
+            }
             container.appendChild(colorInput);
             colorInput.style.width = "32px";
             colorInput.style.height = "32px";
@@ -133,18 +140,14 @@
                 
                 //Done button functionality
                 doneButton.onclick = () => {
-                    if (variableName.value.length < 1) return;
+                    if (params.length <= 0) return;
 
-                    //Create our variable
-                    sugarcube.variables.createVariable(
-                        variableName.value,
-                        this.variableType,
-                        colorInput.value
-                    );
-
+                    sugarcube.customBlocks.blockFromDefinition({
+                        parameters:params,
+                        color:colorInput.value
+                    });
                     //Refresh extension categories
-                    sugarcube.extensionManager.updateExtensionBlocks("variables");
-                    sugarcube.extensionManager.updateExtensionBlocks("lists");
+                    sugarcube.extensionManager.updateExtensionBlocks("myblocks");
 
                     this._dispose();
                 }
