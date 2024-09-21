@@ -74,8 +74,10 @@
                     element.style.marginRight = "2px";
                     
                     //Elements
+                    const paramID = params.length;
                     element.oninput = () => {
                         element.style.width = `${element.value.length + 1}ch`;
+                        params[paramID].name = element.value;
                     }
 
                     newParam.element = element;
