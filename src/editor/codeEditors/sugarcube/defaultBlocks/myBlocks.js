@@ -282,5 +282,82 @@
         }
     }
 
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.textInput"],
+        "string",
+        "editor/editorWindows/sugarcube/assets/String.png",
+        {
+            createFunction:(input) => {
+                input.style.borderRadius = "1em";
+            }
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.booleanInput"],
+        "boolean",
+        "editor/editorWindows/sugarcube/assets/Boolean.png",
+        {
+            createFunction:(input) => {
+                input.style.paddingLeft = "16px";
+                input.style.paddingRight = "16px";
+                input.style.clipPath = "polygon(16px 0%, calc(100% - 16px) 0%, 100% 50%, calc(100% - 16px) 100%, 16px 100%, 0% 50%)";
+            }
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.colorInput"],
+        "color",
+        "editor/editorWindows/sugarcube/assets/Color.png",
+        {
+            createFunction:(input) => {
+                input.style.borderRadius = "0.5em";
+            }
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.numberInput"],
+        "number",
+        "editor/editorWindows/sugarcube/assets/Number.png",
+        {
+            createFunction:(input) => {
+                input.style.borderRadius = "1em";
+            }
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.arrayInput"],
+        "array",
+        "editor/editorWindows/sugarcube/assets/Array.png",
+        {
+            createFunction:(input) => {
+                input.style.borderRadius = "0.25em";
+            }
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.objectInput"],
+        "object",
+        "editor/editorWindows/sugarcube/assets/Object.png",
+        {
+            createFunction:(input) => {
+                input.style.paddingLeft = "16px";
+                input.style.paddingRight = "16px";
+                input.style.clipPath = "polygon(4px 37.5%, 12px 25%, 16px 0%, calc(100% - 16px) 0%, calc(100% - 12px) 25%, calc(100% - 4px) 37.5%, 100% 50%, calc(100% - 4px) 62.5%, calc(100% - 12px) 75%, calc(100% - 16px) 100%, 16px 100%,12px 75%, 4px 62.5%, 0% 50%)";
+            }
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.addLabel"],
+        "label",
+        "editor/editorWindows/sugarcube/assets/Label.png",
+        {}
+    );
+
     sugarcube.extensionManager.registerExtension(new myblocks());
 })();

@@ -18,6 +18,23 @@ sugarcube.variables = {
         }
     }
 };
+
+//For custom blocks
+sugarcube.customBlocks = {
+    fieldTypes:[],
+    addCustomFieldToPrompt:(Name,Type,ImageURL,ExtraParameters) => {
+        const newField = {
+            Name:Name,
+            Type:Type,
+            Image:ImageURL,
+            createFunction:ExtraParameters.createFunction,
+            parseFunction:ExtraParameters.parseFunction,
+        };
+
+        sugarcube.customBlocks.fieldTypes.push(newField);
+    }
+}
+
 sugarcube.toolbox = {
     kind: "categoryToolbox",
     contents: [
