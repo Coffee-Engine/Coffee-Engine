@@ -26,6 +26,8 @@ sugarcube.customBlocks = {
     blockFromDefinition:(jsonDef) => {
         const swagStyledBuisness = {};
 
+        let conjugatedName = "";
+
         jsonDef.parameters.forEach(param => {
             delete param.element;
 
@@ -34,8 +36,16 @@ sugarcube.customBlocks = {
             swagStyledBuisness[param.name] += 1;
 
             param.id = `${param.type}_${param.name}_${swagStyledBuisness[param.name]}`;
+
+            conjugatedName += param.id;
         });
-        console.log(jsonDef);
+
+        if (sugarcube.customBlocks.storage[conjugatedName]) {
+            alert("This block exists");
+            return;
+        }
+
+        sugarcube.customBlocks.storage[conjugatedName] = jsonDef;
     },
     addCustomFieldToPrompt:(Name,Type,ImageURL,ExtraParameters) => {
         const newField = {

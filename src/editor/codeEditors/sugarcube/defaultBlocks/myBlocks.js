@@ -126,69 +126,17 @@
 
         command_Deserialize(state, block) {
             if (state.customBlockData) {
-                let inputID = 0;
-                state.customBlockData.forEach((item) => {
-                    switch (item.type) {
-                        case "text":
-                            //create Text
-                            block.inputFromJson_({
-                                type: "input_dummy",
-                                name: `input_${inputID}`,
-                            });
-                            block.inputList[block.inputList.length - 1].appendField(
-                                block.fieldFromJson_({
-                                    type: "field_label",
-                                    text: item.text,
-                                })
-                            );
-                            break;
+                state.customBlockData.parameters.forEach((item) => {
+                    const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
+                        return field.Type == item.type;
+                    });
 
-                        case "boolean":
-                            block.inputFromJson_({
-                                type: "input_value",
-                                name: `input_${inputID}`,
-                                check: ["Boolean", "ANY"],
-                            });
-                            break;
+                    //If we don't exist shut up.
+                    //owo
+                    if (index < 0) return;
 
-                        case "string":
-                            //input thing
-                            block.inputFromJson_({
-                                type: "input_value",
-                                name: `input_${inputID}`,
-                            });
-
-                            block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_string_reporter"></shadow>`));
-                            break;
-
-                        case "number":
-                            //input thing
-                            block.inputFromJson_({
-                                type: "input_value",
-                                name: `input_${inputID}`,
-                            });
-
-                            block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_number_reporter"></shadow>`));
-                            break;
-
-                        case "color":
-                            //input thing
-                            block.inputFromJson_({
-                                type: "input_value",
-                                name: `input_${inputID}`,
-                            });
-
-                            block.inputList[block.inputList.length - 1].setShadowDom(sugarcube.stringToDOM(`<shadow type="__sugarcube_color_reporter"></shadow>`));
-                            break;
-
-                        default:
-                            block.inputFromJson_({
-                                type: "input_value",
-                                name: `input_${inputID}`,
-                            });
-                            break;
-                    }
-                    inputID += 1;
+                    //Parse that shit.
+                    sugarcube.customBlocks.fieldTypes[index].parseFunction(block, item);
                 });
             }
 
