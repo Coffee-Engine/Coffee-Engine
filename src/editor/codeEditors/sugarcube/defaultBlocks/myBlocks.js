@@ -125,8 +125,8 @@
         }
 
         command_Deserialize(state, block) {
-            if (state.customBlockData) {
-                state.customBlockData.parameters.forEach((item) => {
+            if (state.parameters) {
+                state.parameters.forEach((item) => {
                     const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
                         return field.Type == item.type;
                     });
@@ -138,6 +138,8 @@
                     //Parse that shit.
                     sugarcube.customBlocks.fieldTypes[index].parseFunction(block, item);
                 });
+
+                block.setColour(state.color);
             }
 
             return state;
