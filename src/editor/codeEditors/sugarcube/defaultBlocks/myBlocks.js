@@ -204,6 +204,7 @@
                                 //Block it up
                                 const blockIN = sugarcube.workspace.newBlock(declaration);
                                 blockIN.editedState = item;
+                                blockIN.editedState.color = state.color;
                                 blockIN.initSvg();
                                 blockIN.render();
                                 block.inputList[block.inputList.length - 1].connection.connect_(blockIN.outputConnection);
@@ -298,6 +299,8 @@
                 );
             }
 
+            block.setColour(state.color);
+            
             return state;
         }
 
