@@ -267,6 +267,8 @@
             return state;
         }
 
+        //I hate these with a passion
+        //There could be a better way to do this.
         arg_Serialize(state, block) {
             //Get our info out of the block.
             state = state || {};
@@ -300,7 +302,8 @@
             }
 
             block.setColour(state.color);
-            
+
+            //I forgot this. It broke the state
             return state;
         }
 
