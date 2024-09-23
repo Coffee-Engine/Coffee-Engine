@@ -144,7 +144,7 @@
                         eligibility:"isUsable",
                         opcode:"Hi",
 
-                        weight:10,
+                        weight:2,
                     }
                 }
             };

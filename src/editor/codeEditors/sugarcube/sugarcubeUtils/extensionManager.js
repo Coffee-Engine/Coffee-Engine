@@ -742,6 +742,7 @@
         addContextMenu(menuName, menuDat, extension, extensionClass) {
             const contextMenu = {};
             contextMenu.id = `${extension.id}_${menuName}`;
+            contextMenu.weight = (typeof menuDat.weight == "undefined") ? 10 : menuDat.weight;
             sugarcube.contextMenuBlockCorrolations[contextMenu.id] = [];
 
             //Elegibility check.
