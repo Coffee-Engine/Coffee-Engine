@@ -739,6 +739,26 @@
             }
         }
 
+        addContextMenu(menuName, menuDat, extension, extensionClass) {
+            const contextMenu = {};
+
+            //Elegibility check.
+            if (menuDat.eligibility) {
+                if (menuDat.isWorkspace) {
+                    contextMenu.preconditionFn = (scope) => {
+                        if (extensionClass[menuDat.eligibility]) extensionClass[menuDat.eligibility](scope.block,scope);
+                    }
+                }
+                else {
+                    contextMenu.preconditionFn = (scope) => {
+                        if (extensionClass[menuDat.eligibility]) extensionClass[menuDat.eligibility](scope);
+                    }
+                }
+            }
+
+            Blockly.ContextMenuRegistry.registry.register(contextMenu);
+        }
+
         registerExtension(extension) {
             try {
                 const myInfo = extension.getInfo();
@@ -770,7 +790,14 @@
                     contents: [],
                 };
 
-                //Create the mutators
+                //Do the context menus
+                if (myInfo.contextMenus) {
+                    Object.keys(myInfo.contextMenus).forEach((field) => {
+                        this.addContextMenu(menu, myInfo.contextMenus[menu], myInfo, extension);
+                    });
+                }
+
+                //Create the fields
                 if (myInfo.fields) {
                     Object.keys(myInfo.fields).forEach((field) => {
                         //colours

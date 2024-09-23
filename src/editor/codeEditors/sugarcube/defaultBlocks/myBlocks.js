@@ -132,6 +132,19 @@
                         serialize:"arg_Serialize",
                         deserialize:"arg_Deserialize"
                     }
+                },
+                contextMenus: {
+                    removeCustomBlock: {
+                        isWorkspace:false,
+
+                        textIsOpcode:false,
+                        text:"wow a custom context menu!",
+
+                        eligibility:"isUsable",
+                        opcode:"",
+
+                        weight:10,
+                    }
                 }
             };
         }
