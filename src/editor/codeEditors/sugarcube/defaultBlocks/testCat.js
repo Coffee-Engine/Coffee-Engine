@@ -275,6 +275,19 @@
                         color1:"#ef0000",
                         color2:"#0f101a",
                     }
+                },
+                contextMenus: {
+                    example: {
+                        isWorkspace:false,
+
+                        textIsOpcode:false,
+                        text:"wow a custom context menu!",
+
+                        eligibility:"isUsable",
+                        opcode:"opcode",
+
+                        weight:2,
+                    }
                 }
             };
         }

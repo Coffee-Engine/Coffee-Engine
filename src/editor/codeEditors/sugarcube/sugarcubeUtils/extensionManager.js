@@ -763,6 +763,11 @@
                     }
                 }
             }
+            else {
+                contextMenu.preconditionFn = (scope) => {
+                    return "enabled";
+                }
+            }
 
             //Elegibility check.
             if (menuDat.textIsOpcode) {

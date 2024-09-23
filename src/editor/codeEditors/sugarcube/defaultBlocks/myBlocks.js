@@ -135,15 +135,14 @@
                     }
                 },
                 contextMenus: {
+                    editCustomBlock: {
+                        text:"Edit custom block",
+                        opcode:"editCustomBlock",
+                        weight:2,
+                    },
                     removeCustomBlock: {
-                        isWorkspace:false,
-
-                        textIsOpcode:false,
-                        text:"wow a custom context menu!",
-
-                        eligibility:"isUsable",
-                        opcode:"Hi",
-
+                        text:"Remove custom block",
+                        opcode:"removeCustomBlock",
                         weight:2,
                     }
                 }
@@ -194,6 +193,8 @@
         }
 
         hat_Deserialize(state, block) {
+            block.setDeletable(false);
+
             if (state.parameters) {
                 state.parameters.forEach((item) => {
                     const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
