@@ -16,31 +16,42 @@
                         text: "[color]",
                         arguments: {
                             color: {
-                                defaultValue: 90
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Color",
+                                defaultValue:"#0000ff"
                             }
                         },
                     }
                 ],
                 fields: {
                     Color: {
-                        acceptReporters: true,
+                        acceptReporters: false,
+                        wholeBlockIsField:true,
                         
                         //Our custom editor
                         editor:"color_Editor",
+                        size: [32,32],
 
                         //Stuff
                         initilize:"color_Init",
+                        render:"color_Render",
                     }
                 }
             };
         }
 
-        color_Init(field) {
-            field.createBorderRect_();
-        } 
+        //Blank stuff
+        color_Init(field) {} 
 
-        color_Editor() {
-            console.log(arguments);
+        color_Editor(field) {
+            const bounding = field.borderRect_.getBoundingClientRect();
+            editor.colorPicker.create(bounding.x,bounding.y,{color:field.value,callback:(color) => {
+                field.value = color;
+            }});
+        }
+
+        color_Render(value,B,field) {
+            field.sourceBlock_.svgGroup_.firstChild.style.fill = value || "#0000ff";
         }
     }
 

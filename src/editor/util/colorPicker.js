@@ -22,7 +22,7 @@
         </svg>`
     };
 
-    editor.colorPicker.create = (x,y,{ color, hasExtensions, isStandalone, callback}) => {
+    editor.colorPicker.create = (x,y,{ color, hasExtensions, callback}) => {
         //Channel 3 and Channel 15
         color = color || "#0000ff";
         let split = coffeeEngine.ColorMath.HexToRGB(color);

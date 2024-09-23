@@ -5,7 +5,7 @@
                 message0: " %1 ",
                 args0: [
                     {
-                        type: "field_colour_hsv_sliders",
+                        type: "looks_Color",
                         name: "VALUE",
                         colour: "#0000ff",
                     },

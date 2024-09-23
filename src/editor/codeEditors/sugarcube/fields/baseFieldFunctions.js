@@ -30,7 +30,7 @@
                     this.render_ = () => {
                         sugarcube.extensionInstances[extensionID][fieldData.render](this.value_, this.textContent_, this);
 
-                        if (!fieldData.manualNodeValue) {
+                        if (this.textContent_ && !fieldData.manualNodeValue) {
                             this.textContent_.nodeValue = this.value_;
                         }
                         this.updateSize_();
@@ -101,7 +101,7 @@
                             // Create the dropdown HTML                    
                             this.editor_ = sugarcube.extensionInstances[extensionID][fieldData.editor](this,Blockly.DropDownDiv);
         
-                            Blockly.DropDownDiv.getContentDiv().appendChild(this.editor_);
+                            if (this.editor_) Blockly.DropDownDiv.getContentDiv().appendChild(this.editor_);
         
                             //Set its colors to match the extension colors
                             Blockly.DropDownDiv.setColour(fieldData.color1, fieldData.color2);
@@ -116,7 +116,7 @@
         
                             // Create the widget.
                             let widget = sugarcube.extensionInstances[extensionID][fieldData.editor](this,Blockly.WidgetDiv);                    
-                            Blockly.WidgetDiv.getDiv().appendChild(widget);
+                            if (widget) Blockly.WidgetDiv.getDiv().appendChild(widget);
                         }
                     }
                 }
