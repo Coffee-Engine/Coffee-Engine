@@ -141,11 +141,14 @@
         document.body.appendChild(editor.currentPage.root);
 
         editor.dock = {
-            refreshLayout:(initial) => {
+            refreshLayout:(initial, missingPercentage) => {
+                missingPercentage = missingPercentage || 0;
                 //Set the horizontal grid layout then loop through each item
                 let percentages = "";
                 for (let ID = 0; ID < editor.layout.layout.length; ID++) {
-                    //Add the percentage
+                    //Add the percentage + the missing part
+                    editor.layout.layout[ID].size += missingPercentage / editor.layout.layout.length;
+
                     percentages += editor.layout.layout[ID].size + "% ";
                     //Get the "Sub Dock" which is the vertical part of the dock
                     let subDock = editor.dock.element.children[ID];
@@ -153,7 +156,7 @@
                     if (!subDock) {
                         subDock = document.createElement("div");
                         subDock.style.display = "grid";
-                        subDock.style.gridTemplateRows = "var(--dockGridVertical)"
+                        subDock.style.gridTemplateRows = "var(--dockGridVertical)";
 
                         editor.dock.element.appendChild(subDock);
                     }
@@ -175,18 +178,20 @@
 
                 //Check for holes in the layout
                 let backIndent = 0;
+                let percentageGone = 0;
                 let hadToRemove = false;
                 for (let X = 0; X < editor.dock.element.children.length; X++) {
                     //Make sure it has a window or 2 in it
                     if (editor.dock.element.children[X].children.length > 0) {
                         //Loop over each window and subtract the indent
-                        editor.layout.layout[X].forEach(window => {
+                        editor.layout.layout[X].contents.forEach(window => {
                             window.dockedColumn -= backIndent;
                         });
                     }
                     //If there are no windows remove them and account for that
                     else {
                         editor.dock.element.children[X].parentNode.removeChild(editor.dock.element.children[X]);
+                        percentageGone += editor.layout.layout[X].size;
                         editor.layout.layout.splice(X,1);
                         
                         //move our X back and add an indent
@@ -197,10 +202,9 @@
                         hadToRemove = true;
                     }
                 }
-
                 //If we had to remove something refresh the layout without removal code
                 if (hadToRemove) {
-                    editor.dock.refreshLayout(true);
+                    editor.dock.refreshLayout(true, percentageGone);
                 }
             },
 

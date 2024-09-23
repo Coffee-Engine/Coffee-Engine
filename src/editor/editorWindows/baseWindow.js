@@ -344,7 +344,7 @@
 
                 //Handle docked windows
                 if (this.docked) {
-                    editor.layout.layout[this.dockedColumn].splice(editor.layout.layout[this.dockedColumn].indexOf(this),1);
+                    if (editor.layout.layout[this.dockedColumn]) editor.layout.layout[this.dockedColumn].contents.splice(editor.layout.layout[this.dockedColumn].contents.indexOf(this),1);
                     editor.dock.refreshLayout();
                 }
 

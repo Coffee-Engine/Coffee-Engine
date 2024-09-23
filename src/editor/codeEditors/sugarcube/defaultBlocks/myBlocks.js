@@ -195,6 +195,10 @@
         hat_Deserialize(state, block) {
             block.setDeletable(false);
 
+            block.refreshparameters = (state) => {
+                console.log("Refreshing parameters");
+            }
+
             if (state.parameters) {
                 state.parameters.forEach((item) => {
                     const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
@@ -238,7 +242,8 @@
 
                 block.setColour(state.color);
             }
-            /*
+            /* The old way BAD
+            //Kept for historical preservation!
             if (state.customBlockData) {
                 let inputID = 0;
                 state.customBlockData.forEach((item) => {

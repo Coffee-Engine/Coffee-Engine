@@ -133,7 +133,7 @@
         }
 
         repeat(args) {
-            for (let index = 0; index < num; index++) {
+            for (let index = 0; index < args.num; index++) {
                 args.statement();
             }
         }

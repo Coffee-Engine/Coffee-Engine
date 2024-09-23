@@ -63,6 +63,7 @@
                     const element = document.createElement("input");
                     element.type = "text";
                     element.value = fieldType.Name;
+                    element.style.fontFamily = "monospace, monospace";
 
                     //Stylize
                     element.style.minWidth = "2ch";
@@ -76,7 +77,7 @@
                     //Elements
                     const paramID = params.length;
                     element.oninput = () => {
-                        element.style.width = `${element.value.length + 1}ch`;
+                        element.style.width = `${element.value.length}ch`;
                         params[paramID].name = element.value;
                     }
 
