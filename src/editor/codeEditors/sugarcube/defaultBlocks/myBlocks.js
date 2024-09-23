@@ -22,6 +22,7 @@
                         type: sugarcube.BlockType.PROCEDURE_DEFINITION,
                         text: "Define : ",
                         mutator: "hatBlock_Mutator",
+                        contextMenu: "removeCustomBlock",
                         hideFromPalette: true,
                     },
                     {

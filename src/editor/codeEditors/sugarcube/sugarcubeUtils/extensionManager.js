@@ -749,8 +749,6 @@
                 //If its the workspace limit the scope slightly
                 if (menuDat.isWorkspace) {
                     contextMenu.preconditionFn = (scope) => {
-                        //This part sucks I have to write a whole storage thingy. UGhhhhhh
-                        if (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
                         if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope);
                         return "enabled";
                     }
@@ -758,7 +756,7 @@
                 else {
                     contextMenu.preconditionFn = (scope) => {
                         //This part sucks I have to write a whole storage thingy. UGhhhhhh
-                        if (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
+                        if ((!menuDat.global) && (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type))) return "hidden";
                         if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope.block,scope);
                         return "enabled";
                     }
@@ -894,6 +892,27 @@
                 this.blockArgDefs[myInfo.id] = {};
                 myInfo.blocks.forEach((block) => {
                     let blockDat = this.addBlock(block, myInfo);
+
+                    //Context menu stuff
+                    if (block.contextMenu) {
+                        //Switch the types
+                        switch (typeof block.contextMenu) {
+                            case "string":
+                                if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`].push(`${myInfo.id}_${block.opcode}`);
+                                break;
+
+                            case "object":
+                                if (Array.isArray(block.contextMenu)) {
+                                    block.contextMenu.forEach(menu => {
+                                        if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`].push(`${myInfo.id}_${block.opcode}`);
+                                    });
+                                }
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                    }
 
                     if (blockDat) {
                         createdContentData.contents.push(blockDat);
