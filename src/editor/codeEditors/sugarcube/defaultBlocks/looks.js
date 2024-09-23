@@ -30,7 +30,7 @@
                         
                         //Our custom editor
                         editor:"color_Editor",
-                        size: [32,32],
+                        sizeOverride: [32,32],
 
                         //Stuff
                         initilize:"color_Init",
@@ -40,18 +40,26 @@
             };
         }
 
-        //Blank stuff
-        color_Init(field) {} 
+        color_Init(field) {
+            field.createBorderRect_();
+        } 
 
         color_Editor(field) {
             const bounding = field.borderRect_.getBoundingClientRect();
-            editor.colorPicker.create(bounding.x,bounding.y,{color:field.value,callback:(color) => {
+            editor.colorPicker.create(bounding.x + (bounding.width/2),bounding.y + (bounding.height/2),{color:field.value,callback:(color) => {
                 field.value = color;
             }});
         }
 
         color_Render(value,B,field) {
+            field.borderRect_.style.fill = "#00000000";
             field.sourceBlock_.svgGroup_.firstChild.style.fill = value || "#0000ff";
+            field.borderRect_.setAttribute("width",48);
+            field.borderRect_.setAttribute("x",-8);
+            field.borderRect_.setAttribute("y",-4);
+            field.borderRect_.setAttribute("height",40);
+            field.borderRect_.setAttribute("rx",32);
+            field.borderRect_.setAttribute("ry",32);
         }
     }
 

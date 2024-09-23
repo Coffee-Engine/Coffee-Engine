@@ -77,6 +77,18 @@
                     },
                     "---",
                     {
+                        opcode: "inverse",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "-[A]",
+                        arguments: {
+                            A: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 10,
+                            },
+                        },
+                    },
+                    "---",
+                    {
                         opcode: "randomNumber",
                         type: sugarcube.BlockType.REPORTER,
                         text: "random number between [A] and [B]",
@@ -293,6 +305,10 @@
 
         round({ A }) {
             return Math.round(sugarcube.cast.toNumber(A));
+        }
+
+        inverse({ A }) {
+            return -sugarcube.cast.toNumber(A);
         }
 
         arithmatic({ A, B }) {
