@@ -55,7 +55,7 @@
 
                 margin:0px;
 
-                background-color:var(--background-1);
+                background:${coffeeEngine.taskbarStyles[editor.taskbarStyle]};
 
                 display:grid;
                 grid-template-columns: auto ${editor.taskbarHeight}px;
@@ -202,6 +202,7 @@
                         hadToRemove = true;
                     }
                 }
+
                 //If we had to remove something refresh the layout without removal code
                 if (hadToRemove) {
                     editor.dock.refreshLayout(true, percentageGone);

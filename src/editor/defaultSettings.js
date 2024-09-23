@@ -2,6 +2,7 @@ editor.defaultSettings = {
     Window: {
         grabSize: 8,
         barHeight: 24,
+        barStyle: "Flat",
     },
     Theme: {
         themeColor: "Mocha",
@@ -38,6 +39,13 @@ editor.settingDefs = {
             max: "64",
             onChange: (value) => {
                 editor.taskbarHeight = value;
+            },
+        },
+        barStyle: {
+            type: "dropdown",
+            values: ["Flat", "Aero"],
+            onChange: (value) => {
+                editor.taskbarStyle = value;
             },
         },
     },
