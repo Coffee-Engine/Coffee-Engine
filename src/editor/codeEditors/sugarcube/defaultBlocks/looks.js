@@ -54,12 +54,12 @@
         color_Render(value,B,field) {
             field.borderRect_.style.fill = "#00000000";
             field.sourceBlock_.svgGroup_.firstChild.style.fill = value || "#0000ff";
-            field.borderRect_.setAttribute("width",48);
-            field.borderRect_.setAttribute("x",-8);
+            field.borderRect_.setAttribute("width",52);
+            field.borderRect_.setAttribute("x",-10);
             field.borderRect_.setAttribute("y",-4);
             field.borderRect_.setAttribute("height",40);
-            field.borderRect_.setAttribute("rx",32);
-            field.borderRect_.setAttribute("ry",32);
+            field.borderRect_.setAttribute("rx",20);
+            field.borderRect_.setAttribute("ry",20);
         }
     }
 
