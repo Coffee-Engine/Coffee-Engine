@@ -2,6 +2,7 @@ const sugarcube = {};
 sugarcube.blockStyles = {};
 sugarcube.extensions = {};
 sugarcube.workspace = {};
+sugarcube.contextMenuBlockCorrolations = {};
 //Using a custom variable system to store more data.
 //Blockly variables aren't inherently bad. Just limited.
 sugarcube.variables = {

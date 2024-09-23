@@ -741,20 +741,74 @@
 
         addContextMenu(menuName, menuDat, extension, extensionClass) {
             const contextMenu = {};
+            contextMenu.id = `${extension.id}_${menuName}`;
+            sugarcube.contextMenuBlockCorrolations[contextMenu.id] = [];
 
             //Elegibility check.
             if (menuDat.eligibility) {
+                //If its the workspace limit the scope slightly
                 if (menuDat.isWorkspace) {
                     contextMenu.preconditionFn = (scope) => {
-                        if (extensionClass[menuDat.eligibility]) extensionClass[menuDat.eligibility](scope.block,scope);
+                        //This part sucks I have to write a whole storage thingy. UGhhhhhh
+                        if (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
+                        if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope);
+                        return "enabled";
                     }
                 }
                 else {
                     contextMenu.preconditionFn = (scope) => {
-                        if (extensionClass[menuDat.eligibility]) extensionClass[menuDat.eligibility](scope);
+                        //This part sucks I have to write a whole storage thingy. UGhhhhhh
+                        if (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
+                        if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope.block,scope);
+                        return "enabled";
                     }
                 }
             }
+
+            //Elegibility check.
+            if (menuDat.textIsOpcode) {
+                //If its the workspace limit the scope slightly
+                if (menuDat.isWorkspace) {
+                    contextMenu.displayText = (scope) => {
+                        if (extensionClass[menuDat.text]) return extensionClass[menuDat.text](scope);
+                        return `opcode [${menuDat.text}] not found!`;
+                    }
+                }
+                else {
+                    contextMenu.displayText = (scope) => {
+                        if (extensionClass[menuDat.text]) return extensionClass[menuDat.text](scope.block,scope);
+                        return `opcode [${menuDat.text}] not found!`;
+                    }
+                }
+            }
+            else {
+                contextMenu.displayText = menuDat.text;
+            }
+
+            //Opcode stuff
+            if (menuDat.opcode) {
+                //If its the workspace limit the scope slightly
+                //Make sure to warn folks who don't have it
+                if (menuDat.isWorkspace) {
+                    contextMenu.callback = (scope) => {
+                        if (extensionClass[menuDat.opcode]) return extensionClass[menuDat.opcode](scope);
+                        console.warn(`opcode ${menuDat.opcode} does not exist in ${extension.id}!`);
+                    }
+                }
+                else {
+                    contextMenu.callback = (scope) => {
+                        if (extensionClass[menuDat.opcode]) return extensionClass[menuDat.opcode](scope.block,scope);
+                        console.warn(`opcode ${menuDat.opcode} does not exist in ${extension.id}!`);
+                    }
+                }
+            }
+            //warn people if they forget it.
+            else {
+                console.warn(`context menu ${menuName} has no opcode!\nAdd one for it to function properly!`);
+            }
+
+            if (menuDat.isWorkspace) { contextMenu.scopeType = Blockly.ContextMenuRegistry.ScopeType.WORKSPACE; }
+            else { contextMenu.scopeType = Blockly.ContextMenuRegistry.ScopeType.BLOCK; }
 
             Blockly.ContextMenuRegistry.registry.register(contextMenu);
         }
@@ -792,8 +846,8 @@
 
                 //Do the context menus
                 if (myInfo.contextMenus) {
-                    Object.keys(myInfo.contextMenus).forEach((field) => {
-                        this.addContextMenu(menu, myInfo.contextMenus[menu], myInfo, extension);
+                    Object.keys(myInfo.contextMenus).forEach((contextMenu) => {
+                        this.addContextMenu(contextMenu, myInfo.contextMenus[contextMenu], myInfo, extension);
                     });
                 }
 

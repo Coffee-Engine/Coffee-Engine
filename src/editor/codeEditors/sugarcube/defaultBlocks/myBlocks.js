@@ -141,7 +141,7 @@
                         text:"wow a custom context menu!",
 
                         eligibility:"isUsable",
-                        opcode:"",
+                        opcode:"Hi",
 
                         weight:10,
                     }
