@@ -124,6 +124,8 @@
             return this.#title;
         }
 
+        tabs = [];
+
         //Have this so we can't repeat the closing animation
         closing = false;
 
@@ -147,6 +149,14 @@
             this.__createTaskBar();
             this.__createContentDiv();
             this.__createMoveableWindow();
+
+            //Add it to the tab list
+            this.tabs.push({
+                owner:this,
+                isPrimary:true,
+                content: this.content,
+                isWindow:true
+            });
 
             this.init(this.Content);
         }
@@ -331,6 +341,34 @@
             this.windowDiv.style.zIndex = editor.windowLayer;
         }
 
+        //For organization
+        __addTab(tabOrigin,tabName) {
+            //Make this variable to store the window contents
+            let content;
+            let isWindow = false;
+            //Fallbacks and handling of different "Tabs"
+            if (tabOrigin instanceof editor.windows.base) {
+                tabName = tabName || tabOrigin.title || "New Tab";
+                content = tabOrigin.content;
+                isWindow = true;
+            }
+            else if (tabOrigin instanceof HTMLElement) {
+                tabName = tabName || "New Tab";
+                content = tabOrigin;
+            }
+            else {
+                console.error("Trying to merge an invalid window object");
+                return;
+            }
+
+            this.tabs.push({
+                owner:tabOrigin,
+                isPrimary:false,
+                content: content,
+                isWindow:isWindow
+            });
+        }
+
         //Allow us to destroy the window;
         _dispose() {
             if (this.closing) return;
@@ -358,6 +396,7 @@
         init(Content) {}
         dispose() {}
         resized() {}
+        merged() {}
     };
 
     editor.windows.__Serialization.register(editor.windows.base,"baseWindow");
