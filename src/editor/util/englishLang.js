@@ -13,9 +13,21 @@ editor.EnglishLang = {
     "engine.home.engineConfig": "Engine Settings",
 
     "engine.settings.welcome": "Engine Settings",
+
+
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
     "engine.settings.category.Window.barHeight": "Taskbar Height",
+    "engine.settings.category.Window.barStyle": "Taskbar Style",
+
+    "engine.settings.category.Window.barStyle.Flat": "Flat",
+    "engine.settings.category.Window.barStyle.Aero": "Frutiger Aero",
+
+    "engine.settings.category.Window.tabMode": "Taskbar Tabs",
+
+    "engine.settings.category.Window.tabMode.arrows": "Use Arrows",
+    "engine.settings.category.Window.tabMode.ifNeeded": "If Needed",
+    "engine.settings.category.Window.tabMode.always": "Always",
 
     "engine.settings.category.Theme": "Theme",
     "engine.settings.category.Theme.themeColor": "Editor Color",
