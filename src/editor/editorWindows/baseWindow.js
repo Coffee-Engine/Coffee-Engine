@@ -351,6 +351,8 @@
                 tabName = tabName || tabOrigin.title || "New Tab";
                 content = tabOrigin.content;
                 isWindow = true;
+
+                tabOrigin.owner = this;
             }
             else if (tabOrigin instanceof HTMLElement) {
                 tabName = tabName || "New Tab";
