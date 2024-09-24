@@ -25,7 +25,7 @@
                     const option = document.createElement("option");
 
                     option.value = value;
-                    option.innerText = value;
+                    option.innerText = editor.language[`engine.settings.category.${category}.${setting}.${value}`];
 
                     input.appendChild(option);
                 });
