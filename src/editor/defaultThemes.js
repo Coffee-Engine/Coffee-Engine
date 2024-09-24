@@ -44,7 +44,7 @@ coffeeEngine.defaultThemes = {
         "--warn-text": "#463e32",
         "--error-text": "#463e32"
     },
-    "Blue Berry": {
+    blueBerry: {
         "--background-1": "#151528",
         "--background-2": "#0c0c1c",
         "--background-3": "#08081e",

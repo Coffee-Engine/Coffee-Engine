@@ -3,6 +3,7 @@ editor.defaultSettings = {
         grabSize: 8,
         barHeight: 24,
         barStyle: "Flat",
+        tabMode:"ifNeeded",
     },
     Theme: {
         themeColor: "Mocha",
@@ -48,11 +49,18 @@ editor.settingDefs = {
                 editor.taskbarStyle = value;
             },
         },
+        tabMode: {
+            type: "dropdown",
+            values: ["arrows", "ifNeeded", "always"],
+            onChange: (value) => {
+                editor.taskbarStyle = value;
+            },
+        },
     },
     Theme: {
         themeColor: {
             type: "dropdown",
-            values: ["Mocha", "Cocoa", "Creme", "Blue Berry", "Custom"],
+            values: ["Mocha", "Cocoa", "Creme", "blueBerry", "Custom"],
             onChange: (value, fromBoot) => {
                 //Check if we are using a custom theme
                 if (value != "Custom") {

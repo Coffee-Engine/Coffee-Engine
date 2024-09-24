@@ -26,6 +26,12 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.warnTextColor": "Warning Text Color",
     "engine.settings.category.Theme.errorTextColor": "Error Text Color",
 
+    "engine.settings.category.Theme.themeColor.Mocha": "Mocha",
+    "engine.settings.category.Theme.themeColor.Cocoa": "Cocoa",
+    "engine.settings.category.Theme.themeColor.Creme": "Creme",
+    "engine.settings.category.Theme.themeColor.blueBerry": "Blue Berry",
+    "engine.settings.category.Theme.themeColor.Custom": "Custom",
+
     "engine.settings.category.SugarCube": "SugarCube",
     "engine.settings.category.SugarCube.notchWidth": "Notch Width",
     "engine.settings.category.SugarCube.notchHeight": "Notch Height",
