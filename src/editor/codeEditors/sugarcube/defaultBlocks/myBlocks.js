@@ -143,7 +143,17 @@
                     removeCustomBlock: {
                         text:"Remove custom block",
                         opcode:"removeCustomBlock",
-                        weight:2,
+                        weight:3,
+                    },
+                    makeReference: {
+                        text:"Turn into reference",
+                        opcode:"makeReference",
+                        weight:4,
+                    },
+                    makeOriginal: {
+                        text:"Turn into block",
+                        opcode:"makeBlock",
+                        weight:4,
                     }
                 }
             };
