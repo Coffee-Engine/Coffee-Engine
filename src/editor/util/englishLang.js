@@ -64,6 +64,7 @@ editor.EnglishLang = {
     "editor.window.createVar.temporaryName": "Variable Name",
     "editor.window.createVar.variable": "Variable",
     "editor.window.createVar.list": "List",
+    "editor.window.createVar.object": "Object",
 
     "editor.window.createBlock": "Create a Block",
     "editor.window.createBlock.textInput": "Text",
