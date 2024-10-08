@@ -103,7 +103,7 @@
                     this.variableButton.disabled = false;
                     this.listButton.disabled = false;
                     this.objectButton.disabled = true;
-                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.objects_blocks.colourPrimary;
+                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.tables_blocks.colourPrimary;
                     break;
             
                 default:
@@ -232,7 +232,7 @@
                     //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("variables");
                     sugarcube.extensionManager.updateExtensionBlocks("lists");
-                    sugarcube.extensionManager.updateExtensionBlocks("objects");
+                    sugarcube.extensionManager.updateExtensionBlocks("tables");
 
                     this._dispose();
                 }
