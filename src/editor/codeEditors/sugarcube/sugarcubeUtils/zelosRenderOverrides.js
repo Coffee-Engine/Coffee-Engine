@@ -122,7 +122,7 @@
                 type: this.SHAPES.HEXAGONAL,
                 isDynamic: true,
                 width(height) {
-                    height /= 2;
+                    height /= 1.5;
                     return height > maxWidth ? maxWidth : height;
                 },
                 height(height) {
@@ -151,7 +151,7 @@
         
 
         OBJECT = this.makeObject();
-        SWIRL = this.makeCoolShape();
+        REFERENCE = this.makeCoolShape();
 
         shapeFor(connection) {
             let check = connection.getCheck();
@@ -169,6 +169,10 @@
 
                         case "Field_ReporterAcceptance": {
                             return this.SQUARED;
+                        }
+
+                        case "Reference": {
+                            return this.REFERENCE;
                         }
 
                         default: {
@@ -189,6 +193,10 @@
 
                         case "Field_ReporterAcceptance": {
                             return this.SQUARED;
+                        }
+
+                        case "Reference": {
+                            return this.REFERENCE;
                         }
 
                         default: {

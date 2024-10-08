@@ -148,6 +148,14 @@
                     }
                     break;
 
+                case sugarcube.BlockType.REFERENCE:
+                    if (BlockJson.output) {
+                        BlockJson.output = ["Reference"].concat(BlockJson.output);
+                    } else {
+                        BlockJson.output = "Reference";
+                    }
+                    break;
+
                 default:
                     BlockJson.nextStatement = BlockJson.nextStatement || "Action";
                     BlockJson.previousStatement = BlockJson.previousStatement || "Action";
@@ -506,6 +514,12 @@
 
                                             case sugarcube.ArgumentType.ARRAY: {
                                                 argument.check = ["Array", "ANY"];
+                                                argument.type = "input_value";
+                                                break;
+                                            }
+
+                                            case sugarcube.ArgumentType.REFERENCE: {
+                                                argument.check = ["Reference", "ANY"];
                                                 argument.type = "input_value";
                                                 break;
                                             }

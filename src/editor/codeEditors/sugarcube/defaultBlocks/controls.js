@@ -114,6 +114,17 @@
                             },
                         },
                     },
+                    "---",
+                    {
+                        opcode: "call",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "call [reference]",
+                        arguments: {
+                            reference: {
+                                type: sugarcube.ArgumentType.REFERENCE,
+                            },
+                        },
+                    }
                 ],
             };
         }
