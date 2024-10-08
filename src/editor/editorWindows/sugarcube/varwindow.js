@@ -232,6 +232,7 @@
                     //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("variables");
                     sugarcube.extensionManager.updateExtensionBlocks("lists");
+                    sugarcube.extensionManager.updateExtensionBlocks("objects");
 
                     this._dispose();
                 }
