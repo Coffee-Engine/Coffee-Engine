@@ -26,6 +26,8 @@
         REPORTER_ANY: "reporter_any",
 
         FIELD_REPORTERACCEPTANCE: "Field_ReporterAcceptance",
+
+        REFERENCE: "reference",
     };
 
     sugarcube.ArgumentType = {
@@ -50,6 +52,8 @@
 
         OBJECT: "object",
         ARRAY: "array",
+
+        REFERENCE: "reference",
     };
 
     sugarcube.ArgumentDefaultValues = {

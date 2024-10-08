@@ -38,7 +38,7 @@
             };
         }
 
-        getVars() {
+        getObjects() {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
