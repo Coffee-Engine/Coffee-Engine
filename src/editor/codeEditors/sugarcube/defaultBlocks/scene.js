@@ -20,6 +20,11 @@
                         type: sugarcube.BlockType.OBJECT,
                         text: "myself",
                     },
+                    {
+                        opcode: "getRoot",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: "scene root",
+                    },
                     "---",
                     {
                         opcode: "getName",
