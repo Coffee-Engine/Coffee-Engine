@@ -2,8 +2,8 @@
     class objects {
         getInfo() {
             return {
-                id: "objects",
-                name: "Objects",
+                id: "tables",
+                name: "Tables",
                 color1: "#8672FF",
                 color2: "#855CD6",
                 color3: "#774DCB",
@@ -14,10 +14,10 @@
                     {
                         opcode:"openVariableMenu",
                         type: sugarcube.BlockType.BUTTON,
-                        text: "New Object"
+                        text: "New Table"
                     },
                     {
-                        opcode: "getObject",
+                        opcode: "getTable",
                         type: sugarcube.BlockType.OBJECT,
                         text: "",
                         hideFromPalette: true,
@@ -26,7 +26,7 @@
                 ],
                 menus:{
                     varMenu: {
-                        items:"getVars"
+                        items:"getTables"
                     }
                 },
                 mutators: {
@@ -38,7 +38,7 @@
             };
         }
 
-        getObjects() {
+        getTables() {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
@@ -73,7 +73,7 @@
                 varExists = true;
                 returned.push({
                     type: sugarcube.BlockType.DUPLICATE,
-                    of: "getObject",
+                    of: "getTable",
                     extraState: {
                         varData: {
                             color: variable.color,
