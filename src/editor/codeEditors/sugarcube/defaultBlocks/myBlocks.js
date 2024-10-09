@@ -79,16 +79,6 @@
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
                     },
-                    {
-                        opcode: "execute_TEST",
-                        type: sugarcube.BlockType.COMMAND,
-                        text: "[test]",
-                        arguments: {
-                            test: {
-                                type:sugarcube.ArgumentType.REFERENCE
-                            }
-                        },
-                    },
                     /*{
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_command",

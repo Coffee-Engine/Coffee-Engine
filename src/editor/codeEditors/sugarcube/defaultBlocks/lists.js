@@ -105,7 +105,7 @@
                     },
                     {
                         opcode:"getItem",
-                        type: sugarcube.BlockType.REPORTER,
+                        type: sugarcube.BlockType.REPORTER_ANY,
                         text: "item [item] of [list]",
                         hideFromPalette: true,
                         arguments: {

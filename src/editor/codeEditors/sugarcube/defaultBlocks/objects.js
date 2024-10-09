@@ -23,6 +23,42 @@
                         hideFromPalette: true,
                         mutator:"variable_Mutator"
                     },
+                    {
+                        opcode: "setKey",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set [key] in [var] to [val]",
+                        hideFromPalette: true,
+                        arguments: {
+                            key: {
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "Key"
+                            },
+                            var: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "varMenu"
+                            },
+                            val: {
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: 10,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getKey",
+                        type: sugarcube.BlockType.REPORTER_ANY,
+                        text: "get [key] in [var]",
+                        hideFromPalette: true,
+                        arguments: {
+                            key: {
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "Key"
+                            },
+                            var: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "varMenu"
+                            },
+                        },
+                    }
                 ],
                 menus:{
                     varMenu: {
@@ -85,12 +121,16 @@
 
             if (!varExists) return returned;
 
-            //returned.push(
-            //    {
-            //        type: sugarcube.BlockType.DUPLICATE,
-            //        of: "setVariable"
-            //    },
-            //)
+            returned.push(
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "setKey"
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getKey"
+                },
+            );
 
             return returned;
         }
