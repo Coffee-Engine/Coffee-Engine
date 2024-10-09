@@ -23,6 +23,10 @@
                         text: "Define : ",
                         mutator: "hatBlock_Mutator",
                         contextMenu: "removeCustomBlock",
+                        contextMenu: [
+                            "editCustomBlock",
+                            "removeCustomBlock"
+                        ],
                         hideFromPalette: true,
                     },
                     {
@@ -63,6 +67,9 @@
                         text: "",
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
+                        contextMenu: [
+                            "makeReference",
+                        ],
                     },
                     {
                         opcode: "input_reference",
@@ -146,22 +153,22 @@
                     editCustomBlock: {
                         text:"Edit custom block",
                         opcode:"editCustomBlock",
-                        weight:2,
+                        weight:3,
                     },
                     removeCustomBlock: {
                         text:"Remove custom block",
                         opcode:"removeCustomBlock",
-                        weight:3,
+                        weight:4,
                     },
                     makeReference: {
                         text:"Turn into reference",
                         opcode:"makeReference",
-                        weight:4,
+                        weight:5,
                     },
                     makeOriginal: {
                         text:"Turn into block",
                         opcode:"makeBlock",
-                        weight:4,
+                        weight:5,
                     }
                 }
             };

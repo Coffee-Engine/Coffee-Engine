@@ -779,6 +779,7 @@
             }
             else {
                 contextMenu.preconditionFn = (scope) => {
+                    if ((!menuDat.global) && (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type))) return "hidden";
                     return "enabled";
                 }
             }
