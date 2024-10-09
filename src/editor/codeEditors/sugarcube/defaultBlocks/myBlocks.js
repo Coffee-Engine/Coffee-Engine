@@ -65,11 +65,29 @@
                         hideFromPalette: true,
                     },
                     {
+                        opcode: "input_reference",
+                        type: sugarcube.BlockType.REFERENCE,
+                        text: "",
+                        output: ["noClones"],
+                        mutator: "argBlock_Mutator",
+                        hideFromPalette: true,
+                    },
+                    {
                         opcode: "execute_reporter",
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: "",
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
+                    },
+                    {
+                        opcode: "execute_TEST",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "[test]",
+                        arguments: {
+                            test: {
+                                type:sugarcube.ArgumentType.REFERENCE
+                            }
+                        },
                     },
                     /*{
                         type: sugarcube.BlockType.DUPLICATE,
@@ -498,6 +516,46 @@
                     })
                 );
             },
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.statementInput"],
+        "statement",
+        "editor/editorWindows/sugarcube/assets/Statement.png",
+        {
+            createFunction:(input,parent) => {
+                input.style.paddingLeft = "16px";
+                input.style.paddingRight = "16px";
+            },
+            parseFunction:(block,item) => {
+                block.inputFromJson_({
+                    type: "input_statement",
+                    name: item.id,
+                });
+            },
+            declaration:"myblocks_input_reference"
+        }
+    );
+
+    sugarcube.customBlocks.addCustomFieldToPrompt(
+        editor.language["editor.window.createBlock.referenceInput"],
+        "reference",
+        "editor/editorWindows/sugarcube/assets/Reference.png",
+        {
+            createFunction:(input) => {
+                input.style.paddingLeft = "16px";
+                input.style.paddingRight = "16px";
+                input.style.clipPath = "polygon(4px 37.5%, 12px 25%, 16px 0%, calc(100% - 16px) 0%, calc(100% - 12px) 25%, calc(100% - 4px) 37.5%, 100% 50%, calc(100% - 4px) 62.5%, calc(100% - 12px) 75%, calc(100% - 16px) 100%, 16px 100%,12px 75%, 4px 62.5%, 0% 50%)";
+            },
+            parseFunction:(block,item) => {
+                block.inputFromJson_({
+                    type: "input_value",
+                    name: item.id,
+                    check: ["Reference", "ANY"],
+                });
+            },
+            declaration:"myblocks_input_reference"
         }
     );
 

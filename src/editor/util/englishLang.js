@@ -74,4 +74,6 @@ editor.EnglishLang = {
     "editor.window.createBlock.objectInput": "Object",
     "editor.window.createBlock.booleanInput": "Boolean",
     "editor.window.createBlock.addLabel": "Label",
+    "editor.window.createBlock.statementInput": "Statement",
+    "editor.window.createBlock.referenceInput": "Function",
 };

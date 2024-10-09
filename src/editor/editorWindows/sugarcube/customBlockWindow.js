@@ -83,7 +83,7 @@
 
                     newParam.element = element;
 
-                    if (fieldType.createFunction) fieldType.createFunction(element);
+                    if (fieldType.createFunction) fieldType.createFunction(element,blockDiv);
 
                     blockDiv.appendChild(element);
                     params.push(newParam);
