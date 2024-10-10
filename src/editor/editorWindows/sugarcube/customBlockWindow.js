@@ -147,7 +147,8 @@
 
                     sugarcube.customBlocks.blockFromDefinition({
                         parameters:params,
-                        color:colorInput.value
+                        color:colorInput.value,
+                        returns:"string"
                     });
                     //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("myblocks");

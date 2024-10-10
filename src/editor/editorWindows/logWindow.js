@@ -49,6 +49,12 @@
                         displayEl.style.userSelect = "text";
                         displayEl.style.cursor = "auto";
                         displayEl.innerHTML = "<p style=\"margin:0px;\">{</p>";
+                        
+                        if (!obj) {
+                            "<p style=\"margin:0px;\">Nothing</p>"
+                            return;
+                        }
+
                         Object.keys(obj).forEach(key => {
                             const innerEl = document.createElement("div");
                             innerEl.innerText = `${key}:`;

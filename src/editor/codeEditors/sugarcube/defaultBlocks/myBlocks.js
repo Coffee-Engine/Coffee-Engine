@@ -198,6 +198,7 @@
 
         command_Deserialize(state, block) {
             if (state.parameters) {
+                console.log(block);
                 state.parameters.forEach((item) => {
                     const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
                         return field.Type == item.type;
@@ -333,6 +334,7 @@
             //block._shouldDuplicate_ = state._shouldDuplicate_;
 
             if (state.name) {
+                //I'm gonna piss myself
                 block.inputFromJson_({
                     type: "input_dummy",
                     name: `variableName`,
