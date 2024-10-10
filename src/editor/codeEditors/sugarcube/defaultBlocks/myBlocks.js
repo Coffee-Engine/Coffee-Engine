@@ -62,6 +62,14 @@
                         hideFromPalette: true,
                     },
                     {
+                        opcode: "input_reference",
+                        type: sugarcube.BlockType.REFERENCE,
+                        text: "",
+                        output: ["noClones"],
+                        mutator: "argBlock_Mutator",
+                        hideFromPalette: true,
+                    },
+                    {
                         opcode: "execute_command",
                         type: sugarcube.BlockType.COMMAND,
                         text: "",
@@ -70,14 +78,6 @@
                         contextMenu: [
                             "makeReference",
                         ],
-                    },
-                    {
-                        opcode: "input_reference",
-                        type: sugarcube.BlockType.REFERENCE,
-                        text: "",
-                        output: ["noClones"],
-                        mutator: "argBlock_Mutator",
-                        hideFromPalette: true,
                     },
                     {
                         opcode: "execute_reporter",

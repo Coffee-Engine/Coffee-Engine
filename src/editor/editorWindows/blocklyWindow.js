@@ -66,6 +66,11 @@
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/myBlocks.js");
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/debugger.js");
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
+            
+            // This should be called on page load. It can be called before or after
+            // you inject your workspace.
+            Blockly.ContextMenuItems.registerCommentOptions();
+            
         }
 
         resized() {
