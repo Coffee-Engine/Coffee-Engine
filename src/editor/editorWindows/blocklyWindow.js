@@ -48,6 +48,10 @@
             //sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;
 
             sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
+
+            //Remove default comments
+            Blockly.ContextMenuRegistry.registry.unregister("blockComment");
+            
             //sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
 
             //Load our base categories
@@ -66,11 +70,6 @@
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/myBlocks.js");
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/debugger.js");
             sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
-            
-            // This should be called on page load. It can be called before or after
-            // you inject your workspace.
-            Blockly.ContextMenuItems.registerCommentOptions();
-            
         }
 
         resized() {
