@@ -48,9 +48,6 @@
             //sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;
 
             sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
-
-            //Remove default comments
-            Blockly.ContextMenuRegistry.registry.unregister("blockComment");
             
             //sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
 
