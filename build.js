@@ -2,6 +2,8 @@
 This file compiles everything into a single html file while adding the essential files.
 It also makes an IN RAM filesystem.
 So yeah this is just for people who can't/don't want to download the main editor
+
+use node build.js
 */
 const fs = require("fs");
 const readline = require("readline").createInterface({
