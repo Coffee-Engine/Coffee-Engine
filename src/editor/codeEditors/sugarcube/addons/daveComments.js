@@ -34,26 +34,21 @@
 
             //Attach the comment to a block
             if (scope.block) {
-                rect.setAttribute("x", -125);
-                rect.setAttribute("y", 0);
-                bar.setAttribute("x", -125);
-                bar.setAttribute("y", 0);
+                rect.setAttribute("x", scope.block.relativeCoords.x-125);
+                rect.setAttribute("y", scope.block.relativeCoords.y);
+                bar.setAttribute("x", scope.block.relativeCoords.x-125);
+                bar.setAttribute("y", scope.block.relativeCoords.y);
 
                 //The background
                 rect.style.fill = scope.block.style.colourPrimary;
-                rect.style.stroke = scope.block.style.colourSecondary;
+                rect.style.stroke = scope.block.style.colourTertiary;
 
                 //The bar
-                bar.style.fill = scope.block.style.colourTertiary;
-                bar.style.stroke = scope.block.style.colourSecondary;
-
-                scope.block.svgGroup_.appendChild(group);
-
-                //Stop if we aren't in the workspace
-                return;
+                bar.style.fill = scope.block.style.colourSecondary;
+                bar.style.stroke = scope.block.style.colourTertiary;
             }
 
-            sugarcube.addElementToWorkspace();
+            sugarcube.addElementToWorkspace(group);
         },
         scopeType:Blockly.ContextMenuRegistry.ScopeType.BLOCK,
     };
