@@ -32,6 +32,16 @@
 
             console.log(scope,e);
 
+            browserEvents.bind(
+                bar,
+                'pointerdown',
+                this,
+                (event) => {
+                    event.stopImmediatePropagation();
+                    console.log(event);
+                },
+              );
+
             //Attach the comment to a block
             if (scope.block) {
                 rect.setAttribute("x", scope.block.relativeCoords.x-125);
@@ -52,6 +62,24 @@
         },
         scopeType:Blockly.ContextMenuRegistry.ScopeType.BLOCK,
     };
+
+    const browserEvents = Blockly.browserEvents;
+
+    class daveComment {
+        constructor(workspace) {
+            this.workspace = workspace;
+        }
+
+        init() {
+            this.group = sugarcube.createSVGEL("g");
+
+            this.workspace.getComponentManager().addComponent({
+                component: this,
+                weight: 2,
+                capabilities: [Blockly.ComponentManager.Capability.DRAG_TARGET],
+            });
+        }
+    }
 
 
     Blockly.ContextMenuRegistry.registry.unregister("blockComment");
