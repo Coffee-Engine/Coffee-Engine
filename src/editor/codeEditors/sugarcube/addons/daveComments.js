@@ -44,8 +44,8 @@
                 rect.style.stroke = scope.block.style.colourSecondary;
 
                 //The bar
-                bar.style.fill = scope.block.style.colourSecondary;
-                bar.style.stroke = scope.block.style.colourTertiary;
+                bar.style.fill = scope.block.style.colourTertiary;
+                bar.style.stroke = scope.block.style.colourSecondary;
 
                 scope.block.svgGroup_.appendChild(group);
 
