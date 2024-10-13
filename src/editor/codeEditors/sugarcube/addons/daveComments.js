@@ -9,11 +9,13 @@
         set x(value) {
             this.rect.setAttribute("x", value);
             this.bar.setAttribute("x", value);
+            this.foreignObject.setAttribute("x", value);
             this.#x = value;
         }
         set y(value) {
             this.rect.setAttribute("y", value);
             this.bar.setAttribute("y", value);
+            this.foreignObject.setAttribute("y", value + 20);
             this.#y = value;
         }
 
@@ -52,21 +54,90 @@
             return this.#c3;
         }
 
+        #width = 0;
+        #height = 0;
+
+        set width(value) {
+            this.rect.setAttribute("width",value);
+            this.bar.setAttribute("width",value);
+            this.foreignObject.setAttribute("width",value);
+            this.#width = value;
+        }
+        set height(value) {
+            this.rect.setAttribute("height",value);
+            this.foreignObject.setAttribute("height",value - 20);
+            this.#height = value;
+        }
+
+        get width() {
+            return this.#width;
+        }
+        get height() {
+            return this.#height;
+        }
+
         constructor(x,y) {
             this.group = sugarcube.createSVGEL("g");
             this.rect = sugarcube.createSVGEL("rect");
             this.bar = sugarcube.createSVGEL("rect");
+            this.foreignObject = sugarcube.createSVGEL("foreignObject");
+            this.text = document.createElement("textarea");
+
+            //Style the text area
+            this.text.style.width = "100%";
+            this.text.style.height = "100%";
+            this.text.style.margin = "0px";
+            this.text.style.padding = "0px";
+            this.text.style.top = "0px";
+            this.text.style.left = "0px";
+            this.text.style.position = "absolute";
+            this.text.style.backgroundColor = "#00000000";
+            this.text.style.borderStyle = "none";
+            this.text.style.borderWidth = "0px";
+            this.text.placeholder = "comment here!";
+
+            this.text.onresize = () => {
+                this.width = this.text.width;
+                this.height = this.text.height;
+            }
+
+            browserEvents.bind(
+                this.foreignObject,
+                'pointerdown',
+                this,
+                () => {
+                    this.dragging = browserEvents.bind(document,"pointermove",this,(event) => {
+                        console.log(this.text.clientHeight)
+                        this.width = this.text.clientWidth;
+                        this.height = this.text.clientHeight + 20;
+                    });
+
+                    this.up = browserEvents.bind(
+                        document,
+                        'pointerup',
+                        this,
+                        () => {
+                            if (this.dragging) {
+                                browserEvents.unbind(this.dragging);
+                                browserEvents.unbind(this.up);
+                                this.dragging = null;
+                                this.up = null;
+                            }
+                        },
+                    );
+            });
+            this.foreignObject.appendChild(this.text);
     
             //Style the comment temporarily
-            this.rect.setAttribute("width",100);
-            this.rect.setAttribute("height",100);
             this.rect.setAttribute("rx",2.5);
             this.rect.setAttribute("ry",2.5);
 
             this.bar.setAttribute("rx",2.5);
             this.bar.setAttribute("ry",2.5);
-            this.bar.setAttribute("width",100);
             this.bar.setAttribute("height",20);
+
+            this.width = 100;
+            this.height = 100;
             
             this.rect.style.strokeWidth = "2px";
             this.bar.style.strokeWidth = "2px";
@@ -77,7 +148,7 @@
                 this,
                 (event) => {
                     event.stopImmediatePropagation();
-                    this.dragging = browserEvents.bind(document,"pointermove",this,(event) => {
+                    this.dragging = browserEvents.bind(document,"pointermove",document,(event) => {
                         this.x += event.movementX / sugarcube.workspace.scale;
                         this.y += event.movementY / sugarcube.workspace.scale;
                         console.log(event);
@@ -86,7 +157,7 @@
                     this.up = browserEvents.bind(
                         document,
                         'pointerup',
-                        this,
+                        document,
                         () => {
                             if (this.dragging) {
                                 browserEvents.unbind(this.dragging);
@@ -105,6 +176,7 @@
 
             this.group.appendChild(this.rect);
             this.group.appendChild(this.bar);
+            this.group.appendChild(this.foreignObject);
             sugarcube.addElementToWorkspace(this.group);
         }
     }
