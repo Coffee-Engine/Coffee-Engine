@@ -81,7 +81,9 @@
             this.rect = sugarcube.createSVGEL("rect");
             this.bar = sugarcube.createSVGEL("rect");
             this.foreignObject = sugarcube.createSVGEL("foreignObject");
-            this.text = document.createElement("textarea");
+            this.text = document.createElement("p");
+
+            this.text.contentEditable = true;
 
             //Style the text area
             this.text.style.width = "100%";
@@ -96,18 +98,13 @@
             this.text.style.borderWidth = "0px";
             this.text.placeholder = "comment here!";
 
-            this.text.onresize = () => {
-                this.width = this.text.width;
-                this.height = this.text.height;
-            }
-
+            //Resizing
             browserEvents.bind(
                 this.foreignObject,
                 'pointerdown',
                 this,
                 () => {
-                    this.dragging = browserEvents.bind(document,"pointermove",this,(event) => {
-                        console.log(this.text.clientHeight)
+                    this.dragging = browserEvents.bind(document,"pointermove",this,() => {
                         this.width = this.text.clientWidth;
                         this.height = this.text.clientHeight + 20;
                     });
@@ -136,12 +133,15 @@
             this.bar.setAttribute("ry",2.5);
             this.bar.setAttribute("height",20);
 
+            //Set the temporary width and height
             this.width = 100;
             this.height = 100;
             
+            //Stroke stuff
             this.rect.style.strokeWidth = "2px";
             this.bar.style.strokeWidth = "2px";
             
+            //The movement and stuff
             browserEvents.bind(
                 this.bar,
                 'pointerdown',
@@ -178,33 +178,52 @@
             this.group.appendChild(this.bar);
             this.group.appendChild(this.foreignObject);
             sugarcube.addElementToWorkspace(this.group);
+
+            this.color1 = "#fef49c";
+            this.color2 = "#bcA903";
+            this.color3 = "#e4db8c";
         }
     }
 
-    const contextMenu = {
+    const commentCallback = (scope, e) => {
+        //Setup our comment structure
+        const comment = new daveComment(0,0);
+
+        //Attach the comment to a block
+        console.log(scope);
+        if (scope.block) {
+            comment.x = scope.block.relativeCoords.x-125;
+            comment.y = scope.block.relativeCoords.y;
+            comment.color1 = scope.block.style.colourPrimary;
+            comment.color2 = scope.block.style.colourSecondary;
+            comment.color3 = scope.block.style.colourTertiary;
+        }
+        else if (scope.workspace) {
+            comment.x = scope.workspace.scrollX;
+            comment.y = scope.workspace.scrollY;
+        }
+    }
+
+    const contextMenuBlock = {
         displayText:"Add Comment",
-        id:"sugarcube_comment",
+        id:"sugarcube_commentBlock",
         preconditionFn: () => {
             return "enabled";
         },
-        callback: (scope, e) => {
-            //Setup our comment structure
-            const comment = new daveComment(0,0);
-
-            //Attach the comment to a block
-            if (scope.block) {
-                comment.x = scope.block.relativeCoords.x-125;
-                comment.y = scope.block.relativeCoords.y;
-                comment.color1 = scope.block.style.colourPrimary;
-                comment.color2 = scope.block.style.colourSecondary;
-                comment.color3 = scope.block.style.colourTertiary;
-            }
-        },
+        callback: commentCallback,
         scopeType:Blockly.ContextMenuRegistry.ScopeType.BLOCK,
+    };
+    const contextMenuWorkspace = {
+        displayText:"Add Comment",
+        id:"sugarcube_commentWorkspace",
+        preconditionFn: () => {
+            return "enabled";
+        },
+        callback: commentCallback,
+        scopeType:Blockly.ContextMenuRegistry.ScopeType.WORKSPACE,
     };
 
     Blockly.ContextMenuRegistry.registry.unregister("blockComment");
-    Blockly.ContextMenuRegistry.registry.register(contextMenu);
-
-    console.log(contextMenu);
+    Blockly.ContextMenuRegistry.registry.register(contextMenuBlock);
+    Blockly.ContextMenuRegistry.registry.register(contextMenuWorkspace);
 })();
