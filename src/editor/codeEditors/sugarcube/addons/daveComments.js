@@ -34,12 +34,12 @@
         }
         set color2(value) {
             this.#c2 = value;
-            this.bar.style.fill = value;
+            this.rect.style.stroke = value;
             this.bar.style.stroke = value;
         }
         set color3(value) {
             this.#c3 = value;
-            this.rect.style.stroke = value;
+            this.bar.style.fill = value;
         }
 
         get color1() {
@@ -77,22 +77,26 @@
                 this,
                 (event) => {
                     event.stopImmediatePropagation();
-                    this.dragging = browserEvents.bind(this.bar,"pointermove",this,(event) => {
+                    this.dragging = browserEvents.bind(document,"pointermove",this,(event) => {
+                        this.x += event.movementX / sugarcube.workspace.scale;
+                        this.y += event.movementY / sugarcube.workspace.scale;
                         console.log(event);
                     });
-                    console.log(event);
-                },
-            );
 
-            browserEvents.bind(
-                this.bar,
-                'pointerup',
-                this,
-                () => {
-                    if (this.dragging) {
-                        browserEvents.unbind(this.dragging);
-                        this.dragging = null;
-                    }
+                    this.up = browserEvents.bind(
+                        document,
+                        'pointerup',
+                        this,
+                        () => {
+                            if (this.dragging) {
+                                browserEvents.unbind(this.dragging);
+                                browserEvents.unbind(this.up);
+                                this.dragging = null;
+                                this.up = null;
+                            }
+                        },
+                    );
+                    console.log(event);
                 },
             );
 
