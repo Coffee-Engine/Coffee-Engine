@@ -82,6 +82,22 @@
             this.bar = sugarcube.createSVGEL("rect");
             this.foreignObject = sugarcube.createSVGEL("foreignObject");
             this.text = document.createElement("p");
+            this.dragger = document.createElement("svg");
+            
+            //Dragger icon and stuff
+            this.dragger.innerHTML = `
+            <g class="scratchCommentResizeSE" transform="translate(182,182)">
+                <polygon points="-8 20 20 20 20 -8"></polygon>
+                <line style="stroke:#888;" x1="5.333333333333333" y1="15" x2="15" y2="5.333333333333333"></line>
+                <line style="stroke:#888;" x1="10.666666666666666" y1="15" x2="15" y2="10.666666666666666"></line>
+            </g>`;
+            this.dragger.style.position = "absolute";
+            this.dragger.style.top = "100%";
+            this.dragger.style.left = "100%";
+            this.dragger.style.transform = "translate(-100%,-100%)";
+            this.dragger.setAttributeNS("http://www.w3.org/2000/svg", "viewbox", "0 0 24 24"); 
+            this.dragger.setAttributeNS("http://www.w3.org/2000/svg", "width", "24");
+            this.dragger.setAttributeNS("http://www.w3.org/2000/svg", "height", "24");
 
             this.text.contentEditable = true;
 
@@ -124,6 +140,7 @@
                     );
             });
             this.foreignObject.appendChild(this.text);
+            this.foreignObject.appendChild(this.dragger);
     
             //Style the comment temporarily
             this.rect.setAttribute("rx",2.5);
