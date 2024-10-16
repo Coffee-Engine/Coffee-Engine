@@ -7,6 +7,7 @@ use node build.mjs
 */
 
 //Import our build tools
+import { type } from "os";
 import htmlBuilder from "./src/buildTools/buildHtml.mjs";
 //Add our build tools here
 const buildTools = [htmlBuilder];
@@ -67,18 +68,40 @@ function build() {
             colorLog("Data saved",colors.BackGreen);
         }
     });
+
+    colorLog("What would you like to build for?",colors.BackCyan);
+    for (let i = 0; i < buildTools.length; i++) {
+        const tools = buildTools[i];
+        console.log(`[${i}] : ${tools.DISPLAY_NAME}`);
+    }
+
+    readline.question("\x1b[32m Build Type Number \x1b[0m: ", (buildTool) => {
+        //Scan for valid stuff
+        let typeNumber = Number(buildTool);
+        if (isNaN(typeNumber) || !(isFinite(typeNumber))) {
+            colorLog(`Invalid Index! ${typeNumber}`,colors.BackRed);
+            process.exit();
+        };
+
+        //Make sure the number is valid.
+        if (!buildTools[typeNumber]) {
+            colorLog(`Invalid Index! ${typeNumber}`,colors.BackRed);
+            process.exit();
+        }
+
+        //Notify that the build has started
+        colorLog("Build start",colors.Green);
+        colorLog(`Build Number ${buildData[1]}`,colors.Cyan);
     
-    //Notify that the build has started
-    colorLog("Build start",colors.Green);
-    colorLog(`Build Number ${buildData[1]}`,colors.Cyan);
 
-    //Get the main html file.
-    let html = fs.readFileSync("src/editor.html", {
-        encoding: "utf8",
-        flag: "r",
+        //Get the main html file.
+        let html = fs.readFileSync("src/editor.html", {
+            encoding: "utf8",
+            flag: "r",
+        });
+    
+        buildTools[typeNumber].BUILD(html,buildData);
+    
+        process.exit();
     });
-
-    buildTools[0].BUILD(html,buildData);
-
-    process.exit();
 }

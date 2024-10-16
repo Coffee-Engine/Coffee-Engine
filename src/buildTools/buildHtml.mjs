@@ -2,6 +2,7 @@ import {colors, colorLog, toDataUri} from "./helperFunctions.mjs";
 import * as fs from 'fs';
 
 const HTMLExport = {
+    DISPLAY_NAME:`${colors.Yellow}Single HTML file`,
     BUILD: (html, buildData) => {
         //Make a virtual filesystem
         const inRamFS = {};
