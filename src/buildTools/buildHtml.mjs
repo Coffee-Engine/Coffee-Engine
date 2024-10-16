@@ -7,10 +7,10 @@ const HTMLExport = {
         const inRamFS = {};
         fs.readdirSync("src",{recursive:true}).forEach(filePath => {
             filePath = filePath.replaceAll("\\","/");
-            //Exclude anything from BuildTools!
-            if (filePath.includes("src/buildTools")) return;
+            //Exclude anything from BuildTools, and compilation COMPAT!
+            if (filePath.includes("buildTools/") || filePath.includes("htmlCompilationCompat/")) return;
 
-            if (filePath.includes(".") && !(filePath.includes(".js") || filePath.includes(".html") || filePath.includes(".css"))) {
+            if (filePath.includes(".") && !(filePath.includes(".html") || filePath.includes(".css"))) {
                 let thing = inRamFS;
                 filePath.split("/").forEach(split => {
                     console.log(split);
