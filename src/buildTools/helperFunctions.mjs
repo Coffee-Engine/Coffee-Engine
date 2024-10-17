@@ -18,6 +18,8 @@ const colors = {
     BackMagenta:"\x1b[35m",
     BackCyan:"\x1b[36m",
     BackWhite:"\x1b[37m",
+
+    reset:"\x1b[0m"
 };
 
 //Just so we can have our colors setup properly

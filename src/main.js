@@ -14,7 +14,7 @@ function createWindow () {
     }
   })
 
-  win.loadFile('src/editor.html')
+  win.loadFile('src/index.html');
 }
 
 app.whenReady().then(() => {

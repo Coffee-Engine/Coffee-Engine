@@ -8,8 +8,9 @@ use node build.mjs
 
 //Import our build tools
 import htmlBuilder from "./src/buildTools/buildHtml.mjs";
+import tauriBuilder from "./src/buildTools/buildTauri.mjs";
 //Add our build tools here
-const buildTools = [htmlBuilder];
+const buildTools = [htmlBuilder,tauriBuilder.linux];
 
 
 import {colors, colorLog} from "./src/buildTools/helperFunctions.mjs";
@@ -71,7 +72,7 @@ function build() {
     colorLog("What would you like to build for?",colors.BackCyan);
     for (let i = 0; i < buildTools.length; i++) {
         const tools = buildTools[i];
-        console.log(`[${i}] : ${tools.DISPLAY_NAME}`);
+        console.log(`[${i}] : ${tools.DISPLAY_NAME}\x1b[0m`);
     }
 
     readline.question("\x1b[32m Build Type Number \x1b[0m: ", (buildTool) => {
@@ -94,7 +95,7 @@ function build() {
     
 
         //Get the main html file.
-        let html = fs.readFileSync("src/editor.html", {
+        let html = fs.readFileSync("src/index.html", {
             encoding: "utf8",
             flag: "r",
         });
