@@ -9,8 +9,9 @@ use node build.mjs
 //Import our build tools
 import htmlBuilder from "./src/buildTools/buildHtml.mjs";
 import tauriBuilder from "./src/buildTools/buildTauri.mjs";
+import electronBuilder from "./src/buildTools/buildElectron.mjs";
 //Add our build tools here
-const buildTools = [htmlBuilder,tauriBuilder.linux];
+const buildTools = [htmlBuilder,electronBuilder,tauriBuilder];
 
 
 import {colors, colorLog} from "./src/buildTools/helperFunctions.mjs";
