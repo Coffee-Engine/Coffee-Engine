@@ -10,16 +10,6 @@ const ElectronExport = {
             flag: "r",
         }));
 
-        //Configure the version number
-        tauriConfig.version = `0.${buildData[1]}.0`;
-        fs.writeFileSync("src-tauri/tauri.conf.json", JSON.stringify(tauriConfig), (err) => {
-            if (err) {
-                colorLog("Version saving failed",colors.BackRed);
-            } else {
-                colorLog("Version saved",colors.BackGreen);
-            }
-        });
-
         //build the executable
         //This part is outta my hands
         console.log("Building, this may take a bit")

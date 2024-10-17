@@ -2,7 +2,7 @@ import {colors, colorLog, toDataUri} from "./helperFunctions.mjs";
 import * as exec from "child_process";
 import * as fs from 'fs';
 
-const TuariExport = {
+const TauriExport = {
     DISPLAY_NAME:`${colors.Cyan}Tau${colors.Yellow}ri ${colors.Blue} (Current Platform)`,
     BUILD: (html, buildData) => {
         const tauriConfig = JSON.parse(fs.readFileSync("src-tauri/tauri.conf.json", {
@@ -35,4 +35,4 @@ const TuariExport = {
 };
 
 
-export default TuariExport;
+export default TauriExport;
