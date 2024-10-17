@@ -6,11 +6,15 @@ function createWindow () {
     width: 800,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js')
+      //preload: path.join(__dirname, 'preload.js')
+
+      //From https://stackoverflow.com/questions/55785565/how-do-i-blur-an-electron-browserwindow-with-transparency thanks anon!
+      vibrancy: 'fullscreen-ui',    // on MacOS
+      backgroundMaterial: 'acrylic' // on Windows 11
     }
   })
 
-  win.loadFile('index.html')
+  win.loadFile('src/editor.html')
 }
 
 app.whenReady().then(() => {
