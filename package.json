@@ -1,5 +1,19 @@
 {
+  "name": "coffee-engine",
+  "productName": "coffee-engine",
+  "version": "1.0.0",
+  "description": "A free and open source game engine created by Obvious Studios",
+  "main": "src/main.js",
+  "keywords": [],
+  "author": {
+    "name": "ObviousAlexC",
+    "email": "76855369+David-Orangemoon@users.noreply.github.com"
+  },
+  "license": "MIT",
   "devDependencies": {
     "electron": "^33.0.1"
+  },
+  "scripts": {
+    "start": "electron ."
   }
 }
