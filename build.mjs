@@ -7,7 +7,6 @@ use node build.mjs
 */
 
 //Import our build tools
-import { type } from "os";
 import htmlBuilder from "./src/buildTools/buildHtml.mjs";
 //Add our build tools here
 const buildTools = [htmlBuilder];
