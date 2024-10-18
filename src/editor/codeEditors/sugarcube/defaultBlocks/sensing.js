@@ -21,6 +21,12 @@
                             },
                         },
                     },
+                    "---",
+                    {
+                        opcode: "timer",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "timer"
+                    }
                 ],
                 menus: {
                     keys: {
@@ -33,6 +39,10 @@
 
         isKeyDown({ key }) {
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.keys[key]);
+        }
+
+        timer() {
+            return coffeeEngine.timer;
         }
     }
 

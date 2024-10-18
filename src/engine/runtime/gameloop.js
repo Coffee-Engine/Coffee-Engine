@@ -2,6 +2,7 @@
     coffeeEngine.runtime.frameloopFunction = () => {
         coffeeEngine.runtime.updateDelta();
         if (!coffeeEngine.runtime.paused) {
+            coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
             coffeeEngine.runtime.update(coffeeEngine.runtime.deltaTime);
             coffeeEngine.runtime.draw();
         }

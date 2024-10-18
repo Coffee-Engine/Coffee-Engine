@@ -6,6 +6,7 @@ const coffeeEngine = {
     classes: {},
     resources: {},
     renderer: {},
+    timer: 0,
     addEventListener:(event, func) => {
         if (typeof coffeeEngine.events[event] != "object") return;
 

@@ -168,6 +168,10 @@
                 args.statement();
             }
         }
+
+        call(args) {
+            args.reference();
+        }
     }
 
     sugarcube.extensionManager.registerExtension(new controls());
