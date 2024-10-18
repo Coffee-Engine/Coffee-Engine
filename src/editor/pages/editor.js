@@ -25,7 +25,7 @@
                 height:100%;
 
                 display:grid;
-                grid-template-rows: 16px auto;
+                grid-template-rows: 16px calc(100% - 16px);
             }
 
             .dropdownsTopbar {
@@ -108,6 +108,8 @@
                 width:100%;
 
                 overflow:hidden;
+
+                position:relative;
             
                 display: grid;
 
@@ -163,8 +165,8 @@
 
                     let rowPercentage = "";
                     editor.layout.layout[ID].contents.forEach(window => {
-                        if (!window.content.resized) return;
                         rowPercentage += window.size + "% ";
+                        if (!window.content.resized) return;
                         window.content.resized();
                     })
 

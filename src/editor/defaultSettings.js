@@ -53,7 +53,7 @@ editor.settingDefs = {
             type: "dropdown",
             values: ["arrows", "ifNeeded", "always"],
             onChange: (value) => {
-                editor.taskbarStyle = value;
+                editor.tabStyle = value;
             },
         },
     },
