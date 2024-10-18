@@ -21,6 +21,27 @@
                             },
                         },
                     },
+                    {
+                        opcode: "mouseDown",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: "[button] mouse button down",
+                        arguments: {
+                            button: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "mouseButtons",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "mouseX",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "mouse x",
+                    },
+                    {
+                        opcode: "mouseY",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "mouse y",
+                    },
                     "---",
                     {
                         opcode: "timer",
@@ -33,12 +54,24 @@
                         items: sugarcube.commonKeys,
                         acceptReporters: true,
                     },
+                    mouseButtons: {
+                        items: [
+                            {text:"primary", value:"0"},
+                            {text:"secondary", value:"2"},
+                            {text:"tertiary", value:"1"},
+                        ],
+                        acceptReporters: true,
+                    }
                 },
             };
         }
 
         isKeyDown({ key }) {
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.keys[key]);
+        }
+
+        mouseDown({ button }) {
+            return false;
         }
 
         timer() {
