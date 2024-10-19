@@ -119,12 +119,29 @@
                     {
                         opcode: "controllerAxis",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "axis [axis] of controller",
+                        text: "axis [axis] of controller [id]",
                         arguments: {
                             axis: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Controller"
                             },
+                            id: {
+                                menu: "controllers"
+                            }
+                        },
+                    },
+                    {
+                        opcode: "controllerButton",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: "is [axis] down on controller [id]",
+                        arguments: {
+                            axis: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Controller"
+                            },
+                            id: {
+                                menu: "controllers"
+                            }
                         },
                     },
                     "---",
@@ -144,6 +161,15 @@
                             {text:"primary", value:"0"},
                             {text:"secondary", value:"2"},
                             {text:"tertiary", value:"1"},
+                        ],
+                        acceptReporters: true,
+                    },
+                    controllers: {
+                        items: [
+                            "1",
+                            "2",
+                            "3",
+                            "4"
                         ],
                         acceptReporters: true,
                     }
@@ -173,6 +199,9 @@
         mouseDown({ button }) {
             return false;
         }
+
+        controllerAxis() {}
+        controllerButton() {}
 
         timer() {
             return coffeeEngine.timer;
