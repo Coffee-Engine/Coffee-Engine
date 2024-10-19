@@ -73,7 +73,7 @@
     </g>
 </svg>`;
 
-        controllerAxisSVG = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"
+        controllerAxisSVG = `<svg version="1.1" style="width:100%; height:100%; padding:0px; margin:0px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"
     height="340.84147" viewBox="0,0,279.53576,340.84147">
     <g transform="translate(-100.23211,-9.57927)">
         <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="#ffffff"
@@ -130,15 +130,15 @@
             <path
                 d="M345.23961,118.43914c0,0 -4.53448,5.33814 -14.67152,11.37681c-12.46883,7.42772 -39.66803,8.72321 -89.51153,8.47995c-42.24458,-0.20618 -70.89973,0.21688 -85.56429,-6.86088c-16.77088,-8.09436 -20.7319,-12.99587 -20.7319,-12.99587c0,0 -22.3672,-18.88154 -30.22,-45.48364c-8.10716,-27.46379 -1.37059,-62.6711 20.83593,-62.37438c31.88266,0.42601 53.37655,52.68905 53.37655,52.68905c0,0 40.15391,1.75196 60.43195,1.75196c20.54976,0 62.06232,-1.75196 62.06232,-1.75196c0,0 21.4939,-52.26305 53.37655,-52.68905c22.20652,-0.29672 28.94309,34.91058 20.83593,62.37437c-7.8528,26.6021 -30.22,45.48363 -30.22,45.48363z"
                 fill="none" stroke-width="2" stroke-linecap="round" />
-            <path
+            <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-trigger"
                 d="M174.69727,97.91381c0,0 -14.65452,6.03367 -21.75472,7.26594c-6.68003,1.15935 -19.66293,-0.07774 -19.66293,-0.07774c0,0 -8.42564,-41.92656 16.22015,-47.46047c18.98057,-4.26185 25.1975,40.27228 25.1975,40.27228z"
-                fill="#000000" stroke-width="3" stroke-linecap="round" />
+                fill="#2E8EB8" stroke-width="3" stroke-linecap="round" />
             <path
                 d="M174.69727,97.57153c0,0 5.88638,2.70289 9.64299,3.48203c3.9366,0.81648 13.4619,1.31009 13.4619,1.31009v32.34684c0,0 -30.64465,0.1625 -41.44989,-4.55007c-20.98868,-9.15393 -22.90149,-24.71612 -22.90149,-24.71612"
                 fill="none" stroke-width="3" stroke-linecap="round" />
-            <path
+            <path style="cursor:pointer;" class="coffee-engine-controller-button" name="right-trigger"
                 d="M305.38375,97.89855c0,0 6.21693,-44.53413 25.19749,-40.27228c24.64579,5.53391 16.22015,47.46047 16.22015,47.46047c0,0 -14.43722,0.88125 -21.29303,-0.30861c-6.94881,-1.20599 -20.12462,-6.87958 -20.12462,-6.87958z"
-                data-paper-data="{&quot;index&quot;:null}" fill="#000000" stroke-width="3" stroke-linecap="round" />
+                data-paper-data="{&quot;index&quot;:null}" fill="#2E8EB8" stroke-width="3" stroke-linecap="round" />
             <path
                 d="M346.63025,105.42904c0,0 -1.91281,15.56219 -22.90149,24.71612c-10.80524,4.71256 -41.44989,4.55007 -41.44989,4.55007v-32.34684c0,0 9.5253,-0.49361 13.4619,-1.31009c3.75661,-0.77915 9.64299,-3.48203 9.64299,-3.48203"
                 data-paper-data="{&quot;index&quot;:null}" fill="none" stroke-width="3" stroke-linecap="round" />
@@ -148,31 +148,31 @@
             <path
                 d="M168.99385,212.56489l8.24784,7.20952c0,0 -4.54325,4.32967 -8.059,4.32967c-3.69547,0 -8.36177,-4.32967 -8.36177,-4.32967z"
                 data-paper-data="{&quot;index&quot;:null}" fill="#ffffff" stroke-width="0" stroke-linecap="butt" />
-            <g fill="#000000" stroke-width="0" stroke-linecap="butt">
-                <path
+            <g fill="#2E8EB8" stroke-width="0" stroke-linecap="butt">
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-stick-y"
                     d="M160.7641,205.24275c0,0 4.76333,-4.23263 8.4588,-4.23263c3.51575,0 8.15603,4.23263 8.15603,4.23263l-8.34488,7.30655z" />
-                <path
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-stick-y"
                     d="M168.99385,212.56489l8.24784,7.20952c0,0 -4.54325,4.32967 -8.059,4.32967c-3.69547,0 -8.36177,-4.32967 -8.36177,-4.32967z"
                     data-paper-data="{&quot;index&quot;:null}" />
             </g>
-            <g fill="#000000" stroke-width="0" stroke-linecap="butt">
-                <path
+            <g fill="#2E8EB8" stroke-width="0" stroke-linecap="butt">
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-stick-x"
                     d="M161.75718,220.86451c0,0 -4.23264,-4.76333 -4.23263,-8.4588c0,-3.51575 4.23263,-8.15603 4.23263,-8.15603l7.30655,8.34488z" />
-                <path
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-stick-x"
                     d="M169.07932,212.63476l7.20952,-8.24784c0,0 4.32966,4.54325 4.32966,8.059c0,3.69547 -4.32966,8.36177 -4.32966,8.36177z"
                     data-paper-data="{&quot;index&quot;:null}" />
             </g>
-            <g fill="#000000" stroke-width="0" stroke-linecap="butt">
-                <path
+            <g fill="#2E8EB8" stroke-width="0" stroke-linecap="butt">
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="right-stick-y"
                     d="M269.4415,247.60153c0,0 4.76333,-4.23263 8.4588,-4.23263c3.51575,0 8.15603,4.23263 8.15603,4.23263l-8.34488,7.30655z" />
-                <path
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="right-stick-y"
                     d="M277.67125,254.92367l8.24784,7.20952c0,0 -4.54325,4.32966 -8.059,4.32966c-3.69547,0 -8.36177,-4.32966 -8.36177,-4.32966z"
                     data-paper-data="{&quot;index&quot;:null}" />
             </g>
-            <g fill="#000000" stroke-width="0" stroke-linecap="butt">
-                <path
+            <g fill="#2E8EB8" stroke-width="0" stroke-linecap="butt">
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="right-stick-x"
                     d="M270.43457,263.22329c0,0 -4.23264,-4.76333 -4.23264,-8.4588c0,-3.51575 4.23263,-8.15603 4.23263,-8.15603l7.30655,8.34488z" />
-                <path
+                <path style="cursor:pointer;" class="coffee-engine-controller-button" name="right-stick-x"
                     d="M277.75671,254.99354l7.20951,-8.24784c0,0 4.32967,4.54325 4.32967,8.059c0,3.69547 -4.32967,8.36178 -4.32967,8.36178z"
                     data-paper-data="{&quot;index&quot;:null}" />
             </g>
@@ -230,7 +230,7 @@
                         arguments: {
                             axis: {
                                 type: sugarcube.ArgumentType.CUSTOM,
-                                customType: "Controller"
+                                customType: "Controller_Axis"
                             },
                             id: {
                                 menu: "controllers"
@@ -288,6 +288,19 @@
                         
                         //Our custom editor
                         editor:"controller_Editor",
+                        size: [256,256],
+
+                        //Stuff
+                        initilize:"controller_Init",
+                        manualNodeValue:true,
+                        //render:"angle_Render",
+                    },
+                    Controller_Axis: {
+                        acceptReporters: true,
+                        isDropdown:true,
+                        
+                        //Our custom editor
+                        editor:"controller_Axis_Editor",
                         size: [256,256],
 
                         //Stuff
@@ -358,6 +371,53 @@
 
                 return Value;
             });
+
+            setButton(field.value);
+
+            //Return our div so we can put it on the field itself
+            return div;
+        }
+
+        controller_Axis_Editor(field) {
+            //Style div
+            const div = document.createElement("div");
+
+            div.style.overflow = "hidden";
+
+            div.style.width = "256px";
+            div.style.height = "256px";
+
+            div.innerHTML = this.controllerAxisSVG;
+
+            //Initilize button object
+            let buttons = [];
+
+            //Function to set the button value
+            const setButton = (name) => {
+                buttons.forEach(button => {
+                    //Loop through the buttons and highlight the selected one;
+                    const objName = button.getAttribute("name");
+                    if (objName == name) {
+                        button.style.fill = "#47A8D1";
+                    }
+                    else {
+                        button.style.fill = "#2E8EB8";
+                    }
+                });
+                field.value = name;
+            }
+
+            //Add functionality
+            buttons = Array.from(div.getElementsByClassName("coffee-engine-controller-button")).map((Value) => {
+                const name = Value.getAttribute("name")
+                Value.onclick = () => {
+                    setButton(name);
+                }
+
+                return Value;
+            });
+
+            setButton(field.value);
 
             //Return our div so we can put it on the field itself
             return div;
