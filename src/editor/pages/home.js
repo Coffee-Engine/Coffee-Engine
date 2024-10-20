@@ -161,6 +161,13 @@
             editor.editorPage.initilize();
         };
 
+        loadFile.onclick = () => {
+            const fileInput = document.createElement("input");
+            fileInput.type = "file";
+            fileInput.accept = ".decaf";
+            fileInput.click();
+        }
+
         //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
         if (editor.safeties.folderPerimissions) {
             loadFolder.onclick = () => {

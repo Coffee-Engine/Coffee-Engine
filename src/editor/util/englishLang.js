@@ -58,6 +58,7 @@ editor.EnglishLang = {
     "editor.window.log": "Log",
     "editor.window.log.clear": "clear",
     "editor.window.sceneTree": "Scene Tree",
+    "editor.window.fileExplorer": "Project Files",
 
     "editor.window.sugarcube": "SugarCube",
 

@@ -1,4 +1,4 @@
-const editor = {
+window.editor = {
     currentPage: {},
     language: {},
     changePage: () => {

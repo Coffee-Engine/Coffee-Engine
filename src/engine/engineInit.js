@@ -1,4 +1,4 @@
-const coffeeEngine = {
+window.coffeeEngine = {
     events: {
         consoleUpdate:[]
     },

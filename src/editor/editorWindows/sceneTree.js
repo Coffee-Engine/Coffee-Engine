@@ -1,5 +1,5 @@
 (function () {
-    editor.windows.log = class extends editor.windows.base {
+    editor.windows.sceneTree = class extends editor.windows.base {
         init(container) {
             this.title = editor.language["editor.window.sceneTree"];
         }
@@ -9,5 +9,5 @@
         dispose() {}
     };
 
-    editor.windows.__Serialization.register(editor.windows.log,"sceneTree");
+    editor.windows.__Serialization.register(editor.windows.sceneTree,"sceneTree");
 })();

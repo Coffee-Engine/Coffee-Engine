@@ -23,7 +23,7 @@
 --===--  Written by : ObviousAlexC / Pinksheep2917  --===--
 */
 
-const DaveShade = {};
+window.DaveShade = {};
 (function () {
     //Compile status enum
     DaveShade.COMPILE_STATUS = {
