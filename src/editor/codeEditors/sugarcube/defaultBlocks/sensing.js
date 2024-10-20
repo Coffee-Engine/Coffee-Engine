@@ -76,7 +76,7 @@
         controllerAxisSVG = `<svg version="1.1" style="width:100%; height:100%; padding:0px; margin:0px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"
     height="340.84147" viewBox="0,0,279.53576,340.84147">
     <g transform="translate(-100.23211,-9.57927)">
-        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="#ffffff"
+        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="#2E8EB8"
             stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
             style="mix-blend-mode: normal">
             <path
@@ -144,10 +144,10 @@
                 data-paper-data="{&quot;index&quot;:null}" fill="none" stroke-width="3" stroke-linecap="round" />
             <path
                 d="M160.7641,205.24275c0,0 4.76333,-4.23263 8.4588,-4.23263c3.51575,0 8.15603,4.23263 8.15603,4.23263l-8.34488,7.30655z"
-                fill="#ffffff" stroke-width="0" stroke-linecap="butt" />
+                fill="#2E8EB8" stroke-width="0" stroke-linecap="butt" />
             <path
                 d="M168.99385,212.56489l8.24784,7.20952c0,0 -4.54325,4.32967 -8.059,4.32967c-3.69547,0 -8.36177,-4.32967 -8.36177,-4.32967z"
-                data-paper-data="{&quot;index&quot;:null}" fill="#ffffff" stroke-width="0" stroke-linecap="butt" />
+                data-paper-data="{&quot;index&quot;:null}" fill="#2E8EB8" stroke-width="0" stroke-linecap="butt" />
             <g fill="#2E8EB8" stroke-width="0" stroke-linecap="butt">
                 <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-stick-y"
                     d="M160.7641,205.24275c0,0 4.76333,-4.23263 8.4588,-4.23263c3.51575,0 8.15603,4.23263 8.15603,4.23263l-8.34488,7.30655z" />
@@ -244,7 +244,8 @@
                         arguments: {
                             axis: {
                                 type: sugarcube.ArgumentType.CUSTOM,
-                                customType: "Controller"
+                                customType: "Controller",
+                                defaultValue: "Bottom-Face"
                             },
                             id: {
                                 menu: "controllers"

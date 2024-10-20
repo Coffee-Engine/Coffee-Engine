@@ -489,7 +489,7 @@
                                                         };
                                                         
                                                         if (argument.defaultValue) {
-                                                            defArgs.inputs[argumentKey].shadow.value = argument.defaultValue;
+                                                            defArgs.inputs[argumentKey].shadow.fields = {VALUE: argument.defaultValue};
                                                         }
 
                                                         //Ughhh
