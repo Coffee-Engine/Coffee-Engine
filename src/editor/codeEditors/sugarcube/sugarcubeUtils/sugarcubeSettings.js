@@ -1,4 +1,4 @@
-const sugarcube = {};
+window.sugarcube = {};
 sugarcube.blockStyles = {};
 sugarcube.extensions = {};
 sugarcube.workspace = {};

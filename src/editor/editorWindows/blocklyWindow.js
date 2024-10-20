@@ -10,7 +10,7 @@
                 comments: true,
                 toolbox: sugarcube.toolbox,
                 theme: sugarcube.blocklyTheme,
-                renderer: "sugarcube",
+                renderer: "sugarcube",//"Thrasos",
                 grid: {
                     spacing: 40,
                     length: 3,

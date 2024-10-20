@@ -3,7 +3,9 @@ editor.EnglishLang = {
     "engine.setup.languageSelect": "Language",
     "engine.setup.layoutSelect": "Layout",
 
-    "engine.home.welcome": "Welcome to Engine",
+    "engine.projectSetup.title": "Project Setup",
+
+    "engine.home.welcome": "Welcome to Coffee Engine",
     "engine.home.splashAuthor": "Splash by [AUTHOR]",
     "engine.home.newProject": "New Project",
     "engine.home.loadFile": "Load from File",

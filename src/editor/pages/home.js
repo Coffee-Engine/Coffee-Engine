@@ -158,7 +158,7 @@
 
         //For starting a new project
         newButton.onclick = () => {
-            editor.editorPage.initilize();
+            editor.projectSetup.initilize();
         };
 
         loadFile.onclick = () => {
