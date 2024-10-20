@@ -173,8 +173,8 @@
             <h1 class="centerText" style="margin:2px; margin-top:4px;">${editor.language["engine.projectSetup.title"]}</h1>
             <div class="innerBox">
                 <div class="nameDiv">
-                    <input type="text" placeholder="Project Name" class="nameBox"></input>
-                    <input type="text" placeholder="Author" class="nameBox"></input>
+                    <input type="text" placeholder="Project Name" class="nameBox" id="projectName"></input>
+                    <input type="text" placeholder="Author" class="nameBox" id="authorName"></input>
                 </div>
                 <div>
                     <h2 class="centerText" id="fileIndicator">File Type</h2>
@@ -201,6 +201,9 @@
         const fileButton = document.getElementById("fileButton");
         const folderButton = document.getElementById("folderButton");
         const createProject = document.getElementById("createProject");
+
+        const projectName = document.getElementById("projectName");
+        const authorName = document.getElementById("authorName");
         let type = "file"
 
         //If we don't have these saftey permissions remove stuff
@@ -229,6 +232,15 @@
                 type = "folder";
                 createProject.innerHTML = "Select Folder";
             }
+        }
+
+        createProject.onclick = () => {
+            project.new({
+                name:projectName.value || "project",
+                author:authorName.value || "author",
+                version:project.formatVersion,
+                type:type
+            },type);
         }
     };
 })();
