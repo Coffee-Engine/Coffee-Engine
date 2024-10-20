@@ -12,6 +12,29 @@
 
         //Setting it to null for now.
         mouseOutTimer:null,
+        buttonNameToID: {
+            "Bottom-Face":0,
+            "Right-Face":1,
+            "Left-Face":2,
+            "Top-Face":3,
+
+            "Left-Bumper":4,
+            "Right-Bumper":5,
+
+            "Left-Trigger":6,
+            "Right-Trigger":7,
+
+            "Select":8,
+            "Start":9,
+
+            "Left-Stick":10,
+            "Left-Stick":11,
+
+            "DPad-Up":12,
+            "DPad-Down":13,
+            "DPad-Left":14,
+            "DPad-Right":15,
+        }
     };
 
     //Keyboard stuff
@@ -72,7 +95,12 @@
         coffeeEngine.inputs.initilizeGamepad(gamepad);
     });
 
-    window.addEventListener("gamepadconnected", (e) => {
-        coffeeEngine.inputs.initilizeGamepad(e.gamepad);
+    window.addEventListener("gamepadconnected", (event) => {
+        coffeeEngine.inputs.initilizeGamepad(event.gamepad);
     });
+
+    window.addEventListener("gamepaddisconnected", (event) => {
+        delete coffeeEngine.inputs.gamepads[event.gamepad.index];
+        coffeeEngine.inputs.gamepads[event.gamepad.index] = {};
+    })
 })();
