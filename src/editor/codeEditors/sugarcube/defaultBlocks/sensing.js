@@ -230,7 +230,8 @@
                         arguments: {
                             axis: {
                                 type: sugarcube.ArgumentType.CUSTOM,
-                                customType: "Controller_Axis"
+                                customType: "Controller_Axis",
+                                defaultValue: "left-stick-y"
                             },
                             id: {
                                 menu: "controllers"
