@@ -12,6 +12,12 @@
 
         //Setting it to null for now.
         mouseOutTimer:null,
+        axisNameToID: {
+            "left-stick-x": 0,
+            "left-stick-y": 1,
+            "right-stick-x": 2,
+            "right-stick-y": 3,
+        },
         buttonNameToID: {
             "Bottom-Face":0,
             "Right-Face":1,

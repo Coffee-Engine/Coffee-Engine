@@ -74,8 +74,8 @@
 </svg>`;
 
         controllerAxisSVG = `<svg version="1.1" style="width:100%; height:100%; padding:0px; margin:0px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"
-    height="340.84147" viewBox="0,0,279.53576,340.84147">
-    <g transform="translate(-100.23211,-9.57927)">
+    height="340.84147" viewBox="0,0,279.53576,190.84147">
+    <g transform="translate(-100.23211,-150.57927)">
         <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="#2E8EB8"
             stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
             style="mix-blend-mode: normal">
@@ -127,21 +127,6 @@
                 d="M339.04996,182.44215c0,0 72.76366,133.40457 21.31712,165.64611c-12.18895,7.63882 -34.60059,-19.32743 -48.58353,-36.08752c-6.38703,-7.65556 -12.43754,-12.04404 -12.43754,-12.04404h-118.69202c0,0 -6.05051,4.38849 -12.43754,12.04404c-13.98294,16.76009 -36.39458,43.72634 -48.58353,36.08752c-51.44654,-32.24154 21.31712,-165.64612 21.31712,-165.64612"
                 fill="none" stroke-width="2" stroke-linecap="round" />
             <path d="M196.67101,163.84837h86.0464" fill="none" stroke-width="2" stroke-linecap="round" />
-            <path
-                d="M345.23961,118.43914c0,0 -4.53448,5.33814 -14.67152,11.37681c-12.46883,7.42772 -39.66803,8.72321 -89.51153,8.47995c-42.24458,-0.20618 -70.89973,0.21688 -85.56429,-6.86088c-16.77088,-8.09436 -20.7319,-12.99587 -20.7319,-12.99587c0,0 -22.3672,-18.88154 -30.22,-45.48364c-8.10716,-27.46379 -1.37059,-62.6711 20.83593,-62.37438c31.88266,0.42601 53.37655,52.68905 53.37655,52.68905c0,0 40.15391,1.75196 60.43195,1.75196c20.54976,0 62.06232,-1.75196 62.06232,-1.75196c0,0 21.4939,-52.26305 53.37655,-52.68905c22.20652,-0.29672 28.94309,34.91058 20.83593,62.37437c-7.8528,26.6021 -30.22,45.48363 -30.22,45.48363z"
-                fill="none" stroke-width="2" stroke-linecap="round" />
-            <path style="cursor:pointer;" class="coffee-engine-controller-button" name="left-trigger"
-                d="M174.69727,97.91381c0,0 -14.65452,6.03367 -21.75472,7.26594c-6.68003,1.15935 -19.66293,-0.07774 -19.66293,-0.07774c0,0 -8.42564,-41.92656 16.22015,-47.46047c18.98057,-4.26185 25.1975,40.27228 25.1975,40.27228z"
-                fill="#2E8EB8" stroke-width="3" stroke-linecap="round" />
-            <path
-                d="M174.69727,97.57153c0,0 5.88638,2.70289 9.64299,3.48203c3.9366,0.81648 13.4619,1.31009 13.4619,1.31009v32.34684c0,0 -30.64465,0.1625 -41.44989,-4.55007c-20.98868,-9.15393 -22.90149,-24.71612 -22.90149,-24.71612"
-                fill="none" stroke-width="3" stroke-linecap="round" />
-            <path style="cursor:pointer;" class="coffee-engine-controller-button" name="right-trigger"
-                d="M305.38375,97.89855c0,0 6.21693,-44.53413 25.19749,-40.27228c24.64579,5.53391 16.22015,47.46047 16.22015,47.46047c0,0 -14.43722,0.88125 -21.29303,-0.30861c-6.94881,-1.20599 -20.12462,-6.87958 -20.12462,-6.87958z"
-                data-paper-data="{&quot;index&quot;:null}" fill="#2E8EB8" stroke-width="3" stroke-linecap="round" />
-            <path
-                d="M346.63025,105.42904c0,0 -1.91281,15.56219 -22.90149,24.71612c-10.80524,4.71256 -41.44989,4.55007 -41.44989,4.55007v-32.34684c0,0 9.5253,-0.49361 13.4619,-1.31009c3.75661,-0.77915 9.64299,-3.48203 9.64299,-3.48203"
-                data-paper-data="{&quot;index&quot;:null}" fill="none" stroke-width="3" stroke-linecap="round" />
             <path
                 d="M160.7641,205.24275c0,0 4.76333,-4.23263 8.4588,-4.23263c3.51575,0 8.15603,4.23263 8.15603,4.23263l-8.34488,7.30655z"
                 fill="#2E8EB8" stroke-width="0" stroke-linecap="butt" />
@@ -201,6 +186,7 @@
                             },
                         },
                     },
+                    "---",
                     {
                         opcode: "mouseDown",
                         type: sugarcube.BlockType.BOOLEAN,
@@ -224,6 +210,26 @@
                     },
                     "---",
                     {
+                        opcode: "controllerConnected",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: "is controller [id] connected?",
+                        arguments: {
+                            id: {
+                                menu: "controllers"
+                            }
+                        }
+                    },
+                    {
+                        opcode: "controllerID",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "ID of controller [id]",
+                        arguments: {
+                            id: {
+                                menu: "controllers"
+                            }
+                        },
+                    },
+                    {
                         opcode: "controllerAxis",
                         type: sugarcube.BlockType.REPORTER,
                         text: "axis [axis] of controller [id]",
@@ -239,11 +245,26 @@
                         },
                     },
                     {
+                        opcode: "controllerButtonValue",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: "value of [button] on controller [id]",
+                        arguments: {
+                            button: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Controller",
+                                defaultValue: "Bottom-Face"
+                            },
+                            id: {
+                                menu: "controllers"
+                            }
+                        },
+                    },
+                    {
                         opcode: "controllerButton",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "is [axis] down on controller [id]",
+                        text: "is [button] down on controller [id]",
                         arguments: {
-                            axis: {
+                            button: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Controller",
                                 defaultValue: "Bottom-Face"
@@ -322,8 +343,45 @@
             return false;
         }
 
-        controllerAxis() {}
-        controllerButton() {}
+        //Really simple!
+        controllerConnected({ id }) {
+            return sugarcube.cast.toBoolean(coffeeEngine.inputs.gamepads[id].object);
+        }
+
+        controllerAxis({ axis, id }) {
+            //Make some checks and balances
+            if (!coffeeEngine.inputs.gamepads[id].axes) return 0;
+            const axisConverted = coffeeEngine.inputs.axisNameToID[axis];
+            if (!coffeeEngine.inputs.gamepads[id].axes[axisConverted]) return 0;
+            
+            //Get and cast
+            return sugarcube.cast.toNumber(coffeeEngine.inputs.gamepads[id].axes[axisConverted].value);
+
+        }
+
+        controllerButtonValue({ button, id }) {
+            //Make some checks and balances
+            if (!coffeeEngine.inputs.gamepads[id].buttons) return 0;
+            const buttonConverted = coffeeEngine.inputs.buttonNameToID[button];
+            if (!coffeeEngine.inputs.gamepads[id].buttons[buttonConverted]) return 0;
+            
+            //Get and cast
+            return sugarcube.cast.toNumber(coffeeEngine.inputs.gamepads[id].buttons[buttonConverted].value);
+        }
+
+        controllerButton({ button, id }) {
+            //Make some checks and balances
+            if (!coffeeEngine.inputs.gamepads[id].buttons) return false;
+            const buttonConverted = coffeeEngine.inputs.buttonNameToID[button];
+            if (!coffeeEngine.inputs.gamepads[id].buttons[buttonConverted]) return false;
+            
+            //Get and cast
+            return sugarcube.cast.toBoolean(coffeeEngine.inputs.gamepads[id].buttons[buttonConverted].pressed);
+        }
+
+        controllerID({ id }) {
+            return coffeeEngine.inputs.gamepads[id].id || "none"
+        }
 
         timer() {
             return coffeeEngine.timer;
