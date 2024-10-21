@@ -162,10 +162,21 @@
         };
 
         loadFile.onclick = () => {
-            const fileInput = document.createElement("input");
-            fileInput.type = "file";
-            fileInput.accept = ".decaf";
-            fileInput.click();
+            //The two genders. Firefox, google
+            if (!window.showOpenFilePicker) {
+                const fileInput = document.createElement("input");
+                fileInput.type = "file";
+                fileInput.accept = ".decaf";
+                fileInput.click();
+            }
+            else {
+                window.showOpenFilePicker({types: [{
+                    description:"Coffee Engine Project",
+                    accept: {
+                        'application/decaf':[".decaf"]
+                    }
+                }]});
+            }
         }
 
         //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
