@@ -5,7 +5,7 @@
         isFolder:false,
         directoryHandle:null,
 
-        //Our method for handling files
+        //Our methods for handling files
         setFile: async (path,contents,type) => {
             const split = path.split("/");
             let fold = project.fileSystem;
@@ -35,6 +35,7 @@
                             project.writeToWritable(contents,fold[split[id]][1],type);
                         }
                     }
+                    coffeeEngine.sendEvent("fileSystemUpdate",{});
                     return;
                 }
 
