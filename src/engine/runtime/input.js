@@ -61,6 +61,14 @@
         coffeeEngine.inputs.mouse[event.button] = false;
     });
 
+    window.addEventListener('contextmenu', (event) => {
+        if (event.target.nodeName != "INPUT") event.preventDefault();
+        if (event.target.contextFunction) {
+            if (!event.defaultPrevented) event.preventDefault();
+            
+        } 
+    });
+
     //Mouse movement
     coffeeEngine.inputs.mouseOutTimer = null;
     window.addEventListener("mousemove", (event) => {

@@ -119,9 +119,9 @@
             }
 
             .fileButton {
-                background-color: var(--background-1);
+                background-color: var(--background-2);
                 transition: 125ms background-color;
-                padding: 2px;
+                padding: 4px;
                 font-size: 1.0625em;
                 -webkit-user-select: none; /* Safari */
                 -ms-user-select: none; /* IE 10 and IE 11 */
@@ -129,7 +129,7 @@
             }
 
             .fileButton:hover {
-                background-color: var(--background-2);
+                background-color: var(--background-4);
             }
 
             @keyframes closeWindow {
