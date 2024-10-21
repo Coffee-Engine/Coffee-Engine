@@ -185,7 +185,7 @@
                 window
                     .showDirectoryPicker()
                     .then((result) => {
-                        console.log(result);
+                        project.load("folder", result);
                     })
                     .catch((error) => {});
             };

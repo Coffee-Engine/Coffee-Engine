@@ -1,6 +1,7 @@
 window.coffeeEngine = {
     events: {
-        consoleUpdate:[]
+        consoleUpdate:[],
+        fileSystemUpdate:[]
     },
     runtime: {},
     classes: {},
