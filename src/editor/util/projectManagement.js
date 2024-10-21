@@ -35,7 +35,7 @@
                             project.writeToWritable(contents,fold[split[id]][1],type);
                         }
                     }
-                    coffeeEngine.sendEvent("fileSystemUpdate",{});
+                    coffeeEngine.sendEvent("fileSystemUpdate",{type:"FILE_CHANGED", source:path});
                     return;
                 }
 
@@ -106,7 +106,7 @@
                 }
                 
                 //Send our event to refresh the file system
-                coffeeEngine.sendEvent("fileSystemUpdate",{});
+                coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", source:"COFFEE_ALL"});
             }
 
             if (openEditor) {

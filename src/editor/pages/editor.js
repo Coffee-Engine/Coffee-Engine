@@ -118,6 +118,20 @@
                 grid-template-columns: var(--dockGridHorizontal);
             }
 
+            .fileButton {
+                background-color: var(--background-1);
+                transition: 125ms background-color;
+                padding: 2px;
+                font-size: 1.0625em;
+                -webkit-user-select: none; /* Safari */
+                -ms-user-select: none; /* IE 10 and IE 11 */
+                user-select: none; /* Standard syntax */
+            }
+
+            .fileButton:hover {
+                background-color: var(--background-2);
+            }
+
             @keyframes closeWindow {
                 0% {
                     min-height:0px;
