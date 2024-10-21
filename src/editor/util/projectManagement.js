@@ -13,6 +13,8 @@
                 //If we reach the end of the path continue!
                 if (id == (split.length - 1)) {
                     if (!project.isFolder) {
+                        //Also make sure we remove existing files when we override
+                        if (fold[split[id]]) delete fold[split[id]];
                         //If we aren't in a folder context just create a file object we are just going to rely on these being arrays 100%
                         fold[split[id]] = [new File([contents], split[id], {
                             type: type,
