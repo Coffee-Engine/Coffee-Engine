@@ -121,8 +121,22 @@
             .fileButton {
                 background-color: var(--background-2);
                 transition: 125ms background-color;
+                margin:4px;
+                margin-right:0px;
                 padding: 4px;
-                font-size: 1.0625em;
+                padding-right: 0px;
+                -webkit-user-select: none; /* Safari */
+                -ms-user-select: none; /* IE 10 and IE 11 */
+                user-select: none; /* Standard syntax */
+            }
+
+            .fileButton[even="true"] {
+                background-color: var(--background-1);
+                transition: 125ms background-color;
+                margin:4px;
+                margin-right:0px;
+                padding: 4px;
+                padding-right: 0px;
                 -webkit-user-select: none; /* Safari */
                 -ms-user-select: none; /* IE 10 and IE 11 */
                 user-select: none; /* Standard syntax */

@@ -5,6 +5,10 @@
         isFolder:false,
         directoryHandle:null,
 
+        //? Why so odd?
+        //* Well its simple the user can't make a file or directory with this name
+        directoryHandleIdentifier:"/____DIRECTORY__HANDLE____/",
+
         //Our methods for handling files
         setFile: async (path,contents,type) => {
             const split = path.split("/");
@@ -23,7 +27,7 @@
                     else {
                         //If we are in a folder context get the file handle and writable and add it to the main context
                         if (!fold[split[id]]) {
-                            project.directoryHandle.getFileHandle(split[id],{ create: true }).then(fileHandle => {
+                            fold[project.directoryHandleIdentifier].getFileHandle(split[id],{ create: true }).then(fileHandle => {
                                 fileHandle.createWritable().then(writable => {
                                     fold[split[id]] = [fileHandle, writable];
                                     project.writeToWritable(contents,fold[split[id]][1],type);
@@ -40,7 +44,13 @@
                 }
 
                 //make folders if need be
-                if (!fold[split[id]]) fold[split[id]] = {};
+                if (!fold[split[id]]) {
+                    fold[split[id]] = {};
+                    //If we are in a folder context and we want to make a folder. Make a directory handle
+                    if (project.isFolder) {
+                        fold[split[id]][project.directoryHandleIdentifier] = await fold[project.directoryHandleIdentifier].getDirectoryHandle(split[id], {create:true});
+                    }
+                }
                 fold = fold[split[id]];
             }
         },
@@ -95,13 +105,14 @@
         scanFolder: async (directoryHandle,openEditor,folderSystem) => {
             for await (const [name,fileHandle] of directoryHandle) {
                 //Code to check through each thing and scan it
+                folderSystem[project.directoryHandleIdentifier] = directoryHandle;
                 if (fileHandle.kind == "file") {
                     folderSystem[name] = [fileHandle,null];
                     console.log(`hooked and created array for ${name}`);
                 }
                 else {
                     folderSystem[name] = {};
-                    project.scanFolder(fileHandle,false,folderSystem[name])
+                    project.scanFolder(fileHandle,false,folderSystem[name]);
                     console.log(`hooked and created handle for ${name}`);
                 }
                 
