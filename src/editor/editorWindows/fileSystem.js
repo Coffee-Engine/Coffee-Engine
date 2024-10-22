@@ -12,10 +12,18 @@
                             console.log(keys);
 
                             keys.forEach(key => {
-                                const element = document.createElement("div");
-                                element.innerHTML = key;
-                                element.className = "fileButton";
-                                parentDiv.appendChild(element);
+                                if (Array.isArray(directory[key])) {
+                                    const element = document.createElement("div");
+                                    element.innerHTML = key;
+                                    element.className = "fileButton";
+                                    parentDiv.appendChild(element);
+                                }
+                                else {
+                                    const element = document.createElement("div");
+                                    element.innerHTML = key;
+                                    element.className = "fileButton";
+                                    parentDiv.appendChild(element);
+                                }
                             })
                         };
 
