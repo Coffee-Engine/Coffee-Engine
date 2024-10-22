@@ -142,6 +142,17 @@
                 user-select: none; /* Standard syntax */
             }
 
+            .fileFolder {
+                max-height:var(--fit-height);
+                position:relative;
+                transition: 125ms all;
+                overflow:hidden;
+            }
+
+            .fileFolder[collasped="true"] {
+                max-height:0px;
+            }
+
             .fileButton:hover {
                 background-color: var(--background-4);
             }

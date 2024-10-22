@@ -22,6 +22,11 @@
                                 if (Array.isArray(directory[key])) {
                                     element.innerHTML = `<p style="padding:0px; margin:0px;">${key}</p>`;
                                     parentDiv.appendChild(element);
+
+                                    element.onclick = (event) => {
+                                        //Stop propogation
+                                        event.stopPropagation();
+                                    }
                                 }
                                 else {
                                     element.innerHTML = `<p style="padding:0px; margin:0px;">${key}</p>`;
@@ -30,10 +35,25 @@
                                     lowerDiv.style.margin = "0px";
                                     lowerDiv.style.padding = "0px";
                                     lowerDiv.style.marginLeft = "4px";
+                                    lowerDiv.className = "fileFolder";
                                     element.appendChild(lowerDiv);
 
-                                    displayDirectory(directory[key],lowerDiv,!even);
+                                    element.onclick = (event) => {
+                                        //Stop propogation
+                                        event.stopPropagation();
+                                        lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
+                                        console.log(lowerDiv.fitHeight);
+                                        
+                                        if (lowerDiv.getAttribute("collasped") == "true") lowerDiv.setAttribute("collasped","false");
+                                        else lowerDiv.setAttribute("collasped","true");
+                                        console.log(lowerDiv.getAttribute("collasped"));
+                                    }
+
+                                    //Do it in this specific order. or else KABOOM!
                                     parentDiv.appendChild(element);
+                                    displayDirectory(directory[key],lowerDiv,!even);
+                                    lowerDiv.fitHeight = lowerDiv.clientHeight;
+                                    lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                                 }
                             })
                         };
