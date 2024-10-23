@@ -13,9 +13,11 @@
         setFile: async (path,contents,type) => {
             const split = path.split("/");
             let fold = project.fileSystem;
+            let hadCreated = false
             for (let id = 0; id < split.length; id++) {
                 //If we reach the end of the path continue!
                 if (id == (split.length - 1)) {
+                    if (!fold[split[id]]) hadCreated = true;
                     if (!project.isFolder) {
                         //Also make sure we remove existing files when we override
                         if (fold[split[id]]) delete fold[split[id]];
@@ -39,7 +41,8 @@
                             project.writeToWritable(contents,fold[split[id]][1],type);
                         }
                     }
-                    coffeeEngine.sendEvent("fileSystemUpdate",{type:"FILE_CHANGED", source:path});
+                    
+                    coffeeEngine.sendEvent("fileSystemUpdate",{type:hadCreated ? "FILE_ADDED" : "FILE_CHANGED", src:path});
                     return;
                 }
 
@@ -117,7 +120,7 @@
                 }
                 
                 //Send our event to refresh the file system
-                coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", source:"COFFEE_ALL"});
+                coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
             }
 
             if (openEditor) {
