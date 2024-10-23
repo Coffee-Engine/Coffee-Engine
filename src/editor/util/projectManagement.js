@@ -111,12 +111,10 @@
                 folderSystem[project.directoryHandleIdentifier] = directoryHandle;
                 if (fileHandle.kind == "file") {
                     folderSystem[name] = [fileHandle,null];
-                    console.log(`hooked and created array for ${name}`);
                 }
                 else {
                     folderSystem[name] = {};
                     project.scanFolder(fileHandle,false,folderSystem[name]);
-                    console.log(`hooked and created handle for ${name}`);
                 }
                 
                 //Send our event to refresh the file system
@@ -149,7 +147,6 @@
                     .showDirectoryPicker()
                     .then((result) => {
                         project.directoryHandle = result;
-                        console.log(result);
                         project.addDefaultAssets(json);
                     })
                     .catch((error) => {});

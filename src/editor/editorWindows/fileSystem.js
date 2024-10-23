@@ -93,8 +93,6 @@
                     default:
                         break;
                 }
-
-                console.log(this.directoryBasin);
             }
 
             //Updating stuff

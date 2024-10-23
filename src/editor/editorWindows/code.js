@@ -1,7 +1,10 @@
 (function() {
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
-            sugarcube.inject(container);
+            this.title = editor.language["editor.window.codeEditor"];
+            monacoManager.refreshTheme();
+            monacoManager.inject(container);
+            //sugarcube.inject(container);
         }
     }
 
