@@ -1,3 +1,4 @@
+//Old obsolete window. Here for historical reasons. and incase I want to restore some LOST MEDIA
 (function () {
     editor.windows.blockly = class extends editor.windows.base {
         init(container) {

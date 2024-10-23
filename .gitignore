@@ -16,5 +16,5 @@ node_modules/*
 build/
 out/
 
-src-tauri/target/debug
-src-tauri/target/release
+src-tauri/target/debug/
+src-tauri/target/release/

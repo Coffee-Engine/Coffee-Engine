@@ -336,9 +336,14 @@
                         };
 
                         //Register callback code for the button
-                        sugarcube.workspace.registerButtonCallback(id + opcode, () => {
+                        sugarcube.buttons[id + opcode] = () => {
                             sugarcube.extensionInstances[extension.id][opcode]();
-                        });
+                        }
+                        
+                        //If we have a workspace register the callback
+                        if (sugarcube.workspace) {
+                            sugarcube.workspace.registerButtonCallback(id + opcode, sugarcube.buttons[id + opcode]);
+                        }
                         break;
 
                     //For duplicating blocks in the toolbox
@@ -965,9 +970,9 @@
                     sugarcube.workspace.updateToolbox(sugarcube.toolbox);
 
                     sugarcube.workspace.getToolbox().refreshSelection();
+
+                    sugarcube.refreshTheme();
                 }
-                
-                sugarcube.refreshTheme();
             } catch (error) {
                 console.error("Error while importing sugarcube extension : " + error);
             }

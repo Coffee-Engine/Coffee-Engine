@@ -362,7 +362,7 @@
                         contents:[
                             {
                                 size: 70,
-                                content:"blockly"
+                                content:"codeEditor"
                             },
                             {
                                 size: 30,
