@@ -1,3 +1,9 @@
+let require = {
+    paths: {
+      vs: "https://unpkg.com/monaco-editor@0.34.0/min/vs",
+    },
+  };
+  
 window.monacoManager = {
     workspace:null,
     
