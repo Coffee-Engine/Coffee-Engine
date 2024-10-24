@@ -2,13 +2,19 @@
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
             this.title = editor.language["editor.window.codeEditor"];
+            
+            //This windows funny variables
             this.scriptShortcuts = [];
+            this.fileReader = new FileReader();
+
+            //Setup stuff
+            this.setupFileHooks();
             this.makeLayout(container);
             this.addButtonsAndFileSelection();
             
             monacoManager.refreshTheme();
-            //monacoManager.inject(this.codeArea);
-            sugarcube.inject(this.codeArea);
+            monacoManager.inject(this.monacoArea);
+            sugarcube.inject(this.blocklyArea);
         }
 
         //The layout of the editor
@@ -41,6 +47,26 @@
 
             this.codeArea = document.createElement("div");
             this.codeArea.style.height = "100%";
+            this.codeArea.style.position = "relative";
+
+            this.blocklyArea = document.createElement("div");
+            this.blocklyArea.style.width = "100%";
+            this.blocklyArea.style.height = "100%";
+            this.blocklyArea.style.top = "0px";
+            this.blocklyArea.style.left = "0px";
+            this.blocklyArea.style.position = "absolute";
+            this.blocklyArea.style.visibility = "hidden";
+
+            this.monacoArea = document.createElement("div");
+            this.monacoArea.style.width = "100%";
+            this.monacoArea.style.height = "100%";
+            this.monacoArea.style.top = "0px";
+            this.monacoArea.style.left = "0px";
+            this.monacoArea.style.position = "absolute";
+            this.monacoArea.style.visibility = "hidden";
+
+            this.codeArea.appendChild(this.blocklyArea);
+            this.codeArea.appendChild(this.monacoArea);
 
             container.appendChild(this.split);
 
@@ -75,16 +101,37 @@
             this.scriptContainer.style.gridTemplateColumns = "1fr";
             this.actionBar.appendChild(this.scriptContainer);
         }
+
+        //Setup our file hooks
         setupFileHooks() {
-            editor.addFileOpenHook("txt",this.openFile);
-            editor.addFileOpenHook("md",this.openFile);
-            editor.addFileOpenHook("js",this.openFile);
-            editor.addFileOpenHook("cappu",this.openFile);
-            editor.addFileOpenHook("cescr",this.openFile);
+            editor.addFileOpenHook("txt",this.openFile,this);
+            editor.addFileOpenHook("md",this.openFile,this);
+            editor.addFileOpenHook("js",this.openFile,this);
+            editor.addFileOpenHook("json",this.openFile,this);
+            editor.addFileOpenHook("cappu",this.openFile,this);
+            editor.addFileOpenHook("cescr",this.openFile,this);
+
+            this.fileReader.onload = () => {
+                //Swap 'em
+                if (this.readType != "cescr") {
+                    this.monacoArea.style.visibility = "visible";
+                    this.blocklyArea.style.visibility = "hidden";
+
+                    monacoManager.setScript(this.fileReader.result,this.readType);
+                }
+                else {
+                    this.monacoArea.style.visibility = "hidden";
+                    this.blocklyArea.style.visibility = "visible";
+                }
+            }
         }
 
         openFile(path,extension) {
-
+            //Grab our file and read it
+            project.getFile(path)[0].getFile().then(file => {
+                this.fileReader.readAsText(file);
+                this.readType = extension;
+            })
         }
     }
 

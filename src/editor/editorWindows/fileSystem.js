@@ -3,7 +3,8 @@
         //For later use. I have an idea of how this can be optimized
         directoryBasin = {}
 
-        displayDirectory = (directory,parentDiv,basin,even) => {
+        displayDirectory = (directory,parentDiv,basin,even,path) => {
+            path = path || "";
             const keys = Object.keys(directory).sort();
 
             keys.forEach(key => {
@@ -30,6 +31,9 @@
                     element.onclick = (event) => {
                         //Stop propogation
                         event.stopPropagation();
+                        const split = key.split(".");
+
+                        editor.sendFileHook(split[split.length - 1],`${path}${key}`);
                     }
                 }
                 //For folders we do something similar but with another div inside and create a sub directory basin
@@ -54,7 +58,7 @@
 
                     //Do it in this specific order. or else KABOOM!
                     parentDiv.appendChild(element);
-                    this.displayDirectory(directory[key],lowerDiv,basin.contents[key],!even);
+                    this.displayDirectory(directory[key],lowerDiv,basin.contents[key],!even,`${path}${key}/`);
                     lowerDiv.fitHeight = lowerDiv.clientHeight;
                     lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                 }
