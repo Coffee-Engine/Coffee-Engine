@@ -13,8 +13,11 @@
             this.addButtonsAndFileSelection();
             
             monacoManager.refreshTheme();
-            monacoManager.inject(this.monacoArea);
-            sugarcube.inject(this.blocklyArea);
+            //The two IDEs?
+            this.workspace = {
+                monaco:monacoManager.inject(this.monacoArea),
+                sugarcube:sugarcube.inject(this.blocklyArea)
+            };
         }
 
         //The layout of the editor
@@ -38,6 +41,7 @@
             this.split.style.gridTemplateColumns = "128px auto";
             this.split.style.height = "100%";
 
+            //This is where we put our actions
             this.actionBar = document.createElement("div");
             this.actionBar.style.display = "grid";
             this.actionBar.style.height = "100%";
@@ -45,10 +49,21 @@
             this.actionBar.style.backgroundColor = "var(--background-1)";
             this.actionBar.style.gridTemplateRows = "32px 32px 32px 1fr";
 
+            //code area!
             this.codeArea = document.createElement("div");
             this.codeArea.style.height = "100%";
             this.codeArea.style.position = "relative";
 
+            //Nothing Open text
+            this.nothingOpen = document.createElement("div");
+            this.nothingOpen.style.width = "100%";
+            this.nothingOpen.style.height = "100%";
+            this.nothingOpen.style.top = "0px";
+            this.nothingOpen.style.left = "0px";
+            this.nothingOpen.style.position = "absolute";
+            this.nothingOpen.style.visibility = "hidden";
+
+            //Blockly
             this.blocklyArea = document.createElement("div");
             this.blocklyArea.style.width = "100%";
             this.blocklyArea.style.height = "100%";
@@ -57,6 +72,7 @@
             this.blocklyArea.style.position = "absolute";
             this.blocklyArea.style.visibility = "hidden";
 
+            //Monaco
             this.monacoArea = document.createElement("div");
             this.monacoArea.style.width = "100%";
             this.monacoArea.style.height = "100%";
@@ -111,6 +127,7 @@
             editor.addFileOpenHook("cappu",this.openFile,this);
             editor.addFileOpenHook("cescr",this.openFile,this);
 
+            //Load stuff
             this.fileReader.onload = () => {
                 //Swap 'em
                 if (this.readType != "cescr") {
@@ -131,6 +148,8 @@
             project.getFile(path)[0].getFile().then(file => {
                 this.fileReader.readAsText(file);
                 this.readType = extension;
+
+                this.addScriptToSidebar(path);
             })
         }
     }

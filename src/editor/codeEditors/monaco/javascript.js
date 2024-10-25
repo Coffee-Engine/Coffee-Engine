@@ -186,7 +186,15 @@
             jsdoc: [
                 [/[^\/*]+/, 'comment.doc'],
                 [/\*\//, 'comment.doc', '@pop'],
+                [/.*[@]example/, 'comment.doc.keyword'],
+                [/.*[@]returns/, 'comment.doc.keyword',"@jsdocSyntax"],
+                [/.*[@]return/, 'comment.doc.keyword',"@jsdocSyntax"],
+                [/.*[@]param/, "comment.doc.keyword","@jsdocSyntax"],
                 [/[\/*]/, 'comment.doc']
+            ],
+
+            jsdocSyntax: [
+                [/\{.*\}/, 'comment.doc.type', "@pop"],
             ],
 
             // We match regular expression quite precisely

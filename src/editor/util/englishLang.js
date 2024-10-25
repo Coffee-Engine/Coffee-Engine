@@ -54,6 +54,7 @@ editor.EnglishLang = {
     "engine.settings.category.SugarCube.flyOutOpacity": "Flyout Opacity",
 
     "engine.settings.category.Monaco": "Monaco",
+    "engine.settings.category.Monaco.fontSize": "Font Size",
 
     "engine.generic.back": "Back",
 

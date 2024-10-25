@@ -21,8 +21,57 @@ editor.defaultSettings = {
         padding: "2", //BETWEEN_STATEMENT_PADDING_Y
         flyOutOpacity: "50",
     },
-    Monaco: {},
+    Monaco: {
+        fontSize: 12,
+
+        defaultText: "#e7cab7",
+
+        colorKeyword:"#d76f2b",
+        colorClassname:"#e5823f",
+
+        colorDelimiter:"#e38d55",
+        colorDelimiterBracket:"#e7b252",
+
+        colorString:"#d6ae93",
+        colorStringError:"#ff7878",
+        colorStringEscape:"#e7cab7",
+
+        colorNumber:"#bce579",
+        colorNumberUnusual:"#5bb498",
+        
+        colorRegexp:"#eba2ce",
+        colorRegexpInvalid:"#ff7878",
+
+        colorRegexpEscape:"#e7cab7",
+
+        colorComment:"#bb8d6e",
+        colorCommentDoc:"#958072",
+        colorCommentDocKeyword:"#bce579",
+        colorCommentDocType:"#5bb498",
+    },
 };
+
+editor.quickSettingCSSThemeColor = (cssName) => {
+    return {
+        type: "color",
+        onChange: (value, fromBoot) => {
+            if (editor.settings.values.Theme.themeColor == "Custom") {
+                document.body.style.setProperty(cssName, value);
+            }
+        },
+        menuInit: (previousSettings, elements) => {
+            //Check if custom color is selected
+            if (editor.settings.values.Theme.themeColor != "Custom") {
+                //If not disable it and make sure the value is the one we want.
+                elements.span.style.opacity = "50%";
+                elements.input.disabled = true;
+                if (coffeeEngine.defaultThemes[editor.settings.values.Theme.themeColor]) {
+                    elements.input.value = coffeeEngine.defaultThemes[editor.settings.values.Theme.themeColor]["--Number-Color-Unusual"];
+                }
+            }
+        },
+    }
+}
 
 editor.settingDefs = {
     Window: {
@@ -415,5 +464,31 @@ editor.settingDefs = {
             max: "100",
         },
     },
-    Monaco: {},
+    Monaco: {
+        fontSize: {
+            onChange: (value) => {
+                monacoManager.fontSize = Number(value);
+            },
+            type: "number",
+            min: "8",
+            max: "32",
+        },
+        defaultText: editor.quickSettingCSSThemeColor("--code-text"),
+        colorKeyword:  editor.quickSettingCSSThemeColor("--keyword"),
+        colorClassname:  editor.quickSettingCSSThemeColor("--class-name"),
+        colorDelimiter: editor.quickSettingCSSThemeColor("--delimiter"),
+        colorDelimiterBracket: editor.quickSettingCSSThemeColor("--delimiter-bracket"),
+        colorNumber:  editor.quickSettingCSSThemeColor("--number-color"),
+        colorNumberUnusual: editor.quickSettingCSSThemeColor("--number-color-unusual"),
+        colorString: editor.quickSettingCSSThemeColor("--string"),
+        colorStringEscape: editor.quickSettingCSSThemeColor("--string-escape"),
+        colorStringError: editor.quickSettingCSSThemeColor("--string-error"),
+        colorRegexp: editor.quickSettingCSSThemeColor("--regexp"),
+        colorRegexpInvalid: editor.quickSettingCSSThemeColor("--regexp-invalid"),
+        colorRegexpEscape: editor.quickSettingCSSThemeColor("--regexp-escape"),
+        colorComment: editor.quickSettingCSSThemeColor("--comment"),
+        colorCommentDoc: editor.quickSettingCSSThemeColor("--comment-doc"),
+        colorCommentDocKeyword: editor.quickSettingCSSThemeColor("--comment-doc-keyword"),
+        colorCommentDocType: editor.quickSettingCSSThemeColor("--comment-doc-type"),
+    },
 };

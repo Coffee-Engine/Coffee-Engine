@@ -6,11 +6,14 @@ let require = {
   
 window.monacoManager = {
     workspace:null,
+    fontSize:12,
     
     inject: (container) => {
         //This? This is it?   yes
         monacoManager.workspace = monaco.editor.create(container, {
-            automaticLayout: true
+            automaticLayout: true,
+            fontSize: monacoManager.fontSize,
+            fontFamily: "Comic Sans MS"
         });
         monaco.editor.setTheme("coffee-engine");
 
@@ -31,109 +34,119 @@ window.monacoManager = {
                 //Comments
                 {
                     token: "comment",
-                    foreground: document.body.style.getPropertyValue("--text-3"),
+                    foreground: document.body.style.getPropertyValue("--comment"),
                     fontStyle: "bold",
                 },
                 {
                     token: "comment.doc",
-                    foreground: "#958072",
+                    foreground: document.body.style.getPropertyValue("--comment-doc"),
+                    fontStyle: "bold",
+                },
+                {
+                    token: "comment.doc.keyword",
+                    foreground: document.body.style.getPropertyValue("--comment-doc-keyword"),
+                    fontStyle: "bold",
+                },
+                {
+                    token: "comment.doc.type",
+                    foreground: document.body.style.getPropertyValue("--comment-doc-type"),
                     fontStyle: "bold",
                 },
 
                 //classes
                 {
                     token: "type.identifier",
-                    foreground: "#e5823f",
+                    foreground: document.body.style.getPropertyValue("--class-name"),
                     fontStyle: "bold",
                 },
 
                 //delimiters
                 {
                     token: "delimiter",
-                    foreground: "#e38d55",
+                    foreground: document.body.style.getPropertyValue("--delimiter"),
                 },
                 {
                     token: "delimiter.bracket",
-                    foreground: "#e7b252",
+                    foreground: document.body.style.getPropertyValue("--delimiter-bracket"),
                 },
 
                 //Strings
                 {
                     token: "string.invalid",
-                    foreground: document.body.style.getPropertyValue("--error"),
+                    foreground: document.body.style.getPropertyValue("--string-error"),
                     fontStyle: "bold",
                 },
                 {
                     token: "string.escape.invalid",
-                    foreground: document.body.style.getPropertyValue("--error"),
+                    foreground: document.body.style.getPropertyValue("--string-error"),
                     fontStyle: "bold",
                 },
                 {
                     token: "string",
-                    foreground: document.body.style.getPropertyValue("--text-2"),
+                    foreground: document.body.style.getPropertyValue("--string"),
                 },
                 {
                     token: "string.escape",
-                    foreground: document.body.style.getPropertyValue("--text-1"),
+                    foreground: document.body.style.getPropertyValue("--string-escape"),
                     fontStyle: "bold",
                 },
 
                 //regexp
                 {
                     token: "regexp",
-                    foreground: "#eba2ce",
+                    foreground: document.body.style.getPropertyValue("--regexp"),
                 },
                 {
                     token: "regexp.invalid",
-                    foreground: document.body.style.getPropertyValue("--error"),
+                    foreground: document.body.style.getPropertyValue("--regexp-invalid"),
                     fontStyle: "bold",
                 },
                 {
                     token: "regexp.escape",
-                    foreground: document.body.style.getPropertyValue("--text-1"),
+                    foreground: document.body.style.getPropertyValue("--regexp-escape"),
                     fontStyle: "bold",
                 },
                 {
                     token: "regexp.escape.control",
-                    foreground: document.body.style.getPropertyValue("--text-1"),
+                    foreground: document.body.style.getPropertyValue("--regexp-escape"),
                     fontStyle: "bold",
                 },
 
                 //numbers
                 {
                     token: "number",
-                    foreground: "#bce579",
+                    foreground: document.body.style.getPropertyValue("--number-color"),
                     fontStyle: "italic",
                 },
                 {
                     token: "number.float",
-                    foreground: "#bce579",
+                    foreground: document.body.style.getPropertyValue("--number-color"),
                     fontStyle: "italic",
                 },
                 {
                     token: "number.hex",
-                    foreground: "#5bb498",
+                    foreground: document.body.style.getPropertyValue("--number-color-unusual"),
                     fontStyle: "bold",
                 },
                 {
                     token: "number.octal",
-                    foreground: "#5bb498",
+                    foreground: document.body.style.getPropertyValue("--number-color-unusual"),
                     fontStyle: "bold",
                 },
                 {
                     token: "number.binary",
-                    foreground: "#5bb498",
+                    foreground: document.body.style.getPropertyValue("--number-color-unusual"),
                     fontStyle: "bold",
                 },
 
                 //keywords
                 {
                     token: "keyword",
-                    foreground: "#d76f2b"
+                    foreground: document.body.style.getPropertyValue("--keyword")
                 }
             ],
             colors: {
-                "editor.foreground": document.body.style.getPropertyValue("--text-1"),
+                "editor.foreground": document.body.style.getPropertyValue("--code-text"),
                 "editor.background": document.body.style.getPropertyValue("--background-2"),
                 "editor.selectionBackground": document.body.style.getPropertyValue("--background-4"),
                 "editor.lineHighlightBackground": document.body.style.getPropertyValue("--background-1"),

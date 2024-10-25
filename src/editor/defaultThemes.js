@@ -12,7 +12,30 @@ coffeeEngine.defaultThemes = {
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#503f32",
-        "--error-text": "#503f32"
+        "--error-text": "#503f32",
+
+        "--keyword": "#d76f2b",
+        "--class-name": "#e5823f",
+
+        "--code-text": "#e7cab7",
+        
+        "--number-color":"#bce579",
+        "--number-color-unusual":"#5bb498",
+
+        "--string":"#d6ae93",
+        "--string-escape":"#e7cab7",
+        "--string-error":"#ff7878",
+
+        "--regexp-escape": "e7cab7",
+        "--regexp-invalid": "#ff7878",
+
+        "--delimiter": "#e38d55",
+        "--delimiter-bracket": "#e7b252",
+
+        "--comment":"#bb8d6e",
+        "--comment-doc":"#958072",
+        "--comment-doc-keyword":"#958072",
+        "--comment-doc-type":"#958072",
     },
     Cocoa: {
         "--background-1": "#1b1b1e",
