@@ -22,16 +22,16 @@
 
         //The layout of the editor
         addScriptToSidebar(path) {
+            if (this.scriptShortcuts.includes(path)) return;
+            
             const button = document.createElement("button");
             const splitPath = path.split("/")
             button.innerText = splitPath[splitPath.length - 1];
             button.setAttribute("path",path);
 
+
             this.scriptContainer.appendChild(button);
-            this.scriptShortcuts.push({
-                button:button,
-                path:path
-            });
+            this.scriptShortcuts.push(path);
         }
         makeLayout(container) {
             container.style.position = "relative";

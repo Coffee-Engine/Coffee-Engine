@@ -13,7 +13,7 @@ window.monacoManager = {
         monacoManager.workspace = monaco.editor.create(container, {
             automaticLayout: true,
             fontSize: monacoManager.fontSize,
-            fontFamily: "Comic Sans MS"
+            fontFamily: monacoManager.fontStyle
         });
         monaco.editor.setTheme("coffee-engine");
 

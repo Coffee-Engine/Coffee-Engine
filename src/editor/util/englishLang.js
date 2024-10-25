@@ -55,6 +55,31 @@ editor.EnglishLang = {
 
     "engine.settings.category.Monaco": "Monaco",
     "engine.settings.category.Monaco.fontSize": "Font Size",
+    "engine.settings.category.Monaco.fontStyle": "Font Family",
+    "engine.settings.category.Monaco.fontStyle.Serif": "Serif",
+    "engine.settings.category.Monaco.fontStyle.Sans-serif": "Sans-serif",
+    "engine.settings.category.Monaco.fontStyle.Monospace": "Monospace",
+    "engine.settings.category.Monaco.fontStyle.Cursive": "Cursive",
+    "engine.settings.category.Monaco.fontStyle.Fantasy": "Fantasy",
+    "engine.settings.category.Monaco.themeOverride": "Override Theme",
+
+    "engine.settings.category.Monaco.defaultText": "Text Color",
+    "engine.settings.category.Monaco.colorKeyword": "Keyword Color",
+    "engine.settings.category.Monaco.colorClassname": "Class Color",
+    "engine.settings.category.Monaco.colorDelimiter": "Delimiter Color",
+    "engine.settings.category.Monaco.colorDelimiterBracket": "Bracket Color",
+    "engine.settings.category.Monaco.colorNumber": "Number Color",
+    "engine.settings.category.Monaco.colorNumberUnusual": "Unusual Number Color",
+    "engine.settings.category.Monaco.colorString": "String Color",
+    "engine.settings.category.Monaco.colorStringEscape": "Escape String Color",
+    "engine.settings.category.Monaco.colorStringError": "Bad String Color",
+    "engine.settings.category.Monaco.colorRegexp": "Regular Expression Color",
+    "engine.settings.category.Monaco.colorRegexpInvalid": "Bad Regular Expression Color",
+    "engine.settings.category.Monaco.colorRegexpEscape": "Regular Expression Escape Color",
+    "engine.settings.category.Monaco.colorComment": "Comment Color",
+    "engine.settings.category.Monaco.colorCommentDoc": "JS Doc Color",
+    "engine.settings.category.Monaco.colorCommentDocKeyword": "JS Doc Keyword Color",
+    "engine.settings.category.Monaco.colorCommentDocType": "JS Doc Type Color",
 
     "engine.generic.back": "Back",
 
@@ -62,6 +87,8 @@ editor.EnglishLang = {
     "editor.window.log.clear": "clear",
     "editor.window.sceneTree": "Scene Tree",
     "editor.window.fileExplorer": "Project Files",
+
+
     "editor.window.codeEditor": "Code Editor",
 
     "editor.window.sugarcube": "SugarCube",

@@ -58,6 +58,20 @@
                 return input;
             }
 
+            case "checkbox": {
+                const input = document.createElement("input");
+                input.type = "checkbox";
+                input.checked = Boolean(editor.settings.values[category][setting]);
+
+                input.onchange = () => {
+                    editor.settings.values[category][setting] = input.checked;
+                    if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.checked);
+                    editor.Storage.setStorage("settingsValues", editor.settings.values);
+                };
+
+                return input;
+            }
+
             default:
                 break;
         }
