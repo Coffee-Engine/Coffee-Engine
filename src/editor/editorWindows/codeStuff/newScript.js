@@ -3,9 +3,20 @@
         defaults = {
             js: `//${editor.language["editor.window.javascript.commentMessage"]}
 class behavior {
-    constructor() {
+    ready() {
+        //Code for each frame goes here
         console.log("Hello World!");
     }
+
+    update() {
+        //Code for each frame goes here
+    }
+
+    //If you want custom draw code
+    //Uncomment this
+    //draw() {
+    //    //Draw Code Here
+    //}
 }
     
 coffeeEngine.registerBehavior("behavior",behavior);`
