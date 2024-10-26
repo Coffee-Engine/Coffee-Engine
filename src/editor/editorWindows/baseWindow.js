@@ -76,12 +76,12 @@
                 Math.min(
                     window.innerHeight - this.y,
                     Math.max(value,this.minHeight)
-                )
+                ) + editor.taskbarHeight
             }px`;
-            this.#height = Math.max(value,this.minHeight);
+            this.#height = Math.max(value,this.minHeight) + editor.taskbarHeight;
         }
         get height() {
-            return this.#height;
+            return this.#height - editor.taskbarHeight;
         }
 
         #x = 0;

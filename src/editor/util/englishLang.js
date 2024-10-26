@@ -82,6 +82,7 @@ editor.EnglishLang = {
     "engine.settings.category.Monaco.colorCommentDocType": "JS Doc Type Color",
 
     "engine.generic.back": "Back",
+    "engine.generic.done": "Done",
 
     "editor.window.log": "Log",
     "editor.window.log.clear": "clear",
@@ -95,8 +96,9 @@ editor.EnglishLang = {
     "editor.window.codeEditor.saveScript": "Save Script",
     "editor.window.codeEditor.loadScript": "Load Script",
     "editor.window.createScript": "New Script",
-
     "editor.window.sugarcube": "SugarCube",
+    "editor.window.javascript": "Javascript",
+    "editor.window.javascript.commentMessage": "This is a default behavior!",
 
     "editor.window.createVar": "Create a Variable",
     "editor.window.createVar.temporaryName": "Variable Name",

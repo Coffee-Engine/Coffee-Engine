@@ -32,6 +32,9 @@
             button.innerText = splitPath[splitPath.length - 1];
             button.setAttribute("path",path);
 
+            button.onclick = () => {
+                this.openFile(path,path.split(".")[1]);
+            }
 
             this.scriptContainer.appendChild(button);
             this.scriptShortcuts.push(path);

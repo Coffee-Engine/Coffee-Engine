@@ -10,7 +10,7 @@
         directoryHandleIdentifier:"/____DIRECTORY__HANDLE____/",
 
         //Our methods for handling files
-        setFile: async (path,contents,type) => {
+        setFile: async (path,contents,type,callback) => {
             const split = path.split("/");
             let fold = project.fileSystem;
             let hadCreated = false
@@ -29,19 +29,17 @@
                     else {
                         //If we are in a folder context get the file handle and writable and add it to the main context
                         if (!fold[split[id]]) {
-                            fold[project.directoryHandleIdentifier].getFileHandle(split[id],{ create: true }).then(fileHandle => {
-                                fileHandle.createWritable().then(writable => {
-                                    fold[split[id]] = [fileHandle, writable];
-                                    project.writeToWritable(contents,fold[split[id]][1],type);
-                                })
-                            });
+                            const fileHandle = await fold[project.directoryHandleIdentifier].getFileHandle(split[id],{ create: true })
+                            const writable = await fileHandle.createWritable();
+                            fold[split[id]] = [fileHandle, writable];
+                            await project.writeToWritable(contents,fold[split[id]][1],type);
                         }
                         //if it exists just use it striaght up
                         else {
-                            project.writeToWritable(contents,fold[split[id]][1],type);
+                            await project.writeToWritable(contents,fold[split[id]][1],type);
                         }
                     }
-                    
+                    callback(path);
                     coffeeEngine.sendEvent("fileSystemUpdate",{type:hadCreated ? "FILE_ADDED" : "FILE_CHANGED", src:path});
                     return;
                 }
@@ -58,16 +56,18 @@
             }
         },
 
-        writeToWritable: (contents,writable,type) => {
+        writeToWritable: async(contents,writable,type) => {
             if (contents instanceof Blob) {
                 //Pipe the blob through to the writable
-                contents.stream().pipeTo(writable);
+                await contents.stream().pipeTo(writable);
             }
             //Find some way to make a string a UInt8Array
             else {
                 const newBlob = new Blob([contents.toString()], { type: type });
-                newBlob.stream().pipeTo(writable);
+                await newBlob.stream().pipeTo(writable);
             }
+
+            return;
         },
 
         addImageFromURL: async (url,destination,callBack) => {
