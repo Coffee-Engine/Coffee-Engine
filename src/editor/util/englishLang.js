@@ -86,10 +86,15 @@ editor.EnglishLang = {
     "editor.window.log": "Log",
     "editor.window.log.clear": "clear",
     "editor.window.sceneTree": "Scene Tree",
-    "editor.window.fileExplorer": "Project Files",
 
+    "editor.window.fileExplorer": "Project Files",
+    "editor.window.fileExplorer.reading": "Reading Files",
 
     "editor.window.codeEditor": "Code Editor",
+    "editor.window.codeEditor.newScript": "New Script",
+    "editor.window.codeEditor.saveScript": "Save Script",
+    "editor.window.codeEditor.loadScript": "Load Script",
+    "editor.window.createScript": "New Script",
 
     "editor.window.sugarcube": "SugarCube",
 

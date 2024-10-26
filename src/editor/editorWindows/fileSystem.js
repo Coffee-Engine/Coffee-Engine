@@ -67,7 +67,7 @@
 
         init(container) {
             this.title = editor.language["editor.window.fileExplorer"];
-            container.innerHTML = "Reading Files";
+            container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             this.updateFunction = (event) => {
                 if (!event) event = {type:"ALL", src:"COFFEE_ALL"};
                 switch (event.type) {

@@ -11,6 +11,7 @@
             this.setupFileHooks();
             this.makeLayout(container);
             this.addButtonsAndFileSelection();
+            this.appendButtonAction();
             
             monacoManager.refreshTheme();
             //The two IDEs?
@@ -25,6 +26,8 @@
             if (this.scriptShortcuts.includes(path)) return;
             
             const button = document.createElement("button");
+            button.style.width = "116px";
+            button.style.textAlign = "left";
             const splitPath = path.split("/")
             button.innerText = splitPath[splitPath.length - 1];
             button.setAttribute("path",path);
@@ -56,12 +59,13 @@
 
             //Nothing Open text
             this.nothingOpen = document.createElement("div");
-            this.nothingOpen.style.width = "100%";
-            this.nothingOpen.style.height = "100%";
-            this.nothingOpen.style.top = "0px";
-            this.nothingOpen.style.left = "0px";
+            this.nothingOpen.style.top = "50%";
+            this.nothingOpen.style.left = "50%";
+            this.nothingOpen.style.transform = "translate(-50%,-50%)";
+            this.nothingOpen.style.fontSize = "xx-large";
             this.nothingOpen.style.position = "absolute";
-            this.nothingOpen.style.visibility = "hidden";
+            this.nothingOpen.innerText = "Nothing Open";
+            this.nothingOpen.className = "genericNonSelect";
 
             //Blockly
             this.blocklyArea = document.createElement("div");
@@ -81,6 +85,7 @@
             this.monacoArea.style.position = "absolute";
             this.monacoArea.style.visibility = "hidden";
 
+            this.codeArea.appendChild(this.nothingOpen);
             this.codeArea.appendChild(this.blocklyArea);
             this.codeArea.appendChild(this.monacoArea);
 
@@ -93,29 +98,43 @@
             this.newScriptButton = document.createElement("button");
             this.newScriptButton.style.width = "120px";
             this.newScriptButton.style.margin = "4px";
-            this.newScriptButton.innerText = `New Script`;
+            this.newScriptButton.innerText = editor.language["editor.window.codeEditor.newScript"];
             this.actionBar.appendChild(this.newScriptButton);
 
             this.saveScriptButton = document.createElement("button");
             this.saveScriptButton.style.width = "120px";
             this.saveScriptButton.style.margin = "4px";
-            this.saveScriptButton.innerText = `Save Script`;
+            this.saveScriptButton.innerText = editor.language["editor.window.codeEditor.saveScript"];
             this.actionBar.appendChild(this.saveScriptButton);
 
             this.loadScriptButton = document.createElement("button");
             this.loadScriptButton.style.width = "120px";
             this.loadScriptButton.style.margin = "4px";
-            this.loadScriptButton.innerText = `Load Script`;
+            this.loadScriptButton.innerText = editor.language["editor.window.codeEditor.loadScript"];
             this.actionBar.appendChild(this.loadScriptButton);
 
             this.scriptContainer = document.createElement("button");
             this.scriptContainer.style.width = "120px";
             this.scriptContainer.style.margin = "4px";
+            this.scriptContainer.style.padding = "0px";
             this.scriptContainer.style.backgroundColor = "var(--background-2)";
-            this.scriptContainer.style.display = "grid";
+            this.scriptContainer.style.overflowX = "hidden";
             this.scriptContainer.style.overflowY = "scroll";
-            this.scriptContainer.style.gridTemplateColumns = "1fr";
+            //this.scriptContainer.style.alignContent = "start";
+            //this.scriptContainer.style.alignItems = "start";
+            this.scriptContainer.style.display = "flex";
+            this.scriptContainer.style.flexDirection = "column";
             this.actionBar.appendChild(this.scriptContainer);
+        }
+
+        appendButtonAction() {
+            this.newScriptButton.onclick = () => {
+                const createdWindow = new editor.windows.newScript(400,200);
+                createdWindow.__moveToTop();
+    
+                createdWindow.x = window.innerWidth / 2 - 200;
+                createdWindow.y = window.innerHeight / 2 - 150;
+            }
         }
 
         //Setup our file hooks

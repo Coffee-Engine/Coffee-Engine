@@ -118,6 +118,12 @@
                 grid-template-columns: var(--dockGridHorizontal);
             }
 
+            .genericNonSelect {
+                -webkit-user-select: none; /* Safari */
+                -ms-user-select: none; /* IE 10 and IE 11 */
+                user-select: none; /* Standard syntax */
+            }
+
             .fileButton {
                 background-color: var(--background-2);
                 transition: 125ms background-color;
