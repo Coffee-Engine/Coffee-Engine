@@ -19,7 +19,9 @@ class behavior {
     //}
 }
     
-coffeeEngine.registerBehavior("behavior",behavior);`
+coffeeEngine.registerBehavior("behavior",behavior);`,
+            //Sugarcube
+            cescr:'{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{}}'
         }
 
         minWidth = 400;
@@ -59,8 +61,6 @@ coffeeEngine.registerBehavior("behavior",behavior);`
             this.createButton.style.marginRight = "100px";
 
             this.createButton.onclick = () => {
-                console.log(this.path.value.split("/"));
-
                 if (!project.getFile(this.path.value)) project.setFile(this.path.value, this.defaults[this.type.value],"text/javascript", (path) => {
                     editor.sendFileHook(path.split(".")[1],path);
                     this._dispose();

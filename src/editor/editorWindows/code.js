@@ -161,6 +161,7 @@
                 else {
                     this.monacoArea.style.visibility = "hidden";
                     this.blocklyArea.style.visibility = "visible";
+                    sugarcube.deserialize(JSON.parse(this.fileReader.result));
                 }
             }
         }
