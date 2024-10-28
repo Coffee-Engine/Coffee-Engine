@@ -61,7 +61,7 @@ coffeeEngine.registerBehavior("behavior",behavior);`,
             this.createButton.style.marginRight = "100px";
 
             this.createButton.onclick = () => {
-                if (!project.getFile(this.path.value)) project.setFile(this.path.value, this.defaults[this.type.value],"text/javascript", (path) => {
+                if (!project.getFile(this.path.value)) project.setFile(this.path.value, this.defaults[this.type.value],"text/javascript").then((path) => {
                     editor.sendFileHook(path.split(".")[1],path);
                     this._dispose();
                 });

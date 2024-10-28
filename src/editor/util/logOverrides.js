@@ -54,6 +54,10 @@
         //The one thing we need from the event
         const { message, lineno, colno } = event;
 
+        //Somewhere there is a ResizeObserver that is making a loop. And it is supposed to be returning something?
+        //I dunno cheap hack fix
+        if (message == "ResizeObserver loop completed with undelivered notifications.");
+
         coffeeEngine.sendEvent("consoleUpdate",{
             type:"error",
             info:[message],

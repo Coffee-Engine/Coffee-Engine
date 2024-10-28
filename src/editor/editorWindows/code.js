@@ -2,6 +2,8 @@
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
             this.title = editor.language["editor.window.codeEditor"];
+            this.usingSugarCube = false;
+            this.filePath = false;
             
             //This windows funny variables
             this.scriptShortcuts = [];
@@ -130,6 +132,15 @@
             this.actionBar.appendChild(this.scriptContainer);
         }
 
+        saveCurrentFile() {
+            if (!this.filePath) return;
+
+            //Saving for our two code editors
+            project.setFile(this.filePath,(this.usingSugarCube) ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(),"text/javascript").then(() => {
+                console.log(`Saved ${this.filePath} sucessfully`);
+            });
+        }
+
         appendButtonAction() {
             this.newScriptButton.onclick = () => {
                 const createdWindow = new editor.windows.newScript(400,200);
@@ -138,6 +149,14 @@
                 createdWindow.x = window.innerWidth / 2 - 200;
                 createdWindow.y = window.innerHeight / 2 - 150;
             }
+
+            //Add our save key
+            window.addEventListener("keydown", (event) => {
+                if (event.ctrlKey && event.key.toLowerCase() == "s") {
+                    event.preventDefault();
+                    this.saveCurrentFile();
+                }
+            });
         }
 
         //Setup our file hooks
@@ -155,12 +174,15 @@
                 if (this.readType != "cescr") {
                     this.monacoArea.style.visibility = "visible";
                     this.blocklyArea.style.visibility = "hidden";
+                    this.usingSugarCube = false;
 
                     monacoManager.setScript(this.fileReader.result,this.readType);
                 }
                 else {
                     this.monacoArea.style.visibility = "hidden";
                     this.blocklyArea.style.visibility = "visible";
+                    this.usingSugarCube = true;
+
                     sugarcube.deserialize(JSON.parse(this.fileReader.result));
                 }
             }
@@ -171,6 +193,7 @@
             project.getFile(path)[0].getFile().then(file => {
                 this.fileReader.readAsText(file);
                 this.readType = extension;
+                this.filePath = path;
 
                 this.addScriptToSidebar(path);
             })

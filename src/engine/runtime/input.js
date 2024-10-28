@@ -45,11 +45,11 @@
 
     //Keyboard stuff
     window.addEventListener("keydown", (event) => {
-        coffeeEngine.inputs.keys[event.key] = true;
+        coffeeEngine.inputs.keys[event.key.toLowerCase()] = true;
     });
 
     window.addEventListener("keyup", (event) => {
-        coffeeEngine.inputs.keys[event.key] = false;
+        coffeeEngine.inputs.keys[event.key.toLowerCase()] = false;
     });
 
     //Mouse stuff

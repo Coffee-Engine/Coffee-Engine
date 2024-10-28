@@ -10,50 +10,48 @@
         directoryHandleIdentifier:"/____DIRECTORY__HANDLE____/",
 
         //Our methods for handling files
-        setFile: async (path,contents,type,callback) => {
-            const split = path.split("/");
-            let fold = project.fileSystem;
-            let hadCreated = false
-            for (let id = 0; id < split.length; id++) {
-                //If we reach the end of the path continue!
-                if (id == (split.length - 1)) {
-                    if (!fold[split[id]]) hadCreated = true;
-                    if (!project.isFolder) {
-                        //Also make sure we remove existing files when we override
-                        if (fold[split[id]]) delete fold[split[id]];
-                        //If we aren't in a folder context just create a file object we are just going to rely on these being arrays 100%
-                        fold[split[id]] = [new File([contents], split[id], {
-                            type: type,
-                        })];
-                    }
-                    else {
-                        //If we are in a folder context get the file handle and writable and add it to the main context
-                        if (!fold[split[id]]) {
+        setFile: async (path,contents,type) => {
+            //Using a promise now!
+            return new Promise(async (resolve,reject) => {
+                const split = path.split("/");
+                let fold = project.fileSystem;
+                let hadCreated = false
+                for (let id = 0; id < split.length; id++) {
+                    //If we reach the end of the path continue!
+                    if (id == (split.length - 1)) {
+                        if (!fold[split[id]]) hadCreated = true;
+                        if (!project.isFolder) {
+                            //Also make sure we remove existing files when we override
+                            if (fold[split[id]]) delete fold[split[id]];
+                            //If we aren't in a folder context just create a file object we are just going to rely on these being arrays 100%
+                            fold[split[id]] = [new File([contents], split[id], {
+                                type: type,
+                            })];
+                        }
+                        else {
+                            //If we are in a folder context get the file handle and writable and add it to the main context
                             const fileHandle = await fold[project.directoryHandleIdentifier].getFileHandle(split[id],{ create: true })
                             const writable = await fileHandle.createWritable();
                             fold[split[id]] = [fileHandle, writable];
                             await project.writeToWritable(contents,fold[split[id]][1],type);
                         }
-                        //if it exists just use it striaght up
-                        else {
-                            await project.writeToWritable(contents,fold[split[id]][1],type);
+
+                        //Update our FS
+                        coffeeEngine.sendEvent("fileSystemUpdate",{type:hadCreated ? "FILE_ADDED" : "FILE_CHANGED", src:path});
+                        resolve(path);
+                    }
+    
+                    //make folders if need be
+                    if (!fold[split[id]]) {
+                        fold[split[id]] = {};
+                        //If we are in a folder context and we want to make a folder. Make a directory handle
+                        if (project.isFolder) {
+                            fold[split[id]][project.directoryHandleIdentifier] = await fold[project.directoryHandleIdentifier].getDirectoryHandle(split[id], {create:true});
                         }
                     }
-                    callback(path);
-                    coffeeEngine.sendEvent("fileSystemUpdate",{type:hadCreated ? "FILE_ADDED" : "FILE_CHANGED", src:path});
-                    return;
+                    fold = fold[split[id]];
                 }
-
-                //make folders if need be
-                if (!fold[split[id]]) {
-                    fold[split[id]] = {};
-                    //If we are in a folder context and we want to make a folder. Make a directory handle
-                    if (project.isFolder) {
-                        fold[split[id]][project.directoryHandleIdentifier] = await fold[project.directoryHandleIdentifier].getDirectoryHandle(split[id], {create:true});
-                    }
-                }
-                fold = fold[split[id]];
-            }
+            })
         },
 
         writeToWritable: async(contents,writable,type) => {
@@ -70,13 +68,18 @@
             return;
         },
 
-        addImageFromURL: async (url,destination,callBack) => {
-            fetch(url)
-                .then((response) => response.blob())
-                .then((blob) => {
-                    project.setFile(destination,blob,blob.type);
-                    if (callBack) callBack();
-            });
+        addImageFromURL: async (url,destination) => {
+            return new Promise((resolve,reject) => {
+                fetch(url)
+                    .then((response) => response.blob())
+                    .then((blob) => {
+                        project.setFile(destination,blob,blob.type);
+                        resolve();
+                })
+                .catch(() => {
+                    reject("Could not fetch image");
+                });
+            })
         },
 
         getFile: (path) => {
@@ -100,7 +103,7 @@
             project.setFile("project.json",JSON.stringify(json),"text/plain");
 
             //Add tiramisu :)
-            project.addImageFromURL("editor/images/TiramisuA.png","tiramisu.png",() => {
+            project.addImageFromURL("editor/images/TiramisuA.png","tiramisu.png").then(() => {
                 editor.editorPage.initilize();
             });
         },
