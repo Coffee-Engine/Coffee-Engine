@@ -56,7 +56,7 @@
 
         //Somewhere there is a ResizeObserver that is making a loop. And it is supposed to be returning something?
         //I dunno cheap hack fix
-        if (message == "ResizeObserver loop completed with undelivered notifications.");
+        if (message == "ResizeObserver loop completed with undelivered notifications.") return;
 
         coffeeEngine.sendEvent("consoleUpdate",{
             type:"error",
