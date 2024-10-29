@@ -118,6 +118,22 @@
                 grid-template-columns: var(--dockGridHorizontal);
             }
 
+            .windowTab {
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                background-color: var(--background-2);
+
+                transition: 125ms all;
+            }
+
+            
+
+            .windowTab:hover {
+                border-top-left-radius: 16px;
+                border-top-right-radius: 16px;
+                background-color: var(--background-3);
+            }
+
             .genericNonSelect {
                 -webkit-user-select: none; /* Safari */
                 -ms-user-select: none; /* IE 10 and IE 11 */
@@ -275,23 +291,56 @@
             for (let Y = 0; Y < editor.layout.layout[X].contents.length; Y++) {
                 //Our deserialization!
                 const content = editor.layout.layout[X].contents[Y].content;
-                let windowType = editor.windows.__Serialization.all[content];
 
                 //If we don't have a valid window just name a blank window after it.
                 let overrideName;
-                if (!windowType) {
-                    overrideName = content;
-                    windowType = editor.windows.base;
-                }
 
                 //Window creation
-                const newWindow = new (windowType)();
-                if (overrideName) {
-                    newWindow.title = overrideName;
-                }
+                //if we serialized a string in that field create 1 window
+                if (typeof content == "string") {
+                    //get the window type
+                    let windowType = editor.windows.__Serialization.all[content];
+                    if (!windowType) {
+                        overrideName = content;
+                        windowType = editor.windows.base;
+                    }
 
-                editor.layout.layout[X].contents[Y].content = newWindow;
-                editor.dock.dockWindow(newWindow,X);
+                    const newWindow = new (windowType)();
+                    if (overrideName) {
+                        newWindow.title = overrideName;
+                    }
+    
+                    editor.layout.layout[X].contents[Y].content = newWindow;
+                    editor.dock.dockWindow(newWindow,X);
+                }
+                else if (Array.isArray(content)) {
+                    let hostWindow;
+                    for (let Z = 0; Z < content.length; Z++) {
+                        const windowString = content[Z];
+                        let windowType = editor.windows.__Serialization.all[windowString];
+                        if (!windowType) {
+                            overrideName = windowString;
+                            windowType = editor.windows.base;
+                        }
+
+                        const newWindow = new (windowType)();
+                        if (overrideName) {
+                            newWindow.title = overrideName;
+                        }
+
+                        if (Z == 0) {
+                            //Make the host window for the parasites to latch upon
+                            hostWindow = newWindow;
+                            editor.layout.layout[X].contents[Y].content = newWindow;
+                            editor.dock.dockWindow(newWindow,X);
+                        }
+                        //If it is a parasite latch upon the host
+                        else {
+                            console.log(newWindow.__deconstruct(),newWindow);
+                            hostWindow.__addTab(newWindow);
+                        }
+                    }
+                }
             }
         }
 

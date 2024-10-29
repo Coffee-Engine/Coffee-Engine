@@ -362,7 +362,7 @@
                         contents:[
                             {
                                 size: 70,
-                                content:"codeEditor"
+                                content:["codeEditor","viewport"]
                             },
                             {
                                 size: 30,

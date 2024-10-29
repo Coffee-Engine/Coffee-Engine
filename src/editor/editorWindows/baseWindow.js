@@ -129,6 +129,9 @@
         //Have this so we can't repeat the closing animation
         closing = false;
 
+        __TabRef;
+        __CurrentTab;
+
         constructor(width, height, title) {
             //Set up variables
             this.windowDiv = document.createElement("div");
@@ -158,6 +161,8 @@
                 isWindow:true
             });
 
+            this.__CurrentTab = 0;
+
             this.init(this.Content);
         }
 
@@ -181,6 +186,7 @@
             //Make the title have no interaction
             this.titleDiv.style.pointerEvents = "none";
             this.titleDiv.style.userSelect = "none";
+            this.titleDiv.style.display = "grid";
 
             this.TaskBar.appendChild(this.titleDiv);
             this.TaskBar.appendChild(this.closeButton);
@@ -191,7 +197,12 @@
         }
 
         __updateTitle() {
-            if (this.titleDiv) this.titleDiv.innerText = this.title;
+            if (this.tabs.length > 1) {
+                if (this.__TabRef) this.__TabRef.innerText = this.title;
+            } 
+
+            //Updates for single tabbed windows
+            if (this.tabs.length == 1 && this.titleDiv) this.titleDiv.innerText = this.title;
         }
 
         __createContentDiv() {
@@ -341,6 +352,34 @@
             this.windowDiv.style.zIndex = editor.windowLayer;
         }
 
+        __refreshTaskbar() {
+            this.titleDiv.style.pointerEvents = "none";
+            this.titleDiv.style.userSelect = "none";
+            if (this.tabs.length > 1) {
+                this.titleDiv.style.pointerEvents = "all";
+                this.titleDiv.style.userSelect = "none";
+
+                //Remove tabs
+                this.titleDiv.innerHTML = "";
+                this.titleDiv.style.gridTemplateColumns = "1fr ".repeat(this.tabs.length);
+
+                //Loop through tabs and add them
+                this.tabs.forEach(tab => {
+                    console.log(tab);
+                    const tabElement = document.createElement("div");
+                    tabElement.innerText = tab.owner.title || tab.tabName || "Unknown Tab";
+                    tabElement.className = "windowTab";
+
+                    this.titleDiv.appendChild(tabElement);
+                })
+            }
+            else {
+                //clear, add title
+                this.titleDiv.innerHTML = "";
+                this.titleDiv.innerText = this.title;
+            }
+        }
+
         //For organization
         __addTab(tabOrigin,tabName) {
             //Make this variable to store the window contents
@@ -367,8 +406,11 @@
                 owner:tabOrigin,
                 isPrimary:false,
                 content: content,
-                isWindow:isWindow
+                isWindow:isWindow,
+                tabName: tabName,
             });
+
+            this.__refreshTaskbar();
         }
 
         //Allow us to destroy the window;
@@ -392,6 +434,14 @@
             };
 
             this.windowDiv.style.animation = "closeWindow 500ms cubic-bezier(0.65, 0, 0.35, 1) 1";
+        }
+
+        //Makes the window headless for tab stuff
+        __deconstruct() {
+            this.TaskBar.parentElement.removeChild(this.TaskBar);
+            this.windowDiv.parentElement.removeChild(this.windowDiv);
+
+            return this.Content;
         }
 
         //Just for the extensions of this class
