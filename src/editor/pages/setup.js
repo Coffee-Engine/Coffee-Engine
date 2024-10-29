@@ -388,7 +388,38 @@
 
         document.getElementById("caffinated").onclick = () => {
             editor.layout = {
-                layout:[],
+                layout:[
+                    {
+                        size:70,
+                        contents:[
+                            {
+                                size: 80,
+                                content: ["codeEditor","fileExplorer"]
+                            },
+                            {
+                                size: 20,
+                                content: "debugLog"
+                            }
+                        ],
+                    },
+                    {
+                        size:30,
+                        contents:[
+                            {
+                                size: 40,
+                                content:"viewport"
+                            },
+                            {
+                                size: 30,
+                                content:"properties"
+                            },
+                            {
+                                size: 30,
+                                content:"sceneTree"
+                            },
+                        ],
+                    },
+                ],
                 floating:[]
             };
             editor.Storage.setStorage("layout", editor.layout);

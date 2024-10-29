@@ -122,6 +122,8 @@
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
                 background-color: var(--background-2);
+                margin: 4px;
+                cursor: pointer;
 
                 transition: 125ms all;
             }
@@ -129,9 +131,8 @@
             
 
             .windowTab:hover {
-                border-top-left-radius: 16px;
-                border-top-right-radius: 16px;
                 background-color: var(--background-3);
+                margin: 2px;
             }
 
             .genericNonSelect {
