@@ -1,5 +1,5 @@
 (function () {
-    coffeeEngine.classes.node3D = class extends coffeeEngine.classes.node {
+    class node extends coffeeEngine.getNode("Node") {
         position = new coffeeEngine.vector3(0);
         rotation = new coffeeEngine.vector3(0);
         matrix = coffeeEngine.matrix4.identity();
@@ -19,4 +19,6 @@
             coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
         }
     };
+
+    coffeeEngine.registerNode(node, "Node3D", "Node");
 })();

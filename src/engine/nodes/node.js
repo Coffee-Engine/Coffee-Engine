@@ -1,5 +1,5 @@
 (function () {
-    coffeeEngine.classes.node = class {
+    class node {
         #parent;
         set parent(value) {
             if (value.addChild) {
@@ -79,4 +79,6 @@
             child.parent = this;
         }
     };
+
+    coffeeEngine.registerNode(node, "Node");
 })();

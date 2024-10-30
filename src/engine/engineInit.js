@@ -7,6 +7,18 @@ window.coffeeEngine = {
     classes: {},
     resources: {},
     renderer: {},
+    nodeRegister: {},
+    //Just a simple node registrar thing
+    registerNode: (node,name,parentNode) => {
+        //Return if node already exists
+        if (coffeeEngine.nodeRegister[name]) return;
+        coffeeEngine.nodeRegister[name] = [node,parentNode];
+    },
+    getNode: (name) => {
+        if (!coffeeEngine.nodeRegister[name]) return;
+        return coffeeEngine.nodeRegister[name][0];
+    },
+    
     timer: 0,
     addEventListener:(event, func) => {
         if (typeof coffeeEngine.events[event] != "object") return;

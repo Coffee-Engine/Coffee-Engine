@@ -1,7 +1,7 @@
 (function () {
     const camera = coffeeEngine.matrix4.identity();
 
-    coffeeEngine.classes.node3D = class extends coffeeEngine.classes.node {
+    class cameraNode extends coffeeEngine.classes.node3D {
         activeCamera = true;
 
         draw() {
@@ -10,4 +10,6 @@
             if (this.activeCamera) coffeeEngine.renderer.mainShaders.unlit.uniforms.u_camera.value = camera.webGLValue();
         }
     };
+
+    coffeeEngine.registerNode(cameraNode, "Camera", "Node3D");
 })();

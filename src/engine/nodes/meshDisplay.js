@@ -1,5 +1,5 @@
 (function () {
-    coffeeEngine.classes.node3D = class extends coffeeEngine.classes.node {
+    class meshRenderer extends coffeeEngine.getNode("Node3D") {
         mesh;
 
         draw() {
@@ -12,4 +12,6 @@
             }
         }
     };
+
+    coffeeEngine.registerNode(node, "MeshRenderer", "Node3D");
 })();
