@@ -6,7 +6,6 @@
         init(container) {
             this.resizable = false;
             this.title = editor.language["editor.window.fileExplorer.select"];
-            container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
 
             const displayDirectory = (directory,parentDiv,even,path) => {
                 path = path || "";

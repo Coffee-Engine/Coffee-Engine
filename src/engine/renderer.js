@@ -54,8 +54,46 @@
                 }
                 `
             ),
+            skyplane: coffeeEngine.renderer.daveshade.createShader(
+                //Vertex
+                `
+                precision highp float;
+    
+                attribute vec4 a_position;
+    
+                void main()
+                {    
+                    //Transform my stuff!
+                    gl_Position = a_position;
+                }
+                `,
+                //Fragment
+                `
+                precision highp float;
+    
+                uniform sampler2D u_texture;
+                uniform mat4 u_camera;
+                uniform vec2 u_res;
+                
+                void main()
+                {
+                    vec2 screenUV = gl_FragCoord.xy / u_res;
+                    vec3 right = vec3(u_camera[0][0],u_camera[0][1],u_camera[0][2]);
+                    vec3 up = vec3(u_camera[1][0],u_camera[1][1],u_camera[1][2]);
+                    vec3 forward = vec3(u_camera[2][0],u_camera[2][1],u_camera[2][2]);
+
+                    screenUV -= vec2(0.5);
+
+                    //Our position on the sky sphere
+                    vec3 SkySphere = normalize(forward + (right * screenUV.x) + (up * screenUV.y));
+                    gl_FragColor = vec4(SkySphere,1);
+                }
+                `
+            )
             //lit:coffeeEngine.renderer.daveshade.createShader()
         };
+
+        return coffeeEngine.renderer;
     };
 
     coffeeEngine.renderer.dispose = () => {
