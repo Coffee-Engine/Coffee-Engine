@@ -150,6 +150,18 @@
                 createdWindow.y = window.innerHeight / 2 - 150;
             }
 
+            this.saveScriptButton.onclick = () => {
+                this.saveCurrentFile();
+            }
+
+            this.loadScriptButton.onclick = () => {
+                //Its like a loading modal... like some sort of loadal. Get it loadal.
+                const newLoadal = new editor.windows.modalFileExplorer();
+                newLoadal.onFileSelected = (path) => {
+                    this.openFile(path,path.split(".")[1]);
+                }
+            }
+
             //Add our save key
             window.addEventListener("keydown", (event) => {
                 if (event.ctrlKey && event.key.toLowerCase() == "s") {
@@ -189,6 +201,9 @@
         }
 
         openFile(path,extension) {
+            //Make sure its lowercase
+            extension = extension.toLowerCase();
+
             //Grab our file and read it
             project.getFile(path)[0].getFile().then(file => {
                 this.fileReader.readAsText(file);

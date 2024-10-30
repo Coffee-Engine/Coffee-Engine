@@ -89,6 +89,7 @@ editor.EnglishLang = {
     "editor.window.sceneTree": "Scene Tree",
 
     "editor.window.fileExplorer": "Project Files",
+    "editor.window.fileExplorer.select": "Select a File",
     "editor.window.fileExplorer.reading": "Reading Files",
 
     "editor.window.codeEditor": "Code Editor",

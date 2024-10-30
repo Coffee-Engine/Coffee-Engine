@@ -438,6 +438,8 @@
             content.parentElement.removeChild(content);
 
             content.style.opacity = "0";
+            content.style.zIndex = "0";
+            this.tabs[this.__CurrentTab].content.style.zIndex = "1";
             this.contentHolder.appendChild(content);
 
             this.__refreshTaskbar();

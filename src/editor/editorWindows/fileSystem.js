@@ -1,7 +1,10 @@
 (function () {
     editor.windows.fileExplorer = class extends editor.windows.base {
         //For later use. I have an idea of how this can be optimized
-        directoryBasin = {}
+        directoryBasin = {};
+        
+        minWidth = 400;
+        minHeight = 200;
 
         displayDirectory = (directory,parentDiv,basin,even,path) => {
             path = path || "";
