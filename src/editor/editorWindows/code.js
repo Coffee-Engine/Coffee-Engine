@@ -147,7 +147,7 @@
                 createdWindow.__moveToTop();
     
                 createdWindow.x = window.innerWidth / 2 - 200;
-                createdWindow.y = window.innerHeight / 2 - 150;
+                createdWindow.y = window.innerHeight / 2 - 100;
             }
 
             this.saveScriptButton.onclick = () => {
@@ -156,7 +156,12 @@
 
             this.loadScriptButton.onclick = () => {
                 //Its like a loading modal... like some sort of loadal. Get it loadal.
-                const newLoadal = new editor.windows.modalFileExplorer();
+                const newLoadal = new editor.windows.modalFileExplorer(400,400);
+
+                newLoadal.__moveToTop();
+    
+                newLoadal.x = window.innerWidth / 2 - 200;
+                newLoadal.y = window.innerHeight / 2 - 200;
                 newLoadal.onFileSelected = (path) => {
                     this.openFile(path,path.split(".")[1]);
                 }

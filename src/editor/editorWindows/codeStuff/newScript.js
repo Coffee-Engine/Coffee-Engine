@@ -8,7 +8,7 @@ class behavior {
         console.log("Hello World!");
     }
 
-    update() {
+    update(delta) {
         //Code for each frame goes here
     }
 
