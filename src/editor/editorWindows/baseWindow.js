@@ -157,7 +157,7 @@
             this.tabs.push({
                 owner:this,
                 isPrimary:true,
-                content: this.content,
+                content: this.Content,
                 isWindow:true
             });
 
@@ -207,12 +207,23 @@
 
         __createContentDiv() {
             //Create and define our content div
+            this.contentHolder = document.createElement("div");
+            this.contentHolder.style.width = "100%";
+            this.contentHolder.style.overflow = "clip";
+            this.contentHolder.style.position = "relative";
+
             this.Content = document.createElement("div");
             this.Content.style.width = "100%";
+            this.Content.style.height = "100%";
             this.Content.style.overflow = "auto";
+            this.Content.style.position = "absolute";
+            this.Content.style.top = "0px";
+            this.Content.style.left = "0px";
+            this.Content.style.zIndex = "0";
 
-            //Add it to the window
-            this.windowDiv.appendChild(this.Content);
+            //Add it to the window, and the content holder
+            this.contentHolder.appendChild(this.Content);
+            this.windowDiv.appendChild(this.contentHolder);
         }
 
         __createMoveableWindow() {
@@ -364,14 +375,26 @@
                 this.titleDiv.style.gridTemplateColumns = "1fr ".repeat(this.tabs.length);
 
                 //Loop through tabs and add them
-                this.tabs.forEach(tab => {
-                    console.log(tab);
+                for (let tabIndex = 0; tabIndex < this.tabs.length; tabIndex++) {
+                    const tab = this.tabs[tabIndex];
                     const tabElement = document.createElement("div");
                     tabElement.innerText = tab.owner.title || tab.tabName || "Unknown Tab";
                     tabElement.className = "windowTab";
 
+                    tabElement.onclick = (event) => {
+                        event.stopPropagation();
+
+                        //Make sure the current tab exists;
+                        this.tabs[this.__CurrentTab].content.style.opacity = "0";
+                        this.tabs[this.__CurrentTab].content.style.zIndex = "0";
+
+                        this.tabs[tabIndex].content.style.opacity = "100";
+                        this.tabs[tabIndex].content.style.zIndex = "1";
+                        this.__CurrentTab = tabIndex;
+                    }
+
                     this.titleDiv.appendChild(tabElement);
-                })
+                }
             }
             else {
                 //clear, add title
@@ -388,7 +411,7 @@
             //Fallbacks and handling of different "Tabs"
             if (tabOrigin instanceof editor.windows.base) {
                 tabName = tabName || tabOrigin.title || "New Tab";
-                content = tabOrigin.content;
+                content = tabOrigin.Content;
                 isWindow = true;
 
                 tabOrigin.owner = this;
@@ -409,6 +432,12 @@
                 isWindow:isWindow,
                 tabName: tabName,
             });
+
+            //Approved? Maybe?
+            content.parentElement.removeChild(content);
+
+            content.style.opacity = "0";
+            this.contentHolder.appendChild(content);
 
             this.__refreshTaskbar();
         }

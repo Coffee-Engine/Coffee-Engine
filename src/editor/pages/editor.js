@@ -126,7 +126,7 @@
                 margin-top: 6px;
                 cursor: pointer;
 
-                transition: 125ms all;
+                transition: 125ms all, visibility 1ms;
             }
 
             
@@ -169,7 +169,7 @@
             .fileFolder {
                 max-height:var(--fit-height);
                 position:relative;
-                transition: 125ms all;
+                transition: 125ms all, visibility 1ms;
                 overflow:hidden;
             }
 
