@@ -3,6 +3,28 @@
     coffeeEngine.renderer.create = (canvas) => {
         coffeeEngine.renderer.canvas = canvas;
         coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas);
+        coffeeEngine.renderer.cameraData = {
+            set transform(value) {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                    if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
+                });
+                coffeeEngine.renderer.cameraData.storedTransform = value;
+            },
+            get transform() {
+                return coffeeEngine.renderer.cameraData.storedTransform;
+            },
+            set projection(value) {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                    if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
+                });
+                coffeeEngine.renderer.cameraData.storedProjection = value;
+            },
+            get projection() {
+                return coffeeEngine.renderer.cameraData.storedProjection;
+            },
+            storedTransform:coffeeEngine.matrix4.identity(),
+            storedProjection:coffeeEngine.matrix4.identity(),
+        }
 
         coffeeEngine.renderer.mainShaders = {
             unlit: coffeeEngine.renderer.daveshade.createShader(
@@ -22,6 +44,7 @@
                 varying vec2 v_texCoord;
     
                 uniform mat4 u_model;
+                uniform mat4 u_projection;
                 uniform mat4 u_camera;
     
                 uniform sampler2D u_texture;
@@ -86,15 +109,10 @@
 
                     //Our position on the sky sphere
                     vec3 SkySphere = normalize(forward + (right * screenUV.x) + (up * screenUV.y));
-                    if (SkySphere.y < sin((SkySphere.x + SkySphere.z) * 10.0) * 0.05) {
+                    if (SkySphere.y < 0.0) {
                         //Inverse the Y
                         SkySphere.y = -SkySphere.y;
-                        if (SkySphere.y < 0.0) {
-                            gl_FragColor = vec4(mix(vec3(0),vec3(0.290196078, 0.22745098, 0.192156863),pow(1.0 + SkySphere.y,10.0)),1);
-                        }
-                        else {
-                            gl_FragColor = vec4(mix(vec3(0.290196078, 0.22745098, 0.192156863),vec3(0.2, 0.105882353, 0.0549019608),SkySphere.y),1);
-                        }
+                        gl_FragColor = vec4(mix(vec3(0.290196078, 0.22745098, 0.192156863),vec3(0.2, 0.105882353, 0.0549019608),SkySphere.y),1);
                     }
                     else {
                         gl_FragColor = vec4(mix(vec3(0.77254902, 0.792156863, 0.909803922),vec3(0.403921569, 0.639215686, 0.941176471),SkySphere.y),1);

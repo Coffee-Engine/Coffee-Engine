@@ -2,7 +2,6 @@
 (function () {
     editor.windows.viewport = class extends editor.windows.base {        
         drawSky(renderer) {
-            renderer.mainShaders.skyplane.uniforms.u_camera.value = this.matrix.webGLValue();
             renderer.mainShaders.skyplane.uniforms.u_res.value = [this.canvas.width,this.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
             renderer.mainShaders.skyplane.setBuffers(this.skyPlane);
@@ -21,6 +20,12 @@
 
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
+
+            //Editor projection matrix
+            this.projection = coffeeEngine.matrix4.projection(90,1,0.1,1000);
+
+            coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
+            coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
         }
 
         renderLoop() {

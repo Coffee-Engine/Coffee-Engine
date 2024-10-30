@@ -137,14 +137,15 @@
     };
 
     coffeeEngine.matrix4.projection = (fov, aspect, near, far) => {
-        const fovRad = 1.0 / Math.tan(((fov * 0.5) / 180) * 3.141592682);
+        const fovRad = Math.tan(((fov * 0.5) / 180) * 3.141592682);
+        const range = (far - near)
 
         const returned = coffeeEngine.matrix4.identity();
 
-        returned.contents[0][0] = aspect * fovRad;
+        returned.contents[0][0] = fovRad / aspect;
         returned.contents[1][1] = fovRad;
-        returned.contents[2][2] = far / (far - near);
-        returned.contents[3][2] = (-far * near) / (far - near);
+        returned.contents[2][2] = far / range;
+        returned.contents[3][2] = (-far * near) / range;
         returned.contents[2][3] = 1;
         returned.contents[3][3] = 0;
 
