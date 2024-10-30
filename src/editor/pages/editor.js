@@ -123,6 +123,7 @@
                 border-top-right-radius: 8px;
                 background-color: var(--background-2);
                 margin: 4px;
+                margin-top: 6px;
                 cursor: pointer;
 
                 transition: 125ms all;
