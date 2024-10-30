@@ -70,8 +70,8 @@
 
         resized() {
             const clientSize = this.canvas.getBoundingClientRect();
-            this.canvas.width = clientSize.width;
-            this.canvas.height = clientSize.height;
+            this.canvas.width = 720//clientSize.width;
+            this.canvas.height = 720//clientSize.height;
         }
     };
 

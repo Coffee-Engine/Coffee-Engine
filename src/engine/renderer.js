@@ -86,7 +86,19 @@
 
                     //Our position on the sky sphere
                     vec3 SkySphere = normalize(forward + (right * screenUV.x) + (up * screenUV.y));
-                    gl_FragColor = vec4(SkySphere,1);
+                    if (SkySphere.y < sin((SkySphere.x + SkySphere.z) * 10.0) * 0.05) {
+                        //Inverse the Y
+                        SkySphere.y = -SkySphere.y;
+                        if (SkySphere.y < 0.0) {
+                            gl_FragColor = vec4(mix(vec3(0),vec3(0.290196078, 0.22745098, 0.192156863),pow(1.0 + SkySphere.y,10.0)),1);
+                        }
+                        else {
+                            gl_FragColor = vec4(mix(vec3(0.290196078, 0.22745098, 0.192156863),vec3(0.2, 0.105882353, 0.0549019608),SkySphere.y),1);
+                        }
+                    }
+                    else {
+                        gl_FragColor = vec4(mix(vec3(0.77254902, 0.792156863, 0.909803922),vec3(0.403921569, 0.639215686, 0.941176471),SkySphere.y),1);
+                    }
                 }
                 `
             )
