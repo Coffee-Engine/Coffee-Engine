@@ -410,6 +410,7 @@
             let isWindow = false;
             //Fallbacks and handling of different "Tabs"
             if (tabOrigin instanceof editor.windows.base) {
+                tabOrigin.__deconstruct();
                 tabName = tabName || tabOrigin.title || "New Tab";
                 content = tabOrigin.Content;
                 isWindow = true;

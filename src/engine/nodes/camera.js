@@ -1,7 +1,7 @@
 (function () {
     const camera = coffeeEngine.matrix4.identity();
 
-    class cameraNode extends coffeeEngine.classes.node3D {
+    class cameraNode extends coffeeEngine.getNode("Node3D") {
         activeCamera = true;
 
         draw() {

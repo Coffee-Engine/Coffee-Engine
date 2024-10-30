@@ -344,7 +344,6 @@
                         }
                         //If it is a parasite latch upon the host
                         else {
-                            console.log(newWindow.__deconstruct(),newWindow);
                             hostWindow.__addTab(newWindow);
                         }
                     }
@@ -368,9 +367,5 @@
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/myBlocks.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/debugger.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
-    };
-
-    editor.editorPage.initilizePanels = () => {
-        console.log("initilizing panels");
     };
 })();
