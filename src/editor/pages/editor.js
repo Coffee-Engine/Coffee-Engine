@@ -127,13 +127,19 @@
                 cursor: pointer;
 
                 transition: 125ms all, visibility 1ms;
+
+                border-style: solid;
+                border-width: 2px;
+                border-color: var(--background-3);
             }
 
             
 
             .windowTab:hover {
-                background-color: var(--background-3);
                 margin: 2px;
+
+                color: var(--text-2);
+                background-color: var(--background-3);
             }
 
             .genericNonSelect {
