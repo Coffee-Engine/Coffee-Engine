@@ -7,7 +7,7 @@
         draw() {
             super.draw();
             // prettier-ignore
-            if (this.activeCamera) coffeeEngine.renderer.mainShaders.unlit.uniforms.u_camera.value = camera.webGLValue();
+            if (this.activeCamera) coffeeEngine.renderer.cameraData.transform = camera.webGLValue();
         }
     };
 

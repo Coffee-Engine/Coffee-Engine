@@ -57,7 +57,7 @@
                     v_texCoord = a_texCoord;
     
                     //Transform my stuff!
-                    gl_Position = a_position * u_model * u_camera;
+                    gl_Position = a_position * u_model * u_camera * u_projection;
                     gl_Position.w = gl_Position.z;
                 }
                 `,
