@@ -8,6 +8,9 @@
             if (coffeeEngine.inputs.mouse["2"]) {
                 this.previewCamera.yaw -= coffeeEngine.inputs.mouse.movementX / 360;
                 this.previewCamera.pitch += coffeeEngine.inputs.mouse.movementY / 360;
+
+                this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch,-1.5707),1.5707);
+
                 if (coffeeEngine.inputs.keys["e"]) this.previewCamera.y -= 0.05;
                 if (coffeeEngine.inputs.keys["q"]) this.previewCamera.y += 0.05;
 
