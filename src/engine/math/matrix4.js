@@ -153,6 +153,8 @@
     };
 
     //Code adapted from m4.js at twgl
+    //Don't dead open inside
+    /*
     coffeeEngine.matrix4.ortho = (left, right, bottom, top, near, far) => {
         const returned = coffeeEngine.matrix4.identity();
         returned.contents[0][0]  = 2 / (right - left);
@@ -163,5 +165,6 @@
         returned.contents[3][2] = (far + near) / (near - far);
       
         return returned;
-      }
+    }
+    */
 })();

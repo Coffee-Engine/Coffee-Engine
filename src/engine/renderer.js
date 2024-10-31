@@ -29,6 +29,15 @@
             },
             get res() { return coffeeEngine.renderer.cameraData.storedRes; },
 
+            //Because orthographic projection wouldn't like me
+            set wFactor(value) { 
+                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                    if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
+                });
+                coffeeEngine.renderer.cameraData.storedWFactor = value;
+            },
+            get wFactor() { return coffeeEngine.renderer.cameraData.storedWFactor; },
+
             storedTransform:coffeeEngine.matrix4.identity(),
             storedProjection:coffeeEngine.matrix4.identity(),
             storedRes: [480,360]
@@ -54,6 +63,7 @@
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
                 uniform mat4 u_camera;
+                uniform float u_wFactor;
     
                 uniform sampler2D u_texture;
     
@@ -66,6 +76,8 @@
     
                     //Transform my stuff!
                     gl_Position = a_position * u_model * u_camera * u_projection;
+                    
+                    //W manipulation... wait not in that way
                     gl_Position.w = gl_Position.z;
                     gl_Position -= vec4(0,0,1,0);
                 }

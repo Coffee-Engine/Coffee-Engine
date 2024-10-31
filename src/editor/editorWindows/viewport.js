@@ -36,6 +36,7 @@
 
             this.matrix = this.matrix.translate(this.previewCamera.x,this.previewCamera.y,this.previewCamera.z);
             this.projection = coffeeEngine.matrix4.projection(90,this.canvas.width / this.canvas.height,0.001,1000);
+            this.wFactor = 1;
         }
 
         viewportControlsOrtho() {
@@ -45,8 +46,8 @@
             }
 
             this.matrix = this.matrix.translate(this.previewCamera.x,this.previewCamera.y,0);
-            const aspectCorrection = this.canvas.width / this.canvas.height;
-            this.projection = coffeeEngine.matrix4.ortho(-1000 * aspectCorrection,1000 * aspectCorrection,-1000,1000,-0.1,-1000);
+            this.projection = coffeeEngine.matrix4.projection(90,this.canvas.width / this.canvas.height,0.001,1000);
+            this.wFactor = 0;
         }
 
         renderLoop() {
@@ -58,6 +59,7 @@
             //Set our matrices
             coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
             coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
+            coffeeEngine.renderer.cameraData.wFactor = this.wFactor;
 
             coffeeEngine.runtime.currentScene.draw();
         }

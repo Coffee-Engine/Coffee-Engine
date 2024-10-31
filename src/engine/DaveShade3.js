@@ -38,7 +38,7 @@ window.DaveShade = {};
     DaveShade.setters = {
         //?Float
         5126: (gl, location, value) => {
-            gl.uniform1fv(location, value);
+            gl.uniform1f (location, value);
         },
         //?Vec2
         35664: (gl, location, value) => {
