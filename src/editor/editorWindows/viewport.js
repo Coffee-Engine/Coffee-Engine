@@ -1,14 +1,6 @@
 //Old obsolete window. Here for historical reasons. and incase I want to restore some LOST MEDIA
 (function () {
     editor.windows.viewport = class extends editor.windows.base {        
-        drawSky(renderer) {
-            renderer.mainShaders.skyplane.uniforms.u_res.value = [this.canvas.width,this.canvas.height];
-            //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
-            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
-
-            renderer.mainShaders.skyplane.drawFromBuffers(6);
-        }
-
         viewportControls() {
             this.matrix = coffeeEngine.matrix4.identity();
             
@@ -30,7 +22,7 @@
 
         renderLoop() {
             this.viewportControls();
-            this.drawSky(this.renderer);
+            coffeeEngine.runtime.currentScene.draw();
         }
 
         init(container) {

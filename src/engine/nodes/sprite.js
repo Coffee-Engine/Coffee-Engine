@@ -6,7 +6,9 @@
 
         draw() {
             super.draw();
-            
+
+            coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
+            coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
         }
     };
 

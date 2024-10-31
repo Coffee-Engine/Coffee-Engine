@@ -208,6 +208,7 @@ window.DaveShade = {};
                     "#value": null,
 
                     set value(value) {
+                        GL.useProgram(shader.program);
                         shader.uniforms[uniformName]["#value"] = value;
                         DaveShade.setters[uniformInfo.type](GL, location, value, uniformInfo);
                     },
