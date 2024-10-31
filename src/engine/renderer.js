@@ -96,14 +96,16 @@
     
                 uniform sampler2D u_texture;
                 uniform mat4 u_camera;
+                uniform mat4 u_projection;
                 uniform vec2 u_res;
                 
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    vec3 right = vec3(u_camera[0][0],u_camera[0][1],u_camera[0][2]);
-                    vec3 up = vec3(u_camera[1][0],u_camera[1][1],u_camera[1][2]);
-                    vec3 forward = vec3(u_camera[2][0],u_camera[2][1],u_camera[2][2]);
+                    mat4 mixed = u_camera * u_projection;
+                    vec3 right = vec3(mixed[0][0],mixed[0][1],mixed[0][2]);
+                    vec3 up = vec3(mixed[1][0],mixed[1][1],mixed[1][2]);
+                    vec3 forward = vec3(mixed[2][0],mixed[2][1],mixed[2][2]);
 
                     screenUV -= vec2(0.5);
 
