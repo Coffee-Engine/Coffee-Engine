@@ -2,28 +2,36 @@
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas) => {
         coffeeEngine.renderer.canvas = canvas;
-        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas);
+        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, {preserveDrawingBuffer: true});
+        coffeeEngine.renderer.daveshade.useZBuffer(true);
+
         coffeeEngine.renderer.cameraData = {
+
             set transform(value) {
                 Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedTransform = value;
             },
-            get transform() {
-                return coffeeEngine.renderer.cameraData.storedTransform;
-            },
+            get transform() { return coffeeEngine.renderer.cameraData.storedTransform; },
             set projection(value) {
                 Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedProjection = value;
             },
-            get projection() {
-                return coffeeEngine.renderer.cameraData.storedProjection;
+            get projection() { return coffeeEngine.renderer.cameraData.storedProjection; },
+            set res(value) {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                    if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
+                });
+                coffeeEngine.renderer.cameraData.storedRes = value;
             },
+            get res() { return coffeeEngine.renderer.cameraData.storedRes; },
+
             storedTransform:coffeeEngine.matrix4.identity(),
             storedProjection:coffeeEngine.matrix4.identity(),
+            storedRes: [480,360]
         }
 
         coffeeEngine.renderer.mainShaders = {
@@ -59,6 +67,7 @@
                     //Transform my stuff!
                     gl_Position = a_position * u_model * u_camera * u_projection;
                     gl_Position.w = gl_Position.z;
+                    gl_Position -= vec4(0,0,1,0);
                 }
                 `,
                 //Fragment
@@ -74,6 +83,10 @@
                 void main()
                 {
                     gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+
+                    if (gl_FragColor.w == 0.0) {
+                        discard;
+                    }
                 }
                 `
             ),
@@ -124,6 +137,28 @@
             )
             //lit:coffeeEngine.renderer.daveshade.createShader()
         };
+
+        coffeeEngine.renderer.fileToTexture = (src) => {
+            return new Promise((resolve,reject) => {
+                const desiredFile = project.getFile(src);
+                
+                if (!desiredFile) reject("file doesn't exist");
+                
+                desiredFile[0].getFile().then((file) => {
+                    const trackedImage = new Image();
+                    
+                    trackedImage.onload = () => {
+                        resolve(coffeeEngine.renderer.daveshade.createTexture(trackedImage));
+                    }
+
+                    trackedImage.onerror = () => {
+                        reject("error loading image");
+                    }
+
+                    trackedImage.src = window.URL.createObjectURL(file);
+                });
+            })
+        }
 
         return coffeeEngine.renderer;
     };

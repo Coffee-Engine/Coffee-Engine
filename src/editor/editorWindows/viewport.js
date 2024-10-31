@@ -1,9 +1,7 @@
 //Old obsolete window. Here for historical reasons. and incase I want to restore some LOST MEDIA
 (function () {
-    editor.windows.viewport = class extends editor.windows.base {        
-        viewportControls() {
-            this.matrix = coffeeEngine.matrix4.identity();
-            
+    editor.windows.viewport = class extends editor.windows.base {
+        viewportControlsProjection() {            
             //Dragging on the screen!
             if (coffeeEngine.inputs.mouse["2"]) {
                 this.previewCamera.yaw -= coffeeEngine.inputs.mouse.movementX / 360;
@@ -37,16 +35,30 @@
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
             this.matrix = this.matrix.translate(this.previewCamera.x,this.previewCamera.y,this.previewCamera.z);
+            this.projection = coffeeEngine.matrix4.projection(90,this.canvas.width / this.canvas.height,0.001,1000);
+        }
 
-            //Editor projection matrix
-            this.projection = coffeeEngine.matrix4.projection(90,1,0.1,1000);
+        viewportControlsOrtho() {
+            if (coffeeEngine.inputs.mouse["2"]) {
+                this.previewCamera.x += coffeeEngine.inputs.mouse.movementX / 180;
+                this.previewCamera.y -= coffeeEngine.inputs.mouse.movementY / 180;
+            }
 
-            coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
-            coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
+            this.matrix = this.matrix.translate(this.previewCamera.x,this.previewCamera.y,0);
+            const aspectCorrection = this.canvas.width / this.canvas.height;
+            this.projection = coffeeEngine.matrix4.ortho(-1000 * aspectCorrection,1000 * aspectCorrection,-1000,1000,-0.1,-1000);
         }
 
         renderLoop() {
-            this.viewportControls();
+            this.matrix = coffeeEngine.matrix4.identity();
+
+            if (this.orthographicMode) this.viewportControlsOrtho();
+            else this.viewportControlsProjection();
+
+            //Set our matrices
+            coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
+            coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
+
             coffeeEngine.runtime.currentScene.draw();
         }
 
@@ -54,12 +66,14 @@
             this.canvas = document.createElement("canvas");
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";
+            this.orthographicMode = true;
 
             container.style.overflow = "hidden";
 
             container.appendChild(this.canvas);
 
             this.resized();
+            window.addEventListener("resize", () => { this.resized() });
 
             //Setup our renderer
             this.renderer = coffeeEngine.renderer.create(this.canvas);
@@ -76,8 +90,8 @@
 
         resized() {
             const clientSize = this.canvas.getBoundingClientRect();
-            this.canvas.width = 720//clientSize.width;
-            this.canvas.height = 720//clientSize.height;
+            this.canvas.width = clientSize.width;
+            this.canvas.height = clientSize.height;
         }
     };
 

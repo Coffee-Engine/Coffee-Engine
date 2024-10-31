@@ -38,6 +38,7 @@
         }
 
         draw() {
+            coffeeEngine.renderer.daveshade.GL.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT)
             this.drawSky();
 
             this.events.draw.forEach((event) => {
@@ -46,7 +47,7 @@
         }
 
         drawSky(renderer) {
-            coffeeEngine.renderer.mainShaders.skyplane.uniforms.u_res.value = [coffeeEngine.renderer.canvas.width,coffeeEngine.renderer.canvas.height];
+            coffeeEngine.renderer.cameraData.res = [coffeeEngine.renderer.canvas.width,coffeeEngine.renderer.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
             coffeeEngine.renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
 

@@ -81,16 +81,16 @@ window.DaveShade = {};
         },
     };
 
-    DaveShade.createInstance = (CANVAS) => {
+    DaveShade.createInstance = (CANVAS, SETTINGS) => {
         const daveShadeInstance = {
             CANVAS: CANVAS,
             SHADERS: [],
         };
 
-        daveShadeInstance.GL = CANVAS.getContext("webgl2");
+        daveShadeInstance.GL = CANVAS.getContext("webgl2",SETTINGS);
         daveShadeInstance.GL_TYPE = "webgl2";
         if (!daveShadeInstance.GL) {
-            daveShadeInstance.GL = CANVAS.getContext("webgl");
+            daveShadeInstance.GL = CANVAS.getContext("webgl",SETTINGS);
             daveShadeInstance.GL_TYPE = "webgl";
         }
         const GL = daveShadeInstance.GL;
@@ -218,7 +218,7 @@ window.DaveShade = {};
                 };
 
                 if (uniformInfo.type == 35678) {
-                    shader.uniforms[uniformName].samplerID = shader.textureCount;
+                    uniformInfo.samplerID = shader.textureCount;
                     shader.textureCount += 1;
                 }
             }
@@ -304,6 +304,49 @@ window.DaveShade = {};
 
             return shader;
         };
+
+        daveShadeInstance.useZBuffer = (use) => {
+            daveShadeInstance.GL.enable(daveShadeInstance.GL.DEPTH_TEST);
+            daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
+        }
+
+        daveShadeInstance.createTexture = (data, width, height) => {
+            const texture = daveShadeInstance.GL.createTexture();
+            daveShadeInstance.GL.bindTexture(daveShadeInstance.GL.TEXTURE_2D, texture);
+
+            if (data instanceof Image) {
+                console.log(data);
+
+                daveShadeInstance.GL.texImage2D(
+                    daveShadeInstance.GL.TEXTURE_2D,
+                    0,
+                    daveShadeInstance.GL.RGBA,
+                    daveShadeInstance.GL.RGBA,
+                    daveShadeInstance.GL.UNSIGNED_BYTE,
+                    data,
+                );
+                
+                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_S, daveShadeInstance.GL.CLAMP_TO_EDGE);
+                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_T, daveShadeInstance.GL.CLAMP_TO_EDGE);
+                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_MIN_FILTER, daveShadeInstance.GL.LINEAR);
+            }
+            else {
+                daveShadeInstance.GL.texImage2D(
+                    daveShadeInstance.GL.TEXTURE_2D,
+                    0,
+                    daveShadeInstance.GL.RGBA,
+                    width,
+                    height,
+                    0,
+                    daveShadeInstance.GL.RGBA,
+                    daveShadeInstance.GL.UNSIGNED_BYTE,
+                    data,
+                );
+
+            }
+
+            return texture;
+        }
 
         daveShadeInstance.dispose = () => {
             daveShadeInstance.SHADERS.forEach(shader => {

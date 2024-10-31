@@ -48,7 +48,7 @@
             return this.multiply(rotator);
         };
         
-        scale(scale, x, y, z) {
+        scale(x, y, z) {
             const scaled = new coffeeEngine.matrix4(this.contents);
             scaled[0][0] *= x;
             scaled[0][1] *= x;
@@ -151,4 +151,17 @@
 
         return returned;
     };
+
+    //Code adapted from m4.js at twgl
+    coffeeEngine.matrix4.ortho = (left, right, bottom, top, near, far) => {
+        const returned = coffeeEngine.matrix4.identity();
+        returned.contents[0][0]  = 2 / (right - left);
+        returned.contents[1][1]  = 2 / (top - bottom);
+        returned.contents[2][2] = 2 / (near - far);
+        returned.contents[3][0] = (right + left) / (left - right);
+        returned.contents[3][1] = (top + bottom) / (bottom - top);
+        returned.contents[3][2] = (far + near) / (near - far);
+      
+        return returned;
+      }
 })();
