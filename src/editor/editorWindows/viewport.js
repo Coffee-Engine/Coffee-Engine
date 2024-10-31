@@ -4,7 +4,7 @@
         drawSky(renderer) {
             renderer.mainShaders.skyplane.uniforms.u_res.value = [this.canvas.width,this.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
-            renderer.mainShaders.skyplane.setBuffers(this.skyPlane);
+            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
 
             renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
@@ -54,22 +54,6 @@
                 yaw:0,
                 pitch:0
             }
-
-            //Setup the skyplane
-            this.skyPlane = {
-                a_position: new Float32Array(
-                    [
-                        -1,-1,1,1,
-                        -1,1,1,1,
-                        1,-1,1,1,
-    
-                        -1,1,1,1,
-                        1,-1,1,1,
-                        1,1,1,1,
-                    ]
-                ),
-            }
-
             setInterval(() => {this.renderLoop()},16);
         }
 
