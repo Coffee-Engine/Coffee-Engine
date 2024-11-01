@@ -59,6 +59,7 @@
                 varying vec4 v_color;
                 varying vec3 v_normal;
                 varying vec2 v_texCoord;
+                varying vec3 v_position;
     
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
@@ -76,8 +77,10 @@
     
                     //Transform my stuff!
                     gl_Position = a_position * u_model * u_camera * u_projection;
+                    v_position = a_position.xyz;
                     
                     //W manipulation... wait not in that way
+                    gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor);
                     gl_Position.w = gl_Position.z;
                     gl_Position -= vec4(0,0,1,0);
                 }
@@ -89,6 +92,7 @@
                 varying vec4 v_color;
                 varying vec3 v_normal;
                 varying vec2 v_texCoord;
+                varying vec3 v_position;
     
                 uniform sampler2D u_texture;
                 
