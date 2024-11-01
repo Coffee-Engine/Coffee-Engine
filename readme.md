@@ -16,6 +16,9 @@ Coffee Engine should be very customizable with almost everything being able to b
 ## Contributing
 you can use `node build.mjs` to build a non-Browser version of the engine, when building it should show a little command line tool for you to mess around with.
 
+### And about IOS Safari?
+no, if you find a fix for safari, commit it.
+
 ## Forking
 If you plan to make a fork or mod of the engine please add some link back to the original engine! This is not a requirement just a simple request.
 <div align="center">
