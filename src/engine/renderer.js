@@ -60,6 +60,7 @@
                 varying vec3 v_normal;
                 varying vec2 v_texCoord;
                 varying vec3 v_position;
+                varying float v_warp;
     
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
@@ -78,11 +79,13 @@
                     //Transform my stuff!
                     gl_Position = a_position * u_model * u_camera * u_projection;
                     v_position = a_position.xyz;
-                    
+
                     //W manipulation... wait not in that way
                     gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor);
                     gl_Position.w = gl_Position.z;
                     gl_Position -= vec4(0,0,1,0);
+
+                    v_warp = gl_Position.w;
                 }
                 `,
                 //Fragment
@@ -93,11 +96,14 @@
                 varying vec3 v_normal;
                 varying vec2 v_texCoord;
                 varying vec3 v_position;
+                varying float v_warp;
     
                 uniform sampler2D u_texture;
+                uniform float u_wFactor;
                 
                 void main()
                 {
+                    vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor);
                     gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
 
                     if (gl_FragColor.w == 0.0) {
