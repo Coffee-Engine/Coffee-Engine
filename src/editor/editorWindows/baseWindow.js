@@ -300,12 +300,6 @@
             };
 
             this.windowDiv.onmousedown = (downEvent) => {
-                //If we are docked. We do nothing.
-                if (this.docked) return;
-
-                //Move the window layer
-                editor.windowLayer += 1;
-
                 //Get bounding box for the window
                 const boundingRect = this.windowDiv.getBoundingClientRect();
                 const { width, height } = boundingRect;
@@ -320,6 +314,24 @@
                 const leftEdge = Math.abs(boundingRect.left - downEvent.clientX) <= editor.grabDistance;
                 const topEdge = Math.abs(boundingRect.top - downEvent.clientY) <= editor.grabDistance;
                 const edging = topEdge || bottomEdge || rightEdge || leftEdge;
+
+                //If we are docked. We check for resizing
+                if (this.docked) {
+                    if ((!edging) || (!this.resizable)) return;
+                    console.log("Trying to resize docked window",this.dockedColumn);
+
+                    const startX = downEvent.clientX;
+                    const startY = downEvent.clientY;
+
+                    console.log(startX,startY);
+
+                    if (leftEdge) {
+                    }
+                    return;
+                }
+
+                //Move the window layer
+                editor.windowLayer += 1;
                 
                 this.windowDiv.style.zIndex = editor.windowLayer;
 

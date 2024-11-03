@@ -107,7 +107,7 @@
 
             //create our shiz
             container.style.display = "grid";
-            container.style.gridTemplateRows = "24px 100%";
+            container.style.gridTemplateRows = "24px 1fr";
             container.style.margin = "0px";
             container.style.overflow = "hidden";
 
