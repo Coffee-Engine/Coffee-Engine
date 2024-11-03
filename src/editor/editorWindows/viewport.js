@@ -63,8 +63,6 @@
             this.projection = coffeeEngine.matrix4.projection(90,this.canvas.width / this.canvas.height,0.001,1000);
 
             this.wFactor += (1 - this.wFactor) * 0.0625;
-            this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.0625;
-            this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.0625;
             if (this.wFactor > 0.975) {
                 this.wFactor = 1;
             }
@@ -75,6 +73,9 @@
                 this.previewCamera.x += coffeeEngine.inputs.mouse.movementX / 180;
                 this.previewCamera.y -= coffeeEngine.inputs.mouse.movementY / 180;
             }
+            
+            this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.0625;
+            this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.0625;
 
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
