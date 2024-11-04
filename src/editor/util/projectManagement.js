@@ -117,16 +117,18 @@
                 }
                 else {
                     folderSystem[name] = {};
-                    project.scanFolder(fileHandle,false,folderSystem[name]);
+                    await project.scanFolder(fileHandle,false,folderSystem[name]);
                 }
-                
-                //Send our event to refresh the file system
-                coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
             }
 
             if (openEditor) {
                 if (project.fileSystem["project.json"]) {
                     editor.editorPage.initilize();
+                
+                    //Send our event to refresh the file system
+                    coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
+                    //Tell it that our extensions are also ready
+                    coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
                 }
                 else {
                     //Remove the stuff if we don't have a valid project
@@ -135,6 +137,8 @@
                     project.directoryHandle = null;
                 }
             }
+
+            return;
         },
 
         //create stuff
