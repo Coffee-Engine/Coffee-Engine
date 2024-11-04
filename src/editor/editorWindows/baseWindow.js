@@ -318,15 +318,51 @@
                 //If we are docked. We check for resizing
                 if (this.docked) {
                     if ((!edging) || (!this.resizable)) return;
-                    console.log("Trying to resize docked window",this.dockedColumn);
 
-                    const startX = downEvent.clientX;
-                    const startY = downEvent.clientY;
+                    let leftDiv;
+                    let rightDiv;
+                    let leftData;
+                    let rightData;
+                    let fullSizeX = 100;
+                    let fullSizeY = 100;
 
-                    console.log(startX,startY);
-
-                    if (leftEdge) {
+                    if (leftEdge && this.dockedColumn > 0) {
+                        leftDiv = editor.dock.element.children[this.dockedColumn - 1]
+                        rightDiv = editor.dock.element.children[this.dockedColumn];
+                        leftData = editor.layout.layout[this.dockedColumn - 1];
+                        rightData = editor.layout.layout[this.dockedColumn];
                     }
+                    else if (rightEdge && this.dockedColumn < editor.dock.element.children.length - 1) {
+                        leftDiv = editor.dock.element.children[this.dockedColumn];
+                        rightDiv = editor.dock.element.children[this.dockedColumn + 1];
+                        leftData = editor.layout.layout[this.dockedColumn];
+                        rightData = editor.layout.layout[this.dockedColumn + 1];
+                    }
+
+                    if ((!leftData.size) || (!rightData.size)) return;
+
+                    fullSizeX = (leftData.size + rightData.size) / 100;
+
+                    let leftMost = leftDiv.getBoundingClientRect();
+                    let rightMost = rightDiv.getBoundingClientRect();
+
+                    document.onmouseup = () => {
+                        document.onmousemove = () => {};
+                    };
+
+                    document.onmousemove = (moveEvent) => {
+                        const movedX = moveEvent.clientX;
+                        const movedY = moveEvent.clientY;
+
+                        moveEvent.preventDefault();
+
+                        if (leftEdge || rightEdge) {
+                            const percentage = ((movedX - leftMost.left) / (rightMost.right - leftMost.left)) * 100;
+                            leftData.size = percentage * fullSizeX;
+                            rightData.size = (100 - percentage) * fullSizeX;
+                            editor.dock.refreshLayout(false);
+                        }
+                    };
                     return;
                 }
 
