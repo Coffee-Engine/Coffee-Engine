@@ -41,6 +41,9 @@
                 min-height:0px;
 
                 background-color:var(--background-3);
+                border-color:var(--background-4);
+                border-style:solid;
+                border-width:2px;
 
                 display:grid;
                 grid-template-rows: ${editor.taskbarHeight}px auto;

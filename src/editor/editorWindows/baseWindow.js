@@ -318,14 +318,19 @@
                 //If we are docked. We check for resizing
                 if (this.docked) {
                     if ((!edging) || (!this.resizable)) return;
+                    const dockedRow = editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content);
 
-                    let leftDiv;
-                    let rightDiv;
-                    let leftData;
-                    let rightData;
-                    let fullSizeX = 100;
-                    let fullSizeY = 100;
+                    //Our directional data and divs
+                    let leftDiv;    let leftData;
+                    let rightDiv;   let rightData;
+                    let topDiv;     let topData;
+                    let bottomDiv;  let bottomData;
 
+                    //"Full size" aka the combined size of both directions
+                    let fullSizeX = 1;
+                    let fullSizeY = 1;
+
+                    //Left Right
                     if (leftEdge && this.dockedColumn > 0) {
                         leftDiv = editor.dock.element.children[this.dockedColumn - 1]
                         rightDiv = editor.dock.element.children[this.dockedColumn];
@@ -338,13 +343,28 @@
                         leftData = editor.layout.layout[this.dockedColumn];
                         rightData = editor.layout.layout[this.dockedColumn + 1];
                     }
+                    if (leftDiv || rightDiv) fullSizeX = (leftData.size + rightData.size) / 100;
 
-                    if ((!leftData.size) || (!rightData.size)) return;
+                    //Up Down
+                    if (topEdge && dockedRow > 0) {
+                        topDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow - 1];
+                        bottomDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow];
+                        topData = editor.layout.layout[this.dockedColumn].contents[dockedRow - 1];
+                        bottomData = editor.layout.layout[this.dockedColumn].contents[dockedRow];
+                    }
+                    else if (bottomEdge && dockedRow < editor.dock.element.children[this.dockedColumn].children.length - 1) {
+                        topDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow];
+                        bottomDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow + 1];
+                        topData = editor.layout.layout[this.dockedColumn].contents[dockedRow];
+                        bottomData = editor.layout.layout[this.dockedColumn].contents[dockedRow + 1];
+                    }
+                    if (topDiv || bottomDiv) fullSizeY = (topData.size + bottomData.size) / 100;
 
-                    fullSizeX = (leftData.size + rightData.size) / 100;
-
-                    let leftMost = leftDiv.getBoundingClientRect();
-                    let rightMost = rightDiv.getBoundingClientRect();
+                    //Bounding rects for all of 'em
+                    let leftMost = (leftDiv) ? leftDiv.getBoundingClientRect() : null;
+                    let rightMost = (rightDiv) ? rightDiv.getBoundingClientRect() : null;
+                    let topMost = (topDiv) ? topDiv.getBoundingClientRect() : null;
+                    let bottomMost = (bottomDiv) ? bottomDiv.getBoundingClientRect() : null;
 
                     document.onmouseup = () => {
                         document.onmousemove = () => {};
@@ -356,10 +376,22 @@
 
                         moveEvent.preventDefault();
 
-                        if (leftEdge || rightEdge) {
-                            const percentage = ((movedX - leftMost.left) / (rightMost.right - leftMost.left)) * 100;
+                        //And do our resizing
+                        if (leftDiv || rightDiv) {
+                            let percentage = ((movedX - leftMost.left) / (rightMost.right - leftMost.left)) * 100;
+                            //Clamp that thing
+                            percentage = Math.min(Math.max(percentage,10),90);
                             leftData.size = percentage * fullSizeX;
                             rightData.size = (100 - percentage) * fullSizeX;
+                            editor.dock.refreshLayout(false);
+                        }
+
+                        if (topDiv || bottomDiv) {
+                            let percentage = ((movedY - topMost.top) / (bottomMost.bottom - topMost.top)) * 100;
+                            //Clamp that thing
+                            percentage = Math.min(Math.max(percentage,10),90);
+                            topData.size = percentage * fullSizeY;
+                            bottomData.size = (100 - percentage) * fullSizeY;
                             editor.dock.refreshLayout(false);
                         }
                     };
@@ -506,14 +538,25 @@
 
                 //Handle docked windows
                 if (this.docked) {
-                    if (editor.layout.layout[this.dockedColumn]) editor.layout.layout[this.dockedColumn].contents.splice(editor.layout.layout[this.dockedColumn].contents.indexOf(this),1);
+                    if (editor.layout.layout[this.dockedColumn]) delete editor.layout.layout[this.dockedColumn].contents.splice(editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content),1)[0];
                     editor.dock.refreshLayout();
                 }
 
                 delete this.windowDiv;
             };
 
-            this.windowDiv.style.animation = "closeWindow 500ms cubic-bezier(0.65, 0, 0.35, 1) 1";
+            if (this.docked) {
+                this.dispose();
+                this.windowDiv.parentElement.removeChild(this.windowDiv);
+                
+                if (editor.layout.layout[this.dockedColumn]) delete editor.layout.layout[this.dockedColumn].contents.splice(editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content),1)[0];
+                editor.dock.refreshLayout();
+
+                delete this.windowDiv;
+            }
+            else {
+                this.windowDiv.style.animation = "closeWindow 500ms cubic-bezier(0.65, 0, 0.35, 1) 1";
+            }
         }
 
         //Makes the window headless for tab stuff

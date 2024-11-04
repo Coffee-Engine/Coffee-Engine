@@ -315,8 +315,6 @@ window.DaveShade = {};
             daveShadeInstance.GL.bindTexture(daveShadeInstance.GL.TEXTURE_2D, texture);
 
             if (data instanceof Image) {
-                console.log(data);
-
                 daveShadeInstance.GL.texImage2D(
                     daveShadeInstance.GL.TEXTURE_2D,
                     0,
