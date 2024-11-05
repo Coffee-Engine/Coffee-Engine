@@ -134,10 +134,9 @@
                 <button class="projectInitButton" id="loadFolder">${editor.language["engine.home.loadFolder"]}</button>
             </div>
 
-            <div class="fullWidth centerContents">
-                <div></div>
+            <div class="fullWidth centerContents" style="grid-template-columns: 27.75% 27.75%;">
+                <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineCredits"]}</button>
                 <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineConfig"]}</button>
-                <div></div>
             </div>
 
             <div class="fullWidth centerText noCenterElements" style="border-top: 4px solid var(--background-3); background-color: var(--background-2); padding-bottom:4px;" id="recentProjects">

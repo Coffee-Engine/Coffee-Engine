@@ -13,8 +13,10 @@ editor.EnglishLang = {
     "engine.home.noRecentProjects": "No Recent Projects",
     "engine.home.lastEdited": "Last edited : [TIME]",
     "engine.home.engineConfig": "Engine Settings",
+    "engine.home.engineCredits": "Engine Credits",
 
     "engine.settings.welcome": "Engine Settings",
+    "engine.credits.welome": "Credits",
 
 
     "engine.settings.category.Window": "Window",

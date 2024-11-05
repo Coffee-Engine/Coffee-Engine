@@ -214,6 +214,21 @@
                 this._dispose();
             };
 
+            
+            this.dockButton.onclick = () => {
+                if (this.docked) {
+                    editor.dock.undockWindow(this);
+                    this.__moveToTop();
+    
+                    if (!this.width < 10) this.width = 480;
+                    if (!this.height < 10) this.height = 360;
+                }
+                else {
+                    this.windowDiv.style.opacity = "25%";
+                    this.windowDiv.style.pointerEvents = "none"
+                }
+            };
+
             //Make the title have no interaction
             this.titleDiv.style.pointerEvents = "none";
             this.titleDiv.style.userSelect = "none";

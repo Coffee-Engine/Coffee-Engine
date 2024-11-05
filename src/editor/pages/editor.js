@@ -291,6 +291,20 @@
                 window.docked = true;
                 window.dockedColumn = column;
                 editor.dock.element.children[column].appendChild(window.windowDiv);
+            },
+
+            undockWindow:(window) => {
+                if (window.windowDiv.parentNode) {
+                    window.windowDiv.parentNode.removeChild(window.windowDiv);
+                }
+
+                window.docked = false;
+                window.dockedColumn = 0;
+                document.body.appendChild(window.windowDiv);
+            },
+
+            dockWindowUI:(window) => {
+                
             }
         };
 
