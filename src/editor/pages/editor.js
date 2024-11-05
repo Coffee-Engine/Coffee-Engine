@@ -109,6 +109,7 @@
                 margin:0px;
 
                 width:100%;
+                max-height:calc(100% - 16px);
 
                 overflow:hidden;
 
@@ -119,6 +120,30 @@
                 --dockGridHorizontal: 1fr;
 
                 grid-template-columns: var(--dockGridHorizontal);
+            }
+
+            .dockOverlay {
+                top:16px;
+                left:0px;
+                
+                position:absolute;
+                
+                margin:0px;
+                padding:0px;
+
+                width:100%;
+                height:calc(100% - 16px);
+            
+                display: grid;
+
+                --dockGridHorizontal: 1fr;
+                opacity: 0%;
+                transition: 250ms opacity;
+
+                grid-template-columns: var(--dockGridHorizontal);
+                overflow:hidden;
+                z-index:10000;
+                pointer-events:none;
             }
 
             .windowTab {
@@ -209,6 +234,7 @@
         <div class="dockAndDropdowns">
             <div class="dropdownsTopbar" id="coffeeEngineDropdowns">hi</div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
+            <div class="dockOverlay" id="coffeeEngineDockoverlay"></div>
         </div>
         `;
 
@@ -304,11 +330,48 @@
             },
 
             dockWindowUI:(window) => {
-                
+                let percentages = "";
+
+                editor.dock.overlayElement.style.opacity = "80%";
+                editor.dock.overlayElement.style.visibility = "visible";
+                editor.dock.overlayElement.style.pointerEvents = "auto";
+                editor.dock.overlayElement.style.backdropFilter = "blur(4px)";
+
+                for (let ID = 0; ID < editor.layout.layout.length; ID++) {
+                    percentages += editor.layout.layout[ID].size + "% ";
+                    //Get the "Sub Dock" which is the vertical part of the dock
+                    let subDock = editor.dock.overlayElement.children[ID];
+                    //If there is no "Sub Dock" add one
+                    if (!subDock) {
+                        subDock = document.createElement("div");
+                        subDock.style.display = "grid";
+                        subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+
+                        editor.dock.overlayElement.appendChild(subDock);
+                    }
+
+                    let rowPercentage = "";
+                    editor.layout.layout[ID].contents.forEach(window => {
+                        rowPercentage += window.size + "% ";
+                        
+                        const row = document.createElement("div");
+                        row.style.margin = "8px";
+                        row.style.backgroundColor = "var(--text-1)";
+                        row.style.opacity = "50%";
+
+                        subDock.appendChild(row);
+                    })
+
+                    //Set the grid property
+                    subDock.style.setProperty("--dockGridVertical",rowPercentage);
+                }
+
+                editor.dock.overlayElement.style.setProperty("--dockGridHorizontal",percentages);
             }
         };
-
+        
         editor.dock.element = document.getElementById("coffeeEngineDock");
+        editor.dock.overlayElement = document.getElementById("coffeeEngineDockoverlay");
 
         //Deserialize our windows
         editor.dock.refreshLayout(true);

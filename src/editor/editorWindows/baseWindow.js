@@ -226,6 +226,7 @@
                 else {
                     this.windowDiv.style.opacity = "25%";
                     this.windowDiv.style.pointerEvents = "none"
+                    editor.dock.dockWindowUI(this);
                 }
             };
 
