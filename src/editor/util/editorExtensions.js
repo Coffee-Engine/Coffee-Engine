@@ -46,10 +46,38 @@
             //Read our extension.json
             this.fileReader.onload = () => {
                 project.extensions.storage[extensionID] = JSON.parse(this.fileReader.result);
-                console.log(project.extensions.storage[extensionID]);
+                this.loadScripts(`extensions/${extensionID}/`,project.extensions.storage[extensionID].scripts);
             }
 
             this.fileReader.readAsText(file);
+        }
+
+        async loadScripts(path,scriptArray) {
+            for (let index = 0; index < scriptArray.length; index++) {
+                await (new Promise((resolve,reject) => {
+                    //reading our files
+                    this.fileReader.onload = () => {
+                        //Get our script contents
+                        const scriptContents = this.fileReader.result;
+                        const scriptElement = document.createElement("script");
+                        //Isolate the context;
+                        scriptElement.innerHTML = `(function() {\n${scriptContents}\n})();`
+                        document.body.appendChild(scriptElement);
+
+                        resolve();
+                    }
+
+                    //Load our script
+                    let fileData = project.getFile(`${path}${scriptArray[index]}`)
+
+                    //Make sure the file exists
+                    if (!fileData) return;
+
+                    fileData[0].getFile().then(file => {
+                        this.fileReader.readAsText(file);
+                    })
+                }))
+            }
         }
     }
 })();
