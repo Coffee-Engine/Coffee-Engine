@@ -1,6 +1,10 @@
 (function() {
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
+            this.extraMapping = {
+                json:"js"
+            };
+
             this.title = editor.language["editor.window.codeEditor"];
             this.usingSugarCube = false;
             this.filePath = false;
@@ -175,6 +179,10 @@
                 }
             });
         }
+        
+        resized() {
+            Blockly.svgResize(sugarcube.workspace);
+        }
 
         //Setup our file hooks
         setupFileHooks() {
@@ -193,7 +201,7 @@
                     this.blocklyArea.style.visibility = "hidden";
                     this.usingSugarCube = false;
 
-                    monacoManager.setScript(this.fileReader.result,this.readType);
+                    monacoManager.setScript(this.fileReader.result,this.extraMapping[this.readType] || this.readType);
                 }
                 else {
                     this.monacoArea.style.visibility = "hidden";

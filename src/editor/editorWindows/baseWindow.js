@@ -330,6 +330,19 @@
                     let fullSizeX = 1;
                     let fullSizeY = 1;
 
+                    /*
+                        Now we calculate the actual sizes and windows we need to grab
+                        |    L| R L |R   |
+                        |  T  |<M M>|    |
+                        |  M  |     |    |
+                        |  V  |     |    |
+                        ------------------
+                        |  ^  |     |    |
+                        |  M  |     |    |
+                        |  B  |     |    |
+
+                        This is what we are calculating
+                    */
                     //Left Right
                     if (leftEdge && this.dockedColumn > 0) {
                         leftDiv = editor.dock.element.children[this.dockedColumn - 1]
