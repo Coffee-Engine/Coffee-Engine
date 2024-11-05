@@ -2,7 +2,8 @@
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
             this.extraMapping = {
-                json:"js"
+                json:"js",
+                cjs:"js"
             };
 
             this.title = editor.language["editor.window.codeEditor"];
@@ -143,6 +144,12 @@
             project.setFile(this.filePath,(this.usingSugarCube) ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(),"text/javascript").then(() => {
                 console.log(`Saved ${this.filePath} sucessfully`);
             });
+
+            if (this.filePath.split(".")[1].toLowerCase() == "cescr") {
+                project.setFile(`${this.filePath.split(".")[0]}.cjs`, sugarcube.generator.workspaceToCode(sugarcube.workspace), "text/javascript").then(() => {
+                    console.log(`Compiled ${this.filePath} as ${`${this.filePath.split(".")[0]}.cjs`} sucessfully`);
+                });
+            }
         }
 
         appendButtonAction() {
@@ -189,6 +196,7 @@
             editor.addFileOpenHook("txt",this.openFile,this);
             editor.addFileOpenHook("md",this.openFile,this);
             editor.addFileOpenHook("js",this.openFile,this);
+            editor.addFileOpenHook("cjs",this.openFile,this);
             editor.addFileOpenHook("json",this.openFile,this);
             editor.addFileOpenHook("cappu",this.openFile,this);
             editor.addFileOpenHook("cescr",this.openFile,this);

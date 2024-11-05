@@ -13,6 +13,28 @@
         </svg>
     `;
 
+    const undockButtonSVG = `<svg style="width:100%; height:100%;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="90.44835" height="88.29252" viewBox="0,0,90.44835,88.29252">
+    <g transform="translate(-194.77583,-135.85374)">
+        <g fill="none" stroke="currentColor" stroke-width="12" stroke-miterlimit="10">
+            <path d="M200.77584,218.14626v-55.93188h55.93188v55.93188z" stroke-linecap="butt" />
+            <path d="M220.41786,156.94457v-15.09083h58.80632v60.24354h-16.76759"
+                stroke-linecap="round" />
+        </g>
+    </g>
+</svg><!--rotationCenter:45.224165:44.14626000000001-->`;
+
+    const dockButtonSVG = `<svg style="width:100%; height:100%;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="93.05298" height="92.93321" viewBox="0,0,93.05298,92.93321">
+    <g transform="translate(-193.47351,-133.5334)">
+        <g fill="none" stroke="currentColor" stroke-width="12" stroke-miterlimit="10">
+            <path d="M199.50379,180.01514v-40.48174h40.48174v40.48174z" />
+            <path d="M199.47351,220.46661v-40.48175h40.48174v40.48175z" />
+            <path d="M240.04475,220.43633v-80.84372h40.48174v80.84372z" />
+        </g>
+    </g>
+</svg><!--rotationCenter:46.5264875:46.466595085924865-->`
+
     //This will contain the editor's windows
     editor.windowLayer = 0;
     editor.windows = {};
@@ -35,6 +57,7 @@
 
             if (!value) {
                 this.windowDiv.style.position = "absolute";
+                this.dockButton.innerHTML = dockButtonSVG;
             } else {
                 this.windowDiv.style.position = "static";
 
@@ -42,6 +65,9 @@
 
                 this.windowDiv.style.width = "auto";
                 this.windowDiv.style.height = "auto";
+
+                //Add our undock button
+                this.dockButton.innerHTML = undockButtonSVG;
             }
         }
 
@@ -173,10 +199,15 @@
             //Just doing this for ease
             this.titleDiv = document.createElement("div");
             this.closeButton = document.createElement("button");
+            this.dockButton = document.createElement("button");
 
             //The fine intricacies of the close button
             this.closeButton.className = "closeButton";
             this.closeButton.innerHTML = closeButtonSVG;
+
+            //The horrible idiocracies of the dock button
+            this.dockButton.className = "closeButton";
+            this.dockButton.innerHTML = dockButtonSVG;
 
             //Do this so the 'this' context doesn't overlap with the button
             this.closeButton.onclick = () => {
@@ -189,6 +220,7 @@
             this.titleDiv.style.display = "grid";
 
             this.TaskBar.appendChild(this.titleDiv);
+            this.TaskBar.appendChild(this.dockButton);
             this.TaskBar.appendChild(this.closeButton);
 
             //Update title and apply to window
@@ -509,6 +541,8 @@
                 isWindow = true;
 
                 tabOrigin.owner = this;
+
+                tabOrigin.merged(this);
             }
             else if (tabOrigin instanceof HTMLElement) {
                 tabName = tabName || "New Tab";
@@ -534,6 +568,7 @@
             content.style.zIndex = "0";
             this.tabs[this.__CurrentTab].content.style.zIndex = "1";
             this.contentHolder.appendChild(content);
+            this.merged(this.tabOrigin);
 
             this.__refreshTaskbar();
         }
