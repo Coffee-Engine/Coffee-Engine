@@ -1,4 +1,6 @@
 (function() {
+    window.isSingleFile = true;
+    
     window.editorFS = {
         find: (src) => {
             let grabbed = window.editorFSObject;

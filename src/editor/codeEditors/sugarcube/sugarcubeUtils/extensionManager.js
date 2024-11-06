@@ -1030,11 +1030,20 @@
         }
 
         loadExtension(url) {
-            let loadedScript = document.createElement("engine-script");
-            loadedScript.setAttribute("src",url);
-            loadedScript.setAttribute("async",false);
-
-            document.body.appendChild(loadedScript);
+            if (window.isSingleFile) {
+                let loadedScript = document.createElement("engine-script");
+                loadedScript.setAttribute("src",url);
+                loadedScript.setAttribute("async",false);
+    
+                document.body.appendChild(loadedScript);
+            }
+            else {
+                let loadedScript = document.createElement("script");
+                loadedScript.src = url;
+                loadedScript.async = false;
+    
+                document.body.appendChild(loadedScript);
+            }
         }
     }
 
