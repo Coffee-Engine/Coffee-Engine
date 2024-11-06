@@ -645,6 +645,18 @@
             return this.Content;
         }
 
+        //For reconstructing from a tab
+        __reconstruct() {
+            document.body.appendChild(this.windowDiv);
+            this.windowDiv.appendChild(this.TaskBar);
+
+            //Remove the content from its current parent.
+            if (this.Content.parentElement) this.Content.parentElement.removeChild(this.Content);
+            this.windowDiv.appendChild(this.Content);
+
+            return this.Content;
+        }
+
         //Just for the extensions of this class
         init(Content) {}
         dispose() {}
