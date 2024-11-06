@@ -559,6 +559,19 @@
                 tabOrigin.owner = this;
 
                 tabOrigin.merged(this);
+
+                //If the window has tabs, include them all
+                if (tabOrigin.tabs.length > 1) {
+                    for (let index = 1; index < tabOrigin.tabs.length; index+=0) {
+                        const tab = tabOrigin.tabs[index];
+
+                        //Yeah really;
+                        this.__addTab(tab.owner);
+
+                        //Remove the tab from the tabs list of the current window we are merging. Then make sure that tab def is removed from mem.
+                        delete tabOrigin.tabs.splice(index,1);
+                    }
+                }
             }
             else if (tabOrigin instanceof HTMLElement) {
                 tabName = tabName || "New Tab";
@@ -578,7 +591,7 @@
             });
 
             //Approved? Maybe?
-            content.parentElement.removeChild(content);
+            if (content.parentElement) content.parentElement.removeChild(content);
 
             content.style.opacity = "0";
             content.style.zIndex = "0";
@@ -625,8 +638,9 @@
 
         //Makes the window headless for tab stuff
         __deconstruct() {
-            this.TaskBar.parentElement.removeChild(this.TaskBar);
-            this.windowDiv.parentElement.removeChild(this.windowDiv);
+            //MAKE SURE THESE EXIST!
+            if (this.TaskBar.parentElement) this.TaskBar.parentElement.removeChild(this.TaskBar);
+            if (this.windowDiv.parentElement) this.windowDiv.parentElement.removeChild(this.windowDiv);
 
             return this.Content;
         }

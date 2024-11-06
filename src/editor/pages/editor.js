@@ -241,13 +241,16 @@
         document.body.appendChild(editor.currentPage.root);
 
         editor.dock = {
-            refreshLayout:(initial, missingPercentage) => {
-                missingPercentage = missingPercentage || 0;
+            refreshLayout:(initial, missingPercentageX, missingPercentageY) => {
+                //Our percentages
+                missingPercentageX = missingPercentageX || 0;
+                missingPercentageY = missingPercentageY || [0];
+
                 //Set the horizontal grid layout then loop through each item
                 let percentages = "";
                 for (let ID = 0; ID < editor.layout.layout.length; ID++) {
                     //Add the percentage + the missing part
-                    editor.layout.layout[ID].size += missingPercentage / editor.layout.layout.length;
+                    editor.layout.layout[ID].size += missingPercentageX / editor.layout.layout.length;
 
                     percentages += editor.layout.layout[ID].size + "% ";
                     //Get the "Sub Dock" which is the vertical part of the dock
@@ -263,6 +266,10 @@
 
                     let rowPercentage = "";
                     editor.layout.layout[ID].contents.forEach(window => {
+                        //Updatte window size to compensate for missing percentage
+                        window.size += (missingPercentageY[ID] || 0) / editor.layout.layout[ID].contents.length;
+
+                        //Then update column size
                         rowPercentage += window.size + "% ";
                         if (!window.content.resized) return;
                         window.content.resized();
@@ -278,20 +285,30 @@
 
                 //Check for holes in the layout
                 let backIndent = 0;
-                let percentageGone = 0;
+                let percentageGoneX = 0;
+                let percentageGoneY = [];
                 let hadToRemove = false;
                 for (let X = 0; X < editor.dock.element.children.length; X++) {
                     //Make sure it has a window or 2 in it
                     if (editor.dock.element.children[X].children.length > 0) {
                         //Loop over each window and subtract the indent
-                        editor.layout.layout[X].contents.forEach(window => {
-                            window.dockedColumn -= backIndent;
-                        });
+                        percentageGoneY.push(100);
+
+                        for (let index = 0; index < editor.layout.layout[X].contents.length; index++) {
+                            //Wowzers
+                            const window = editor.layout.layout[X].contents[index];
+                            window.content.dockedColumn -= backIndent;
+                            percentageGoneY[X] -= window.size;
+
+                            if (percentageGoneY[X] > 0) {
+                                hadToRemove = true;
+                            }
+                        }
                     }
                     //If there are no windows remove them and account for that
                     else {
                         editor.dock.element.children[X].parentNode.removeChild(editor.dock.element.children[X]);
-                        percentageGone += editor.layout.layout[X].size;
+                        percentageGoneX += editor.layout.layout[X].size;
                         editor.layout.layout.splice(X,1);
                         
                         //move our X back and add an indent
@@ -305,7 +322,7 @@
 
                 //If we had to remove something refresh the layout without removal code
                 if (hadToRemove) {
-                    editor.dock.refreshLayout(true, percentageGone);
+                    editor.dock.refreshLayout(true, percentageGoneX, percentageGoneY);
                 }
             },
 
@@ -325,13 +342,30 @@
                 }
 
                 window.docked = false;
-                window.dockedColumn = 0;
                 document.body.appendChild(window.windowDiv);
+
+                //Update data for the layout
+                if (editor.layout.layout[window.dockedColumn]) editor.layout.layout[window.dockedColumn].contents.splice(editor.layout.layout[window.dockedColumn].contents.findIndex(element => window == element.content),1);
+                editor.dock.refreshLayout();
+
+                //finally set the dockedColumn
+                window.dockedColumn = 0;
             },
 
-            dockWindowUI:(window) => {
+            closeDockWindowUI:() => {
+                editor.dock.overlayElement.style.opacity = "0%";
+                editor.dock.overlayElement.style.visibility = "hidden";
+                editor.dock.overlayElement.style.pointerEvents = "none";
+                editor.dock.overlayElement.style.backdropFilter = "";
+
+                //Remove the children. Execute order 66
+                editor.dock.overlayElement.innerHTML = "";
+            },
+
+            dockWindowUI:(targetWindow) => {
                 let percentages = "";
 
+                //Make our overlay visible
                 editor.dock.overlayElement.style.opacity = "80%";
                 editor.dock.overlayElement.style.visibility = "visible";
                 editor.dock.overlayElement.style.pointerEvents = "auto";
@@ -358,6 +392,12 @@
                         row.style.margin = "8px";
                         row.style.backgroundColor = "var(--text-1)";
                         row.style.opacity = "50%";
+
+                        //If we click the center box add the tab, and close the docking UI
+                        row.onclick = () => {
+                            window.content.__addTab(targetWindow);
+                            editor.dock.closeDockWindowUI();
+                        }
 
                         subDock.appendChild(row);
                     })
