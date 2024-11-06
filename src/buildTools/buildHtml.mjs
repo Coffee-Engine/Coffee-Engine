@@ -56,8 +56,10 @@ const HTMLExport = {
     
             newBody += `<script>\n${scriptFile}\n</script>\n`
         })
+
+        console.log(newBody);
     
-        html = html.replaceAll(/<body>[\w\d\s\n\t."'<>\/=!\-]*<\/body>/g,`<body>\n${newBody}</body>`).replaceAll(/<head>[\w\d\s\n\t."'<>\/=!\-+:;,=]*<\/head>/g,`<head>${newHead}</head>`);
+        html = `<!doctype html><html lang="en"><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0" /><title>Coffee Engine</title><head>${newHead}</head><body>${newBody}</body></html>`//html.replaceAll(/<body>[\w\d\s\n\t."'<>\/=!\-]*<\/body>/g,`<body>\n${newBody}</body>`).replaceAll(/<head>[\w\d\s\n\t."'<>\/=!\-+:;,=]*<\/head>/g,`<head>${newHead}</head>`);
     
         fs.appendFileSync(`build/output/${buildData[0]}_${buildData[1]}.html`, html, (err) => {
             if (err) {
