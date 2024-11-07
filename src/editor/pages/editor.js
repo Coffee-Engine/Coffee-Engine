@@ -25,11 +25,12 @@
                 height:100%;
 
                 display:grid;
-                grid-template-rows: 16px calc(100% - 16px);
+                grid-template-rows: 24px calc(100% - 16px);
             }
 
             .dropdownsTopbar {
                 background-color: var(--background-2);
+                z-index: 10;
             }
 
             .window {
@@ -232,7 +233,14 @@
             }
         </style>
         <div class="dockAndDropdowns">
-            <div class="dropdownsTopbar" id="coffeeEngineDropdowns">hi</div>
+            <div class="dropdownsTopbar">
+                <dropdown-menu id="coffeeEngineProjectDropdown">
+                    Project
+                    <dropdown-item value="save">Save Project</dropdown-item>
+                    ${(!project.isFolder) ? '<dropdown-item value="saveAs">Save Project As</dropdown-item>' : ""}
+                    <dropdown-item value="settings">Project Settings</dropdown-item>
+                </dropdown-menu>
+            </div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
             <div class="dockOverlay" id="coffeeEngineDockoverlay"></div>
         </div>
@@ -469,6 +477,14 @@
                     }
                 }
             }
+        }
+
+        editor.dropdownBar = {
+            file:document.getElementById("coffeeEngineProjectDropdown")
+        }
+
+        editor.dropdownBar.file.onchange = (value) => {
+            console.log(value);
         }
 
         //Load sugarcube blocks
