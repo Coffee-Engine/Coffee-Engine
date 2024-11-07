@@ -162,11 +162,7 @@
 
         coffeeEngine.renderer.fileToTexture = (src) => {
             return new Promise((resolve,reject) => {
-                const desiredFile = project.getFile(src);
-                
-                if (!desiredFile) reject("file doesn't exist");
-                
-                desiredFile[0].getFile().then((file) => {
+                const desiredFile = project.getFile(src).then((file) => {
                     const trackedImage = new Image();
                     
                     trackedImage.onload = () => {
@@ -178,6 +174,8 @@
                     }
 
                     trackedImage.src = window.URL.createObjectURL(file);
+                }).catch(exception => {
+                    reject("file doesn't exist");
                 });
             })
         }

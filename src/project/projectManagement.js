@@ -19,21 +19,24 @@
                 for (let id = 0; id < split.length; id++) {
                     //If we reach the end of the path continue!
                     if (id == (split.length - 1)) {
+                        //If file had to be created mark it as so.
                         if (!fold[split[id]]) hadCreated = true;
                         if (!project.isFolder) {
                             //Also make sure we remove existing files when we override
                             if (fold[split[id]]) delete fold[split[id]];
-                            //If we aren't in a folder context just create a file object we are just going to rely on these being arrays 100%
-                            fold[split[id]] = [new File([contents], split[id], {
+                            //If we aren't in a folder context just create a file object.
+                            fold[split[id]] = new File([contents], split[id], {
                                 type: type,
-                            })];
+                            });
                         }
                         else {
                             //If we are in a folder context get the file handle and writable and add it to the main context
                             const fileHandle = await fold[project.directoryHandleIdentifier].getFileHandle(split[id],{ create: true })
+                            fold[split[id]] = fileHandle;
+
+                            //Write it
                             const writable = await fileHandle.createWritable();
-                            fold[split[id]] = [fileHandle, writable];
-                            await project.writeToWritable(contents,fold[split[id]][1],type);
+                            await project.writeToWritable(contents,writable,type);
                         }
 
                         //Update our FS
@@ -83,18 +86,28 @@
         },
 
         getFile: (path) => {
-            const split = path.split("/");
-            let fold = project.fileSystem;
-            for (let id = 0; id < split.length; id++) {
-                //If we reach the end of the path continue!
-                if (id == (split.length - 1)) {
-                    return fold[split[id]];
+            //I promise you this works
+            return new Promise((resolve, reject) => {
+                const split = path.split("/");
+                let fold = project.fileSystem;
+                for (let id = 0; id < split.length; id++) {
+                    //If we reach the end of the path continue!
+                    if (id == (split.length - 1)) {
+                        //check to see if its a file system handle. I want a good multi-method file grabber, not a rubbish one.
+                        if (fold[split[id]] instanceof FileSystemFileHandle) {
+                            fold[split[id]].getFile().then(file => {resolve(file)}).catch("can't get file");
+                        }
+                        else {
+                            if (!fold[split[id]]) reject(`File ${fold[split[id]]} does not exist`);
+                            resolve(fold[split[id]]);
+                        }
+                    }
+    
+                    //make folders if need be
+                    if (!fold[split[id]]) reject(`directory ${split[id]} not found`);
+                    fold = fold[split[id]];
                 }
-
-                //make folders if need be
-                if (!fold[split[id]]) return null;
-                fold = fold[split[id]];
-            }
+            })
         },
 
         //For initial creation
@@ -105,6 +118,9 @@
             //Add tiramisu :)
             project.addImageFromURL("editor/images/TiramisuA.png","tiramisu.png").then(() => {
                 editor.editorPage.initilize();
+                
+                coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
+                coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
             });
         },
 
@@ -175,6 +191,8 @@
             }
             else {
                 project.isFolder = false;
+                coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
+                coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
             }
         }
     }

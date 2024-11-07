@@ -20,7 +20,7 @@
                     element.className = "fileButton";
 
                     //Check if it is a file, or a folder
-                    if (Array.isArray(directory[key])) {
+                    if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
                         element.innerHTML = `<p style="padding:0px; margin:0px;">${key}</p>`;
                         parentDiv.appendChild(element);
 

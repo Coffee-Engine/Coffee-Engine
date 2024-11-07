@@ -226,7 +226,7 @@
             extension = extension.toLowerCase();
 
             //Grab our file and read it
-            project.getFile(path)[0].getFile().then(file => {
+            project.getFile(path).then(file => {
                 this.fileReader.readAsText(file);
                 this.readType = extension;
                 this.filePath = path;

@@ -4,7 +4,7 @@
             js: `//${editor.language["editor.window.javascript.commentMessage"]}
 class behavior {
     ready() {
-        //Code for each frame goes here
+        //Code for initilization goes here.
         console.log("Hello World!");
     }
 
@@ -28,6 +28,7 @@ coffeeEngine.registerBehavior("behavior",behavior);`,
         minHeight = 200;
 
         init(container) {
+            console.log(this);
             this.resizable = false;
             this.title = editor.language["editor.window.createScript"];
 
@@ -61,10 +62,13 @@ coffeeEngine.registerBehavior("behavior",behavior);`,
             this.createButton.style.marginRight = "100px";
 
             this.createButton.onclick = () => {
-                if (!project.getFile(this.path.value)) project.setFile(this.path.value, this.defaults[this.type.value],"text/javascript").then((path) => {
-                    editor.sendFileHook(path.split(".")[1],path);
-                    this._dispose();
-                });
+                //This might be the one reason I actually look for a catch :Skull Emoji:
+                project.getFile(this.path.value).catch(reason => {
+                    project.setFile(this.path.value, this.defaults[this.type.value],"text/javascript").then((path) => {
+                        editor.sendFileHook(path.split(".")[1],path);
+                        this._dispose();
+                    });
+                })
             }
 
             container.appendChild(this.type);

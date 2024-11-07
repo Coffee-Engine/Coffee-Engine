@@ -7,10 +7,7 @@
     project.extensions.checkForExtensions = async () => {
         console.log("looking for extensions");
         //Get our extension directory
-        const extensionDir = project.getFile("extensions");
-
-        //Search our extensionDir
-        if (extensionDir) {
+        project.getFile("extensions").then(extensionDir => {
             Object.keys(extensionDir).forEach(extID => {
                 if (extID == "/____DIRECTORY__HANDLE____/") return;
                 if (project.extensions.storage[extID]) return;
@@ -27,8 +24,12 @@
                 extensionJson[0].getFile().then(file => {
                     project.extensions.storage[extID] = new project.extensions.parser(extID,file);
                 })
-            })
-        }
+            });
+        })
+        //Just a safeguard
+        .catch(error => {
+            return;
+        });
     }
 
     coffeeEngine.addEventListener("fileSystemUpdate",(event) => {

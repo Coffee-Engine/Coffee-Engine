@@ -171,9 +171,9 @@
             }
 
             .genericNonSelect {
-                -webkit-user-select: none; /* Safari */
-                -ms-user-select: none; /* IE 10 and IE 11 */
-                user-select: none; /* Standard syntax */
+                -webkit-user-select: none; 
+                -ms-user-select: none;
+                user-select: none;
             }
 
             .fileButton {
@@ -183,9 +183,9 @@
                 margin-right:0px;
                 padding: 4px;
                 padding-right: 0px;
-                -webkit-user-select: none; /* Safari */
-                -ms-user-select: none; /* IE 10 and IE 11 */
-                user-select: none; /* Standard syntax */
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
             }
 
             .fileButton[even="true"] {
@@ -195,9 +195,9 @@
                 margin-right:0px;
                 padding: 4px;
                 padding-right: 0px;
-                -webkit-user-select: none; /* Safari */
-                -ms-user-select: none; /* IE 10 and IE 11 */
-                user-select: none; /* Standard syntax */
+                -webkit-user-select: none;
+                -ms-user-select: none;
+                user-select: none; 
             }
 
             .fileFolder {

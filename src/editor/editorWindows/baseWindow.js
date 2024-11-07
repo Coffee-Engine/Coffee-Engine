@@ -369,9 +369,13 @@
                     const dockedRow = editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content);
 
                     //Our directional data and divs
+                    // prettier-ignore
                     let leftDiv;    let leftData;
+                    // prettier-ignore
                     let rightDiv;   let rightData;
+                    // prettier-ignore
                     let topDiv;     let topData;
+                    // prettier-ignore
                     let bottomDiv;  let bottomData;
 
                     //"Full size" aka the combined size of both directions
