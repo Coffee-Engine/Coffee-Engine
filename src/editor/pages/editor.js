@@ -236,7 +236,7 @@
             <div class="dropdownsTopbar">
                 <dropdown-menu id="coffeeEngineProjectDropdown">
                     Project
-                    ${(!project.isFolder) ? `<dropdown-item class="dropdown-menu-fill-down" value="save">Save Project</dropdown-item><dropdown-item class="dropdown-menu-fill-down" value="saveAs">Save Project As</dropdown-item>` : `<dropdown-item class="dropdown-menu-fill-down" value="saveAs">Save Project as .decaf</dropdown-item>`}
+                    ${((!project.isFolder) && (editor.safeties.filePermissions)) ? `<dropdown-item class="dropdown-menu-fill-down" value="save">Save Project</dropdown-item><dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">Save Seperately</dropdown-item>` : `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">Save Project as .decaf</dropdown-item>`}
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">Project Settings</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="settings">Import File</dropdown-item>
                 </dropdown-menu>
@@ -486,7 +486,11 @@
         editor.dropdownBar.file.onchange = (value) => {
             switch (value) {
                 case "save":
-                    
+                    project.decaf.save();
+                    break;
+                
+                case "saveSeperate":
+                    project.decaf.save(true);
                     break;
             
                 default:

@@ -21,20 +21,29 @@
             if (callback) callback();
         },
 
-        save:() => {
+        save:(forceSeperate) => {
             //Get our JSzip instance
             const zipInstance = new JSZip();
 
             project.decaf.loopThroughSave("",project.fileSystem,zipInstance, () => {
-                zipInstance.generateAsync({type:"blob"}).then((blob) => { 
+                zipInstance.generateAsync({type:"blob"}).then((blob) => {
+                    //Just our 2 awesome saving ways, (yay)
+                    if (forceSeperate || (!editor.safeties.filePermissions) || (!project.fileHandle)) {
+                        //Create a blob, link it then click and revoke the blob
                         const blobURL = URL.createObjectURL(blob);
                         const link = document.createElement('a');
-                        link.style.display = 'none';
                         link.href = blobURL;
                         link.download = "project.decaf";
                         link.click();
                         URL.revokeObjectURL(blobURL);
-                    });
+                    }
+                    else {
+                        //Write to the file handle.
+                        project.fileHandle.createWritable().then(writable => {
+                            project.writeToWritable(blob,writable);
+                        });
+                    }
+                });
             });
             //Make sure we dispose of our instance.
             delete zipInstance;

@@ -174,7 +174,9 @@
                     accept: {
                         'application/decaf':[".decaf"]
                     }
-                }]});
+                }]}).then(result => {
+                    project.load("file", result);
+                });
             }
         }
 

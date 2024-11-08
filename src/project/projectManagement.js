@@ -191,6 +191,8 @@
             }
             else {
                 project.isFolder = false;
+                project.fileHandle = handle;
+                editor.editorPage.initilize();
                 coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
                 coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
             }
