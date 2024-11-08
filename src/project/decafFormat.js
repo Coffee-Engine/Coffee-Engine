@@ -1,0 +1,3 @@
+(function() {
+    project.decaf = {};
+})();

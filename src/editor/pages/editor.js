@@ -236,9 +236,9 @@
             <div class="dropdownsTopbar">
                 <dropdown-menu id="coffeeEngineProjectDropdown">
                     Project
-                    <dropdown-item value="save">Save Project</dropdown-item>
-                    ${(!project.isFolder) ? '<dropdown-item value="saveAs">Save Project As</dropdown-item>' : ""}
-                    <dropdown-item value="settings">Project Settings</dropdown-item>
+                    ${(!project.isFolder) ? `<dropdown-item class="dropdown-menu-fill-down" value="save">Save Project</dropdown-item><dropdown-item class="dropdown-menu-fill-down" value="saveAs">Save Project As</dropdown-item>` : `<dropdown-item class="dropdown-menu-fill-down" value="saveAs">Save Project as .decaf</dropdown-item>`}
+                    <dropdown-item class="dropdown-menu-fill-down" value="settings">Project Settings</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down"  value="settings">Import File</dropdown-item>
                 </dropdown-menu>
             </div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
@@ -484,6 +484,14 @@
         }
 
         editor.dropdownBar.file.onchange = (value) => {
+            switch (value) {
+                case "save":
+                    
+                    break;
+            
+                default:
+                    break;
+            }
             console.log(value);
         }
 

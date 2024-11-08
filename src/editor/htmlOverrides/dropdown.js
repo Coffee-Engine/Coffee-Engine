@@ -94,18 +94,6 @@
         }
 
         onchange = (value) => {}
-
-        connectedCallback() {
-            this.style.display = "inline-block";
-            this.style.borderColor = "var(--background-3)";
-            this.style.borderWidth = "4px";
-            this.style.borderStyle = "solid";
-            this.style.height = "calc(100% - 8px)";
-
-            this.style.backgroundColor = "var(--background-1)";
-
-            this.style.transition = "all 150ms"
-        }
     }
 
     customElements.define("dropdown-menu", editor.dropdown.class);
