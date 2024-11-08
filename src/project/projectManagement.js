@@ -129,7 +129,7 @@
                 //Code to check through each thing and scan it
                 folderSystem[project.directoryHandleIdentifier] = directoryHandle;
                 if (fileHandle.kind == "file") {
-                    folderSystem[name] = [fileHandle,null];
+                    folderSystem[name] = fileHandle;
                 }
                 else {
                     folderSystem[name] = {};

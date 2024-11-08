@@ -4,6 +4,8 @@ window.editor = {
 
     //File Hooking
     fileHooks:{},
+
+    //File hooks these send out signals when we try to open a file
     addFileOpenHook:(fileExtension,callback,parent) => {
         fileExtension = fileExtension.toLowerCase();
         if (!editor.fileHooks[fileExtension]) editor.fileHooks[fileExtension] = [];
@@ -45,5 +47,7 @@ window.editor = {
     safeties: {
         secureContext: window.isSecureContext,
         folderPerimissions: window.showDirectoryPicker != undefined,
+        //It is likely that if we don't have open file picker, we don't have save file picker
+        filePermissions: window.showOpenFilePicker != undefined,
     },
 };
