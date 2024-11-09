@@ -35,7 +35,7 @@
     }
 
     //For scanning a zip, pretty simple
-    project.scanZip = async (fileHandle,openEditor,folderSystem) => {
-
+    project.scanZip = async (zipHandle,openEditor,folderSystem) => {
+        console.log(zipHandle);
     }
 })()

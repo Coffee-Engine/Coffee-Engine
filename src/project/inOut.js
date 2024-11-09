@@ -36,8 +36,17 @@
         }
     }
 
+    project.isValidObject = (object) => {
+        //Yeah this is stupid
+        return (object instanceof File) || (object instanceof FileSystemFileHandle) || (object instanceof FileSystemDirectoryHandle);
+    }
+
     //Loading an existing project, determind weather its a file or a folder.
     project.load = (type,handle) => {
+        //filter out imposter objects
+        if (handle instanceof File) {
+
+        }
         delete project.fileSystem;
         project.fileSystem = {};
         if (type == "folder") {
@@ -47,7 +56,17 @@
         }
         else {
             project.isFolder = false;
+
+            //Make sure we are getting the file handle and not some random garbage.
+            if (handle instanceof FileSystemFileHandle) {
+
+            }
+            //We also have to remember that files exist on non chromium browsers like BE-browse and Firefox
+            else {
+
+            }
             project.fileHandle = handle;
+            project.scanZip()
             editor.editorPage.initilize();
             coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
             coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
