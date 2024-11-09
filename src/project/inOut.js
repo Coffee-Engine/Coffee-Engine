@@ -1,4 +1,60 @@
 (function() {
+    //For initial creation
+    project.addDefaultAssets = (json) => {
+        //Json objects
+        project.setFile("project.json",JSON.stringify(json),"text/plain");
+
+        //Add tiramisu :)
+        project.addImageFromURL("editor/images/TiramisuA.png","tiramisu.png").then(() => {
+            editor.editorPage.initilize();
+            
+            coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
+            coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
+        });
+    }
+
+    //create stuff
+    project.new = (json,type) => {
+        //Refresh our filesystem
+        delete project.fileSystem;
+        project.fileSystem = {};
+
+        //Check if its a folder type
+        if (type == "folder") {
+            project.isFolder = true;
+            window
+                .showDirectoryPicker()
+                .then((result) => {
+                    project.directoryHandle = result;
+                    project.addDefaultAssets(json);
+                })
+                .catch((error) => {});
+        }
+        else {
+            project.isFolder = false;
+            project.addDefaultAssets(json);
+        }
+    }
+
+    //Loading an existing project, determind weather its a file or a folder.
+    project.load = (type,handle) => {
+        delete project.fileSystem;
+        project.fileSystem = {};
+        if (type == "folder") {
+            project.isFolder = true;
+            project.directoryHandle = handle;
+            project.scanFolder(project.directoryHandle,true,project.fileSystem);
+        }
+        else {
+            project.isFolder = false;
+            project.fileHandle = handle;
+            editor.editorPage.initilize();
+            coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
+            coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
+        }
+    }
+
+    //Lumping this in here, it works a lot better here than its own file
     project.decaf = {
         loopThroughSave: async (path,projectDirectory,zipInstance,callback) => {
             //Loop through our folder and add our stuff.

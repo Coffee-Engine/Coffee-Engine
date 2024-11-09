@@ -162,10 +162,15 @@
 
         loadFile.onclick = () => {
             //The two genders. Firefox, google
-            if (!window.showOpenFilePicker) {
+            if (!editor.safeties.filePermissions) {
                 const fileInput = document.createElement("input");
                 fileInput.type = "file";
                 fileInput.accept = ".decaf";
+
+                fileInput.onchange = () => {
+                    project.load("file", fileInput.files[0]);
+                }
+
                 fileInput.click();
             }
             else {
