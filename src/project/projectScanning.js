@@ -35,7 +35,15 @@
     }
 
     //For scanning a zip, pretty simple
-    project.scanZip = async (zipHandle,openEditor,folderSystem) => {
-        console.log(zipHandle);
+    //Thankfully JSzip provides a path API that is simple
+    project.scanZip = (zipHandle) => {
+        //Yeah its pretty easy.
+        zipHandle.forEach(fileName => {
+            //Get the file and determine if its a directory
+            const file = zipHandle.files[fileName];
+            if (!file.dir) file.async("blob").then(fileBlob => {
+                project.setFile(fileName,fileBlob);
+            });
+        });
     }
 })()

@@ -74,7 +74,7 @@
             project.zipObject = await project.zipObject.loadAsync(project.fileObject);
 
 
-            project.scanZip(project.fileObject);
+            project.scanZip(project.zipObject);
             editor.editorPage.initilize();
             coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
             coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
