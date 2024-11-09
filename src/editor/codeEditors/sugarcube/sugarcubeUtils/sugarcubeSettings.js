@@ -6,30 +6,30 @@ sugarcube.contextMenuBlockCorrolations = {};
 //Using a custom variable system to store more data.
 //Blockly variables aren't inherently bad. Just limited.
 sugarcube.variables = {
-    storage:{},
-    getAll:() => {
+    storage: {},
+    getAll: () => {
         return Object.values(sugarcube.variables.storage);
     },
-    createVariable:(Name,Type,Color,DefaultValue) => {
+    createVariable: (Name, Type, Color, DefaultValue) => {
         sugarcube.variables.storage[Name] = {
-            name:Name,
-            type:Type,
-            color:Color,
-            defaultValue:DefaultValue || "",
-        }
-    }
+            name: Name,
+            type: Type,
+            color: Color,
+            defaultValue: DefaultValue || "",
+        };
+    },
 };
 
 //For custom blocks
 sugarcube.customBlocks = {
-    fieldTypes:[],
-    storage:{},
-    blockFromDefinition:(jsonDef) => {
+    fieldTypes: [],
+    storage: {},
+    blockFromDefinition: (jsonDef) => {
         const swagStyledBuisness = {};
 
         let conjugatedName = "";
 
-        jsonDef.parameters.forEach(param => {
+        jsonDef.parameters.forEach((param) => {
             delete param.element;
 
             if (!swagStyledBuisness[param.name]) swagStyledBuisness[param.name] = 0;
@@ -53,19 +53,19 @@ sugarcube.customBlocks = {
         myBlockDec.render();
         myBlockDec.loadExtraState(jsonDef);
     },
-    addCustomFieldToPrompt:(Name,Type,ImageURL,ExtraParameters) => {
+    addCustomFieldToPrompt: (Name, Type, ImageURL, ExtraParameters) => {
         const newField = {
-            Name:Name,
-            Type:Type,
-            Image:ImageURL,
-            createFunction:ExtraParameters.createFunction,
-            parseFunction:ExtraParameters.parseFunction,
-            declaration:ExtraParameters.declaration,
+            Name: Name,
+            Type: Type,
+            Image: ImageURL,
+            createFunction: ExtraParameters.createFunction,
+            parseFunction: ExtraParameters.parseFunction,
+            declaration: ExtraParameters.declaration,
         };
 
         sugarcube.customBlocks.fieldTypes.push(newField);
-    }
-}
+    },
+};
 
 sugarcube.toolbox = {
     kind: "categoryToolbox",
@@ -120,7 +120,7 @@ sugarcube.inject = (container) => {
         comments: true,
         toolbox: sugarcube.toolbox,
         theme: sugarcube.blocklyTheme,
-        renderer: "sugarcube",//"Thrasos",
+        renderer: "sugarcube", //"Thrasos",
         grid: {
             spacing: 40,
             length: 3,
@@ -155,12 +155,12 @@ sugarcube.inject = (container) => {
     sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
 
     //Register existing buttons
-    Object.keys(sugarcube.buttons).forEach(buttonID => {
+    Object.keys(sugarcube.buttons).forEach((buttonID) => {
         sugarcube.workspace.registerButtonCallback(buttonID, sugarcube.buttons[buttonID]);
-    })
+    });
 
-    return sugarcube.workspace
-}
+    return sugarcube.workspace;
+};
 
 sugarcube.refreshTheme = () => {
     sugarcube.workspace.setTheme(Blockly.Theme.defineTheme("sugarcube", sugarcube.blocklyTheme));

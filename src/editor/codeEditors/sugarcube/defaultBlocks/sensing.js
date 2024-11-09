@@ -215,9 +215,9 @@
                         text: "is controller [id] connected?",
                         arguments: {
                             id: {
-                                menu: "controllers"
-                            }
-                        }
+                                menu: "controllers",
+                            },
+                        },
                     },
                     {
                         opcode: "controllerID",
@@ -225,8 +225,8 @@
                         text: "ID of controller [id]",
                         arguments: {
                             id: {
-                                menu: "controllers"
-                            }
+                                menu: "controllers",
+                            },
                         },
                     },
                     {
@@ -237,11 +237,11 @@
                             axis: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Controller_Axis",
-                                defaultValue: "left-stick-y"
+                                defaultValue: "left-stick-y",
                             },
                             id: {
-                                menu: "controllers"
-                            }
+                                menu: "controllers",
+                            },
                         },
                     },
                     {
@@ -252,11 +252,11 @@
                             button: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Controller",
-                                defaultValue: "Bottom-Face"
+                                defaultValue: "Bottom-Face",
                             },
                             id: {
-                                menu: "controllers"
-                            }
+                                menu: "controllers",
+                            },
                         },
                     },
                     {
@@ -267,19 +267,19 @@
                             button: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Controller",
-                                defaultValue: "Bottom-Face"
+                                defaultValue: "Bottom-Face",
                             },
                             id: {
-                                menu: "controllers"
-                            }
+                                menu: "controllers",
+                            },
                         },
                     },
                     "---",
                     {
                         opcode: "timer",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "timer"
-                    }
+                        text: "timer",
+                    },
                 ],
                 menus: {
                     keys: {
@@ -288,50 +288,45 @@
                     },
                     mouseButtons: {
                         items: [
-                            {text:"primary", value:"0"},
-                            {text:"secondary", value:"2"},
-                            {text:"tertiary", value:"1"},
+                            { text: "primary", value: "0" },
+                            { text: "secondary", value: "2" },
+                            { text: "tertiary", value: "1" },
                         ],
                         acceptReporters: true,
                     },
                     controllers: {
-                        items: [
-                            "1",
-                            "2",
-                            "3",
-                            "4"
-                        ],
+                        items: ["1", "2", "3", "4"],
                         acceptReporters: true,
-                    }
+                    },
                 },
                 fields: {
                     Controller: {
                         acceptReporters: true,
-                        isDropdown:true,
-                        
+                        isDropdown: true,
+
                         //Our custom editor
-                        editor:"controller_Editor",
-                        size: [256,256],
+                        editor: "controller_Editor",
+                        size: [256, 256],
 
                         //Stuff
-                        initilize:"controller_Init",
-                        manualNodeValue:true,
+                        initilize: "controller_Init",
+                        manualNodeValue: true,
                         //render:"angle_Render",
                     },
                     Controller_Axis: {
                         acceptReporters: true,
-                        isDropdown:true,
-                        
+                        isDropdown: true,
+
                         //Our custom editor
-                        editor:"controller_Axis_Editor",
-                        size: [256,256],
+                        editor: "controller_Axis_Editor",
+                        size: [256, 256],
 
                         //Stuff
-                        initilize:"controller_Init",
-                        manualNodeValue:true,
+                        initilize: "controller_Init",
+                        manualNodeValue: true,
                         //render:"angle_Render",
-                    }
-                }
+                    },
+                },
             };
         }
 
@@ -353,10 +348,9 @@
             if (!coffeeEngine.inputs.gamepads[id].axes) return 0;
             const axisConverted = coffeeEngine.inputs.axisNameToID[axis];
             if (!coffeeEngine.inputs.gamepads[id].axes[axisConverted]) return 0;
-            
+
             //Get and cast
             return sugarcube.cast.toNumber(coffeeEngine.inputs.gamepads[id].axes[axisConverted].value);
-
         }
 
         controllerButtonValue({ button, id }) {
@@ -364,7 +358,7 @@
             if (!coffeeEngine.inputs.gamepads[id].buttons) return 0;
             const buttonConverted = coffeeEngine.inputs.buttonNameToID[button];
             if (!coffeeEngine.inputs.gamepads[id].buttons[buttonConverted]) return 0;
-            
+
             //Get and cast
             return sugarcube.cast.toNumber(coffeeEngine.inputs.gamepads[id].buttons[buttonConverted].value);
         }
@@ -374,19 +368,19 @@
             if (!coffeeEngine.inputs.gamepads[id].buttons) return false;
             const buttonConverted = coffeeEngine.inputs.buttonNameToID[button];
             if (!coffeeEngine.inputs.gamepads[id].buttons[buttonConverted]) return false;
-            
+
             //Get and cast
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.gamepads[id].buttons[buttonConverted].pressed);
         }
 
         controllerID({ id }) {
-            return coffeeEngine.inputs.gamepads[id].id || "none"
+            return coffeeEngine.inputs.gamepads[id].id || "none";
         }
 
         timer() {
             return coffeeEngine.timer;
         }
-        
+
         controller_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
@@ -409,25 +403,24 @@
 
             //Function to set the button value
             const setButton = (name) => {
-                buttons.forEach(button => {
+                buttons.forEach((button) => {
                     //Loop through the buttons and highlight the selected one;
                     const objName = button.getAttribute("name");
                     if (objName == name) {
                         button.style.fill = "#47A8D1";
-                    }
-                    else {
+                    } else {
                         button.style.fill = "#2E8EB8";
                     }
                 });
                 field.value = name;
-            }
+            };
 
             //Add functionality
             buttons = Array.from(div.getElementsByClassName("coffee-engine-controller-button")).map((Value) => {
-                const name = Value.getAttribute("name")
+                const name = Value.getAttribute("name");
                 Value.onclick = () => {
                     setButton(name);
-                }
+                };
 
                 return Value;
             });
@@ -454,25 +447,24 @@
 
             //Function to set the button value
             const setButton = (name) => {
-                buttons.forEach(button => {
+                buttons.forEach((button) => {
                     //Loop through the buttons and highlight the selected one;
                     const objName = button.getAttribute("name");
                     if (objName == name) {
                         button.style.fill = "#47A8D1";
-                    }
-                    else {
+                    } else {
                         button.style.fill = "#2E8EB8";
                     }
                 });
                 field.value = name;
-            }
+            };
 
             //Add functionality
             buttons = Array.from(div.getElementsByClassName("coffee-engine-controller-button")).map((Value) => {
-                const name = Value.getAttribute("name")
+                const name = Value.getAttribute("name");
                 Value.onclick = () => {
                     setButton(name);
-                }
+                };
 
                 return Value;
             });

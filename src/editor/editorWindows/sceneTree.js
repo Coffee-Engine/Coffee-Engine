@@ -26,5 +26,5 @@
         dispose() {}
     };
 
-    editor.windows.__Serialization.register(editor.windows.sceneTree,"sceneTree");
+    editor.windows.__Serialization.register(editor.windows.sceneTree, "sceneTree");
 })();

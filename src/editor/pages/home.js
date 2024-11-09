@@ -169,21 +169,26 @@
 
                 fileInput.onchange = () => {
                     project.load("file", fileInput.files[0]);
-                }
+                };
 
                 fileInput.click();
+            } else {
+                window
+                    .showOpenFilePicker({
+                        types: [
+                            {
+                                description: "Coffee Engine Project",
+                                accept: {
+                                    "application/decaf": [".decaf"],
+                                },
+                            },
+                        ],
+                    })
+                    .then((result) => {
+                        project.load("file", result[0]);
+                    });
             }
-            else {
-                window.showOpenFilePicker({types: [{
-                    description:"Coffee Engine Project",
-                    accept: {
-                        'application/decaf':[".decaf"]
-                    }
-                }]}).then(result => {
-                    project.load("file", result[0]);
-                });
-            }
-        }
+        };
 
         //Loading from a folder isn't allowed on all browsers. See chromium browsers for this.
         if (editor.safeties.folderPerimissions) {

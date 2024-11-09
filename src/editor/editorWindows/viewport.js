@@ -26,13 +26,13 @@
 <!--rotationCenter:40.14274417710297:36.529159655786174-->`;
 
     editor.windows.viewport = class extends editor.windows.base {
-        viewportControlsProjection() {            
+        viewportControlsProjection() {
             //Dragging on the screen!
             if (coffeeEngine.inputs.mouse["2"]) {
                 this.previewCamera.yaw -= coffeeEngine.inputs.mouse.movementX / 360;
                 this.previewCamera.pitch += coffeeEngine.inputs.mouse.movementY / 360;
 
-                this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch,-1.5707),1.5707);
+                this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch, -1.5707), 1.5707);
 
                 if (coffeeEngine.inputs.keys["e"]) this.previewCamera.y -= 0.05;
                 if (coffeeEngine.inputs.keys["q"]) this.previewCamera.y += 0.05;
@@ -59,8 +59,8 @@
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x,this.previewCamera.y,this.previewCamera.z);
-            this.projection = coffeeEngine.matrix4.projection(90,this.canvas.width / this.canvas.height,0.001,1000);
+            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
+            this.projection = coffeeEngine.matrix4.projection(90, this.canvas.width / this.canvas.height, 0.001, 1000);
 
             this.wFactor += (1 - this.wFactor) * 0.0625;
             if (this.wFactor > 0.975) {
@@ -73,15 +73,15 @@
                 this.previewCamera.x += coffeeEngine.inputs.mouse.movementX / 180;
                 this.previewCamera.y -= coffeeEngine.inputs.mouse.movementY / 180;
             }
-            
+
             this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.0625;
             this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.0625;
 
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x,this.previewCamera.y,this.previewCamera.z);
-            this.projection = coffeeEngine.matrix4.projection(90,this.canvas.width / this.canvas.height,0.001,1000);
+            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
+            this.projection = coffeeEngine.matrix4.projection(90, this.canvas.width / this.canvas.height, 0.001, 1000);
 
             //Smooth transition
             this.wFactor += (0 - this.wFactor) * 0.0625;
@@ -116,19 +116,23 @@
             container.appendChild(this.canvas);
 
             this.resized();
-            window.addEventListener("resize", () => { this.resized() });
+            window.addEventListener("resize", () => {
+                this.resized();
+            });
 
             //Setup our renderer
             this.renderer = coffeeEngine.renderer.create(this.canvas);
 
             this.previewCamera = {
-                x:0,
-                y:0,
-                z:0,
-                yaw:0,
-                pitch:0
-            }
-            setInterval(() => {this.renderLoop()},16);
+                x: 0,
+                y: 0,
+                z: 0,
+                yaw: 0,
+                pitch: 0,
+            };
+            setInterval(() => {
+                this.renderLoop();
+            }, 16);
 
             this.buttonHolder = document.createElement("div");
             {
@@ -137,27 +141,27 @@
                 this.buttonHolder.style.aspectRatio = "1/3";
                 this.buttonHolder.style.display = "grid";
                 this.buttonHolder.style.gridTemplateRows = "33.3333% 33.3333% 33.3333%";
-                
+
                 this.buttonHolder.style.width = "24px";
                 this.buttonHolder.style.top = "4px";
                 this.buttonHolder.style.left = "4px";
-                
+
                 //orthoButton
                 this.viewmodeButton = document.createElement("button");
                 this.viewmodeButton.innerHTML = perspectiveIcon;
-                this.viewmodeButton.onclick = () => { 
+                this.viewmodeButton.onclick = () => {
                     this.orthographicMode = !this.orthographicMode;
                     this.viewmodeButton.innerHTML = this.orthographicMode ? orthographicIcon : perspectiveIcon;
-                }
+                };
                 this.buttonHolder.appendChild(this.viewmodeButton);
-                
+
                 //orthoButton
                 this.otherButton = document.createElement("button");
                 {
                     this.otherButton.onclick = () => {
                         console.log(this.orthographicMode);
                         this.orthographicMode = !this.orthographicMode;
-                    }
+                    };
                 }
                 this.buttonHolder.appendChild(this.otherButton);
             }
@@ -171,5 +175,5 @@
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.viewport,"viewport");
+    editor.windows.__Serialization.register(editor.windows.viewport, "viewport");
 })();

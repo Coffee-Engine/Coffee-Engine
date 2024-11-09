@@ -201,12 +201,12 @@
             //Custom compiler instructions.
             if (blockCompileFunc) {
                 sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block,generator);
+                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator);
                     if (block.outputConnection) {
                         return [code, 0];
                     }
                     return `${code}\n${this.nextBlockToCode(block, generator)}`;
-                }
+                };
 
                 return;
             }
@@ -338,8 +338,8 @@
                         //Register callback code for the button
                         sugarcube.buttons[id + opcode] = () => {
                             sugarcube.extensionInstances[extension.id][opcode]();
-                        }
-                        
+                        };
+
                         //If we have a workspace register the callback
                         if (sugarcube.workspace) {
                             sugarcube.workspace.registerButtonCallback(id + opcode, sugarcube.buttons[id + opcode]);
@@ -350,7 +350,7 @@
                     case "duplicate":
                         blockData = {
                             kind: "block",
-                            type: block.extensionID ? block.extensionID + block.of : id + block.of
+                            type: block.extensionID ? block.extensionID + block.of : id + block.of,
                         };
                         if (!Blockly.Blocks[blockData.type]) return;
 
@@ -480,8 +480,7 @@
                                                     //let it be global or local
                                                     if (sugarcube.fields.storage[id + argument.customType]) {
                                                         argument.type = id + argument.customType;
-                                                    }
-                                                    else if (sugarcube.fields.storage[argument.customType]) {
+                                                    } else if (sugarcube.fields.storage[argument.customType]) {
                                                         argument.type = argument.customType;
                                                     }
 
@@ -492,9 +491,9 @@
                                                         defArgs.inputs[argumentKey].shadow = {
                                                             type: sugarcube.fields.storage[argument.type].blockName,
                                                         };
-                                                        
+
                                                         if (argument.defaultValue) {
-                                                            defArgs.inputs[argumentKey].shadow.fields = {VALUE: argument.defaultValue};
+                                                            defArgs.inputs[argumentKey].shadow.fields = { VALUE: argument.defaultValue };
                                                         }
 
                                                         //Ughhh
@@ -597,8 +596,7 @@
                             //first we check to see if the mutator + extension ID exists.
                             if (Blockly.Extensions.TEST_ONLY.allExtensions[id + block.mutator]) {
                                 blockDef.mutator = id + block.mutator;
-                            }
-                            else {
+                            } else {
                                 blockDef.mutator = block.mutator;
                             }
                         }
@@ -666,11 +664,11 @@
                     sugarcube.menus[menuID].isBlock = true;
                     sugarcube.menus[menuID].isDynamic = true;
                     sugarcube.menus[menuID].function = function () {
-                                    const items = extensionClass[menuDat.items]();
-                                    if (items.length == 0) {
-                                        items.push(["",""]);
-                                    }
-                                    return items;
+                        const items = extensionClass[menuDat.items]();
+                        if (items.length == 0) {
+                            items.push(["", ""]);
+                        }
+                        return items;
                     };
 
                     this.addBlocklyBlock("__sugarcube_menu_" + menuID, "reporter", {
@@ -686,7 +684,7 @@
                                 function: function () {
                                     const items = extensionClass[menuDat.items]();
                                     if (items.length == 0) {
-                                        items.push(["",""]);
+                                        items.push(["", ""]);
                                     }
                                     return items;
                                 },
@@ -706,7 +704,7 @@
                     sugarcube.menus[menuID].function = function () {
                         const items = extensionClass[menuDat.items]();
                         if (items.length == 0) {
-                            items.push(["",""]);
+                            items.push(["", ""]);
                         }
                         return items;
                     };
@@ -761,7 +759,7 @@
         addContextMenu(menuName, menuDat, extension, extensionClass) {
             const contextMenu = {};
             contextMenu.id = `${extension.id}_${menuName}`;
-            contextMenu.weight = (typeof menuDat.weight == "undefined") ? 10 : menuDat.weight;
+            contextMenu.weight = typeof menuDat.weight == "undefined" ? 10 : menuDat.weight;
             sugarcube.contextMenuBlockCorrolations[contextMenu.id] = [];
 
             //Elegibility check.
@@ -771,22 +769,20 @@
                     contextMenu.preconditionFn = (scope) => {
                         if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope);
                         return "enabled";
-                    }
-                }
-                else {
+                    };
+                } else {
                     contextMenu.preconditionFn = (scope) => {
                         //This part sucks I have to write a whole storage thingy. UGhhhhhh
-                        if ((!menuDat.global) && (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type))) return "hidden";
-                        if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope.block,scope);
+                        if (!menuDat.global && !sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
+                        if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope.block, scope);
                         return "enabled";
-                    }
+                    };
                 }
-            }
-            else {
+            } else {
                 contextMenu.preconditionFn = (scope) => {
-                    if ((!menuDat.global) && (!sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type))) return "hidden";
+                    if (!menuDat.global && !sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
                     return "enabled";
-                }
+                };
             }
 
             //Elegibility check.
@@ -796,16 +792,14 @@
                     contextMenu.displayText = (scope) => {
                         if (extensionClass[menuDat.text]) return extensionClass[menuDat.text](scope);
                         return `opcode [${menuDat.text}] not found!`;
-                    }
-                }
-                else {
+                    };
+                } else {
                     contextMenu.displayText = (scope) => {
-                        if (extensionClass[menuDat.text]) return extensionClass[menuDat.text](scope.block,scope);
+                        if (extensionClass[menuDat.text]) return extensionClass[menuDat.text](scope.block, scope);
                         return `opcode [${menuDat.text}] not found!`;
-                    }
+                    };
                 }
-            }
-            else {
+            } else {
                 contextMenu.displayText = menuDat.text;
             }
 
@@ -817,13 +811,12 @@
                     contextMenu.callback = (scope) => {
                         if (extensionClass[menuDat.opcode]) return extensionClass[menuDat.opcode](scope);
                         console.warn(`opcode ${menuDat.opcode} does not exist in ${extension.id}!`);
-                    }
-                }
-                else {
+                    };
+                } else {
                     contextMenu.callback = (scope) => {
-                        if (extensionClass[menuDat.opcode]) return extensionClass[menuDat.opcode](scope.block,scope);
+                        if (extensionClass[menuDat.opcode]) return extensionClass[menuDat.opcode](scope.block, scope);
                         console.warn(`opcode ${menuDat.opcode} does not exist in ${extension.id}!`);
-                    }
+                    };
                 }
             }
             //warn people if they forget it.
@@ -831,8 +824,11 @@
                 console.warn(`context menu ${menuName} has no opcode!\nAdd one for it to function properly!`);
             }
 
-            if (menuDat.isWorkspace) { contextMenu.scopeType = Blockly.ContextMenuRegistry.ScopeType.WORKSPACE; }
-            else { contextMenu.scopeType = Blockly.ContextMenuRegistry.ScopeType.BLOCK; }
+            if (menuDat.isWorkspace) {
+                contextMenu.scopeType = Blockly.ContextMenuRegistry.ScopeType.WORKSPACE;
+            } else {
+                contextMenu.scopeType = Blockly.ContextMenuRegistry.ScopeType.BLOCK;
+            }
 
             Blockly.ContextMenuRegistry.registry.register(contextMenu);
         }
@@ -883,26 +879,17 @@
                             myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
                         }
                         if (!myInfo.fields[field].color2) {
-                            myInfo.fields[field].color2 = myInfo.color3, myInfo.color2 || myInfo.color1 || "#0b8e69";
+                            (myInfo.fields[field].color2 = myInfo.color3), myInfo.color2 || myInfo.color1 || "#0b8e69";
                         }
 
-                        sugarcube.fields.makeFromFunction(
-                            myInfo.id,
-                            myInfo.fields[field],
-                            id + field
-                        );
+                        sugarcube.fields.makeFromFunction(myInfo.id, myInfo.fields[field], id + field);
                     });
                 }
 
                 //Create the mutators
                 if (myInfo.mutators) {
                     Object.keys(myInfo.mutators).forEach((mutator) => {
-                        sugarcube.mutators.makeFromFunction(
-                            myInfo.id,
-                            myInfo.mutators[mutator].serialize, 
-                            myInfo.mutators[mutator].deserialize, 
-                            id + mutator
-                        );
+                        sugarcube.mutators.makeFromFunction(myInfo.id, myInfo.mutators[mutator].serialize, myInfo.mutators[mutator].deserialize, id + mutator);
                     });
                 }
 
@@ -929,12 +916,12 @@
 
                             case "object":
                                 if (Array.isArray(block.contextMenu)) {
-                                    block.contextMenu.forEach(menu => {
+                                    block.contextMenu.forEach((menu) => {
                                         if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`].push(`${myInfo.id}_${block.opcode}`);
                                     });
                                 }
                                 break;
-                        
+
                             default:
                                 break;
                         }
@@ -952,7 +939,7 @@
                 if (myInfo.updateBlocks) {
                     this.updateFunctions[myInfo.id] = () => {
                         const generatedExtras = sugarcube.extensionInstances[myInfo.id][myInfo.updateBlocks]() || [];
-                        
+
                         //Make sure we are getting an array
                         if (Array.isArray(generatedExtras)) {
                             //If so parse each block.
@@ -963,7 +950,7 @@
                             //Then concat our two things into a freakish monstrosity, and update the toolbox.
                             sugarcube.toolbox.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
                         }
-                    }
+                    };
                 }
 
                 if (sugarcube.workspace) {
@@ -982,7 +969,7 @@
             //Find its index
             return sugarcube.toolbox.contents.indexOf(
                 //Get the extension's def
-                sugarcube.toolbox.contents.find(item => {
+                sugarcube.toolbox.contents.find((item) => {
                     return item.id == extensionID;
                 })
             );
@@ -996,7 +983,7 @@
                 }
 
                 //Remove the extension's toolbox contents
-                sugarcube.toolbox.contents.splice(getExtensionIndex(extensionID),1);
+                sugarcube.toolbox.contents.splice(getExtensionIndex(extensionID), 1);
 
                 //Delete the instance.
                 delete sugarcube.extensionInstances[extensionID];
@@ -1016,11 +1003,12 @@
 
         updateExtensionBlocks(extensionID) {
             if (!extensionID) {
-                Object.keys(this.updateFunctions).forEach(func => {func()});
-            }
-            else {
+                Object.keys(this.updateFunctions).forEach((func) => {
+                    func();
+                });
+            } else {
                 if (!this.updateFunctions[extensionID]) return;
-                
+
                 this.updateFunctions[extensionID]();
             }
 
@@ -1032,16 +1020,15 @@
         loadExtension(url) {
             if (window.isSingleFile) {
                 let loadedScript = document.createElement("engine-script");
-                loadedScript.setAttribute("src",url);
-                loadedScript.setAttribute("async",false);
-    
+                loadedScript.setAttribute("src", url);
+                loadedScript.setAttribute("async", false);
+
                 document.body.appendChild(loadedScript);
-            }
-            else {
+            } else {
                 let loadedScript = document.createElement("script");
                 loadedScript.src = url;
                 loadedScript.async = false;
-    
+
                 document.body.appendChild(loadedScript);
             }
         }

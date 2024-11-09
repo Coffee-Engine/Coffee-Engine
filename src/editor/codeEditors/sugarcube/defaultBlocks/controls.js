@@ -124,7 +124,7 @@
                                 type: sugarcube.ArgumentType.REFERENCE,
                             },
                         },
-                    }
+                    },
                 ],
             };
         }

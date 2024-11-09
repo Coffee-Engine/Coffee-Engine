@@ -9,7 +9,7 @@
             // prettier-ignore
             if (this.activeCamera) coffeeEngine.renderer.cameraData.transform = camera.webGLValue();
         }
-    };
+    }
 
     coffeeEngine.registerNode(cameraNode, "Camera", "Node3D");
 })();

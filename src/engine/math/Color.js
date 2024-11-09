@@ -48,7 +48,7 @@
             if (typeof Color == "string") {
                 const split = coffeeEngine.ColorMath.HexToRGB(Color);
 
-                let brightest = split.r
+                let brightest = split.r;
 
                 if (brightest < split.g) {
                     brightest = split.g;
@@ -60,7 +60,7 @@
                 return brightest;
             }
 
-            let brightest = Color.r
+            let brightest = Color.r;
 
             if (brightest < Color.g) {
                 brightest = Color.g;
@@ -76,7 +76,7 @@
             if (typeof Color == "string") {
                 const split = coffeeEngine.ColorMath.HexToRGB(Color);
 
-                let brightest = split.r
+                let brightest = split.r;
 
                 if (brightest > split.g) {
                     brightest = split.g;
@@ -88,7 +88,7 @@
                 return brightest;
             }
 
-            let brightest = Color.r
+            let brightest = Color.r;
 
             if (brightest > Color.g) {
                 brightest = Color.g;
@@ -120,19 +120,19 @@
 
             //Multiply and get the Hue
             if (CMax == RGB.r) {
-                H = 60 * (((RGB.g-RGB.b)/Delta)%6);
+                H = 60 * (((RGB.g - RGB.b) / Delta) % 6);
             }
             if (CMax == RGB.g) {
-                H = 60 * (((RGB.b-RGB.r)/Delta)+2);
+                H = 60 * ((RGB.b - RGB.r) / Delta + 2);
             }
             if (CMax == RGB.b) {
-                H = 60 * (((RGB.r-RGB.g)/Delta)+4);
+                H = 60 * ((RGB.r - RGB.g) / Delta + 4);
             }
 
             //Set the saturation
             let S = 0;
             if (CMax != 0) {
-                S = Delta/CMax;
+                S = Delta / CMax;
             }
 
             //Make sure the hue isn't NaN
@@ -144,12 +144,12 @@
             RGB.r *= 255;
             RGB.g *= 255;
             RGB.b *= 255;
-            
+
             return {
-                h:H,
-                s:S,
-                v:CMax
-            }
+                h: H,
+                s: S,
+                v: CMax,
+            };
         },
 
         HSVToRGB: (HSV) => {
@@ -162,30 +162,25 @@
             const m = HSV.v - C;
 
             //Make our returned objects
-            const RGB = {r:0,g:0,b:0};
+            const RGB = { r: 0, g: 0, b: 0 };
 
             //And the if statements
             if (0 <= h && h < 60) {
                 RGB.r = C;
                 RGB.g = X;
-            }
-            else if (60 <= h && h < 120) {
+            } else if (60 <= h && h < 120) {
                 RGB.r = X;
                 RGB.g = C;
-            }
-            else if (120 <= h && h < 180) {
+            } else if (120 <= h && h < 180) {
                 RGB.g = C;
                 RGB.b = X;
-            }
-            else if (180 <= h && h < 240) {
+            } else if (180 <= h && h < 240) {
                 RGB.g = X;
                 RGB.b = C;
-            }
-            else if (240 <= h && h < 300) {
+            } else if (240 <= h && h < 300) {
                 RGB.b = C;
                 RGB.r = X;
-            }
-            else if (300 <= h && h < 360) {
+            } else if (300 <= h && h < 360) {
                 RGB.b = X;
                 RGB.r = C;
             }
@@ -200,6 +195,6 @@
 
         HSVToHex: (HSV) => {
             return coffeeEngine.ColorMath.RGBtoHex(coffeeEngine.ColorMath.HSVToRGB(HSV));
-        }
+        },
     };
 })();

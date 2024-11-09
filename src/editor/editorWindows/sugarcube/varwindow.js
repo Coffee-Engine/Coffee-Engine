@@ -82,11 +82,10 @@
     `;
 
     editor.windows.variable = class extends editor.windows.base {
-
         minWidth = 400;
         minHeight = 300;
 
-        tvariableType = "variable"
+        tvariableType = "variable";
 
         set variableType(value) {
             this.tvariableType = value;
@@ -105,7 +104,7 @@
                     this.objectButton.disabled = true;
                     this.colorInput.value = sugarcube.blocklyTheme.blockStyles.tables_blocks.colourPrimary;
                     break;
-            
+
                 default:
                     this.variableButton.disabled = true;
                     this.listButton.disabled = false;
@@ -120,7 +119,6 @@
         }
 
         init(container) {
-
             this.resizable = false;
             this.title = editor.language["editor.window.createVar"];
 
@@ -151,15 +149,15 @@
 
                 this.variableButton.onclick = () => {
                     this.variableType = "variable";
-                }
+                };
 
                 this.listButton.onclick = () => {
                     this.variableType = "list";
-                }
+                };
 
                 this.objectButton.onclick = () => {
                     this.variableType = "object";
-                }
+                };
 
                 //Here are the images. We are also assigning the correct color and translation keys
                 this.variableButton.style.margin = "4px";
@@ -172,7 +170,7 @@
 
                 this.objectButton.style.margin = "4px";
                 this.objectButton.style.gridAutoColumns = "auto 16px";
-                this.objectButton.innerHTML = `${objectSVG}<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.object"]}</p>`
+                this.objectButton.innerHTML = `${objectSVG}<p style="font-size:16px; margin:0px; padding:0px;">${editor.language["editor.window.createVar.object"]}</p>`;
                 //Append em
                 typeDiv.appendChild(this.variableButton);
                 typeDiv.appendChild(this.listButton);
@@ -183,7 +181,7 @@
             container.appendChild(typeDiv);
 
             this.colorInput = document.createElement("color-picker");
-            this.colorInput.setAttribute("hasExtensions",true)
+            this.colorInput.setAttribute("hasExtensions", true);
             container.appendChild(this.colorInput);
             this.colorInput.style.width = "32px";
             this.colorInput.style.height = "32px";
@@ -202,32 +200,28 @@
                 const closeButton = document.createElement("button");
                 closeButton.style.margin = "10%";
                 closeButton.style.marginLeft = "25%";
-                closeButton.style.marginRight = "12.5%"
+                closeButton.style.marginRight = "12.5%";
                 closeButton.innerText = "cancel";
                 buttonDiv.appendChild(closeButton);
-                
+
                 //Close button functionality
                 closeButton.onclick = () => {
                     this._dispose();
-                }
+                };
 
                 const doneButton = document.createElement("button");
                 doneButton.style.margin = "10%";
-                doneButton.style.marginLeft = "12.5%"
+                doneButton.style.marginLeft = "12.5%";
                 doneButton.style.marginRight = "25%";
                 doneButton.innerText = "done";
                 buttonDiv.appendChild(doneButton);
-                
+
                 //Done button functionality
                 doneButton.onclick = () => {
                     if (variableName.value.length < 1) return;
 
                     //Create our variable
-                    sugarcube.variables.createVariable(
-                        variableName.value,
-                        this.variableType,
-                        this.colorInput.value
-                    );
+                    sugarcube.variables.createVariable(variableName.value, this.variableType, this.colorInput.value);
 
                     //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("variables");
@@ -235,14 +229,13 @@
                     sugarcube.extensionManager.updateExtensionBlocks("tables");
 
                     this._dispose();
-                }
-                
+                };
             }
-            container.appendChild(buttonDiv)
+            container.appendChild(buttonDiv);
         }
 
         variableExists(name) {
             return sugarcube.workspace.getAllVariableNames().includes(name);
         }
-    }
-})()
+    };
+})();

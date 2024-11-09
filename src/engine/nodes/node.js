@@ -78,7 +78,7 @@
             this.children.push(child);
             child.parent = this;
         }
-    };
+    }
 
     coffeeEngine.registerNode(node, "Node");
 })();

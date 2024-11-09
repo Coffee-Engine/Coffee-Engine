@@ -236,7 +236,7 @@
             <div class="dropdownsTopbar">
                 <dropdown-menu id="coffeeEngineProjectDropdown">
                     Project
-                    ${((!project.isFolder) && (editor.safeties.filePermissions)) ? `<dropdown-item class="dropdown-menu-fill-down" value="save">Save Project</dropdown-item><dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">Save Seperately</dropdown-item>` : `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">Save Project as .decaf</dropdown-item>`}
+                    ${!project.isFolder && editor.safeties.filePermissions ? `<dropdown-item class="dropdown-menu-fill-down" value="save">Save Project</dropdown-item><dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">Save Seperately</dropdown-item>` : `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">Save Project as .decaf</dropdown-item>`}
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">Project Settings</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="settings">Import File</dropdown-item>
                 </dropdown-menu>
@@ -249,7 +249,7 @@
         document.body.appendChild(editor.currentPage.root);
 
         editor.dock = {
-            refreshLayout:(initial, missingPercentageX, missingPercentageY) => {
+            refreshLayout: (initial, missingPercentageX, missingPercentageY) => {
                 //Our percentages
                 missingPercentageX = missingPercentageX || 0;
                 missingPercentageY = missingPercentageY || [0];
@@ -273,7 +273,7 @@
                     }
 
                     let rowPercentage = "";
-                    editor.layout.layout[ID].contents.forEach(window => {
+                    editor.layout.layout[ID].contents.forEach((window) => {
                         //Updatte window size to compensate for missing percentage
                         window.size += (missingPercentageY[ID] || 0) / editor.layout.layout[ID].contents.length;
 
@@ -281,13 +281,13 @@
                         rowPercentage += window.size + "% ";
                         if (!window.content.resized) return;
                         window.content.resized();
-                    })
+                    });
 
                     //Set the grid property
-                    subDock.style.setProperty("--dockGridVertical",rowPercentage);
+                    subDock.style.setProperty("--dockGridVertical", rowPercentage);
                 }
 
-                editor.dock.element.style.setProperty("--dockGridHorizontal",percentages);
+                editor.dock.element.style.setProperty("--dockGridHorizontal", percentages);
 
                 if (initial) return;
 
@@ -317,8 +317,8 @@
                     else {
                         editor.dock.element.children[X].parentNode.removeChild(editor.dock.element.children[X]);
                         percentageGoneX += editor.layout.layout[X].size;
-                        editor.layout.layout.splice(X,1);
-                        
+                        editor.layout.layout.splice(X, 1);
+
                         //move our X back and add an indent
                         backIndent += 1;
                         X -= 1;
@@ -334,7 +334,7 @@
                 }
             },
 
-            dockWindow:(window,column) => {
+            dockWindow: (window, column) => {
                 if (window.windowDiv.parentNode) {
                     window.windowDiv.parentNode.removeChild(window.windowDiv);
                 }
@@ -344,7 +344,7 @@
                 editor.dock.element.children[column].appendChild(window.windowDiv);
             },
 
-            undockWindow:(window) => {
+            undockWindow: (window) => {
                 if (window.windowDiv.parentNode) {
                     window.windowDiv.parentNode.removeChild(window.windowDiv);
                 }
@@ -353,14 +353,18 @@
                 document.body.appendChild(window.windowDiv);
 
                 //Update data for the layout
-                if (editor.layout.layout[window.dockedColumn]) editor.layout.layout[window.dockedColumn].contents.splice(editor.layout.layout[window.dockedColumn].contents.findIndex(element => window == element.content),1);
+                if (editor.layout.layout[window.dockedColumn])
+                    editor.layout.layout[window.dockedColumn].contents.splice(
+                        editor.layout.layout[window.dockedColumn].contents.findIndex((element) => window == element.content),
+                        1
+                    );
                 editor.dock.refreshLayout();
 
                 //finally set the dockedColumn
                 window.dockedColumn = 0;
             },
 
-            closeDockWindowUI:() => {
+            closeDockWindowUI: () => {
                 editor.dock.overlayElement.style.opacity = "0%";
                 editor.dock.overlayElement.style.visibility = "hidden";
                 editor.dock.overlayElement.style.pointerEvents = "none";
@@ -370,7 +374,7 @@
                 editor.dock.overlayElement.innerHTML = "";
             },
 
-            dockWindowUI:(targetWindow) => {
+            dockWindowUI: (targetWindow) => {
                 let percentages = "";
 
                 //Make our overlay visible
@@ -393,9 +397,9 @@
                     }
 
                     let rowPercentage = "";
-                    editor.layout.layout[ID].contents.forEach(window => {
+                    editor.layout.layout[ID].contents.forEach((window) => {
                         rowPercentage += window.size + "% ";
-                        
+
                         const row = document.createElement("div");
                         row.style.margin = "8px";
                         row.style.backgroundColor = "var(--text-1)";
@@ -405,19 +409,19 @@
                         row.onclick = () => {
                             window.content.__addTab(targetWindow);
                             editor.dock.closeDockWindowUI();
-                        }
+                        };
 
                         subDock.appendChild(row);
-                    })
+                    });
 
                     //Set the grid property
-                    subDock.style.setProperty("--dockGridVertical",rowPercentage);
+                    subDock.style.setProperty("--dockGridVertical", rowPercentage);
                 }
 
-                editor.dock.overlayElement.style.setProperty("--dockGridHorizontal",percentages);
-            }
+                editor.dock.overlayElement.style.setProperty("--dockGridHorizontal", percentages);
+            },
         };
-        
+
         editor.dock.element = document.getElementById("coffeeEngineDock");
         editor.dock.overlayElement = document.getElementById("coffeeEngineDockoverlay");
 
@@ -441,15 +445,14 @@
                         windowType = editor.windows.base;
                     }
 
-                    const newWindow = new (windowType)();
+                    const newWindow = new windowType();
                     if (overrideName) {
                         newWindow.title = overrideName;
                     }
-    
+
                     editor.layout.layout[X].contents[Y].content = newWindow;
-                    editor.dock.dockWindow(newWindow,X);
-                }
-                else if (Array.isArray(content)) {
+                    editor.dock.dockWindow(newWindow, X);
+                } else if (Array.isArray(content)) {
                     let hostWindow;
                     for (let Z = 0; Z < content.length; Z++) {
                         const windowString = content[Z];
@@ -459,7 +462,7 @@
                             windowType = editor.windows.base;
                         }
 
-                        const newWindow = new (windowType)();
+                        const newWindow = new windowType();
                         if (overrideName) {
                             newWindow.title = overrideName;
                         }
@@ -468,7 +471,7 @@
                             //Make the host window for the parasites to latch upon
                             hostWindow = newWindow;
                             editor.layout.layout[X].contents[Y].content = newWindow;
-                            editor.dock.dockWindow(newWindow,X);
+                            editor.dock.dockWindow(newWindow, X);
                         }
                         //If it is a parasite latch upon the host
                         else {
@@ -480,23 +483,23 @@
         }
 
         editor.dropdownBar = {
-            file:document.getElementById("coffeeEngineProjectDropdown")
-        }
+            file: document.getElementById("coffeeEngineProjectDropdown"),
+        };
 
         editor.dropdownBar.file.onchange = (value) => {
             switch (value) {
                 case "save":
                     project.decaf.save();
                     break;
-                
+
                 case "saveSeperate":
                     project.decaf.save(true);
                     break;
-            
+
                 default:
                     break;
             }
-        }
+        };
 
         //Load sugarcube blocks
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");

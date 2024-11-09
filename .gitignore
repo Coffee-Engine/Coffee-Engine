@@ -18,3 +18,4 @@ out/
 
 src-tauri/target/debug/
 src-tauri/target/release/
+src/project/jszip.min.js

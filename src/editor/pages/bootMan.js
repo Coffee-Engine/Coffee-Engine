@@ -1,6 +1,6 @@
 (function () {
     if (!editor.Storage.keyExists("language")) {
-        editor.setup.initilizeLang()
+        editor.setup.initilizeLang();
     } else {
         editor.home.initilize();
     }

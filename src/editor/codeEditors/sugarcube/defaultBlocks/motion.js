@@ -19,7 +19,7 @@
                         opcode: "movesteps",
                         type: sugarcube.BlockType.COMMAND,
                         text: "move [steps] steps",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                         arguments: {
                             steps: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -39,7 +39,7 @@
                             },
                             y: {
                                 type: sugarcube.ArgumentType.NUMBER,
-                            }, 
+                            },
                         },
                     },
                     {
@@ -64,7 +64,7 @@
                         opcode: "setx",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set x to [x]",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -75,7 +75,7 @@
                         opcode: "sety",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set y to [y]",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                         arguments: {
                             y: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -97,7 +97,7 @@
                         opcode: "changex",
                         type: sugarcube.BlockType.COMMAND,
                         text: "change x by [x]",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                         arguments: {
                             x: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -109,7 +109,7 @@
                         opcode: "changey",
                         type: sugarcube.BlockType.COMMAND,
                         text: "change y by [y]",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                         arguments: {
                             y: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -130,18 +130,18 @@
                         },
                     },
                     "---",
-                    
+
                     {
                         opcode: "xposition",
                         type: sugarcube.BlockType.REPORTER,
                         text: "x position",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                     },
                     {
                         opcode: "yposition",
                         type: sugarcube.BlockType.REPORTER,
                         text: "y position",
-                        filter: ["node2D","node3D"],
+                        filter: ["node2D", "node3D"],
                     },
                     {
                         opcode: "zposition",
@@ -175,7 +175,7 @@
                             degrees: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Angle",
-                                defaultValue: 90
+                                defaultValue: 90,
                             },
                         },
                     },
@@ -221,7 +221,7 @@
                             degrees: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType: "Angle",
-                                defaultValue: 90
+                                defaultValue: 90,
                             },
                             axis: {
                                 menu: "direction",
@@ -281,18 +281,18 @@
                 fields: {
                     Angle: {
                         acceptReporters: true,
-                        isDropdown:true,
-                        
+                        isDropdown: true,
+
                         //Our custom editor
-                        editor:"angle_Editor",
-                        size: [128,160],
+                        editor: "angle_Editor",
+                        size: [128, 160],
 
                         //Stuff
-                        initilize:"angle_Init",
-                        manualNodeValue:true,
-                        render:"angle_Render",
-                    }
-                }
+                        initilize: "angle_Init",
+                        manualNodeValue: true,
+                        render: "angle_Render",
+                    },
+                },
             };
         }
 
@@ -351,7 +351,7 @@
             {
                 angleIndicator.style.width = "4px";
                 angleIndicator.style.height = "56px";
- 
+
                 angleIndicator.style.position = "absolute";
                 angleIndicator.style.left = "50%";
                 angleIndicator.style.top = "25%";
@@ -361,7 +361,6 @@
                 circularContainer.appendChild(angleIndicator);
             }
 
-            
             //This is what appears in the center to denote. Well the center
             const centerIndicator = document.createElement("div");
             {
@@ -378,7 +377,7 @@
                 centerIndicator.style.backgroundColor = "#4280d7";
                 circularContainer.appendChild(centerIndicator);
             }
-            
+
             //The text input that lets us input custom numbers
             const angleTextInput = document.createElement("input");
             {
@@ -403,7 +402,7 @@
 
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${sugarcube.cast.toNumber(angleTextInput.value) + 180}deg) translate(0%,50%)`;
                     field.value = angleTextInput.value;
-                }
+                };
 
                 //The image representation of the parameter
                 const imageREP = document.createElement("img");
@@ -437,7 +436,7 @@
 
                 angleSnapInput.onchange = () => {
                     angleSnapInput.value = sugarcube.cast.toNumber(angleSnapInput.value);
-                }
+                };
 
                 //The image representation of the parameter
                 const imageREP = document.createElement("img");
@@ -449,7 +448,7 @@
                 div.appendChild(imageREP);
                 div.appendChild(angleSnapInput);
             }
-            
+
             //And our scrubber that we can drag.
             const angleScrubber = document.createElement("div");
             {
@@ -465,7 +464,7 @@
                 angleScrubber.style.borderColor = "#4c97ff";
                 angleScrubber.style.borderWidth = "4px";
                 angleScrubber.style.borderStyle = "solid";
-                
+
                 angleScrubber.style.cursor = "grab";
 
                 angleScrubber.style.backgroundColor = "#4280d7";
@@ -474,7 +473,7 @@
                 //Arrow image
                 const angleScrubberArrow = document.createElement("img");
                 angleScrubberArrow.src = "data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSI5MC41ODg5IiBoZWlnaHQ9IjkwLjU4ODkiIHZpZXdCb3g9IjAsMCw5MC41ODg5LDkwLjU4ODkiPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0xOTQuNzA1NTUsLTEzNC43MDU1NSkiPjxnIGRhdGEtcGFwZXItZGF0YT0ieyZxdW90O2lzUGFpbnRpbmdMYXllciZxdW90Ozp0cnVlfSIgZmlsbC1ydWxlPSJub256ZXJvIiBzdHJva2U9Im5vbmUiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIHN0eWxlPSJtaXgtYmxlbmQtbW9kZTogbm9ybWFsIj48cGF0aCBkPSJNMjI3LjY5Njc1LDE4OS45NTY1MWMwLDAgMCwtNDAuMTQ2MiAwLC00Ni4yMzk2NWMwLC0wLjkxOTAzIDAuODAwNDksLTEuNTg2NDUgMS40MDExOCwtMS41ODY0NWMyLjI2MDA0LDAgMTYuMTUyODEsMCAyMS4yNDIyNiwwYzEuMTYyODEsMCAxLjg2NjA4LDAuOTI0NzIgMS44NjYwOCwyLjEzNTgyYzAsNi44OTMzNCAwLDQ1LjY5MDI4IDAsNDUuNjkwMjh6IiBmaWxsPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9Im5vbmUiLz48cGF0aCBkPSJNMjExLjk5OTYzLDE4Ny4xMjg1YzYuNzcxODMsMCA0NC41MjE4MSwwIDU2LjI0ODkzLDBjMi4xOTMxOCwwIDIuMjI2MjUsMS4yNDk5MyAwLjkwMzg1LDIuNTcyMzRjLTMuNjg4NDEsMy42ODg0MSAtMjEuMjgxNTQsMjEuMjgxNTQgLTI3LjIzMDIsMjcuMjMwMmMtMS4yMzcxOCwxLjIzNzE4IC0yLjY4ODg3LDEuMjUyNTIgLTMuOTAyOTUsMC4wMzg0NGMtNS45NDQ1NSwtNS45NDQ1NSAtMjMuNzc4MDEsLTIzLjc3ODAxIC0yNy40MDkwNiwtMjcuNDA5MDZjLTEuMjU4ODYsLTEuMjU4ODYgLTAuNjQzODMsLTIuNDMxOTMgMS4zODk0MywtMi40MzE5M3oiIGZpbGw9IiNmZmZmZmYiIHN0cm9rZS13aWR0aD0iMCIvPjxwYXRoIGQ9Ik0xOTQuNzA1NTUsMjI1LjI5NDQ1di05MC41ODg5aDkwLjU4ODl2OTAuNTg4OXoiIGZpbGw9Im5vbmUiIHN0cm9rZS13aWR0aD0iMCIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjQ1LjI5NDQ0Nzc1MDQ1MzA2OjQ1LjI5NDQ0Nzc1MDQ1My0tPg==";
-                
+
                 angleScrubberArrow.style.width = "16px";
                 angleScrubberArrow.style.height = "16px";
                 angleScrubberArrow.style.pointerEvents = "none";
@@ -494,11 +493,8 @@
                     const circularCenter = circularContainer.getBoundingClientRect();
 
                     //Angle stuff
-                    let angle = Math.atan2(
-                        event.clientY - (circularCenter.y + (circularCenter.height / 2)), 
-                        event.clientX - (circularCenter.x + (circularCenter.width / 2))
-                    );
-                    angle *= (180 / Math.PI);
+                    let angle = Math.atan2(event.clientY - (circularCenter.y + circularCenter.height / 2), event.clientX - (circularCenter.x + circularCenter.width / 2));
+                    angle *= 180 / Math.PI;
                     angle += 90;
 
                     //Snapping if possible
@@ -510,16 +506,16 @@
                     angleIndicator.style.transform = `translate(-50%,0%) rotate(${angle + 180}deg) translate(0%,50%)`;
                     field.value = angle;
                     angleTextInput.value = angle;
-                }
+                };
                 //And when we release it we do this!
                 const letGoFunc = () => {
-                    document.removeEventListener("mousemove",grabFunction);
-                    document.removeEventListener("mouseup",letGoFunc);
-                }
+                    document.removeEventListener("mousemove", grabFunction);
+                    document.removeEventListener("mouseup", letGoFunc);
+                };
 
-                document.addEventListener("mousemove",grabFunction);
-                document.addEventListener("mouseup",letGoFunc);
-            }
+                document.addEventListener("mousemove", grabFunction);
+                document.addEventListener("mouseup", letGoFunc);
+            };
 
             //Return our div so we can put it on the field itself
             return div;

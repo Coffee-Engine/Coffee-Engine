@@ -46,8 +46,8 @@
                 [0,0,0,1]
             ])
             return this.multiply(rotator);
-        };
-        
+        }
+
         scale(x, y, z) {
             const scaled = new coffeeEngine.matrix4(this.contents);
             scaled[0][0] *= x;
@@ -138,7 +138,7 @@
 
     coffeeEngine.matrix4.projection = (fov, aspect, near, far) => {
         const fovRad = Math.tan(((fov * 0.5) / 180) * 3.141592682);
-        const range = (far - near)
+        const range = far - near;
 
         const returned = coffeeEngine.matrix4.identity();
 

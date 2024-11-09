@@ -82,7 +82,7 @@
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue:2,
+                                defaultValue: 2,
                             },
                             B: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -284,7 +284,7 @@
         }
 
         root({ A, B }) {
-            return Math.pow(sugarcube.cast.toNumber(B), 1/sugarcube.cast.toNumber(A));
+            return Math.pow(sugarcube.cast.toNumber(B), 1 / sugarcube.cast.toNumber(A));
         }
 
         randomNumber({ A, B }) {

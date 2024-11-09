@@ -18,7 +18,6 @@ editor.EnglishLang = {
     "engine.settings.welcome": "Engine Settings",
     "engine.credits.welome": "Credits",
 
-
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
     "engine.settings.category.Window.barHeight": "Taskbar Height",

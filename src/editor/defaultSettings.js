@@ -1,10 +1,10 @@
-(function() {
+(function () {
     editor.defaultSettings = {
         Window: {
             grabSize: 8,
             barHeight: 24,
             barStyle: "Flat",
-            tabMode:"ifNeeded",
+            tabMode: "ifNeeded",
         },
         Theme: {
             themeColor: "Mocha",
@@ -29,26 +29,26 @@
 
             defaultText: "#e7cab7",
 
-            colorKeyword:"#d76f2b",
-            colorClassname:"#e5823f",
+            colorKeyword: "#d76f2b",
+            colorClassname: "#e5823f",
 
-            colorDelimiter:"#e38d55",
-            colorDelimiterBracket:"#e7b252",
+            colorDelimiter: "#e38d55",
+            colorDelimiterBracket: "#e7b252",
 
-            colorString:"#d6ae93",
-            colorStringError:"#ff7878",
-            colorStringEscape:"#e7cab7",
+            colorString: "#d6ae93",
+            colorStringError: "#ff7878",
+            colorStringEscape: "#e7cab7",
 
-            colorNumber:"#bce579",
-            colorNumberUnusual:"#5bb498",
-            colorRegexp:"#eba2ce",
-            colorRegexpInvalid:"#ff7878",
-            colorRegexpEscape:"#e7cab7",
+            colorNumber: "#bce579",
+            colorNumberUnusual: "#5bb498",
+            colorRegexp: "#eba2ce",
+            colorRegexpInvalid: "#ff7878",
+            colorRegexpEscape: "#e7cab7",
 
-            colorComment:"#bb8d6e",
-            colorCommentDoc:"#958072",
-            colorCommentDocKeyword:"#bce579",
-            colorCommentDocType:"#5bb498",
+            colorComment: "#bb8d6e",
+            colorCommentDoc: "#958072",
+            colorCommentDocKeyword: "#bce579",
+            colorCommentDocType: "#5bb498",
         },
     };
 
@@ -58,11 +58,9 @@
             onChange: (value, fromBoot) => {
                 if (editor.settings.values.Theme.themeColor == "Custom") {
                     document.body.style.setProperty(cssName, value);
-                }
-                else if (editor.settings.values.Monaco.themeOverride) {
+                } else if (editor.settings.values.Monaco.themeOverride) {
                     document.body.style.setProperty(cssName, value);
-                }
-                else {
+                } else {
                     document.body.style.setProperty(cssName, coffeeEngine.defaultThemes[editor.settings.values.Theme.themeColor][cssName]);
                 }
             },
@@ -74,13 +72,13 @@
                     elements.input.disabled = true;
                 }
             },
-        }
-    }
+        };
+    };
 
-    const setSettingActiveMode = (setting,mode) => {
+    const setSettingActiveMode = (setting, mode) => {
         editor.settings.elements[setting].span.style.opacity = mode ? "100%" : "50%";
         editor.settings.elements[setting].input.disabled = !mode;
-    }
+    };
 
     editor.settingDefs = {
         Window: {
@@ -511,23 +509,23 @@
                 type: "checkbox",
                 onChange: (value, fromBoot) => {
                     if (!fromBoot) {
-                        setSettingActiveMode("defaultText",value);
-                        setSettingActiveMode("colorKeyword",value);
-                        setSettingActiveMode("colorClassname",value);
-                        setSettingActiveMode("colorDelimiter",value);
-                        setSettingActiveMode("colorDelimiterBracket",value);
-                        setSettingActiveMode("colorNumber",value);
-                        setSettingActiveMode("colorNumberUnusual",value);
-                        setSettingActiveMode("colorString",value);
-                        setSettingActiveMode("colorStringEscape",value);
-                        setSettingActiveMode("colorStringError",value);
-                        setSettingActiveMode("colorRegexp",value);
-                        setSettingActiveMode("colorRegexpInvalid",value);
-                        setSettingActiveMode("colorRegexpEscape",value);
-                        setSettingActiveMode("colorComment",value);
-                        setSettingActiveMode("colorCommentDoc",value);
-                        setSettingActiveMode("colorCommentDocKeyword",value);
-                        setSettingActiveMode("colorCommentDocType",value); 
+                        setSettingActiveMode("defaultText", value);
+                        setSettingActiveMode("colorKeyword", value);
+                        setSettingActiveMode("colorClassname", value);
+                        setSettingActiveMode("colorDelimiter", value);
+                        setSettingActiveMode("colorDelimiterBracket", value);
+                        setSettingActiveMode("colorNumber", value);
+                        setSettingActiveMode("colorNumberUnusual", value);
+                        setSettingActiveMode("colorString", value);
+                        setSettingActiveMode("colorStringEscape", value);
+                        setSettingActiveMode("colorStringError", value);
+                        setSettingActiveMode("colorRegexp", value);
+                        setSettingActiveMode("colorRegexpInvalid", value);
+                        setSettingActiveMode("colorRegexpEscape", value);
+                        setSettingActiveMode("colorComment", value);
+                        setSettingActiveMode("colorCommentDoc", value);
+                        setSettingActiveMode("colorCommentDocKeyword", value);
+                        setSettingActiveMode("colorCommentDocType", value);
                     }
 
                     editor.settingDefs.Monaco.defaultText.onChange(editor.settings.values.Monaco.defaultText);
@@ -547,14 +545,14 @@
                     editor.settingDefs.Monaco.colorCommentDoc.onChange(editor.settings.values.Monaco.colorCommentDoc);
                     editor.settingDefs.Monaco.colorCommentDocKeyword.onChange(editor.settings.values.Monaco.colorCommentDocKeyword);
                     editor.settingDefs.Monaco.colorCommentDocType.onChange(editor.settings.values.Monaco.colorCommentDocType);
-                }
+                },
             },
             defaultText: quickSettingCSSThemeColor("--code-text"),
-            colorKeyword:  quickSettingCSSThemeColor("--keyword"),
-            colorClassname:  quickSettingCSSThemeColor("--class-name"),
+            colorKeyword: quickSettingCSSThemeColor("--keyword"),
+            colorClassname: quickSettingCSSThemeColor("--class-name"),
             colorDelimiter: quickSettingCSSThemeColor("--delimiter"),
             colorDelimiterBracket: quickSettingCSSThemeColor("--delimiter-bracket"),
-            colorNumber:  quickSettingCSSThemeColor("--number-color"),
+            colorNumber: quickSettingCSSThemeColor("--number-color"),
             colorNumberUnusual: quickSettingCSSThemeColor("--number-color-unusual"),
             colorString: quickSettingCSSThemeColor("--string"),
             colorStringEscape: quickSettingCSSThemeColor("--string-escape"),

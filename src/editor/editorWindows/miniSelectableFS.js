@@ -7,7 +7,7 @@
             this.resizable = false;
             this.title = editor.language["editor.window.fileExplorer.select"];
 
-            const displayDirectory = (directory,parentDiv,even,path) => {
+            const displayDirectory = (directory, parentDiv, even, path) => {
                 path = path || "";
                 const keys = Object.keys(directory).sort();
 

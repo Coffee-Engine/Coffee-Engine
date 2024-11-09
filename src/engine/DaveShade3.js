@@ -38,7 +38,7 @@ window.DaveShade = {};
     DaveShade.setters = {
         //?Float
         5126: (gl, location, value) => {
-            gl.uniform1f (location, value);
+            gl.uniform1f(location, value);
         },
         //?Vec2
         35664: (gl, location, value) => {
@@ -87,10 +87,10 @@ window.DaveShade = {};
             SHADERS: [],
         };
 
-        daveShadeInstance.GL = CANVAS.getContext("webgl2",SETTINGS);
+        daveShadeInstance.GL = CANVAS.getContext("webgl2", SETTINGS);
         daveShadeInstance.GL_TYPE = "webgl2";
         if (!daveShadeInstance.GL) {
-            daveShadeInstance.GL = CANVAS.getContext("webgl",SETTINGS);
+            daveShadeInstance.GL = CANVAS.getContext("webgl", SETTINGS);
             daveShadeInstance.GL_TYPE = "webgl";
         }
         const GL = daveShadeInstance.GL;
@@ -106,7 +106,7 @@ window.DaveShade = {};
         daveShadeInstance.clearMemory = (shader) => {
             //*Remove the shader from the list
             if (daveShadeInstance.SHADERS.includes(shader)) {
-                daveShadeInstance.SHADERS.splice(daveShadeInstance.SHADERS.indexOf(shader),1);
+                daveShadeInstance.SHADERS.splice(daveShadeInstance.SHADERS.indexOf(shader), 1);
             }
 
             //*Delete the program and shaders
@@ -230,7 +230,7 @@ window.DaveShade = {};
             //* Loop through the attributes
             shader.attributeIndicies.forEach((attributeID) => {
                 //* Lets split the attribute definition
-                const attributeDef = GL.getActiveAttrib(shader.program,attributeID);
+                const attributeDef = GL.getActiveAttrib(shader.program, attributeID);
 
                 //? could probably conglomerate better?
                 shader.attributes[attributeDef.name] = {
@@ -308,53 +308,34 @@ window.DaveShade = {};
         daveShadeInstance.useZBuffer = (use) => {
             daveShadeInstance.GL.enable(daveShadeInstance.GL.DEPTH_TEST);
             daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
-        }
+        };
 
         daveShadeInstance.createTexture = (data, width, height) => {
             const texture = daveShadeInstance.GL.createTexture();
             daveShadeInstance.GL.bindTexture(daveShadeInstance.GL.TEXTURE_2D, texture);
 
             if (data instanceof Image) {
-                daveShadeInstance.GL.texImage2D(
-                    daveShadeInstance.GL.TEXTURE_2D,
-                    0,
-                    daveShadeInstance.GL.RGBA,
-                    daveShadeInstance.GL.RGBA,
-                    daveShadeInstance.GL.UNSIGNED_BYTE,
-                    data,
-                );
-                
+                daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
+
                 daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_S, daveShadeInstance.GL.CLAMP_TO_EDGE);
                 daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_T, daveShadeInstance.GL.CLAMP_TO_EDGE);
                 daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_MIN_FILTER, daveShadeInstance.GL.LINEAR);
-            }
-            else {
-                daveShadeInstance.GL.texImage2D(
-                    daveShadeInstance.GL.TEXTURE_2D,
-                    0,
-                    daveShadeInstance.GL.RGBA,
-                    width,
-                    height,
-                    0,
-                    daveShadeInstance.GL.RGBA,
-                    daveShadeInstance.GL.UNSIGNED_BYTE,
-                    data,
-                );
-
+            } else {
+                daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, width, height, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
             }
 
             return texture;
-        }
+        };
 
         daveShadeInstance.dispose = () => {
-            daveShadeInstance.SHADERS.forEach(shader => {
+            daveShadeInstance.SHADERS.forEach((shader) => {
                 daveShadeInstance.clearMemory(shader);
             });
 
             delete daveShadeInstance.GL;
             if (daveShadeInstance.CANVAS.parentElement) {
                 daveShadeInstance.CANVAS.parentElement.removeChild(daveShadeInstance.CANVAS);
-            } 
+            }
             delete daveShadeInstance.CANVAS;
         };
 

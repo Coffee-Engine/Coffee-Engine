@@ -204,7 +204,7 @@
 
         const projectName = document.getElementById("projectName");
         const authorName = document.getElementById("authorName");
-        let type = "file"
+        let type = "file";
 
         //If we don't have these saftey permissions remove stuff
         if (!(editor.safeties.folderPerimissions && editor.safeties.secureContext)) {
@@ -215,8 +215,7 @@
             folderButton.className = "disabledButton";
             fileDiv.style.filter = "blur(4px)";
             fileIndicator.innerText = "Your project will be a file";
-        }
-        else {
+        } else {
             fileButton.className = "disabledButton";
 
             fileButton.onclick = () => {
@@ -224,23 +223,26 @@
                 folderButton.className = "";
                 type = "file";
                 createProject.innerHTML = "Create Project";
-            }
+            };
 
             folderButton.onclick = () => {
                 fileButton.className = "";
                 folderButton.className = "disabledButton";
                 type = "folder";
                 createProject.innerHTML = "Select Folder";
-            }
+            };
         }
 
         createProject.onclick = () => {
-            project.new({
-                name:projectName.value || "project",
-                author:authorName.value || "author",
-                version:project.formatVersion,
-                type:type
-            },type);
-        }
+            project.new(
+                {
+                    name: projectName.value || "project",
+                    author: authorName.value || "author",
+                    version: project.formatVersion,
+                    type: type,
+                },
+                type
+            );
+        };
     };
 })();

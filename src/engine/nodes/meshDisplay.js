@@ -11,7 +11,7 @@
                 coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(this.mesh.pointCount);
             }
         }
-    };
+    }
 
     coffeeEngine.registerNode(meshDisplay, "MeshDisplay", "Node3D");
 })();

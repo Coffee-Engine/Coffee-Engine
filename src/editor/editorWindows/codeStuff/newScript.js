@@ -1,4 +1,4 @@
-(function () {    
+(function () {
     editor.windows.newScript = class extends editor.windows.base {
         defaults = {
             js: `//${editor.language["editor.window.javascript.commentMessage"]}
@@ -21,8 +21,8 @@ class behavior {
     
 coffeeEngine.registerBehavior("behavior",behavior);`,
             //Sugarcube
-            cescr:'{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{}}'
-        }
+            cescr: '{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{}}',
+        };
 
         minWidth = 400;
         minHeight = 200;
@@ -39,14 +39,14 @@ coffeeEngine.registerBehavior("behavior",behavior);`,
             this.type.innerHTML = `
                 <option value="js">${editor.language["editor.window.javascript"]} (js)</option>
                 <option value="cescr">${editor.language["editor.window.sugarcube"]} (cescr)</option>
-            `
+            `;
             this.type.style.margin = "16px";
             this.type.style.marginLeft = "50px";
             this.type.style.marginRight = "50px";
 
             this.type.onchange = () => {
                 this.path.value = `${this.path.value.split(".")[0]}.${this.type.value}`;
-            }
+            };
 
             this.path = document.createElement("input");
             this.path.type = "text";
@@ -63,17 +63,17 @@ coffeeEngine.registerBehavior("behavior",behavior);`,
 
             this.createButton.onclick = () => {
                 //This might be the one reason I actually look for a catch :Skull Emoji:
-                project.getFile(this.path.value).catch(reason => {
-                    project.setFile(this.path.value, this.defaults[this.type.value],"text/javascript").then((path) => {
-                        editor.sendFileHook(path.split(".")[1],path);
+                project.getFile(this.path.value).catch((reason) => {
+                    project.setFile(this.path.value, this.defaults[this.type.value], "text/javascript").then((path) => {
+                        editor.sendFileHook(path.split(".")[1], path);
                         this._dispose();
                     });
-                })
-            }
+                });
+            };
 
             container.appendChild(this.type);
             container.appendChild(this.path);
             container.appendChild(this.createButton);
         }
-    }
-})()
+    };
+})();

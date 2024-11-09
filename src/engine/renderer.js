@@ -2,46 +2,53 @@
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas) => {
         coffeeEngine.renderer.canvas = canvas;
-        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, {preserveDrawingBuffer: true});
+        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, { preserveDrawingBuffer: true });
         coffeeEngine.renderer.daveshade.useZBuffer(true);
 
         coffeeEngine.renderer.cameraData = {
-
             set transform(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedTransform = value;
             },
-            get transform() { return coffeeEngine.renderer.cameraData.storedTransform; },
+            get transform() {
+                return coffeeEngine.renderer.cameraData.storedTransform;
+            },
             set projection(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedProjection = value;
             },
-            get projection() { return coffeeEngine.renderer.cameraData.storedProjection; },
+            get projection() {
+                return coffeeEngine.renderer.cameraData.storedProjection;
+            },
             set res(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedRes = value;
             },
-            get res() { return coffeeEngine.renderer.cameraData.storedRes; },
+            get res() {
+                return coffeeEngine.renderer.cameraData.storedRes;
+            },
 
             //Because orthographic projection wouldn't like me
-            set wFactor(value) { 
-                Object.values(coffeeEngine.renderer.mainShaders).forEach(shader => {
+            set wFactor(value) {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedWFactor = value;
             },
-            get wFactor() { return coffeeEngine.renderer.cameraData.storedWFactor; },
+            get wFactor() {
+                return coffeeEngine.renderer.cameraData.storedWFactor;
+            },
 
-            storedTransform:coffeeEngine.matrix4.identity(),
-            storedProjection:coffeeEngine.matrix4.identity(),
-            storedRes: [480,360]
-        }
+            storedTransform: coffeeEngine.matrix4.identity(),
+            storedProjection: coffeeEngine.matrix4.identity(),
+            storedRes: [480, 360],
+        };
 
         coffeeEngine.renderer.mainShaders = {
             unlit: coffeeEngine.renderer.daveshade.createShader(
@@ -156,29 +163,32 @@
                     }
                 }
                 `
-            )
+            ),
             //lit:coffeeEngine.renderer.daveshade.createShader()
         };
 
         coffeeEngine.renderer.fileToTexture = (src) => {
-            return new Promise((resolve,reject) => {
-                const desiredFile = project.getFile(src).then((file) => {
-                    const trackedImage = new Image();
-                    
-                    trackedImage.onload = () => {
-                        resolve(coffeeEngine.renderer.daveshade.createTexture(trackedImage));
-                    }
+            return new Promise((resolve, reject) => {
+                const desiredFile = project
+                    .getFile(src)
+                    .then((file) => {
+                        const trackedImage = new Image();
 
-                    trackedImage.onerror = () => {
-                        reject("error loading image");
-                    }
+                        trackedImage.onload = () => {
+                            resolve(coffeeEngine.renderer.daveshade.createTexture(trackedImage));
+                        };
 
-                    trackedImage.src = window.URL.createObjectURL(file);
-                }).catch(exception => {
-                    reject("file doesn't exist");
-                });
-            })
-        }
+                        trackedImage.onerror = () => {
+                            reject("error loading image");
+                        };
+
+                        trackedImage.src = window.URL.createObjectURL(file);
+                    })
+                    .catch((exception) => {
+                        reject("file doesn't exist");
+                    });
+            });
+        };
 
         return coffeeEngine.renderer;
     };

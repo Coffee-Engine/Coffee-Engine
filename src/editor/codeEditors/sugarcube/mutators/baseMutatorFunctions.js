@@ -1,4 +1,4 @@
-(function() {
+(function () {
     //Storage for mutators
     sugarcube.mutators = {};
 
@@ -14,11 +14,11 @@
 
             case "undefined":
                 return "";
-        
+
             default:
                 return item;
         }
-    }
+    };
 
     sugarcube.mutators.parseItem = (item) => {
         //If it is a json parse it.
@@ -30,19 +30,20 @@
         switch (typeof item) {
             case "string":
                 if (item.startsWith("mutatedStringedFunction_")) {
-                    return Function(item.replace("mutatedStringedFunction_",""));
+                    return Function(item.replace("mutatedStringedFunction_", ""));
                 }
 
                 return item;
-        
+
             default:
                 return item;
         }
-    }
+    };
 
     //Our easy creation function
-    sugarcube.mutators.makeFromFunction = (extensionID,serialize,deserialize,mutatorName) => {
-        return Blockly.Extensions.registerMutator(mutatorName,
+    sugarcube.mutators.makeFromFunction = (extensionID, serialize, deserialize, mutatorName) => {
+        return Blockly.Extensions.registerMutator(
+            mutatorName,
             {
                 saveExtraState: function (state) {
                     this.editedState = sugarcube.extensionInstances[extensionID][serialize](this.editedState, this) || {};
@@ -66,6 +67,7 @@
                     this.editedState = sugarcube.extensionInstances[extensionID][deserialize](this.editedState, this) || {};
                 },
             },
-            undefined);
-        }
+            undefined
+        );
+    };
 })();

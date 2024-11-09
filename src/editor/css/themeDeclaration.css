@@ -45,10 +45,12 @@ button {
     border-width: 2px;
     border-color: var(--background-3);
 
-    transition: all 100ms, visibility 1ms;
+    transition:
+        all 100ms,
+        visibility 1ms;
 
     font-size: large;
-    
+
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */

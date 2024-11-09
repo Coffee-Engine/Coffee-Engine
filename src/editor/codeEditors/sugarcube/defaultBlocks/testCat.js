@@ -187,9 +187,9 @@
                             arguments: {
                                 doom: {
                                     type: sugarcube.ArgumentType.CUSTOM,
-                                    customType:"fieldTest"
-                                }
-                            }
+                                    customType: "fieldTest",
+                                },
+                            },
                         },
                     ]),
                 menus: {
@@ -260,35 +260,35 @@
                 },
                 mutators: {
                     mutatorTest: {
-                        serialize:"test_Serialize",
-                        deserialize:"test_Deserialize"
-                    }
+                        serialize: "test_Serialize",
+                        deserialize: "test_Deserialize",
+                    },
                 },
                 fields: {
                     fieldTest: {
-                        isDropdown:true,
-                        
+                        isDropdown: true,
+
                         //Our custom editor
-                        editor:"test_Editor",
-                        initilize:"test_Init",
-                    
-                        color1:"#ef0000",
-                        color2:"#0f101a",
-                    }
+                        editor: "test_Editor",
+                        initilize: "test_Init",
+
+                        color1: "#ef0000",
+                        color2: "#0f101a",
+                    },
                 },
                 contextMenus: {
                     example: {
-                        isWorkspace:false,
+                        isWorkspace: false,
 
-                        textIsOpcode:false,
-                        text:"wow a custom context menu!",
+                        textIsOpcode: false,
+                        text: "wow a custom context menu!",
 
-                        eligibility:"isUsable",
-                        opcode:"opcode",
+                        eligibility: "isUsable",
+                        opcode: "opcode",
 
-                        weight:2,
-                    }
-                }
+                        weight: 2,
+                    },
+                },
             };
         }
 
@@ -316,11 +316,13 @@
 
         test_Editor(field) {
             const image = document.createElement("img");
-            fetch("https://dog.ceo/api/breeds/image/random").then(response => response.json()).then(json => {
-                image.src = json.message;
-                image.width = 256;
-                image.height = 256;
-            })
+            fetch("https://dog.ceo/api/breeds/image/random")
+                .then((response) => response.json())
+                .then((json) => {
+                    image.src = json.message;
+                    image.width = 256;
+                    image.height = 256;
+                });
 
             return image;
         }

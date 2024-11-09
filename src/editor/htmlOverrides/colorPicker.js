@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.colorPicker = {
         current: null,
         colorPickerSVG: `
@@ -19,22 +19,22 @@
                     <path d="M303.90154,243.90154h-127.80309v-127.80309h127.80309z" fill="url(#color-2)"/>
                 </g>
             </g>
-        </svg>`
+        </svg>`,
     };
 
-    editor.colorPicker.create = (x,y,{ color, hasExtensions, callback}) => {
+    editor.colorPicker.create = (x, y, { color, hasExtensions, callback }) => {
         //Channel 3 and Channel 15
         color = color || "#0000ff";
         let split = coffeeEngine.ColorMath.HexToRGB(color);
 
-        let promise = new Promise((resolve,reject) => {
+        let promise = new Promise((resolve, reject) => {
             editor.colorPicker.resolve = resolve;
             editor.colorPicker.reject = reject;
-        })
+        });
 
         //Create the new panel
         editor.colorPicker.remove();
-        const current = document.createElement("div")
+        const current = document.createElement("div");
         editor.colorPicker.current = current;
 
         //Set the styles
@@ -63,9 +63,10 @@
         current.style.display = "grid";
         current.style.gridTemplateColumns = "3fr 1fr" + (hasExtensions ? " 1fr" : "");
         current.style.gap = "4px";
-        current.style.zIndex = "10000"
+        current.style.zIndex = "10000";
 
-        current.innerHTML = `
+        current.innerHTML =
+            `
         <style>
             .CE_colorPicker {
                 --hue: 45deg;
@@ -194,9 +195,12 @@
 
             <button id="doneButton">done</button>
         </div>
-        ` + (hasExtensions ? `
+        ` +
+            (hasExtensions
+                ? `
         <div class="ce_extensionHolder" id="ce_extensionHolder"></div>
-        ` : "");
+        `
+                : "");
 
         document.body.appendChild(current);
 
@@ -204,7 +208,7 @@
         const redInput = document.getElementById("ce_redChannel");
         const greenInput = document.getElementById("ce_greenChannel");
         const blueInput = document.getElementById("ce_blueChannel");
-        
+
         const hexInput = document.getElementById("ce_hexChannel");
         const colorBackground = document.getElementById("ce_colorBG");
         const hueBackground = document.getElementById("ce_hueBG");
@@ -243,16 +247,16 @@
             if (callback) {
                 callback(hexInput.value);
             }
-        }
+        };
 
         if (hasExtensions) {
             const extensionHolder = document.getElementById("ce_extensionHolder");
-            Object.keys(sugarcube.blocklyTheme.blockStyles).forEach(extensionID => {
+            Object.keys(sugarcube.blocklyTheme.blockStyles).forEach((extensionID) => {
                 const button = document.createElement("div");
 
                 button.className = "ce_extensionColorPreset";
 
-                button.style.setProperty("--extColor",sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
+                button.style.setProperty("--extColor", sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
 
                 button.onclick = () => {
                     const result = coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
@@ -260,27 +264,27 @@
 
                     split = result;
                     updateColors();
-                }
+                };
 
                 extensionHolder.appendChild(button);
-            }) 
+            });
         }
 
         //Simple input controls
         redInput.onchange = () => {
             split.r = redInput.value;
             updateColors();
-        }
+        };
 
         greenInput.onchange = () => {
             split.g = greenInput.value;
             updateColors();
-        }
+        };
 
         blueInput.onchange = () => {
             split.b = blueInput.value;
             updateColors();
-        }
+        };
 
         hexInput.onchange = () => {
             if (hexInput.value.length == 4 || hexInput.value.length == 7) {
@@ -290,17 +294,18 @@
                 split = result;
                 updateColors();
             }
-        }
+        };
 
         //Now for the scrubbers
         HueScrubber.onmousedown = () => {
             //Events
-            let upEvent, moveEvent = null;
-            
+            let upEvent,
+                moveEvent = null;
+
             upEvent = () => {
                 document.removeEventListener("mouseup", upEvent);
                 document.removeEventListener("mousemove", moveEvent);
-            }
+            };
 
             moveEvent = (event) => {
                 const rect = hueBackground.getBoundingClientRect();
@@ -312,51 +317,51 @@
                 split = coffeeEngine.ColorMath.HSVToRGB(HSV);
 
                 updateColors();
-            }
+            };
 
             document.addEventListener("mouseup", upEvent);
             document.addEventListener("mousemove", moveEvent);
-        }
-        
+        };
+
         ValSatScrubber.onmousedown = () => {
             //Events
-            let upEvent, moveEvent = null;
+            let upEvent,
+                moveEvent = null;
 
             upEvent = () => {
                 document.removeEventListener("mouseup", upEvent);
                 document.removeEventListener("mousemove", moveEvent);
-            }
-    
+            };
+
             moveEvent = (event) => {
                 const rect = colorBackground.getBoundingClientRect();
-    
+
                 const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
-    
-                HSV.v = ((event.clientY - rect.top) / rect.height);
+
+                HSV.v = (event.clientY - rect.top) / rect.height;
                 HSV.v = Math.min(Math.max(1 - HSV.v, 0), 1);
-    
-                HSV.s = ((event.clientX - rect.left) / rect.width) ;
+
+                HSV.s = (event.clientX - rect.left) / rect.width;
                 HSV.s = Math.min(Math.max(HSV.s, 0), 1);
 
-    
                 split = coffeeEngine.ColorMath.HSVToRGB(HSV);
-    
+
                 updateColors();
-            }
-    
+            };
+
             document.addEventListener("mouseup", upEvent);
             document.addEventListener("mousemove", moveEvent);
-        }
+        };
 
         doneButton.onclick = () => {
             editor.colorPicker.resolve(coffeeEngine.ColorMath.RGBtoHex(split));
             editor.colorPicker.remove();
-        }
+        };
 
         updateColors();
-        
+
         return promise;
-    }
+    };
 
     editor.colorPicker.remove = () => {
         if (editor.colorPicker.current) {
@@ -366,7 +371,7 @@
             }
             delete editor.colorPicker.current;
         }
-    }
+    };
 
     //Bad html class. Might be cool
     editor.colorPicker.class = class extends HTMLElement {
@@ -400,29 +405,32 @@
             this.onmouseenter = () => {
                 if (this.disabled) {
                     this.style.borderColor = "var(--background-2)";
-                }
-                else {
+                } else {
                     this.style.borderColor = "var(--text-3)";
                 }
-            }
+            };
 
             this.onmouseleave = () => {
                 this.style.borderColor = "var(--background-3)";
-            }
+            };
 
             this.onclick = (event) => {
                 if (this.disabled) return;
-                
-                editor.colorPicker.create(event.clientX, event.clientY, {hasExtensions:this.hasAttribute("hasExtensions"), color: this.color, callback:(color) => {
-                    this.color = color;
-                    if (this.onchange) {
-                        this.onchange();
-                    }
-                }});
-            }
+
+                editor.colorPicker.create(event.clientX, event.clientY, {
+                    hasExtensions: this.hasAttribute("hasExtensions"),
+                    color: this.color,
+                    callback: (color) => {
+                        this.color = color;
+                        if (this.onchange) {
+                            this.onchange();
+                        }
+                    },
+                });
+            };
         }
 
-        connectedCallback() {       
+        connectedCallback() {
             if (this.getAttribute("color")) {
                 this.color = this.getAttribute("color");
             }
@@ -442,9 +450,9 @@
 
             this.style.backgroundColor = this.color;
 
-            this.style.transition = "all 150ms"
+            this.style.transition = "all 150ms";
         }
-    }
+    };
 
     customElements.define("color-picker", editor.colorPicker.class);
 })();

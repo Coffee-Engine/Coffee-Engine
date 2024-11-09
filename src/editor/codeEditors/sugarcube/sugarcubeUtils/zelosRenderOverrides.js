@@ -148,7 +148,6 @@
                 },
             };
         }
-        
 
         OBJECT = this.makeObject();
         REFERENCE = this.makeCoolShape();

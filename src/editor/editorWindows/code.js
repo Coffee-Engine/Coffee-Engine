@@ -1,15 +1,15 @@
-(function() {
+(function () {
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
             this.extraMapping = {
-                json:"js",
-                cjs:"js"
+                json: "js",
+                cjs: "js",
             };
 
             this.title = editor.language["editor.window.codeEditor"];
             this.usingSugarCube = false;
             this.filePath = false;
-            
+
             //This windows funny variables
             this.scriptShortcuts = [];
             this.fileReader = new FileReader();
@@ -19,29 +19,29 @@
             this.makeLayout(container);
             this.addButtonsAndFileSelection();
             this.appendButtonAction();
-            
+
             monacoManager.refreshTheme();
             //The two IDEs?
             this.workspace = {
-                monaco:monacoManager.inject(this.monacoArea),
-                sugarcube:sugarcube.inject(this.blocklyArea)
+                monaco: monacoManager.inject(this.monacoArea),
+                sugarcube: sugarcube.inject(this.blocklyArea),
             };
         }
 
         //The layout of the editor
         addScriptToSidebar(path) {
             if (this.scriptShortcuts.includes(path)) return;
-            
+
             const button = document.createElement("button");
             button.style.width = "116px";
             button.style.textAlign = "left";
-            const splitPath = path.split("/")
+            const splitPath = path.split("/");
             button.innerText = splitPath[splitPath.length - 1];
-            button.setAttribute("path",path);
+            button.setAttribute("path", path);
 
             button.onclick = () => {
-                this.openFile(path,path.split(".")[1]);
-            }
+                this.openFile(path, path.split(".")[1]);
+            };
 
             this.scriptContainer.appendChild(button);
             this.scriptShortcuts.push(path);
@@ -141,7 +141,7 @@
             if (!this.filePath) return;
 
             //Saving for our two code editors
-            project.setFile(this.filePath,(this.usingSugarCube) ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(),"text/javascript").then(() => {
+            project.setFile(this.filePath, this.usingSugarCube ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(), "text/javascript").then(() => {
                 console.log(`Saved ${this.filePath} sucessfully`);
             });
 
@@ -154,29 +154,29 @@
 
         appendButtonAction() {
             this.newScriptButton.onclick = () => {
-                const createdWindow = new editor.windows.newScript(400,200);
+                const createdWindow = new editor.windows.newScript(400, 200);
                 createdWindow.__moveToTop();
-    
+
                 createdWindow.x = window.innerWidth / 2 - 200;
                 createdWindow.y = window.innerHeight / 2 - 100;
-            }
+            };
 
             this.saveScriptButton.onclick = () => {
                 this.saveCurrentFile();
-            }
+            };
 
             this.loadScriptButton.onclick = () => {
                 //Its like a loading modal... like some sort of loadal. Get it loadal.
-                const newLoadal = new editor.windows.modalFileExplorer(400,400);
+                const newLoadal = new editor.windows.modalFileExplorer(400, 400);
 
                 newLoadal.__moveToTop();
-    
+
                 newLoadal.x = window.innerWidth / 2 - 200;
                 newLoadal.y = window.innerHeight / 2 - 200;
                 newLoadal.onFileSelected = (path) => {
-                    this.openFile(path,path.split(".")[1]);
-                }
-            }
+                    this.openFile(path, path.split(".")[1]);
+                };
+            };
 
             //Add our save key
             window.addEventListener("keydown", (event) => {
@@ -186,20 +186,20 @@
                 }
             });
         }
-        
+
         resized() {
             Blockly.svgResize(sugarcube.workspace);
         }
 
         //Setup our file hooks
         setupFileHooks() {
-            editor.addFileOpenHook("txt",this.openFile,this);
-            editor.addFileOpenHook("md",this.openFile,this);
-            editor.addFileOpenHook("js",this.openFile,this);
-            editor.addFileOpenHook("cjs",this.openFile,this);
-            editor.addFileOpenHook("json",this.openFile,this);
-            editor.addFileOpenHook("cappu",this.openFile,this);
-            editor.addFileOpenHook("cescr",this.openFile,this);
+            editor.addFileOpenHook("txt", this.openFile, this);
+            editor.addFileOpenHook("md", this.openFile, this);
+            editor.addFileOpenHook("js", this.openFile, this);
+            editor.addFileOpenHook("cjs", this.openFile, this);
+            editor.addFileOpenHook("json", this.openFile, this);
+            editor.addFileOpenHook("cappu", this.openFile, this);
+            editor.addFileOpenHook("cescr", this.openFile, this);
 
             //Load stuff
             this.fileReader.onload = () => {
@@ -209,32 +209,31 @@
                     this.blocklyArea.style.visibility = "hidden";
                     this.usingSugarCube = false;
 
-                    monacoManager.setScript(this.fileReader.result,this.extraMapping[this.readType] || this.readType);
-                }
-                else {
+                    monacoManager.setScript(this.fileReader.result, this.extraMapping[this.readType] || this.readType);
+                } else {
                     this.monacoArea.style.visibility = "hidden";
                     this.blocklyArea.style.visibility = "visible";
                     this.usingSugarCube = true;
 
                     sugarcube.deserialize(JSON.parse(this.fileReader.result));
                 }
-            }
+            };
         }
 
-        openFile(path,extension) {
+        openFile(path, extension) {
             //Make sure its lowercase
             extension = extension.toLowerCase();
 
             //Grab our file and read it
-            project.getFile(path).then(file => {
+            project.getFile(path).then((file) => {
                 this.fileReader.readAsText(file);
                 this.readType = extension;
                 this.filePath = path;
 
                 this.addScriptToSidebar(path);
-            })
+            });
         }
-    }
+    };
 
-    editor.windows.__Serialization.register(editor.windows.codeEditor,"codeEditor");
+    editor.windows.__Serialization.register(editor.windows.codeEditor, "codeEditor");
 })();

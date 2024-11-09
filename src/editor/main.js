@@ -3,32 +3,32 @@ window.editor = {
     language: {},
 
     //File Hooking
-    fileHooks:{},
+    fileHooks: {},
 
     //File hooks these send out signals when we try to open a file
-    addFileOpenHook:(fileExtension,callback,parent) => {
+    addFileOpenHook: (fileExtension, callback, parent) => {
         fileExtension = fileExtension.toLowerCase();
         if (!editor.fileHooks[fileExtension]) editor.fileHooks[fileExtension] = [];
         callback.parent = parent;
         editor.fileHooks[fileExtension].push(callback);
         return callback;
     },
-    removeOpenFileHook:(fileExtension,callback,parent) => {
+    removeOpenFileHook: (fileExtension, callback, parent) => {
         fileExtension = fileExtension.toLowerCase();
         if (!editor.fileHooks[fileExtension]) return;
-        
+
         //Find the index and remove the hook
         callback.parent = parent;
         const foundIndex = editor.fileHooks[fileExtension].indexOf(callback);
         if (foundIndex == -1) return;
-        editor.fileHooks[fileExtension].splice(foundIndex,1);
+        editor.fileHooks[fileExtension].splice(foundIndex, 1);
     },
-    sendFileHook:(fileExtension,path) => {
+    sendFileHook: (fileExtension, path) => {
         fileExtension = fileExtension.toLowerCase();
         if (!editor.fileHooks[fileExtension]) return;
 
-        editor.fileHooks[fileExtension].forEach(hook => {
-            hook.call(hook.parent || this,path,fileExtension);
+        editor.fileHooks[fileExtension].forEach((hook) => {
+            hook.call(hook.parent || this, path, fileExtension);
         });
     },
 

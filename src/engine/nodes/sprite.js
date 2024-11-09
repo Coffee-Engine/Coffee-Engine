@@ -1,7 +1,7 @@
 (function () {
     class sprite extends coffeeEngine.getNode("Node2D") {
         set spritePath(value) {
-            coffeeEngine.renderer.fileToTexture(value).then(texture => {
+            coffeeEngine.renderer.fileToTexture(value).then((texture) => {
                 this.texture = texture;
             });
         }
@@ -19,7 +19,7 @@
 
             coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
         }
-    };
+    }
 
     coffeeEngine.registerNode(sprite, "Sprite", "Node2D");
 })();

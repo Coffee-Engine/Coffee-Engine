@@ -1,6 +1,6 @@
 (function () {
     editor.setup = {
-        scratchedSVG:`<svg class="layoutImage" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.91134"
+        scratchedSVG: `<svg class="layoutImage" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.91134"
             height="71.91134" viewBox="0,0,71.91134,71.91134">
             <g transform="translate(-204.04433,-144.04433)">
                 <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="none" stroke-linecap="butt"
@@ -19,7 +19,7 @@
                 </g>
             </g>
         </svg>`,
-        caffinatedSVG:`
+        caffinatedSVG: `
         <svg class="layoutImage" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.91134"
             height="71.91134" viewBox="0,0,71.91134,71.91134">
             <g transform="translate(-204.04433,-144.04433)">
@@ -42,7 +42,7 @@
             </g>
         </svg>
         `,
-        emptySVG:`<svg class="layoutImage" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.91134"
+        emptySVG: `<svg class="layoutImage" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="71.91134"
     height="71.91134" viewBox="0,0,71.91134,71.91134">
     <g transform="translate(-204.04433,-144.04433)">
         <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill-rule="nonzero" stroke="none" stroke-linecap="butt"
@@ -100,7 +100,7 @@
         </g>
     </g>
 </svg>
-<!--rotationCenter:35.95566940307617:35.95566940307617-->`
+<!--rotationCenter:35.95566940307617:35.95566940307617-->`,
     };
 
     editor.language = Object.assign({}, editor.EnglishLang, editor.Storage.getStorage("language", {}));
@@ -343,96 +343,96 @@
 
         document.getElementById("scratched").onclick = () => {
             editor.layout = {
-                layout:[
+                layout: [
                     {
-                        size:70,
-                        contents:[
+                        size: 70,
+                        contents: [
                             {
                                 size: 80,
-                                content: ["codeEditor","fileExplorer"]
+                                content: ["codeEditor", "fileExplorer"],
                             },
                             {
                                 size: 20,
-                                content: "debugLog"
-                            }
+                                content: "debugLog",
+                            },
                         ],
                     },
                     {
-                        size:30,
-                        contents:[
+                        size: 30,
+                        contents: [
                             {
                                 size: 50,
-                                content:"viewport"
+                                content: "viewport",
                             },
                             {
                                 size: 20,
-                                content:"properties"
+                                content: "properties",
                             },
                             {
                                 size: 30,
-                                content:"sceneTree"
+                                content: "sceneTree",
                             },
                         ],
                     },
                 ],
-                floating:[]
+                floating: [],
             };
             editor.Storage.setStorage("layout", editor.layout);
             editor.home.initilize();
-        }
+        };
 
         document.getElementById("caffinated").onclick = () => {
             editor.layout = {
-                layout:[
+                layout: [
                     {
-                        size:20,
-                        contents:[
+                        size: 20,
+                        contents: [
                             {
                                 size: 40,
-                                content:"sceneTree"
+                                content: "sceneTree",
                             },
                             {
                                 size: 60,
-                                content:"fileExplorer"
+                                content: "fileExplorer",
                             },
                         ],
                     },
                     {
-                        size:60,
-                        contents:[
+                        size: 60,
+                        contents: [
                             {
                                 size: 70,
-                                content:["codeEditor","viewport"]
+                                content: ["codeEditor", "viewport"],
                             },
                             {
                                 size: 30,
-                                content:"debugLog"
+                                content: "debugLog",
                             },
                         ],
                     },
                     {
-                        size:20,
-                        contents:[
+                        size: 20,
+                        contents: [
                             {
                                 size: 100,
-                                content:"properties"
+                                content: "properties",
                             },
                         ],
                     },
                 ],
-                floating:[]
+                floating: [],
             };
             editor.Storage.setStorage("layout", editor.layout);
             editor.home.initilize();
-        }
+        };
 
         document.getElementById("empty").onclick = () => {
             editor.layout = {
-                layout:[],
-                floating:[]
+                layout: [],
+                floating: [],
             };
             editor.Storage.setStorage("layout", editor.layout);
             editor.home.initilize();
-        }
-    }
+        };
+    };
 })();

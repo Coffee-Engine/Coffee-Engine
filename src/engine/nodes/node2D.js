@@ -1,11 +1,11 @@
 (function () {
     class node extends coffeeEngine.getNode("Node") {
-        position = new coffeeEngine.vector2(0,0);
+        position = new coffeeEngine.vector2(0, 0);
 
         #layer = 1;
         set layer(value) {
             //Make layer 1 the minimum
-            this.#layer = (value >= 1) ? value : 1;
+            this.#layer = value >= 1 ? value : 1;
         }
         get layer() {
             return this.#layer;
@@ -26,7 +26,7 @@
 
             coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
         }
-    };
+    }
 
     coffeeEngine.registerNode(node, "Node2D", "Node");
 })();

@@ -1,10 +1,10 @@
 sugarcube.serialize = () => {
     return {
-        code:Blockly.serialization.workspaces.save(sugarcube.workspace),
+        code: Blockly.serialization.workspaces.save(sugarcube.workspace),
         variables: sugarcube.variables.storage,
-        customBlocks:sugarcube.customBlocks.storage
+        customBlocks: sugarcube.customBlocks.storage,
     };
-}
+};
 
 sugarcube.deserialize = (serialized) => {
     if (!serialized) return;
@@ -13,7 +13,7 @@ sugarcube.deserialize = (serialized) => {
 
     if (serialized.customBlocks) sugarcube.customBlocks.storage = serialized.customBlocks;
     else sugarcube.customBlocks.storage = {};
-    
+
     //Fallbacks!
-    Blockly.serialization.workspaces.load(serialized.code || {blocks: {"languageVersion": 0,blocks:[]}},sugarcube.workspace);
-}
+    Blockly.serialization.workspaces.load(serialized.code || { blocks: { languageVersion: 0, blocks: [] } }, sugarcube.workspace);
+};

@@ -33,19 +33,19 @@
             <path d="M240.04475,220.43633v-80.84372h40.48174v80.84372z" />
         </g>
     </g>
-</svg><!--rotationCenter:46.5264875:46.466595085924865-->`
+</svg><!--rotationCenter:46.5264875:46.466595085924865-->`;
 
     //This will contain the editor's windows
     editor.windowLayer = 0;
     editor.windows = {};
 
     //this is the base window class
-    editor.windows.__Serialization ={
-        register: (classOBJ,id) => {
+    editor.windows.__Serialization = {
+        register: (classOBJ, id) => {
             editor.windows.__Serialization.all[id] = classOBJ;
         },
 
-        all:{}
+        all: {},
     };
 
     editor.windows.base = class {
@@ -85,26 +85,16 @@
         minHeight = 128;
 
         set width(value) {
-            this.windowDiv.style.width = `${
-                Math.min(
-                    window.innerWidth - this.x,
-                    Math.max(value,this.minWidth)
-                )
-            }px`;
-            this.#width = Math.max(value,this.minWidth);
+            this.windowDiv.style.width = `${Math.min(window.innerWidth - this.x, Math.max(value, this.minWidth))}px`;
+            this.#width = Math.max(value, this.minWidth);
         }
         get width() {
             return this.#width;
         }
 
         set height(value) {
-            this.windowDiv.style.height = `${
-                Math.min(
-                    window.innerHeight - this.y,
-                    Math.max(value,this.minHeight)
-                ) + editor.taskbarHeight
-            }px`;
-            this.#height = Math.max(value,this.minHeight) + editor.taskbarHeight;
+            this.windowDiv.style.height = `${Math.min(window.innerHeight - this.y, Math.max(value, this.minHeight)) + editor.taskbarHeight}px`;
+            this.#height = Math.max(value, this.minHeight) + editor.taskbarHeight;
         }
         get height() {
             return this.#height - editor.taskbarHeight;
@@ -115,12 +105,7 @@
 
         set x(value) {
             this.#x = value;
-            this.windowDiv.style.left = `${
-                Math.min(
-                    window.innerWidth - this.width,
-                    Math.max(value,0)
-                )
-            }px`;
+            this.windowDiv.style.left = `${Math.min(window.innerWidth - this.width, Math.max(value, 0))}px`;
         }
 
         get x() {
@@ -129,12 +114,7 @@
 
         set y(value) {
             this.#y = value;
-            this.windowDiv.style.top = `${
-                Math.min(
-                    window.innerHeight - this.height,
-                    Math.max(value,0)
-                )
-            }px`;
+            this.windowDiv.style.top = `${Math.min(window.innerHeight - this.height, Math.max(value, 0))}px`;
         }
 
         get y() {
@@ -181,10 +161,10 @@
 
             //Add it to the tab list
             this.tabs.push({
-                owner:this,
-                isPrimary:true,
+                owner: this,
+                isPrimary: true,
                 content: this.Content,
-                isWindow:true
+                isWindow: true,
             });
 
             this.__CurrentTab = 0;
@@ -214,18 +194,16 @@
                 this._dispose();
             };
 
-            
             this.dockButton.onclick = () => {
                 if (this.docked) {
                     editor.dock.undockWindow(this);
                     this.__moveToTop();
-    
+
                     if (!this.width < 10) this.width = 480;
                     if (!this.height < 10) this.height = 360;
-                }
-                else {
+                } else {
                     this.windowDiv.style.opacity = "25%";
-                    this.windowDiv.style.pointerEvents = "none"
+                    this.windowDiv.style.pointerEvents = "none";
                     editor.dock.dockWindowUI(this);
                 }
             };
@@ -247,7 +225,7 @@
         __updateTitle() {
             if (this.tabs.length > 1) {
                 if (this.__TabRef) this.__TabRef.innerText = this.title;
-            } 
+            }
 
             //Updates for single tabbed windows
             if (this.tabs.length == 1 && this.titleDiv) this.titleDiv.innerText = this.title;
@@ -365,18 +343,22 @@
 
                 //If we are docked. We check for resizing
                 if (this.docked) {
-                    if ((!edging) || (!this.resizable)) return;
-                    const dockedRow = editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content);
+                    if (!edging || !this.resizable) return;
+                    const dockedRow = editor.layout.layout[this.dockedColumn].contents.findIndex((element) => this == element.content);
 
                     //Our directional data and divs
                     // prettier-ignore
-                    let leftDiv;    let leftData;
+                    let leftDiv;
+                    let leftData;
                     // prettier-ignore
-                    let rightDiv;   let rightData;
+                    let rightDiv;
+                    let rightData;
                     // prettier-ignore
-                    let topDiv;     let topData;
+                    let topDiv;
+                    let topData;
                     // prettier-ignore
-                    let bottomDiv;  let bottomData;
+                    let bottomDiv;
+                    let bottomData;
 
                     //"Full size" aka the combined size of both directions
                     let fullSizeX = 1;
@@ -397,12 +379,11 @@
                     */
                     //Left Right
                     if (leftEdge && this.dockedColumn > 0) {
-                        leftDiv = editor.dock.element.children[this.dockedColumn - 1]
+                        leftDiv = editor.dock.element.children[this.dockedColumn - 1];
                         rightDiv = editor.dock.element.children[this.dockedColumn];
                         leftData = editor.layout.layout[this.dockedColumn - 1];
                         rightData = editor.layout.layout[this.dockedColumn];
-                    }
-                    else if (rightEdge && this.dockedColumn < editor.dock.element.children.length - 1) {
+                    } else if (rightEdge && this.dockedColumn < editor.dock.element.children.length - 1) {
                         leftDiv = editor.dock.element.children[this.dockedColumn];
                         rightDiv = editor.dock.element.children[this.dockedColumn + 1];
                         leftData = editor.layout.layout[this.dockedColumn];
@@ -416,8 +397,7 @@
                         bottomDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow];
                         topData = editor.layout.layout[this.dockedColumn].contents[dockedRow - 1];
                         bottomData = editor.layout.layout[this.dockedColumn].contents[dockedRow];
-                    }
-                    else if (bottomEdge && dockedRow < editor.dock.element.children[this.dockedColumn].children.length - 1) {
+                    } else if (bottomEdge && dockedRow < editor.dock.element.children[this.dockedColumn].children.length - 1) {
                         topDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow];
                         bottomDiv = editor.dock.element.children[this.dockedColumn].children[dockedRow + 1];
                         topData = editor.layout.layout[this.dockedColumn].contents[dockedRow];
@@ -426,10 +406,10 @@
                     if (topDiv || bottomDiv) fullSizeY = (topData.size + bottomData.size) / 100;
 
                     //Bounding rects for all of 'em
-                    let leftMost = (leftDiv) ? leftDiv.getBoundingClientRect() : null;
-                    let rightMost = (rightDiv) ? rightDiv.getBoundingClientRect() : null;
-                    let topMost = (topDiv) ? topDiv.getBoundingClientRect() : null;
-                    let bottomMost = (bottomDiv) ? bottomDiv.getBoundingClientRect() : null;
+                    let leftMost = leftDiv ? leftDiv.getBoundingClientRect() : null;
+                    let rightMost = rightDiv ? rightDiv.getBoundingClientRect() : null;
+                    let topMost = topDiv ? topDiv.getBoundingClientRect() : null;
+                    let bottomMost = bottomDiv ? bottomDiv.getBoundingClientRect() : null;
 
                     document.onmouseup = () => {
                         document.onmousemove = () => {};
@@ -445,7 +425,7 @@
                         if (leftDiv || rightDiv) {
                             let percentage = ((movedX - leftMost.left) / (rightMost.right - leftMost.left)) * 100;
                             //Clamp that thing
-                            percentage = Math.min(Math.max(percentage,10),90);
+                            percentage = Math.min(Math.max(percentage, 10), 90);
                             leftData.size = percentage * fullSizeX;
                             rightData.size = (100 - percentage) * fullSizeX;
                             editor.dock.refreshLayout(false);
@@ -454,7 +434,7 @@
                         if (topDiv || bottomDiv) {
                             let percentage = ((movedY - topMost.top) / (bottomMost.bottom - topMost.top)) * 100;
                             //Clamp that thing
-                            percentage = Math.min(Math.max(percentage,10),90);
+                            percentage = Math.min(Math.max(percentage, 10), 90);
                             topData.size = percentage * fullSizeY;
                             bottomData.size = (100 - percentage) * fullSizeY;
                             editor.dock.refreshLayout(false);
@@ -465,11 +445,11 @@
 
                 //Move the window layer
                 editor.windowLayer += 1;
-                
+
                 this.windowDiv.style.zIndex = editor.windowLayer;
 
                 //If we aren't edging return
-                if ((!edging) || (!this.resizable)) return;
+                if (!edging || !this.resizable) return;
 
                 //Clear mouse actions when done;
                 document.onmouseup = () => {
@@ -536,12 +516,11 @@
                         this.tabs[tabIndex].content.style.opacity = "100";
                         this.tabs[tabIndex].content.style.zIndex = "1";
                         this.__CurrentTab = tabIndex;
-                    }
+                    };
 
                     this.titleDiv.appendChild(tabElement);
                 }
-            }
-            else {
+            } else {
                 //clear, add title
                 this.titleDiv.innerHTML = "";
                 this.titleDiv.innerText = this.title;
@@ -549,7 +528,7 @@
         }
 
         //For organization
-        __addTab(tabOrigin,tabName) {
+        __addTab(tabOrigin, tabName) {
             //Make this variable to store the window contents
             let content;
             let isWindow = false;
@@ -566,31 +545,29 @@
 
                 //If the window has tabs, include them all
                 if (tabOrigin.tabs.length > 1) {
-                    for (let index = 1; index < tabOrigin.tabs.length; index+=0) {
+                    for (let index = 1; index < tabOrigin.tabs.length; index += 0) {
                         const tab = tabOrigin.tabs[index];
 
                         //Yeah really;
                         this.__addTab(tab.owner);
 
                         //Remove the tab from the tabs list of the current window we are merging. Then make sure that tab def is removed from mem.
-                        delete tabOrigin.tabs.splice(index,1);
+                        delete tabOrigin.tabs.splice(index, 1);
                     }
                 }
-            }
-            else if (tabOrigin instanceof HTMLElement) {
+            } else if (tabOrigin instanceof HTMLElement) {
                 tabName = tabName || "New Tab";
                 content = tabOrigin;
-            }
-            else {
+            } else {
                 console.error("Trying to merge an invalid window object");
                 return;
             }
 
             this.tabs.push({
-                owner:tabOrigin,
-                isPrimary:false,
+                owner: tabOrigin,
+                isPrimary: false,
                 content: content,
-                isWindow:isWindow,
+                isWindow: isWindow,
                 tabName: tabName,
             });
 
@@ -613,13 +590,16 @@
 
             //Now we destory all window objects
             this.windowDiv.onanimationend = () => {
-
                 this.dispose();
                 this.windowDiv.parentElement.removeChild(this.windowDiv);
 
                 //Handle docked windows
                 if (this.docked) {
-                    if (editor.layout.layout[this.dockedColumn]) delete editor.layout.layout[this.dockedColumn].contents.splice(editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content),1)[0];
+                    if (editor.layout.layout[this.dockedColumn])
+                        delete editor.layout.layout[this.dockedColumn].contents.splice(
+                            editor.layout.layout[this.dockedColumn].contents.findIndex((element) => this == element.content),
+                            1
+                        )[0];
                     editor.dock.refreshLayout();
                 }
 
@@ -629,13 +609,16 @@
             if (this.docked) {
                 this.dispose();
                 this.windowDiv.parentElement.removeChild(this.windowDiv);
-                
-                if (editor.layout.layout[this.dockedColumn]) delete editor.layout.layout[this.dockedColumn].contents.splice(editor.layout.layout[this.dockedColumn].contents.findIndex(element => this == element.content),1)[0];
+
+                if (editor.layout.layout[this.dockedColumn])
+                    delete editor.layout.layout[this.dockedColumn].contents.splice(
+                        editor.layout.layout[this.dockedColumn].contents.findIndex((element) => this == element.content),
+                        1
+                    )[0];
                 editor.dock.refreshLayout();
 
                 delete this.windowDiv;
-            }
-            else {
+            } else {
                 this.windowDiv.style.animation = "closeWindow 500ms cubic-bezier(0.65, 0, 0.35, 1) 1";
             }
         }
@@ -668,5 +651,5 @@
         merged() {}
     };
 
-    editor.windows.__Serialization.register(editor.windows.base,"baseWindow");
+    editor.windows.__Serialization.register(editor.windows.base, "baseWindow");
 })();

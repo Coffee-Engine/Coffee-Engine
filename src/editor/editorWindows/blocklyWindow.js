@@ -11,7 +11,7 @@
                 comments: true,
                 toolbox: sugarcube.toolbox,
                 theme: sugarcube.blocklyTheme,
-                renderer: "sugarcube",//"Thrasos",
+                renderer: "sugarcube", //"Thrasos",
                 grid: {
                     spacing: 40,
                     length: 3,
@@ -49,7 +49,7 @@
             //sugarcube.minimapWorkspace = sugarcube.minimap.minimapWorkspace;
 
             sugarcube.workspace.addChangeListener(Blockly.Events.disableOrphans);
-            
+
             //sugarcube.workspace.addChangeListener(sugarcube.shouldMinimapBeVisible);
 
             //Load our base categories
@@ -79,5 +79,5 @@
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.blockly,"blockly");
+    editor.windows.__Serialization.register(editor.windows.blockly, "blockly");
 })();

@@ -2,24 +2,24 @@
     editor.windows.fileExplorer = class extends editor.windows.base {
         //For later use. I have an idea of how this can be optimized
         directoryBasin = {};
-        
+
         minWidth = 400;
         minHeight = 200;
 
-        displayDirectory = (directory,parentDiv,basin,even,path) => {
+        displayDirectory = (directory, parentDiv, basin, even, path) => {
             path = path || "";
             const keys = Object.keys(directory).sort();
 
-            keys.forEach(key => {
+            keys.forEach((key) => {
                 //The coffee engine directory handle
                 if (key == project.directoryHandleIdentifier) return;
-                
+
                 const element = document.createElement("div");
-                element.setAttribute("even",even.toString());
+                element.setAttribute("even", even.toString());
                 element.className = "fileButton";
 
                 //Basin declaration
-                basin.contents[key] = {element:element, isDirectory:!Array.isArray(directory[key])};
+                basin.contents[key] = { element: element, isDirectory: !Array.isArray(directory[key]) };
 
                 //If we are a directory add contents
                 if (basin.contents[key].isDirectory) {
@@ -36,8 +36,8 @@
                         event.stopPropagation();
                         const split = key.split(".");
 
-                        editor.sendFileHook(split[split.length - 1],`${path}${key}`);
-                    }
+                        editor.sendFileHook(split[split.length - 1], `${path}${key}`);
+                    };
                 }
                 //For folders we do something similar but with another div inside and create a sub directory basin
                 else {
@@ -54,14 +54,14 @@
                         //Stop propogation
                         event.stopPropagation();
                         lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
-                        
-                        if (lowerDiv.getAttribute("collasped") == "true") lowerDiv.setAttribute("collasped","false");
-                        else lowerDiv.setAttribute("collasped","true");
-                    }
+
+                        if (lowerDiv.getAttribute("collasped") == "true") lowerDiv.setAttribute("collasped", "false");
+                        else lowerDiv.setAttribute("collasped", "true");
+                    };
 
                     //Do it in this specific order. or else KABOOM!
                     parentDiv.appendChild(element);
-                    this.displayDirectory(directory[key],lowerDiv,basin.contents[key],!even,`${path}${key}/`);
+                    this.displayDirectory(directory[key], lowerDiv, basin.contents[key], !even, `${path}${key}/`);
                     lowerDiv.fitHeight = lowerDiv.clientHeight;
                     lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                 }
@@ -72,16 +72,16 @@
             this.title = editor.language["editor.window.fileExplorer"];
             container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             this.updateFunction = (event) => {
-                if (!event) event = {type:"ALL", src:"COFFEE_ALL"};
+                if (!event) event = { type: "ALL", src: "COFFEE_ALL" };
                 switch (event.type) {
-                    case "ALL":{
+                    case "ALL": {
                         container.innerHTML = "";
 
                         this.directoryBasin = {
                             div: container,
-                            contents: {}
-                        }
-                        this.displayDirectory(project.fileSystem,container,this.directoryBasin,false);
+                            contents: {},
+                        };
+                        this.displayDirectory(project.fileSystem, container, this.directoryBasin, false);
                         break;
                     }
 
@@ -91,19 +91,19 @@
 
                         this.directoryBasin = {
                             div: container,
-                            contents: {}
-                        }
-                        this.displayDirectory(project.fileSystem,container,this.directoryBasin,false);
+                            contents: {},
+                        };
+                        this.displayDirectory(project.fileSystem, container, this.directoryBasin, false);
                         break;
                     }
-                
+
                     default:
                         break;
                 }
-            }
+            };
 
             //Updating stuff
-            this.updateListener = coffeeEngine.addEventListener("fileSystemUpdate",this.updateFunction);
+            this.updateListener = coffeeEngine.addEventListener("fileSystemUpdate", this.updateFunction);
         }
 
         resized() {}
@@ -111,5 +111,5 @@
         dispose() {}
     };
 
-    editor.windows.__Serialization.register(editor.windows.fileExplorer,"fileExplorer");
+    editor.windows.__Serialization.register(editor.windows.fileExplorer, "fileExplorer");
 })();

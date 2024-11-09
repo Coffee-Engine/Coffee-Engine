@@ -1,6 +1,5 @@
 (function () {
     editor.windows.log = class extends editor.windows.base {
-
         createElementFromObject(obj) {
             const displayEl = document.createElement("div");
             displayEl.style.userSelect = "text";
@@ -14,7 +13,7 @@
                 //When we click it unfold it.
                 displayEl.onclick = () => {
                     //Edit the display element
-                    displayEl.innerHTML = "<p style=\"margin:0px;\">[</p>";
+                    displayEl.innerHTML = '<p style="margin:0px;">[</p>';
                     displayEl.style.userSelect = "none";
                     displayEl.style.cursor = "auto";
 
@@ -22,19 +21,19 @@
                     for (let itemInd = 0; itemInd < obj.length; itemInd++) {
                         const innerEl = this.createElementFromObject(obj[itemInd]);
                         innerEl.style.marginLeft = "8px";
-                        
+
                         displayEl.appendChild(innerEl);
                     }
 
                     //and cap it off
-                    const ending = document.createElement("p")
+                    const ending = document.createElement("p");
                     ending.innerHTML += "]";
                     ending.style.margin = "0px";
                     displayEl.appendChild(ending);
 
                     //Remove the unpack functionality
-                    displayEl.onclick = () => {}
-                }
+                    displayEl.onclick = () => {};
+                };
 
                 return displayEl;
             }
@@ -48,14 +47,14 @@
                     displayEl.onclick = () => {
                         displayEl.style.userSelect = "text";
                         displayEl.style.cursor = "auto";
-                        displayEl.innerHTML = "<p style=\"margin:0px;\">{</p>";
-                        
+                        displayEl.innerHTML = '<p style="margin:0px;">{</p>';
+
                         if (!obj) {
-                            "<p style=\"margin:0px;\">Nothing</p>"
+                            ('<p style="margin:0px;">Nothing</p>');
                             return;
                         }
 
-                        Object.keys(obj).forEach(key => {
+                        Object.keys(obj).forEach((key) => {
                             const innerEl = document.createElement("div");
                             innerEl.innerText = `${key}:`;
                             innerEl.style.margin = "0px";
@@ -68,19 +67,19 @@
                         });
 
                         //and cap it off
-                        const ending = document.createElement("p")
+                        const ending = document.createElement("p");
                         ending.innerHTML = "}";
                         ending.style.margin = "0px";
                         displayEl.appendChild(ending);
-    
+
                         //Remove the unpack functionality
-                        displayEl.onclick = () => {}
-                    }
+                        displayEl.onclick = () => {};
+                    };
                     break;
 
                 case "undefined":
-                    displayEl.style.innerHTML = "<span class=\"italicThing\">undefined</span>";
-                    break
+                    displayEl.style.innerHTML = '<span class="italicThing">undefined</span>';
+                    break;
 
                 case "function":
                     displayEl.innerText = "function()";
@@ -91,9 +90,9 @@
                         displayEl.style.userSelect = "text";
                         displayEl.style.cursor = "auto";
                         displayEl.innerText = obj.toString();
-                    }
+                    };
                     break;
-            
+
                 default:
                     displayEl.innerText = obj;
                     break;
@@ -122,7 +121,7 @@
             this.clearButton.style.height = "100%";
             this.clearButton.onclick = () => {
                 this.logContainer.innerHTML = "";
-            }
+            };
             this.logControls.appendChild(this.clearButton);
 
             //Where the logs are visualized
@@ -160,10 +159,10 @@
                         displayClass = "logInfo";
                         break;
                     }
-                };
+                }
 
-                event.info.forEach(item => {
-                    const displayEl =  (event.info.lineNumber && event.info.columnNumber) ? this.createElementFromObject(`${item}\n ${lineno}/${colno}`) : this.createElementFromObject(item);;
+                event.info.forEach((item) => {
+                    const displayEl = event.info.lineNumber && event.info.columnNumber ? this.createElementFromObject(`${item}\n ${lineno}/${colno}`) : this.createElementFromObject(item);
                     displayEl.className = displayClass;
 
                     this.logContainer.appendChild(displayEl);
@@ -171,13 +170,12 @@
             });
         }
 
-        resized() {
-        }
+        resized() {}
 
         dispose() {
-            coffeeEngine.removeEventListener("consoleUpdate",this.eventListener);
+            coffeeEngine.removeEventListener("consoleUpdate", this.eventListener);
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.log,"debugLog");
+    editor.windows.__Serialization.register(editor.windows.log, "debugLog");
 })();

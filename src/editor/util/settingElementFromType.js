@@ -46,7 +46,7 @@
                 input.color = editor.settings.values[category][setting];
 
                 input.style.width = "1em";
-                input.style.margin = "0px"
+                input.style.margin = "0px";
                 input.style.verticalAlign = "top";
 
                 input.onchange = () => {

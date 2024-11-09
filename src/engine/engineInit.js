@@ -1,8 +1,8 @@
 window.coffeeEngine = {
     events: {
-        consoleUpdate:[],
-        fileSystemUpdate:[],
-        extensionDispose:[]
+        consoleUpdate: [],
+        fileSystemUpdate: [],
+        extensionDispose: [],
     },
     runtime: {},
     classes: {},
@@ -10,31 +10,31 @@ window.coffeeEngine = {
     renderer: {},
     nodeRegister: {},
     //Just a simple node registrar thing
-    registerNode: (node,name,parentNode) => {
+    registerNode: (node, name, parentNode) => {
         //Return if node already exists
         if (coffeeEngine.nodeRegister[name]) return;
-        coffeeEngine.nodeRegister[name] = [node,parentNode];
+        coffeeEngine.nodeRegister[name] = [node, parentNode];
     },
     getNode: (name) => {
         if (!coffeeEngine.nodeRegister[name]) return;
         return coffeeEngine.nodeRegister[name][0];
     },
-    
+
     timer: 0,
-    addEventListener:(event, func) => {
+    addEventListener: (event, func) => {
         if (typeof coffeeEngine.events[event] != "object") return;
 
         coffeeEngine.events[event].push(func);
         return func;
     },
 
-    hasEventListener:(event, func) => {
+    hasEventListener: (event, func) => {
         if (typeof coffeeEngine.events[event] != "object") return;
 
         return coffeeEngine.events[event].includes(func);
     },
 
-    removeEventListener:(event, func) => {
+    removeEventListener: (event, func) => {
         if (typeof coffeeEngine.events[event] != "object") return;
 
         if (coffeeEngine.events[event].includes(func)) {
@@ -42,11 +42,11 @@ window.coffeeEngine = {
         }
     },
 
-    sendEvent:(event,data) => {
+    sendEvent: (event, data) => {
         if (typeof coffeeEngine.events[event] != "object") return;
 
-        coffeeEngine.events[event].forEach(event => {
+        coffeeEngine.events[event].forEach((event) => {
             event(data);
         });
-    }
+    },
 };

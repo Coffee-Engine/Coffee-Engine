@@ -7,9 +7,9 @@
 
     sugarcube.createSVGEL = (elementName) => {
         return document.createElementNS("http://www.w3.org/2000/svg", elementName);
-    }
+    };
 
     sugarcube.addElementToWorkspace = (child) => {
         sugarcube.workspace.svgBlockCanvas_.appendChild(child);
-    }
+    };
 })();
