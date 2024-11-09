@@ -42,13 +42,16 @@
     }
 
     //Loading an existing project, determind weather its a file or a folder.
-    project.load = (type,handle) => {
+    //We use async to MAKE SURE we have consistancy when loading files
+    project.load = async (type,handle) => {
         //filter out imposter objects
-        if (handle instanceof File) {
+        if (!project.isValidObject(handle)) return;
 
-        }
+        //Then remove are original FS
         delete project.fileSystem;
         project.fileSystem = {};
+
+        //Parse
         if (type == "folder") {
             project.isFolder = true;
             project.directoryHandle = handle;
@@ -59,14 +62,19 @@
 
             //Make sure we are getting the file handle and not some random garbage.
             if (handle instanceof FileSystemFileHandle) {
-
+                project.fileHandle = handle;
+                project.fileObject = await handle.getFile();
             }
             //We also have to remember that files exist on non chromium browsers like BE-browse and Firefox
             else {
-
+                project.fileObject = handle;
             }
-            project.fileHandle = handle;
-            project.scanZip()
+
+            project.zipObject = new JSZip();
+            project.zipObject = await project.zipObject.loadAsync(project.fileObject);
+
+
+            project.scanZip(project.fileObject);
             editor.editorPage.initilize();
             coffeeEngine.sendEvent("fileSystemUpdate",{type:"ALL", src:"COFFEE_ALL"});
             coffeeEngine.sendEvent("fileSystemUpdate",{type:"FINISH_LOADING", src:"COFFEE_ALL"});
