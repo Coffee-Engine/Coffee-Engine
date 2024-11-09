@@ -496,7 +496,6 @@
                 default:
                     break;
             }
-            console.log(value);
         }
 
         //Load sugarcube blocks

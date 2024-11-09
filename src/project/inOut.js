@@ -45,6 +45,7 @@
     //We use async to MAKE SURE we have consistancy when loading files
     project.load = async (type,handle) => {
         //filter out imposter objects
+        console.log(handle)
         if (!project.isValidObject(handle)) return;
 
         //Then remove are original FS

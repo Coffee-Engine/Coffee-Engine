@@ -180,7 +180,7 @@
                         'application/decaf':[".decaf"]
                     }
                 }]}).then(result => {
-                    project.load("file", result);
+                    project.load("file", result[0]);
                 });
             }
         }
