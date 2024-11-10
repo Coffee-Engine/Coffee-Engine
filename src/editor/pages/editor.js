@@ -247,6 +247,10 @@
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="settings">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
                 </dropdown-menu>
+                <dropdown-menu id="coffeeEngineWindowDropdown">
+                    ${editor.language["editor.dropdown.window"]}
+                    <dropdown-item class="dropdown-menu-fill-down"  value="settings">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
+                </dropdown-menu>
             </div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
             <div class="dockOverlay" id="coffeeEngineDockoverlay"></div>
@@ -491,6 +495,7 @@
 
         editor.dropdownBar = {
             file: document.getElementById("coffeeEngineProjectDropdown"),
+            window: document.getElementById("coffeeEngineWindowDropdown"),
         };
 
         editor.dropdownBar.file.onchange = (value) => {
@@ -506,6 +511,10 @@
                 default:
                     break;
             }
+        };
+
+        editor.dropdownBar.window.onchange = (value) => {
+
         };
 
         //Load sugarcube blocks

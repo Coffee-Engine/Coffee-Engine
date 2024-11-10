@@ -92,6 +92,8 @@ editor.EnglishLang = {
     "editor.dropdown.project.projectSettings": "Project Settings",
     "editor.dropdown.project.importFile": "Import File",
 
+    "editor.dropdown.window": "Windows",
+
     "editor.window.log": "Log",
     "editor.window.log.clear": "clear",
 
