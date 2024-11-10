@@ -516,21 +516,33 @@
             }
         };
 
+        //Get our available windows to spawn
         editor.dropdownBar.window.getContent = () => {
+            //Our rturn and serialization
             const windows = [];
+            const serializationObject = editor.windows.__Serialization;
 
-            const serialIzationObject = editor.windows.__Serialization;
-
-            Object.keys(serialIzationObject.all).forEach(windowName => {
+            Object.keys(serializationObject.all).forEach(windowName => {
                 if (windowName == "baseWindow") return;
+
+                //If we only allow one window
+                if (serializationObject.data[windowName].onlyOne && editor.windows.existing[windowName]) {
+                    if (editor.windows.existing[windowName].length > 0) return;
+                };
+
+                //Add it to the list
                 windows.push({text: editor.language[`editor.window.${windowName}`] || windowName, value: windowName});
             })
 
-            return windows
+            return windows;
         }
 
         editor.dropdownBar.window.onchange = (value) => {
+            const createdWindow = new (editor.windows.__Serialization.all[value])(400,400);
+            createdWindow.__moveToTop();
 
+            createdWindow.x = window.innerWidth / 2 - 200;
+            createdWindow.y = window.innerHeight / 2 - 200;
         };
 
         //Load sugarcube blocks
