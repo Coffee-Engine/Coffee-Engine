@@ -345,7 +345,7 @@
                 }
             },
 
-            dockWindow: (window, column) => {
+            dockWindowDiv: (window, column) => {
                 if (window.windowDiv.parentNode) {
                     window.windowDiv.parentNode.removeChild(window.windowDiv);
                 }
@@ -353,6 +353,22 @@
                 window.docked = true;
                 window.dockedColumn = column;
                 editor.dock.element.children[column].appendChild(window.windowDiv);
+            },
+
+            dockWindow: (window,column,row,newColumn,columnBefore) => {
+                editor.layout.layout.splice(column,0,window);
+
+                if (newColumn) {
+                    const subDock = document.createElement("div");
+                    subDock.style.display = "grid";
+                    subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+
+                    editor.dock.element.children[column].insertAdjacentElement(columnBefore ? "beforebegin" : "afterend", subDock);
+                }
+
+                editor.dock.dockWindowDiv(window, column);
+
+                editor.dock.refreshLayout();
             },
 
             undockWindow: (window) => {
@@ -395,17 +411,29 @@
                 editor.dock.overlayElement.style.backdropFilter = "blur(4px)";
 
                 for (let ID = 0; ID < editor.layout.layout.length; ID++) {
-                    percentages += editor.layout.layout[ID].size + "% ";
-                    //Get the "Sub Dock" which is the vertical part of the dock
-                    let subDock = editor.dock.overlayElement.children[ID];
-                    //If there is no "Sub Dock" add one
-                    if (!subDock) {
-                        subDock = document.createElement("div");
-                        subDock.style.display = "grid";
-                        subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+                    percentages += `1.5% ${editor.layout.layout[ID].size - 3}% 1.5% `;
 
-                        editor.dock.overlayElement.appendChild(subDock);
-                    }
+                    //Our pushers these let us append elements to either side
+                    let leftPusher = document.createElement("div");
+                    leftPusher.style.margin = "8px";
+                    leftPusher.style.marginLeft = "0px";
+                    leftPusher.style.backgroundColor = "var(--text-1)";
+                    leftPusher.style.opacity = "50%";
+
+                    let rightPusher = document.createElement("div");
+                    rightPusher.style.margin = "8px";
+                    rightPusher.style.marginRight = "0px";
+                    rightPusher.style.backgroundColor = "var(--text-1)";
+                    rightPusher.style.opacity = "50%";
+                    
+                    //Get the "Sub Dock" which is the vertical part of the dock
+                    let subDock = document.createElement("div");
+                    subDock.style.display = "grid";
+                    subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+
+                    editor.dock.overlayElement.appendChild(leftPusher);
+                    editor.dock.overlayElement.appendChild(subDock);
+                    editor.dock.overlayElement.appendChild(rightPusher);
 
                     let rowPercentage = "";
                     editor.layout.layout[ID].contents.forEach((window) => {
@@ -465,7 +493,7 @@
                     }
 
                     editor.layout.layout[X].contents[Y].content = newWindow;
-                    editor.dock.dockWindow(newWindow, X);
+                    editor.dock.dockWindowDiv(newWindow, X);
                 } else if (Array.isArray(content)) {
                     let hostWindow;
                     for (let Z = 0; Z < content.length; Z++) {
@@ -485,7 +513,7 @@
                             //Make the host window for the parasites to latch upon
                             hostWindow = newWindow;
                             editor.layout.layout[X].contents[Y].content = newWindow;
-                            editor.dock.dockWindow(newWindow, X);
+                            editor.dock.dockWindowDiv(newWindow, X);
                         }
                         //If it is a parasite latch upon the host
                         else {
