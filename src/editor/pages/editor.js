@@ -538,6 +538,8 @@
         }
 
         editor.dropdownBar.window.onchange = (value) => {
+            if (!editor.windows.__Serialization.all[value]) return;
+
             const createdWindow = new (editor.windows.__Serialization.all[value])(400,400);
             createdWindow.__moveToTop();
 
