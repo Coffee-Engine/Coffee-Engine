@@ -455,8 +455,11 @@
                         overrideName = content;
                         windowType = editor.windows.base;
                     }
+                    else {
+                        windowType = windowType;
+                    }
 
-                    const newWindow = new windowType();
+                    const newWindow = new (windowType)();
                     if (overrideName) {
                         newWindow.title = overrideName;
                     }
@@ -512,6 +515,13 @@
                     break;
             }
         };
+
+        editor.dropdownBar.window.getContent = () => {
+            return [
+                {text:"1", value:"1"}, 
+                {text:Date.now(), value:"2"}
+            ];
+        }
 
         editor.dropdownBar.window.onchange = (value) => {
 

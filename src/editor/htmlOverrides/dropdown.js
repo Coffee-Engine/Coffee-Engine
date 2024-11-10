@@ -2,7 +2,7 @@
     editor.dropdown = {
         current: null,
         currentPromise: null,
-        fromElements: (left, top, dropdownItems) => {
+        fromArray: (left, top, dropdownItems) => {
             return new Promise((resolve, reject) => {
                 if (editor.dropdown.current) editor.dropdown.eventListener();
                 //Create our dropdown div
@@ -16,20 +16,18 @@
                 dropdownElement.style.zIndex = "100000000";
 
                 //Loop through each item of the dropdown.
-                Array.from(dropdownItems).forEach((child) => {
+                dropdownItems.forEach((child) => {
                     //Make sure we have an item
-                    if (child instanceof editor.dropdown.itemClass) {
-                        const button = document.createElement("button");
+                    const button = document.createElement("button");
 
-                        button.innerHTML = child.innerHTML;
-                        dropdownElement.appendChild(button);
+                    button.innerHTML = child.text;
+                    dropdownElement.appendChild(button);
 
-                        button.onclick = (event) => {
-                            event.stopPropagation();
-                            resolve(child.value);
-                            editor.dropdown.eventListener();
-                        };
-                    }
+                    button.onclick = (event) => {
+                        event.stopPropagation();
+                        resolve(child.value);
+                        editor.dropdown.eventListener();
+                    };
                 });
 
                 //document.body.addEventListener("click",editor.dropdown.eventListener);
@@ -79,6 +77,10 @@
 
         disabled = false;
 
+        getContent() {
+            return Array.from(this.children).map(child => { return {text:child.innerHTML, value:child.value} });
+        }
+
         constructor() {
             super();
 
@@ -87,7 +89,7 @@
                 if (this.disabled) return;
 
                 let boundingRect = this.getBoundingClientRect();
-                editor.dropdown.fromElements(boundingRect.left, boundingRect.bottom, this.children).then((value) => {
+                editor.dropdown.fromArray(boundingRect.left, boundingRect.bottom, this.getContent()).then((value) => {
                     this.onchange(value);
                 });
             };

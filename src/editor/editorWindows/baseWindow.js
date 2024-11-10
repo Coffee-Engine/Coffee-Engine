@@ -39,13 +39,18 @@
     editor.windowLayer = 0;
     editor.windows = {};
 
+    editor.windows.existing = {};
+
     //this is the base window class
     editor.windows.__Serialization = {
-        register: (classOBJ, id) => {
-            editor.windows.__Serialization.all[id] = classOBJ;
+        register: (classOBJ, id, jsonData) => {
+            //Extra json can be used to add special data to windows like only allowing 1 to be open at a time.
+            editor.windows.__Serialization.all[id] = classOBJ;//{object: classOBJ, extraJson:jsonData};
+            editor.windows.__Serialization.data[id] = jsonData || {};
         },
 
         all: {},
+        data: {}
     };
 
     editor.windows.base = class {
@@ -159,6 +164,8 @@
             this.__createContentDiv();
             this.__createMoveableWindow();
 
+            this.__addToExistingArray();
+
             //Add it to the tab list
             this.tabs.push({
                 owner: this,
@@ -170,6 +177,21 @@
             this.__CurrentTab = 0;
 
             this.init(this.Content);
+        }
+
+        __addToExistingArray() {
+            //Filter
+            const serializationList = editor.windows.__Serialization.all;
+            let signifierID = Object.keys(serializationList).filter(item => serializationList[item] == this.constructor);
+            if (!signifierID) return;
+
+            //Get our actual title
+            signifierID = signifierID[0];
+
+            //Make sure our array exists
+            editor.windows.existing[signifierID] = editor.windows.existing[signifierID] || [];
+
+            editor.windows.existing[signifierID].push(this);
         }
 
         __createTaskBar() {
