@@ -235,5 +235,5 @@
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.codeEditor, "codeEditor");
+    editor.windows.__Serialization.register(editor.windows.codeEditor, "codeEditor", {onlyOne:true});
 })();

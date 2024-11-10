@@ -177,5 +177,5 @@
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.viewport, "viewport");
+    editor.windows.__Serialization.register(editor.windows.viewport, "viewport", {onlyOne:true});
 })();
