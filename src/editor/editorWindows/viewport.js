@@ -105,6 +105,8 @@
         }
 
         init(container) {
+            this.title = editor.language["editor.window.viewport"];
+            
             this.canvas = document.createElement("canvas");
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";

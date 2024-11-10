@@ -15,7 +15,7 @@
             this.logControls.style.backgroundColor = "var(--background-2)";
 
             this.addObject = document.createElement("button");
-            this.addObject.innerText = "Add Object";
+            this.addObject.innerText = editor.language["editor.window.sceneTree.addObject"];
 
             this.logControls.appendChild(this.addObject);
             container.appendChild(this.logControls);

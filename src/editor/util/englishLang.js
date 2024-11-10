@@ -85,13 +85,24 @@ editor.EnglishLang = {
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
 
+    "editor.dropdown.project": "Project",
+    "editor.dropdown.project.save": "Save Project",
+    "editor.dropdown.project.saveSeperate": "Save a Copy",
+    "editor.dropdown.project.saveDecaf": "Save Project as .decaf",
+    "editor.dropdown.project.projectSettings": "Project Settings",
+    "editor.dropdown.project.importFile": "Import File",
+
     "editor.window.log": "Log",
     "editor.window.log.clear": "clear",
+
     "editor.window.sceneTree": "Scene Tree",
+    "editor.window.sceneTree.addObject": "Add Object",
 
     "editor.window.fileExplorer": "Project Files",
     "editor.window.fileExplorer.select": "Select a File",
     "editor.window.fileExplorer.reading": "Reading Files",
+
+    "editor.window.viewport": "Viewport",
 
     "editor.window.codeEditor": "Code Editor",
     "editor.window.codeEditor.newScript": "New Script",
