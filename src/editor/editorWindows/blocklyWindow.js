@@ -79,5 +79,5 @@
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.blockly, "blockly");
+    //editor.windows.__Serialization.register(editor.windows.blockly, "blockly");
 })();

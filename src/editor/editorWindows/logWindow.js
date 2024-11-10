@@ -102,7 +102,7 @@
         }
 
         init(container) {
-            this.title = editor.language["editor.window.log"];
+            this.title = editor.language["editor.window.debugLog"];
 
             //create our shiz
             container.style.display = "grid";
@@ -117,7 +117,7 @@
 
             //Our clear button. lets us clear the log manually
             this.clearButton = document.createElement("button");
-            this.clearButton.innerText = editor.language["editor.window.log.clear"];
+            this.clearButton.innerText = editor.language["editor.window.debugLog.clear"];
             this.clearButton.style.height = "100%";
             this.clearButton.onclick = () => {
                 this.logContainer.innerHTML = "";

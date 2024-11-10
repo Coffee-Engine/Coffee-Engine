@@ -517,10 +517,16 @@
         };
 
         editor.dropdownBar.window.getContent = () => {
-            return [
-                {text:"1", value:"1"}, 
-                {text:Date.now(), value:"2"}
-            ];
+            const windows = [];
+
+            const serialIzationObject = editor.windows.__Serialization;
+
+            Object.keys(serialIzationObject.all).forEach(windowName => {
+                if (windowName == "baseWindow") return;
+                windows.push({text: editor.language[`editor.window.${windowName}`] || windowName, value: windowName});
+            })
+
+            return windows
         }
 
         editor.dropdownBar.window.onchange = (value) => {

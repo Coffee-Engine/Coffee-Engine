@@ -94,8 +94,8 @@ editor.EnglishLang = {
 
     "editor.dropdown.window": "Windows",
 
-    "editor.window.log": "Log",
-    "editor.window.log.clear": "clear",
+    "editor.window.debugLog": "Log",
+    "editor.window.debugLog.clear": "clear",
 
     "editor.window.sceneTree": "Scene Tree",
     "editor.window.sceneTree.addObject": "Add Object",
