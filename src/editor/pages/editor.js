@@ -356,7 +356,7 @@
             },
 
             dockWindow: (window,column,row,newColumn,columnBefore) => {
-                editor.layout.layout.splice(column,0,window);
+                editor.layout.layout.splice(column,0,{size:10, contents:[{size:100,content:window}]});
 
                 if (newColumn) {
                     const subDock = document.createElement("div");
@@ -420,11 +420,21 @@
                     leftPusher.style.backgroundColor = "var(--text-1)";
                     leftPusher.style.opacity = "50%";
 
+                    leftPusher.onclick = () => {
+                        editor.dock.dockWindow(targetWindow,ID,0,true,true);
+                        editor.dock.closeDockWindowUI();
+                    }
+
                     let rightPusher = document.createElement("div");
                     rightPusher.style.margin = "8px";
                     rightPusher.style.marginRight = "0px";
                     rightPusher.style.backgroundColor = "var(--text-1)";
                     rightPusher.style.opacity = "50%";
+
+                    rightPusher.onclick = () => {
+                        editor.dock.dockWindow(targetWindow,ID,0,true,false);
+                        editor.dock.closeDockWindowUI();
+                    }
                     
                     //Get the "Sub Dock" which is the vertical part of the dock
                     let subDock = document.createElement("div");
@@ -437,7 +447,19 @@
 
                     let rowPercentage = "";
                     editor.layout.layout[ID].contents.forEach((window) => {
-                        rowPercentage += window.size + "% ";
+                        rowPercentage += `1.5% ${window.size - 3}% 1.5% `;
+
+                        const topPusher = document.createElement("div");
+                        topPusher.style.marginLeft = "8px";
+                        topPusher.style.marginRight = "8px";
+                        topPusher.style.backgroundColor = "var(--text-1)";
+                        topPusher.style.opacity = "50%";
+
+                        const bottomPusher = document.createElement("div");
+                        bottomPusher.style.marginLeft = "8px";
+                        bottomPusher.style.marginRight = "8px";
+                        bottomPusher.style.backgroundColor = "var(--text-1)";
+                        bottomPusher.style.opacity = "50%";
 
                         const row = document.createElement("div");
                         row.style.margin = "8px";
@@ -450,7 +472,9 @@
                             editor.dock.closeDockWindowUI();
                         };
 
+                        subDock.appendChild(topPusher);
                         subDock.appendChild(row);
+                        subDock.appendChild(bottomPusher);
                     });
 
                     //Set the grid property
