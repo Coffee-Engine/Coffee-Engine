@@ -605,6 +605,38 @@
             this.__refreshTaskbar();
         }
 
+        __removeFromReferences() {
+            this.dispose();
+            if (this.windowDiv && this.windowDiv.parentElement) this.windowDiv.parentElement.removeChild(this.windowDiv);
+
+            //Handle docked windows
+            if (this.docked) {
+                if (editor.layout.layout[this.dockedColumn])
+                    delete editor.layout.layout[this.dockedColumn].contents.splice(
+                        editor.layout.layout[this.dockedColumn].contents.findIndex((element) => this == element.content),
+                        1
+                    )[0];
+                editor.dock.refreshLayout();
+            }
+
+            delete this.windowDiv;
+
+            //Now we remove it from our global list of existing window objects
+            const serializationList = editor.windows.__Serialization.all;
+            let signifierID = Object.keys(serializationList).filter(item => serializationList[item] == this.constructor);
+            if (!signifierID) return;
+
+            //Get our actual title
+            signifierID = signifierID[0];
+
+            //Make sure our array exists
+            editor.windows.existing[signifierID];
+            
+            //Find it and remove it
+            const objectIndex = editor.windows.existing[signifierID].indexOf(this);
+            editor.windows.existing[signifierID].splice(objectIndex,1);
+        }
+
         //Allow us to destroy the window;
         _dispose() {
             if (this.closing) return;
@@ -612,34 +644,27 @@
 
             //Now we destory all window objects
             this.windowDiv.onanimationend = () => {
-                this.dispose();
-                this.windowDiv.parentElement.removeChild(this.windowDiv);
-
-                //Handle docked windows
-                if (this.docked) {
-                    if (editor.layout.layout[this.dockedColumn])
-                        delete editor.layout.layout[this.dockedColumn].contents.splice(
-                            editor.layout.layout[this.dockedColumn].contents.findIndex((element) => this == element.content),
-                            1
-                        )[0];
-                    editor.dock.refreshLayout();
+                //Remove our tabs
+                if (this.tabs.length > 1) {
+                    for (let index = 1; index < this.tabs.length; index++) {
+                        const tab = this.tabs[index];
+                        if (!tab.isWindow) continue;
+                        tab.owner.__removeFromReferences();
+                    }
                 }
-
-                delete this.windowDiv;
+                this.__removeFromReferences();
             };
 
             if (this.docked) {
-                this.dispose();
-                this.windowDiv.parentElement.removeChild(this.windowDiv);
-
-                if (editor.layout.layout[this.dockedColumn])
-                    delete editor.layout.layout[this.dockedColumn].contents.splice(
-                        editor.layout.layout[this.dockedColumn].contents.findIndex((element) => this == element.content),
-                        1
-                    )[0];
-                editor.dock.refreshLayout();
-
-                delete this.windowDiv;
+                //Remove our tabs
+                if (this.tabs.length > 1) {
+                    for (let index = 1; index < this.tabs.length; index++) {
+                        const tab = this.tabs[index];
+                        if (!tab.isWindow) continue;
+                        tab.owner.__removeFromReferences();
+                    }
+                }
+                this.__removeFromReferences();
             } else {
                 this.windowDiv.style.animation = "closeWindow 500ms cubic-bezier(0.65, 0, 0.35, 1) 1";
             }
