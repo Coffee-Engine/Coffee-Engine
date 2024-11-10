@@ -237,12 +237,12 @@
                 <dropdown-menu id="coffeeEngineProjectDropdown">
                     ${editor.language["editor.dropdown.project"]}
                     ${
-                        !project.isFolder && editor.safeties.filePermissions ? 
-                        //If we do have the ability to save directly to the same file
-                        `<dropdown-item class="dropdown-menu-fill-down" value="save">${editor.language["editor.dropdown.project.save"]}</dropdown-item>
-                        <dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveSeperate"]}</dropdown-item>` :
-                        //Or if we are in a folder/in an enviornment we can't save directly 
-                        `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
+                        !project.isFolder && editor.safeties.filePermissions
+                            ? //If we do have the ability to save directly to the same file
+                              `<dropdown-item class="dropdown-menu-fill-down" value="save">${editor.language["editor.dropdown.project.save"]}</dropdown-item>
+                        <dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveSeperate"]}</dropdown-item>`
+                            : //Or if we are in a folder/in an enviornment we can't save directly
+                              `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
                     }
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="settings">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
