@@ -15,8 +15,13 @@ editor.EnglishLang = {
     "engine.home.engineConfig": "Engine Settings",
     "engine.home.engineCredits": "Engine Credits",
 
-    "engine.settings.welcome": "Engine Settings",
     "engine.credits.welome": "Credits",
+    "engine.credits.madeBy": "Coffee Engine is made by",
+    "engine.credits.programmers": "Engine Programmers",
+    "engine.credits.translators": "Translators",
+    "engine.credits.assetMaker": "Asset Contributor",
+
+    "engine.settings.welcome": "Engine Settings",
 
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
@@ -24,7 +29,7 @@ editor.EnglishLang = {
     "engine.settings.category.Window.barStyle": "Taskbar Style",
 
     "engine.settings.category.Window.barStyle.Flat": "Flat",
-    "engine.settings.category.Window.barStyle.Aero": "Frutiger Aero",
+    "engine.settings.category.Window.barStyle.Aero": "Aero",
 
     "engine.settings.category.Window.tabMode": "Taskbar Tabs",
 

@@ -135,7 +135,7 @@
             </div>
 
             <div class="fullWidth centerContents" style="grid-template-columns: 27.75% 27.75%;">
-                <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineCredits"]}</button>
+                <button class="projectInitButton" id="openCredits">${editor.language["engine.home.engineCredits"]}</button>
                 <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineConfig"]}</button>
             </div>
 
@@ -150,6 +150,10 @@
         document.getElementById("openSettings").onclick = () => {
             editor.settings.initilize();
         };
+
+        document.getElementById("openCredits").onclick = () => {
+            editor.creditsPage.initilize();
+        }
 
         const newButton = document.getElementById("newProject");
         const loadFile = document.getElementById("loadFile");
