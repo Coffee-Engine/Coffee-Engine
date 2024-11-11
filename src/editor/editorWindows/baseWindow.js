@@ -226,7 +226,11 @@
                 } else {
                     this.windowDiv.style.opacity = "25%";
                     this.windowDiv.style.pointerEvents = "none";
-                    editor.dock.dockWindowUI(this);
+                    //Our ui call and callback
+                    editor.dock.dockWindowUI(this, () => {
+                        this.windowDiv.style.opacity = "100%";
+                        this.windowDiv.style.pointerEvents = "all";
+                    });
                 }
             };
 

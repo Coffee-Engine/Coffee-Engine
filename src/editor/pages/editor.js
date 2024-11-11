@@ -345,28 +345,53 @@
                 }
             },
 
-            dockWindowDiv: (window, column) => {
+            dockWindowDiv: (window, column, rowOveride, adjancency) => {
                 if (window.windowDiv.parentNode) {
                     window.windowDiv.parentNode.removeChild(window.windowDiv);
                 }
 
                 window.docked = true;
                 window.dockedColumn = column;
-                editor.dock.element.children[column].appendChild(window.windowDiv);
+                if (rowOveride !== undefined && editor.dock.element.children[column].children[rowOveride]) {
+                    console.log(adjancency);
+                    editor.dock.element.children[column].children[rowOveride].insertAdjacentElement(adjancency,window.windowDiv);
+                }
+                else {
+                    editor.dock.element.children[column].appendChild(window.windowDiv);
+                }
             },
 
-            dockWindow: (window,column,row,newColumn,columnBefore) => {
-                editor.layout.layout.splice(column,0,{size:10, contents:[{size:100,content:window}]});
+            dockWindow: (window,column,row,newColumn,columnBefore,useRows) => {
+                let adjancency = "beforebegin";
 
                 if (newColumn) {
-                    const subDock = document.createElement("div");
-                    subDock.style.display = "grid";
-                    subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+                    //Differentiate between rows and columns
+                    if (useRows) {
+                        //Resize the columns
+                        const halfSize = editor.layout.layout[column].contents[row].size/2
+                        editor.layout.layout[column].contents.splice(columnBefore ? row : row + 1,0,{size:halfSize, content:window});
+                        editor.layout.layout[column].contents[row + (columnBefore ? 1 : 0)].size = halfSize;
 
-                    editor.dock.element.children[column].insertAdjacentElement(columnBefore ? "beforebegin" : "afterend", subDock);
+                        //row = columnBefore ? row : row + 1;
+                        adjancency = columnBefore ? "beforebegin" : "afterend";
+                    }
+                    else {
+                        //Resize the columns
+                        const halfSize = editor.layout.layout[column].size/2
+                        editor.layout.layout.splice(columnBefore ? column : column + 1,0,{size:halfSize, contents:[{size:100,content:window}]});
+                        editor.layout.layout[column + (columnBefore ? 1 : 0)].size = halfSize;
+    
+                        const subDock = document.createElement("div");
+                        subDock.style.display = "grid";
+                        subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+    
+                        editor.dock.element.children[column].insertAdjacentElement(columnBefore ? "beforebegin" : "afterend", subDock);
+
+                        column = columnBefore ? column : column + 1;
+                    }
                 }
 
-                editor.dock.dockWindowDiv(window, column);
+                editor.dock.dockWindowDiv(window, column, row, adjancency);
 
                 editor.dock.refreshLayout();
             },
@@ -401,7 +426,7 @@
                 editor.dock.overlayElement.innerHTML = "";
             },
 
-            dockWindowUI: (targetWindow) => {
+            dockWindowUI: (targetWindow,callback) => {
                 let percentages = "";
 
                 //Make our overlay visible
@@ -423,6 +448,7 @@
                     leftPusher.onclick = () => {
                         editor.dock.dockWindow(targetWindow,ID,0,true,true);
                         editor.dock.closeDockWindowUI();
+                        callback();
                     }
 
                     let rightPusher = document.createElement("div");
@@ -434,6 +460,7 @@
                     rightPusher.onclick = () => {
                         editor.dock.dockWindow(targetWindow,ID,0,true,false);
                         editor.dock.closeDockWindowUI();
+                        callback();
                     }
                     
                     //Get the "Sub Dock" which is the vertical part of the dock
@@ -446,20 +473,35 @@
                     editor.dock.overlayElement.appendChild(rightPusher);
 
                     let rowPercentage = "";
-                    editor.layout.layout[ID].contents.forEach((window) => {
+                    for (let rowID = 0; rowID < editor.layout.layout[ID].contents.length; rowID++) {
+                        const window = editor.layout.layout[ID].contents[rowID];
+                        
                         rowPercentage += `1.5% ${window.size - 3}% 1.5% `;
 
+                        //Our up and down pushers these push elements up and down
                         const topPusher = document.createElement("div");
                         topPusher.style.marginLeft = "8px";
                         topPusher.style.marginRight = "8px";
                         topPusher.style.backgroundColor = "var(--text-1)";
                         topPusher.style.opacity = "50%";
 
+                        topPusher.onclick = () => {
+                            editor.dock.dockWindow(targetWindow,ID,rowID,true,true,true);
+                            editor.dock.closeDockWindowUI();
+                            callback();
+                        }
+
                         const bottomPusher = document.createElement("div");
                         bottomPusher.style.marginLeft = "8px";
                         bottomPusher.style.marginRight = "8px";
                         bottomPusher.style.backgroundColor = "var(--text-1)";
                         bottomPusher.style.opacity = "50%";
+
+                        bottomPusher.onclick = () => {
+                            editor.dock.dockWindow(targetWindow,ID,rowID,true,false,true);
+                            editor.dock.closeDockWindowUI();
+                            callback();
+                        }
 
                         const row = document.createElement("div");
                         row.style.margin = "8px";
@@ -470,12 +512,13 @@
                         row.onclick = () => {
                             window.content.__addTab(targetWindow);
                             editor.dock.closeDockWindowUI();
+                            callback();
                         };
 
                         subDock.appendChild(topPusher);
                         subDock.appendChild(row);
                         subDock.appendChild(bottomPusher);
-                    });
+                    }
 
                     //Set the grid property
                     subDock.style.setProperty("--dockGridVertical", rowPercentage);
