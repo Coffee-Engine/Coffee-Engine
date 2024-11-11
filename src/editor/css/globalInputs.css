@@ -52,3 +52,21 @@ dropdown-menu:active {
 .dropdown-menu-fill-down {
     height: 100%;
 }
+
+ /* links */
+a {
+    transition: color 250ms;
+}
+
+a:link {
+    color: var(--link-1);
+}
+a:visited {
+    color: var(--link-3);
+}
+a:hover {
+    color: var(--link-2);
+}
+a:active {
+    color: var(--link-2);
+} 

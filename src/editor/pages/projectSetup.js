@@ -110,7 +110,10 @@
             .centerText {
                 text-align: center;
             }
-            
+
+            .leftText {
+                text-align: left;
+            }
             .nameDiv {
                 position:relative;
                 
@@ -170,7 +173,10 @@
             }
         </style>
         <div id="centerPanel" class="CenterPanel">
-            <h1 class="centerText" style="margin:2px; margin-top:4px;">${editor.language["engine.projectSetup.title"]}</h1>
+            <h1 class="leftText" style="margin:2px; margin-top:4px;">
+                <button id="goBack">${editor.language["engine.generic.back"]}</button>
+                ${editor.language["engine.projectSetup.title"]}
+            </h1>
             <div class="innerBox">
                 <div class="nameDiv">
                     <input type="text" placeholder="Project Name" class="nameBox" id="projectName"></input>
@@ -197,6 +203,10 @@
         `;
 
         document.body.appendChild(editor.currentPage.root);
+
+        document.getElementById("goBack").onclick = () => {
+            editor.home.initilize();
+        };
 
         const fileButton = document.getElementById("fileButton");
         const folderButton = document.getElementById("folderButton");

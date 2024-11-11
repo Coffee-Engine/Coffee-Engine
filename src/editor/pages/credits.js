@@ -74,7 +74,7 @@
             }
 
             .centerText {
-                text-align: center;
+                text-align: left;
             }
             
             .contributorContainerDiv {
@@ -105,7 +105,10 @@
             }
         </style>
         <div id="centerPanel" class="CenterPanel">
-            <h1 class="centerText" style="margin:2px; margin-top:4px;">${editor.language["engine.credits.welome"]}</h1>
+            <h1 class="centerText" style="margin:2px; margin-top:4px;">
+                <button id="goBack">${editor.language["engine.generic.back"]}</button>
+                ${editor.language["engine.credits.welome"]}
+            </h1>
             <div class="innerBox">
                 <h1>${editor.language["engine.credits.madeBy"]}</h1>
                 <h2>${editor.language["engine.credits.programmers"]}</h2>
@@ -132,6 +135,10 @@
 
             return element;
         }
+
+        document.getElementById("goBack").onclick = () => {
+            editor.home.initilize();
+        };
 
         editor.credits.engineContributors.forEach(contributor => {programmers.appendChild(makeElement(contributor));});
         editor.credits.translators.forEach(contributor => {translators.appendChild(makeElement(contributor));});

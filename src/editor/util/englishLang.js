@@ -45,6 +45,7 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.errorColor": "Error Color",
     "engine.settings.category.Theme.warnTextColor": "Warning Text Color",
     "engine.settings.category.Theme.errorTextColor": "Error Text Color",
+    "engine.settings.category.Theme.linkColor": "Link Color",
 
     "engine.settings.category.Theme.themeColor.Mocha": "Mocha",
     "engine.settings.category.Theme.themeColor.Cocoa": "Cocoa",

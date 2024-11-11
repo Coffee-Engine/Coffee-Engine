@@ -9,6 +9,10 @@ coffeeEngine.defaultThemes = {
         "--text-2": "#d6ae93",
         "--text-3": "#bb8d6e",
 
+        "--link-1": "#ffb400",
+        "--link-2": "#d09400",
+        "--link-3": "#a43e00",
+
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#503f32",
@@ -47,6 +51,10 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#c4cdff",
         "--text-2": "#868ebb",
         "--text-3": "#7079aa",
+
+        "--link-1": "#12956c",
+        "--link-2": "#5bb498",
+        "--link-3": "#4bb498",
 
         "--warn": "#ffd078",
         "--error": "#ff7878",
@@ -87,6 +95,10 @@ coffeeEngine.defaultThemes = {
         "--text-2": "#3d2c21",
         "--text-3": "#291a10",
 
+        "--link-1": "#772d00",
+        "--link-2": "#c66f00",
+        "--link-3": "#a43e00",
+
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#463e32",
@@ -125,6 +137,10 @@ coffeeEngine.defaultThemes = {
         "--text-1": "#6d83ff",
         "--text-2": "#4458c1",
         "--text-3": "#293b9f",
+
+        "--link-1": "#b62781",
+        "--link-2": "#911f67",
+        "--link-3": "#7f1b5a",
 
         "--warn": "#ffd078",
         "--error": "#ff7878",
@@ -165,10 +181,38 @@ coffeeEngine.defaultThemes = {
         "--text-2": "#911f67",
         "--text-3": "#7f1b5a",
 
+        "--link-1": "#6d83ff",
+        "--link-2": "#4458c1",
+        "--link-3": "#293b9f",
+
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#2e2947",
         "--error-text": "#2e2947",
+
+        "--keyword": "#93bed1",
+        "--class-name": "#8698d1",
+
+        "--code-text": "#c4cdff",
+
+        "--number-color": "#bce579",
+        "--number-color-unusual": "#5bb498",
+
+        "--string": "#868ebb",
+        "--string-escape": "#c4cdff",
+        "--string-error": "#ff7878",
+
+        "--regexp": "#eba2ce",
+        "--regexp-escape": "#c4cdff",
+        "--regexp-invalid": "#ff7878",
+
+        "--delimiter": "#5b7d9f",
+        "--delimiter-bracket": "#4376a9",
+
+        "--comment": "#7079aa",
+        "--comment-doc": "#787c8f",
+        "--comment-doc-keyword": "#62c7ff",
+        "--comment-doc-type": "#b6e1f5",
     },
 };
 
