@@ -34,5 +34,5 @@ If you plan to make a fork or mod of the engine please add some link back to the
   <img src="https://img.shields.io/github/repo-size/Coffee-Engine/Coffee-Engine?style=for-the-badge&labelColor=%23e7cab7&color=%2346352a"></img>
   <img src="https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white&style=for-the-badge"></img>
   <img src="https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=000&style=for-the-badge"></img>
-  [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=for-the-badge)](https://github.com/prettier/prettier)
+  <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=for-the-badge"></img>
 </div>
