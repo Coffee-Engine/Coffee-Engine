@@ -387,6 +387,14 @@
     
                         editor.dock.element.children[column].insertAdjacentElement(columnBefore ? "beforebegin" : "afterend", subDock);
 
+                        //MOVE COLUMNS THAT NEED TO BE MOVED!
+                        for (let columnPush = column + 1; columnPush < editor.layout.layout.length; columnPush++) {
+                            const column = editor.layout.layout[columnPush];
+                            column.contents.forEach(window => {
+                                window.content.dockedColumn = columnPush;
+                            })
+                        }
+
                         column = columnBefore ? column : column + 1;
                     }
                 }
