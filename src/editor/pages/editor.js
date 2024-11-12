@@ -155,6 +155,9 @@
                 margin-top: 6px;
                 cursor: pointer;
 
+                display:grid;
+                grid-template-columns: auto ${editor.taskbarHeight}px;
+
                 transition: 125ms all, visibility 1ms;
 
                 border-style: solid;

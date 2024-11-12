@@ -35,6 +35,21 @@
     </g>
 </svg><!--rotationCenter:46.5264875:46.466595085924865-->`;
 
+    const undockTabSVG = `<svg version="1.1" style="width:100%; height:100%;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="84.52646"
+    height="84.52646" viewBox="0,0,84.52646,84.52646">
+    <g transform="translate(-197.73677,-137.73677)">
+        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill="none" fill-rule="nonzero" stroke-linejoin="miter"
+            stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" style="mix-blend-mode: normal">
+            <path d="M240,188.64118l-32.67937,-17.28236" stroke="currentColor" stroke-width="12" stroke-linecap="round" />
+            <path d="M240,188.64118l32.67938,-17.28236" data-paper-data="{&quot;index&quot;:null}" stroke="currentColor"
+                stroke-width="12" stroke-linecap="round" />
+            <path d="M197.73677,222.26323v-84.52646h84.52646v84.52646z" stroke="none" stroke-width="0"
+                stroke-linecap="butt" />
+        </g>
+    </g>
+</svg>
+<!--rotationCenter:42.263227662355774:42.263227662355774-->`
+
     //This will contain the editor's windows
     editor.windowLayer = 0;
     editor.windows = {};
@@ -529,7 +544,44 @@
                 for (let tabIndex = 0; tabIndex < this.tabs.length; tabIndex++) {
                     const tab = this.tabs[tabIndex];
                     const tabElement = document.createElement("div");
-                    tabElement.innerText = tab.owner.title || tab.tabName || "Unknown Tab";
+                    
+                    //Create the objects on the tab
+                    if (tabIndex > 0) {
+                        const tabText = document.createElement("p");
+                        tabText.innerText = tab.owner.title || tab.tabName || "Unknown Tab";
+                        tabText.style.margin = "0px";
+                        tabText.style.padding = "0px";
+    
+                        //Cool image
+                        const detabButton = document.createElement("div");
+                        detabButton.innerHTML = undockTabSVG;
+                        detabButton.style.aspectRatio = "1";
+    
+                        detabButton.onclick = (event) => {
+                            event.stopPropagation();
+    
+                            //Remove us from the tab propogation and reconstruct, then refresh the taskbar
+                            this.tabs.splice(tabIndex,1);
+                            tab.owner.__reconstruct();
+                            tab.owner.__moveToTop();
+
+                            if (tab.owner.width < 10) tab.owner.width = 400;
+                            if (tab.owner.height < 10) tab.owner.height = 400;
+
+                            tab.content.style.opacity = "100";
+                            tab.content.style.zIndex = "1";
+
+                            this.__refreshTaskbar();
+                        }
+    
+                        //add and configure the tab
+                        tabElement.appendChild(tabText);
+                        tabElement.appendChild(detabButton);
+                    }
+                    //If we are the first tab stop us from being dedocked from ourself
+                    else {
+                        tabElement.innerText = tab.owner.title || tab.tabName || "Unknown Tab";;
+                    }
                     tabElement.className = "windowTab";
 
                     tabElement.onclick = (event) => {
@@ -548,6 +600,7 @@
                 }
             } else {
                 //clear, add title
+                this.titleDiv.style.gridTemplateColumns = "1fr";
                 this.titleDiv.innerHTML = "";
                 this.titleDiv.innerText = this.title;
             }
@@ -678,6 +731,7 @@
         __deconstruct() {
             //MAKE SURE THESE EXIST!
             if (this.TaskBar.parentElement) this.TaskBar.parentElement.removeChild(this.TaskBar);
+            if (this.contentHolder.parentElement) this.contentHolder.parentElement.removeChild(this.contentHolder);
             if (this.windowDiv.parentElement) this.windowDiv.parentElement.removeChild(this.windowDiv);
 
             return this.Content;
@@ -687,10 +741,11 @@
         __reconstruct() {
             document.body.appendChild(this.windowDiv);
             this.windowDiv.appendChild(this.TaskBar);
+            this.windowDiv.appendChild(this.contentHolder);
 
             //Remove the content from its current parent.
             if (this.Content.parentElement) this.Content.parentElement.removeChild(this.Content);
-            this.windowDiv.appendChild(this.Content);
+            this.contentHolder.appendChild(this.Content);
 
             return this.Content;
         }
