@@ -193,7 +193,6 @@
 
         command_Deserialize(state, block) {
             if (state.parameters) {
-                console.log(block);
                 state.parameters.forEach((item) => {
                     const index = sugarcube.customBlocks.fieldTypes.findIndex((field) => {
                         return field.Type == item.type;

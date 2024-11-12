@@ -96,6 +96,9 @@
 
             newLoadal.__moveToTop();
 
+            //Note that gifs will not be animated, they do come as non animated too. Like PNGs
+            newLoadal.acceptTypes = "png,jpeg,jpg,webp,bmp,gif";
+
             const bounding = field.borderRect_.getBoundingClientRect();
             newLoadal.x = bounding.x + bounding.width / 2;
             newLoadal.y = bounding.y + bounding.height;

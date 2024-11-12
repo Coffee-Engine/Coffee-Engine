@@ -3,11 +3,26 @@
         //For later use. I have an idea of how this can be optimized
         directoryBasin = {};
 
+        set acceptTypes(value) {
+            this.acceptedTypes = value.split(",");
+
+            //Refresh our FS
+            this.displayDirectory(project.fileSystem, this.container, false);
+        }
+
+        get acceptTypes() {
+            return (this.acceptedTypes || []).join(",");
+        }
+
         init(container) {
+            this.acceptedTypes = [];
+            this.container = container;
+
             this.resizable = false;
             this.title = editor.language["editor.window.fileExplorer.select"];
 
-            const displayDirectory = (directory, parentDiv, even, path) => {
+            this.displayDirectory = (directory, parentDiv, even, path) => {
+                parentDiv.innerHTML = "";
                 path = path || "";
                 const keys = Object.keys(directory).sort();
 
@@ -21,6 +36,10 @@
 
                     //Check if it is a file, or a folder
                     if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
+                        //Check the file extension to make sure the key we are using is aligned with the accepted types
+                        let split = key.split(".");
+                        if (this.acceptedTypes.length > 0 && !this.acceptedTypes.includes(split[split.length - 1])) return;
+
                         element.innerHTML = `<p style="padding:0px; margin:0px;">${key}</p>`;
                         parentDiv.appendChild(element);
 
@@ -55,16 +74,14 @@
 
                         //Do it in this specific order. or else KABOOM!
                         parentDiv.appendChild(element);
-                        displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
+                        this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
                         lowerDiv.fitHeight = lowerDiv.clientHeight;
                         lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                     }
                 });
             };
 
-            //We will display our thing
-            console.log(this);
-            displayDirectory(project.fileSystem, container, false);
+            this.displayDirectory(project.fileSystem, container, false);
         }
 
         //Just so we can have our path and eat it too
