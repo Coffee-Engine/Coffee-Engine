@@ -28,9 +28,11 @@
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
                         text: "set sprite to [image]",
+                        filter: ["Sprite"],
                         arguments: {
                             image: {
-                                type: sugarcube.ArgumentType.STRING
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType:"Image"
                             }
                         }
                     }
@@ -48,6 +50,12 @@
                         initilize: "color_Init",
                         render: "color_Render",
                     },
+                    Image: {
+                        acceptReporters: true,
+                        editor:"file_Editor",
+
+                        initilize: "file_Init",
+                    }
                 },
             };
         }
@@ -75,6 +83,25 @@
             field.borderRect_.setAttribute("height", 40);
             field.borderRect_.setAttribute("rx", 20);
             field.borderRect_.setAttribute("ry", 20);
+        }
+
+        file_Init(field) {
+            field.createBorderRect_();
+            field.createTextElement_();
+        }
+
+        file_Editor(field) {
+            //Its like some sort of loading. :trol:
+            const newLoadal = new editor.windows.modalFileExplorer(400, 400);
+
+            newLoadal.__moveToTop();
+
+            const bounding = field.borderRect_.getBoundingClientRect();
+            newLoadal.x = bounding.x + bounding.width / 2;
+            newLoadal.y = bounding.y + bounding.height;
+            newLoadal.onFileSelected = (path) => {
+                field.value = path;
+            };
         }
     }
 
