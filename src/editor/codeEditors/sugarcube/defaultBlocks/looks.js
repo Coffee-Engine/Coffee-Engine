@@ -60,6 +60,11 @@
             };
         }
 
+        setSprite({ image }, util) {
+            //Hope to god its an image
+            util.target.spritePath = image;
+        }
+
         color_Init(field) {
             field.createBorderRect_();
         }
