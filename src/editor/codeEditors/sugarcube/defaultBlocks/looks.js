@@ -24,6 +24,16 @@
                         },
                         hideFromPalette: true,
                     },
+                    {
+                        opcode: "setSprite",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: "set sprite to [image]",
+                        arguments: {
+                            image: {
+                                type: sugarcube.ArgumentType.STRING
+                            }
+                        }
+                    }
                 ],
                 fields: {
                     Color: {
