@@ -17,14 +17,11 @@
                     //Our parse function
 
                     //Get our file
-                    const extensionJson = project.getFile(`extensions/${extID}/extension.json`);
+                    project.getFile(`extensions/${extID}/extension.json`).then((extensionJson) => {
+                        //Make sure it exists then parse
+                        if (!extensionJson) return;
 
-                    //Make sure it exists then parse
-                    if (!extensionJson) return;
-
-                    //Read it
-                    extensionJson[0].getFile().then((file) => {
-                        project.extensions.storage[extID] = new project.extensions.parser(extID, file);
+                        project.extensions.storage[extID] = new project.extensions.parser(extID, extensionJson);
                     });
                 });
             })
@@ -56,26 +53,21 @@
         async loadScripts(path, scriptArray) {
             for (let index = 0; index < scriptArray.length; index++) {
                 await new Promise((resolve, reject) => {
-                    //reading our files
-                    this.fileReader.onload = () => {
-                        //Get our script contents
-                        const scriptContents = this.fileReader.result;
-                        const scriptElement = document.createElement("script");
-                        //Isolate the context;
-                        scriptElement.innerHTML = `(function() {\n${scriptContents}\n})();`;
-                        document.body.appendChild(scriptElement);
-
-                        resolve();
-                    };
-
                     //Load our script
-                    let fileData = project.getFile(`${path}${scriptArray[index]}`);
+                    project.getFile(`${path}${scriptArray[index]}`).then((fileData) => {
+                        //reading our files
+                        this.fileReader.onload = () => {
+                            //Get our script contents
+                            const scriptContents = this.fileReader.result;
+                            const scriptElement = document.createElement("script");
+                            //Isolate the context;
+                            scriptElement.innerHTML = `(function() {\n${scriptContents}\n})();`;
+                            document.body.appendChild(scriptElement);
+    
+                            resolve();
+                        };
 
-                    //Make sure the file exists
-                    if (!fileData) return;
-
-                    fileData[0].getFile().then((file) => {
-                        this.fileReader.readAsText(file);
+                        this.fileReader.readAsText(fileData);
                     });
                 });
             }

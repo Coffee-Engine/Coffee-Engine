@@ -106,6 +106,8 @@ editor.EnglishLang = {
     "editor.window.sceneTree": "Scene Tree",
     "editor.window.sceneTree.addObject": "Add Object",
 
+    "editor.window.nodeMaker":"Add a Node",
+
     "editor.window.fileExplorer": "Project Files",
     "editor.window.fileExplorer.select": "Select a File",
     "editor.window.fileExplorer.reading": "Reading Files",

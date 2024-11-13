@@ -17,6 +17,15 @@
             this.addObject = document.createElement("button");
             this.addObject.innerText = editor.language["editor.window.sceneTree.addObject"];
 
+            //when we click this add our window that adds a node to the scene
+            this.addObject.onclick = () => {
+                const createdWindow = new editor.windows.nodeMaker(400, 350);
+                createdWindow.__moveToTop();
+
+                createdWindow.x = window.innerWidth / 2 - 200;
+                createdWindow.y = window.innerHeight / 2 - 175;
+            }
+
             this.logControls.appendChild(this.addObject);
             container.appendChild(this.logControls);
         }
