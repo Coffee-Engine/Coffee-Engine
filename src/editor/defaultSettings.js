@@ -1,5 +1,10 @@
 (function () {
     editor.defaultSettings = {
+        Editor: {
+            changeLanguage:"",
+            changeLayout:"",
+            clearLocalStorage:"",
+        },
         Window: {
             grabSize: 8,
             barHeight: 24,
@@ -82,6 +87,27 @@
     };
 
     editor.settingDefs = {
+        Editor: {
+            changeLanguage: {
+                type:"button",
+                onClick:() => {
+                    editor.setup.initilizeLang(true);
+                }
+            },
+            changeLayout: {
+                type:"button",
+                onClick:() => {
+                    editor.setup.initilizeLayout(true);
+                }
+            },
+            clearLocalStorage: {
+                type:"button",
+                onClick:(element) => {
+                    element.innerHTML = editor.language[`engine.settings.category.Editor.clearLocalStorage.cleared`];
+                    localStorage.clear();
+                }
+            }
+        },
         Window: {
             grabSize: {
                 type: "number",

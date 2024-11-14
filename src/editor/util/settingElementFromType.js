@@ -72,6 +72,15 @@
                 return input;
             }
 
+            case "button": {
+                const input = document.createElement("button");
+                input.onclick = () => {
+                    if (editor.settingDefs[category][setting].onClick) editor.settingDefs[category][setting].onClick(input);
+                }
+
+                return [input,true];
+            }
+
             default:
                 break;
         }

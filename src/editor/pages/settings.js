@@ -125,13 +125,24 @@
                     settingSpan.style.margin = "2px";
 
                     //This is where we get inputs for the setting
-                    const elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type, editor.settingDefs[key][settingKey], key, settingKey);
+                    let elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type, editor.settingDefs[key][settingKey], key, settingKey);
                     editor.settings.elements[settingKey] = {
                         span: settingSpan,
                         input: elementEditor,
                     };
 
-                    if (elementEditor) settingSpan.appendChild(elementEditor);
+                    if (elementEditor) {
+                        //If we have an array we need to check for something
+                        if (Array.isArray(elementEditor)) {
+                            //Set our element to be proper
+                            if (elementEditor[1]) {
+                                settingSpan.innerHTML = "";
+                                elementEditor[0].innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]}`;
+                                elementEditor = elementEditor[0];
+                            }
+                        }
+                        settingSpan.appendChild(elementEditor);
+                    }
 
                     settingsPanel.appendChild(settingSpan);
 

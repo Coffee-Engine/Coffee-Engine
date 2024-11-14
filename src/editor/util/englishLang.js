@@ -24,6 +24,12 @@ editor.EnglishLang = {
 
     "engine.settings.welcome": "Engine Settings",
 
+    "engine.settings.category.Editor": "Editor",
+    "engine.settings.category.Editor.changeLanguage": "Change Language",
+    "engine.settings.category.Editor.changeLayout": "Change Layout",
+    "engine.settings.category.Editor.clearLocalStorage": "Clear Data",
+    "engine.settings.category.Editor.clearLocalStorage.cleared": "Data Cleared",
+
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
     "engine.settings.category.Window.barHeight": "Taskbar Height",

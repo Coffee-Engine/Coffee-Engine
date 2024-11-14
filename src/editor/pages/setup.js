@@ -108,7 +108,7 @@
 
     editor.layout = editor.Storage.getStorage("layout", {});
 
-    editor.setup.initilizeLang = () => {
+    editor.setup.initilizeLang = (goToOptions) => {
         console.log("Initilizing Setup");
 
         editor.changePage();
@@ -214,7 +214,8 @@
                                 //Set the language name
                                 editor.Storage.setStorage("languageName", langDef.Name);
 
-                                editor.setup.initilizeLayout();
+                                if (!goToOptions) editor.setup.initilizeLayout();
+                                else editor.settings.initilize();
                             })
                             .catch((error) => {
                                 button.innerText += ` : ${error}`;
@@ -228,7 +229,7 @@
             });
     };
 
-    editor.setup.initilizeLayout = () => {
+    editor.setup.initilizeLayout = (goToOptions) => {
         console.log("Initilizing Setup Part 2");
 
         editor.changePage();
@@ -341,6 +342,11 @@
 
         document.body.appendChild(editor.currentPage.root);
 
+        const onSelect = () => {
+            if (!goToOptions) editor.home.initilize();
+            else editor.settings.initilize();
+        }
+
         document.getElementById("scratched").onclick = () => {
             editor.layout = {
                 layout: [
@@ -378,7 +384,7 @@
                 floating: [],
             };
             editor.Storage.setStorage("layout", editor.layout);
-            editor.home.initilize();
+            onSelect();
         };
 
         document.getElementById("caffinated").onclick = () => {
@@ -423,7 +429,7 @@
                 floating: [],
             };
             editor.Storage.setStorage("layout", editor.layout);
-            editor.home.initilize();
+            onSelect();
         };
 
         document.getElementById("empty").onclick = () => {
@@ -432,7 +438,7 @@
                 floating: [],
             };
             editor.Storage.setStorage("layout", editor.layout);
-            editor.home.initilize();
+            onSelect();
         };
     };
 })();

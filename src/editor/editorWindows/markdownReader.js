@@ -13,9 +13,11 @@
                 //Get our language from the code element
                 let lang = codeElement.className.split("-");
                 lang.splice(0,1);
-                lang = lang.join("-");
+
+                //Join it back and make sure its lowercase
+                lang = lang.join("-").toLowerCase();
                 
-                monaco.editor.colorize(codeElement.innerText,lang).then(html => {
+                monaco.editor.colorize(codeElement.innerText,editor.languageRedirects[lang] || lang).then(html => {
                     codeElement.innerHTML = `${html}`;
                 });
             })

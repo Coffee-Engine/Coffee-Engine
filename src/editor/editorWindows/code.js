@@ -1,11 +1,6 @@
 (function () {
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
-            this.extraMapping = {
-                json: "js",
-                cjs: "js",
-            };
-
             this.title = editor.language["editor.window.codeEditor"];
             this.usingSugarCube = false;
             this.filePath = false;
@@ -208,7 +203,7 @@
                     this.blocklyArea.style.visibility = "hidden";
                     this.usingSugarCube = false;
 
-                    monacoManager.setScript(this.fileReader.result, this.extraMapping[this.readType] || this.readType);
+                    monacoManager.setScript(this.fileReader.result, editor.languageRedirects[this.readType] || this.readType);
                 } else {
                     this.monacoArea.style.visibility = "hidden";
                     this.blocklyArea.style.visibility = "visible";
