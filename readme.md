@@ -5,9 +5,13 @@ Coffee Engine is a free and open-source game engine made in javascript. Its goal
 
 The engine has some quirks while working on its source, which contributors might have to get used to.
 
-### No JS packages
+### Modules and Packages
 
-Despite being written in javascript no packages or modules are allowed to be used within the engine itself, besides ones for compiling the editor.
+Keep them to a minimum, no modules besides compilation, because this engine has to be portable, without a server.<br>
+I reccomend staying with what we have which are :
+* Blockly
+* Monaco
+* Marked (v15.0.0)
 
 ### Node-based before everything
 
@@ -20,6 +24,7 @@ Coffee Engine should be very customizable with almost everything being able to b
 ## Contributing
 
 you can use `node build.mjs` to build a non-Browser version of the engine, when building it should show a little command line tool for you to mess around with.
+if you just want to test on a browser, use a local server or just open the `index.html` file.
 
 ### And about IOS Safari?
 
