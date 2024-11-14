@@ -2,3 +2,4 @@ src/editor/codeEditors/sugarcube/sugarcube.js
 src/editor/codeEditors/monaco/*
 src-tauri/*
 src/engine/resources/shapes.js
+src/editor/util/marked.js
