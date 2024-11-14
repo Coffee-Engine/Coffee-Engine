@@ -35,14 +35,22 @@
     //For scanning a zip, pretty simple
     //Thankfully JSzip provides a path API that is simple
     project.scanZip = (zipHandle) => {
-        //Yeah its pretty easy.
-        zipHandle.forEach((fileName) => {
-            //Get the file and determine if its a directory
-            const file = zipHandle.files[fileName];
-            if (!file.dir)
-                file.async("blob").then((fileBlob) => {
-                    project.setFile(fileName, fileBlob);
-                });
+        return new Promise(async (resolve, reject) => {
+            //Yeah its pretty easy.
+            console.log(zipHandle);
+            const fileNames = Object.keys(zipHandle.files);
+            for (let fileID = 0; fileID < fileNames.length; fileID++) {
+                const fileName = fileNames[fileID];
+                const file = zipHandle.files[fileName];
+                //why use await? because. I don't want ".then((result) => {})" hell
+                if (!file.dir) {
+                    const blob = await file.async("blob");
+                    console.log(fileName,blob);
+                    await project.setFile(fileName, blob);              
+                }
+            }
+
+            resolve();
         });
     };
 })();
