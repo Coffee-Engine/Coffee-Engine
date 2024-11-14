@@ -8,7 +8,7 @@
                 const nodeElement = document.createElement("button");
                 const nodeData = coffeeEngine.nodeRegister[key];
 
-                nodeElement.innerText = key
+                nodeElement.innerText = key;
 
                 //Add our node and close the window once we select the node we want.
                 nodeElement.onclick = () => {
