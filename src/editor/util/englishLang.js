@@ -20,6 +20,7 @@ editor.EnglishLang = {
     "engine.credits.programmers": "Engine Programmers",
     "engine.credits.translators": "Translators",
     "engine.credits.assetMaker": "Asset Contributor",
+    "engine.credits.resources": "Resources Used",
 
     "engine.settings.welcome": "Engine Settings",
 
