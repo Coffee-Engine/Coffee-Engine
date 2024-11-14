@@ -72,3 +72,14 @@ button:disabled {
     background-color: var(--background-4);
     border-color: var(--background-4);
 }
+
+blockquote>p {
+    border-color: var(--background-1);
+    padding: 4px;
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+pre:has(code) {
+    background-color: var(--background-2);
+}

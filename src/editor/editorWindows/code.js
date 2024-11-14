@@ -194,7 +194,6 @@
         //Setup our file hooks
         setupFileHooks() {
             editor.addFileOpenHook("txt", this.openFile, this);
-            editor.addFileOpenHook("md", this.openFile, this);
             editor.addFileOpenHook("js", this.openFile, this);
             editor.addFileOpenHook("cjs", this.openFile, this);
             editor.addFileOpenHook("json", this.openFile, this);
