@@ -77,11 +77,12 @@
       class: (code, index, char, wrap) => {
         const name = cappuccino.codeRunner(code, index, ["from", "constructed"], "\n");
         let text = `class ${name[0]}`;
-        let parentClass;
+        let parentClass = [];
         if (name[1] == "from") {
           parentClass = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["constructed", "contains"], "\n");
           text += ` extends ${parentClass[0]} {\n`;
         }
+
         //If we skip straight to containment we contain our object
         if (name[1] == "constructed" || parentClass[1] == "constructed") {
           const constructorArgs = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["contains"], ")", wrap, true);
@@ -91,7 +92,10 @@
           text += `constructor ${constructorArgs[0].length > 1 ? constructorArgs[0] : "()"} {${constructor[0]}\n}\n`;
         }
         else {
-          text += `${(parentClass) ? "constructor() \n{\nsuper()\n}\n" : "constructor() {}"}`;
+          //remove the last contains with a really wierd method.
+          if (text.endsWith("contains")) text = text.substring(0, text.length - 8);
+
+          text += `${(parentClass.length > 0) ? "constructor() \n{\nsuper()\n}\n" : "constructor() {}\n"}`;
         }
   
         const inner = cappuccino.codeRunner(
@@ -170,6 +174,30 @@
     cappuccino.whitespaces = [' ', '\n', '\t', '(', ')', ",", "="];
   
     cappuccino.codeRunnerPosition = 0;
+    cappuccino.codeRunnerOpcode = false;
+    cappuccino.lastChar = "";
+
+    //Opcodes for the coderunner that aren't for generation
+    cappuccino.comboStoppers = {
+      //Comments
+      "//": (char,lastChar) => {
+        if (char == "\n") cappuccino.codeRunnerOpcode = false;
+      },
+      "/*": (char, lastChar) => {
+        if (`${lastChar}${char}` == "*/") cappuccino.codeRunnerOpcode = false;
+      },
+
+      //Strings
+      "\"": (char, lastChar) => {
+        if ((char == "\"" && lastChar != "\\") || char == "\n") cappuccino.codeRunnerOpcode = false;
+      },
+      "'": (char, lastChar) => {
+        if ((char == "'" && lastChar != "\\") || char == "\n") cappuccino.codeRunnerOpcode = false;
+      },
+      "`": (char, lastChar) => {
+        if (char == "`" && lastChar != "\\") cappuccino.codeRunnerOpcode = false;
+      }
+    }
   
     //Runs through our code and compiles it to js
     cappuccino.codeRunner = (code, index, untilWord, untilNewline, wrapperIdentifier, prepend) => {
@@ -182,12 +210,37 @@
         cappuccino.codeRunnerPosition++
       ) {
         const char = code.charAt(cappuccino.codeRunnerPosition);
+        //If we have a code runner opcode;
+        if (cappuccino.codeRunnerOpcode) {
+          cappuccino.codeRunnerOpcode(char,cappuccino.lastChar);
+
+          string += char;
+          cappuccino.lastChar = char;
+          continue;
+        }
+        if (cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`]) {
+          cappuccino.codeRunnerOpcode = cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`];
+
+          console.log(word);
+          string += word + char;
+          word = ""
+          cappuccino.lastChar = char;
+          continue;
+        }
+
+        //if we don't do this;
         if (cappuccino.whitespaces.includes(char) || char === untilNewline) {
           //If we reach our until word(s) stop
           if (Array.isArray(untilWord)) {
-            if (untilWord.includes(word)) return [string, word];
+            if (untilWord.includes(word)) {
+              cappuccino.lastChar = char;
+              return [string, word];
+            }
           } else {
-            if (word === untilWord) return [string, word];
+            if (word === untilWord) {
+              cappuccino.lastChar = char;
+              return [string, word];
+            }
           }
   
           //If we stop at a newline then we do
@@ -200,6 +253,7 @@
               string += char;
               string += word;
             }
+            cappuccino.lastChar = char;
             return [string, word];
           }
   
@@ -207,16 +261,20 @@
           if (cappuccino.opcodes[word]) {
             //cappuccino.codeRunnerPosition++;
             string += cappuccino.opcodes[word](code, cappuccino.codeRunnerPosition,char,wrapperIdentifier);
+            cappuccino.lastChar = char;
           } else {
             string += word;
             string += char;
+            cappuccino.lastChar = char;
           }
           word = '';
         } else {
           word += char;
+          cappuccino.lastChar = char;
         }
       }
   
+      cappuccino.lastChar = "";
       return [string, word];
     };
   

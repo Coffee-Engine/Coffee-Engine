@@ -38,7 +38,7 @@ coffeeEngine.registerBehavior("behavior",behavior);`;
 class behavior contains
     function ready()
         //${editor.language["editor.window.typed.initMessage"]}
-        console.log("Hello World!")
+        print("Hello World!")
     end
 
     function update(delta)
