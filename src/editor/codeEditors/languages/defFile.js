@@ -1,6 +1,7 @@
 //Definition File for showing languages in CE
-window.programmingLanguages = {
-    javascript: {
+window.programmingLanguages = [
+    {
+        id:"javascript",
         hasTranslation:true,
         useBlocklyEditor: false,
         fileExtension: "js",
@@ -26,7 +27,8 @@ class behavior {
 coffeeEngine.registerBehavior("behavior",behavior);`;
         },
     },
-    cappuccino: {
+    {
+        id:"cappuccino",
         hasTranslation:true,
         useBlocklyEditor: false,
         fileExtension: "cappu",
@@ -34,19 +36,19 @@ coffeeEngine.registerBehavior("behavior",behavior);`;
         defaultBehavior: () => {
             return `//${editor.language["editor.window.typed.commentMessage"]}
 class behavior contains
-function ready()
-    //${editor.language["editor.window.typed.initMessage"]}
-    console.log("Hello World!")
-end
+    function ready()
+        //${editor.language["editor.window.typed.initMessage"]}
+        console.log("Hello World!")
+    end
 
-function update(delta)
-    //${editor.language["editor.window.typed.updateMessage"]}
-end
+    function update(delta)
+        //${editor.language["editor.window.typed.updateMessage"]}
+    end
 
-//${editor.language["editor.window.typed.drawUncommentMessage"]}
-//function draw()
-//    //${editor.language["editor.window.typed.drawMessage"]}
-//end
+    //${editor.language["editor.window.typed.drawUncommentMessage"]}
+    //function draw()
+    //    //${editor.language["editor.window.typed.drawMessage"]}
+    //end
 end
 
 coffeeEngine.registerBehavior("behavior",behavior)`;
@@ -57,7 +59,8 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
             return cappuccino.compile(code);
         }
     },
-    sugarcube: {
+    {
+        id:"sugarcube",
         hasTranslation:true,
         useBlocklyEditor: true,
         fileExtension: "cescr",
@@ -68,4 +71,4 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
             return sugarcube.generator.workspaceToCode(workspace);
         }
     }
-}
+]

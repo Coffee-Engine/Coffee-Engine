@@ -197,8 +197,9 @@
 
             //Load stuff
             this.fileReader.onload = () => {
+                const { useBlocklyEditor } = editor.getLanguageDefFromExtension(this.readType);
                 //Swap 'em
-                if (this.readType != "cescr") {
+                if (!useBlocklyEditor) {
                     this.monacoArea.style.visibility = "visible";
                     this.blocklyArea.style.visibility = "hidden";
                     this.usingSugarCube = false;
