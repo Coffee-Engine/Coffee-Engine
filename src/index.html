@@ -54,7 +54,7 @@
         <script src="editor/util/langRedirects.js"></script>
 
         <script src="editor/defaultSettings.js"></script>
-        <script src="editor/util/settingStorageHelper.js"></script>
+        <script src="editor/settings/settingStorageHelper.js"></script>
         
         <script src="editor/defaultThemes.js"></script>
         <script src="project/jszip.min.js"></script>
@@ -70,7 +70,7 @@
         <script src="editor/pages/settings.js"></script>
         <script src="editor/pages/editor.js"></script>
         <script src="editor/pages/projectSetup.js"></script>
-        <script src="editor/util/settingElementFromType.js"></script>
+        <script src="editor/settings/settingElementFromType.js"></script>
 
         <!--Project management-->
         <script src="project/projectManagement.js"></script>
@@ -137,6 +137,7 @@
 
         <!--Marked-->
         <script src="editor/codeEditors/marked/marked.js"></script>
+        <script src="editor/codeEditors/marked/coffeeFSSupport.js"></script>
 
         <!--Hopefully monaco doesn't bug out on me-->
         <script src="https://unpkg.com/monaco-editor@0.34.0/min/vs/loader.js"></script>
@@ -150,7 +151,8 @@
         -->
 
         <script src="editor/codeEditors/monaco/injection.js"></script>
-        <script src="editor/codeEditors/monaco/javascript.js"></script>
-        <script src="editor/codeEditors/monaco/markdown.js"></script>
+        <script src="editor/codeEditors/monaco/languages/javascript.js"></script>
+        <script src="editor/codeEditors/monaco/languages/markdown.js"></script>
+        <script src="editor/codeEditors/monaco/languages/cappuccino.js"></script>
     </body>
 </html>

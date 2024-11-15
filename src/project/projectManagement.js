@@ -112,5 +112,21 @@
                 }
             });
         },
+
+        fileExists: (path) => {
+            const split = path.split("/");
+            let fold = project.fileSystem;
+            for (let id = 0; id < split.length; id++) {
+                //If we reach the end of the path continue!
+                if (id == split.length - 1) {
+                    if (!fold[split[id]]) return false;
+                    return true;
+                }
+
+                //make folders if need be
+                if (!fold[split[id]]) return false;
+                fold = fold[split[id]];
+            }
+        }
     };
 })();

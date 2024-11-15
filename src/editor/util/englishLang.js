@@ -128,7 +128,12 @@ editor.EnglishLang = {
     "editor.window.createScript": "New Script",
     "editor.window.sugarcube": "SugarCube",
     "editor.window.javascript": "Javascript",
-    "editor.window.javascript.commentMessage": "This is a default behavior!",
+    "editor.window.cappuccino": "Cappuccino",
+    "editor.window.typed.commentMessage": "This is a default behavior!",
+    "editor.window.typed.initMessage": "Code for initilization goes here.",
+    "editor.window.typed.updateMessage": "Code for each frame goes here.",
+    "editor.window.typed.drawUncommentMessage": "If you want custom draw code uncomment this function.",
+    "editor.window.typed.drawMessage": "Draw Code Here",
 
     "editor.window.createVar": "Create a Variable",
     "editor.window.createVar.temporaryName": "Variable Name",
