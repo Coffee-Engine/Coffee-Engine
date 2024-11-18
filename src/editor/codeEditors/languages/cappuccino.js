@@ -36,7 +36,7 @@
 
       switch (split.length) {
         case 1:
-          console.error(`Error while parsing Cappuchino code, For loop incomplete at character ${index}.`);
+          console.error(`Error while parsing Cappuchino code, For loop incomplete at character ${index}, transcript "${variableName[1]}=${split}" `);
           break;
 
         case 2:
@@ -48,7 +48,7 @@
           break;
       
         default:
-          console.error(`Error while parsing Cappuchino code, For loop invalid at character ${index}.`);
+          console.error(`Error while parsing Cappuchino code, For loop invalid at character ${index}, transcript "${variableName[1]}=${split}" `);
           break;
       }
 
@@ -221,7 +221,6 @@
       if (cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`]) {
         cappuccino.codeRunnerOpcode = cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`];
 
-        console.log(word);
         string += word + char;
         word = ""
         cappuccino.lastChar = char;
