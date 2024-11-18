@@ -65,6 +65,7 @@
         if (event.target.nodeName != "INPUT") event.preventDefault();
         if (event.target.contextFunction) {
             if (!event.defaultPrevented) event.preventDefault();
+            event.target.contextFunction()
         }
     });
 

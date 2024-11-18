@@ -15,12 +15,12 @@
                     {
                         opcode: "openCustomBlockMenu",
                         type: sugarcube.BlockType.BUTTON,
-                        text: "New Block",
+                        text: editor.language["sugarcube.myblocks.block.openCustomBlockMenu"],
                     },
                     {
                         opcode: "declaration",
                         type: sugarcube.BlockType.PROCEDURE_DEFINITION,
-                        text: "Define : ",
+                        text: editor.language["sugarcube.myblocks.block.define"],
                         mutator: "hatBlock_Mutator",
                         contextMenu: "removeCustomBlock",
                         contextMenu: ["editCustomBlock", "removeCustomBlock"],
@@ -146,22 +146,22 @@
                 },
                 contextMenus: {
                     editCustomBlock: {
-                        text: "Edit custom block",
+                        text: editor.language["sugarcube.myblocks.contextMenu.editCustomBlock"],
                         opcode: "editCustomBlock",
                         weight: 3,
                     },
                     removeCustomBlock: {
-                        text: "Remove custom block",
+                        text: editor.language["sugarcube.myblocks.contextMenu.removeCustomBlock"],
                         opcode: "removeCustomBlock",
                         weight: 4,
                     },
                     makeReference: {
-                        text: "Turn into reference",
+                        text: editor.language["sugarcube.myblocks.contextMenu.makeReference"],
                         opcode: "makeReference",
                         weight: 5,
                     },
                     makeOriginal: {
-                        text: "Turn into block",
+                        text: editor.language["sugarcube.myblocks.contextMenu.makeOriginal"],
                         opcode: "makeBlock",
                         weight: 5,
                     },

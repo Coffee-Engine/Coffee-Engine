@@ -18,7 +18,7 @@
                     {
                         opcode: "movesteps",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "move [steps] steps",
+                        text: editor.language["sugarcube.motion.block.movesteps"],
                         filter: ["Node2D", "Node3D"],
                         arguments: {
                             steps: {
@@ -31,7 +31,7 @@
                     {
                         opcode: "gotoxy",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "go to x:[x] y:[y]",
+                        text: editor.language["sugarcube.motion.block.gotoxy"],
                         filter: ["Node2D"],
                         arguments: {
                             x: {
@@ -45,7 +45,7 @@
                     {
                         opcode: "gotoxyz",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "go to x:[x] y:[y] z:[z]",
+                        text: editor.language["sugarcube.motion.block.gotoxyz"],
                         filter: ["Node3D"],
                         arguments: {
                             x: {
@@ -63,7 +63,7 @@
                     {
                         opcode: "setx",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set x to [x]",
+                        text: editor.language["sugarcube.motion.block.setx"],
                         filter: ["Node2D", "Node3D"],
                         arguments: {
                             x: {
@@ -74,7 +74,7 @@
                     {
                         opcode: "sety",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set y to [y]",
+                        text: editor.language["sugarcube.motion.block.sety"],
                         filter: ["Node2D", "Node3D"],
                         arguments: {
                             y: {
@@ -85,7 +85,7 @@
                     {
                         opcode: "setz",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set z to [z]",
+                        text: editor.language["sugarcube.motion.block.setz"],
                         filter: ["Node3D"],
                         arguments: {
                             z: {
@@ -96,7 +96,7 @@
                     {
                         opcode: "changex",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "change x by [x]",
+                        text: editor.language["sugarcube.motion.block.changex"],
                         filter: ["Node2D", "Node3D"],
                         arguments: {
                             x: {
@@ -108,7 +108,7 @@
                     {
                         opcode: "changey",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "change y by [y]",
+                        text: editor.language["sugarcube.motion.block.changey"],
                         filter: ["Node2D", "Node3D"],
                         arguments: {
                             y: {
@@ -120,7 +120,7 @@
                     {
                         opcode: "changez",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "change z by [z]",
+                        text: editor.language["sugarcube.motion.block.changez"],
                         filter: ["Node3D"],
                         arguments: {
                             z: {
@@ -134,26 +134,26 @@
                     {
                         opcode: "xposition",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "x position",
+                        text: editor.language["sugarcube.motion.block.xposition"],
                         filter: ["Node2D", "Node3D"],
                     },
                     {
                         opcode: "yposition",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "y position",
+                        text: editor.language["sugarcube.motion.block.yposition"],
                         filter: ["Node2D", "Node3D"],
                     },
                     {
                         opcode: "zposition",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "z position",
+                        text: editor.language["sugarcube.motion.block.zposition"],
                         filter: ["Node3D"],
                     },
                     "---",
                     {
                         opcode: "turnAround2D",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "turn [icon] [degrees] degrees",
+                        text: editor.language["sugarcube.motion.block.turnAround2D"],
                         filter: ["Node2D"],
                         arguments: {
                             icon: {
@@ -169,7 +169,7 @@
                     {
                         opcode: "setrotation2D",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set my direction to be [degrees]",
+                        text: editor.language["sugarcube.motion.block.setrotation2D"],
                         filter: ["Node2D"],
                         arguments: {
                             degrees: {
@@ -182,7 +182,7 @@
                     {
                         opcode: "lookAtXY",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "look towards x: [x] y: [y]",
+                        text: editor.language["sugarcube.motion.block.lookAtXY"],
                         filter: ["Node2D"],
                         arguments: {
                             x: {
@@ -196,7 +196,7 @@
                     {
                         opcode: "turnAround3D",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "turn [icon] [degrees] degrees on the [axis] axis",
+                        text: editor.language["sugarcube.motion.block.turnAround3D"],
                         filter: ["Node3D"],
                         arguments: {
                             icon: {
@@ -215,7 +215,7 @@
                     {
                         opcode: "setrotation3D",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set my [axis] to be [degrees]",
+                        text: editor.language["sugarcube.motion.block.setrotation3D"],
                         filter: ["Node3D"],
                         arguments: {
                             degrees: {
@@ -231,7 +231,7 @@
                     {
                         opcode: "lookAtXYZ",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "look towards x: [x] y: [y] z: [z]",
+                        text: editor.language["sugarcube.motion.block.lookAtXYZ"],
                         filter: ["Node3D"],
                         arguments: {
                             x: {
@@ -250,32 +250,36 @@
                     {
                         opcode: "direction",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "direction",
+                        text: editor.language["sugarcube.motion.block.direction"],
                         filter: ["Node2D"],
                     },
                     {
                         opcode: "yaw",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "yaw",
+                        text: editor.language["sugarcube.motion.yaw"],
                         filter: ["Node3D"],
                     },
                     {
                         opcode: "pitch",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "pitch",
+                        text: editor.language["sugarcube.motion.pitch"],
                         filter: ["Node3D"],
                     },
                     {
                         opcode: "roll",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "roll",
+                        text: editor.language["sugarcube.motion.roll"],
                         filter: ["Node3D"],
                     },
                 ],
                 menus: {
                     direction: {
                         acceptReporters: true,
-                        items: ["yaw", "pitch", "roll"],
+                        items: [
+                            {text:editor.language["sugarcube.motion.yaw"], value:"yaw"}, 
+                            {text:editor.language["sugarcube.motion.pitch"], value:"pitch"}, 
+                            {text:editor.language["sugarcube.motion.roll"], value:"roll"}
+                        ],
                     },
                 },
                 fields: {

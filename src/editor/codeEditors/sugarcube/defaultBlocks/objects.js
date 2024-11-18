@@ -14,7 +14,7 @@
                     {
                         opcode: "openVariableMenu",
                         type: sugarcube.BlockType.BUTTON,
-                        text: "New Table",
+                        text: editor.language["sugarcube.tables.block.openVariableMenu"],
                     },
                     {
                         opcode: "getTable",
@@ -26,12 +26,12 @@
                     {
                         opcode: "setKey",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set [key] in [var] to [val]",
+                        text: editor.language["sugarcube.tables.block.setKey"],
                         hideFromPalette: true,
                         arguments: {
                             key: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "Key",
+                                defaultValue: editor.language["sugarcube.lists.value.key"],
                             },
                             var: {
                                 type: sugarcube.ArgumentType.STRING,
@@ -46,12 +46,12 @@
                     {
                         opcode: "getKey",
                         type: sugarcube.BlockType.REPORTER_ANY,
-                        text: "get [key] in [var]",
+                        text: editor.language["sugarcube.tables.block.getKey"],
                         hideFromPalette: true,
                         arguments: {
                             key: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "Key",
+                                defaultValue: editor.language["sugarcube.lists.value.key"],
                             },
                             var: {
                                 type: sugarcube.ArgumentType.STRING,

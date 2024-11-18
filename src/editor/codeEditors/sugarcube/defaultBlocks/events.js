@@ -13,19 +13,19 @@
                     {
                         opcode: "onStart",
                         type: sugarcube.BlockType.HAT,
-                        text: "on game start",
+                        text: editor.language["sugarcube.events.block.onStart"],
                     },
                     {
                         opcode: "onUpdate",
                         type: sugarcube.BlockType.HAT,
-                        text: "on object update",
+                        text: editor.language["sugarcube.events.block.onUpdate"],
                     },
                     {
                         opcode: "whenKeyPressed",
                         eventListenerName: "keydown",
                         eventListenerTarget: "window",
                         type: sugarcube.BlockType.HAT,
-                        text: "when [key] key pressed",
+                        text: editor.language["sugarcube.events.block.whenKeyPressed"],
                         arguments: {
                             key: {
                                 menu: "keys",
@@ -36,14 +36,14 @@
                         opcode: "whenClicked",
                         eventListenerName: "onClicked",
                         type: sugarcube.BlockType.HAT,
-                        text: "when I'm clicked",
+                        text: editor.language["sugarcube.events.block.whenClicked"],
                     },
                     "---",
                     {
                         opcode: "broadcastRecieve",
                         type: sugarcube.BlockType.HAT,
                         eventListenerName: "onGlobalBroadcast",
-                        text: "when I recieve [message]",
+                        text: editor.language["sugarcube.events.block.broadcastRecieve"],
                         arguments: {
                             message: {
                                 menu: "messages",
@@ -53,7 +53,7 @@
                     {
                         opcode: "broadcastSend",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "broadcast [message]",
+                        text: editor.language["sugarcube.events.block.broadcastSend"],
                         arguments: {
                             message: {
                                 menu: "messages",

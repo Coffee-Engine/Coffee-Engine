@@ -27,12 +27,24 @@
                     {
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set sprite to [image]",
+                        text: editor.language["sugarcube.looks.block.setSprite"],
                         filter: ["Sprite"],
                         arguments: {
                             image: {
                                 type: sugarcube.ArgumentType.CUSTOM,
                                 customType:"Image"
+                            }
+                        }
+                    },
+                    {
+                        opcode: "setTint",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setTint"],
+                        filter: ["Sprite"],
+                        arguments: {
+                            tint: {
+                                type: sugarcube.ArgumentType.COLOR,
+                                defaultValue:"#0000ff",
                             }
                         }
                     }

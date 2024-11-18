@@ -178,7 +178,7 @@
                     {
                         opcode: "isKeyDown",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "key [key] pressed?",
+                        text: editor.language["sugarcube.sensing.block.isKeyDown"],
                         arguments: {
                             key: {
                                 type: sugarcube.ArgumentType.STRING,
@@ -190,7 +190,7 @@
                     {
                         opcode: "mouseDown",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[button] mouse button down",
+                        text: editor.language["sugarcube.sensing.block.mouseDown"],
                         arguments: {
                             button: {
                                 type: sugarcube.ArgumentType.STRING,
@@ -201,18 +201,18 @@
                     {
                         opcode: "mouseX",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "mouse x",
+                        text: editor.language["sugarcube.sensing.block.mouseX"],
                     },
                     {
                         opcode: "mouseY",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "mouse y",
+                        text: editor.language["sugarcube.sensing.block.mouseY"],
                     },
                     "---",
                     {
                         opcode: "controllerConnected",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "is controller [id] connected?",
+                        text: editor.language["sugarcube.sensing.block.controllerConnected"],
                         arguments: {
                             id: {
                                 menu: "controllers",
@@ -222,7 +222,7 @@
                     {
                         opcode: "controllerID",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "ID of controller [id]",
+                        text: editor.language["sugarcube.sensing.block.controllerID"],
                         arguments: {
                             id: {
                                 menu: "controllers",
@@ -232,7 +232,7 @@
                     {
                         opcode: "controllerAxis",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "axis [axis] of controller [id]",
+                        text: editor.language["sugarcube.sensing.block.controllerAxis"],
                         arguments: {
                             axis: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -247,7 +247,7 @@
                     {
                         opcode: "controllerButtonValue",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "value of [button] on controller [id]",
+                        text: editor.language["sugarcube.sensing.block.controllerButtonValue"],
                         arguments: {
                             button: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -262,7 +262,7 @@
                     {
                         opcode: "controllerButton",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "is [button] down on controller [id]",
+                        text: editor.language["sugarcube.sensing.block.controllerButton"],
                         arguments: {
                             button: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -278,7 +278,7 @@
                     {
                         opcode: "timer",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "timer",
+                        text: editor.language["sugarcube.sensing.block.timer"],
                     },
                 ],
                 menus: {
@@ -288,9 +288,12 @@
                     },
                     mouseButtons: {
                         items: [
-                            { text: "primary", value: "0" },
-                            { text: "secondary", value: "2" },
-                            { text: "tertiary", value: "1" },
+                            { text: editor.language["sugarcube.sensing.menu.mouseButtons.primary"], value: "0" },
+                            { text: editor.language["sugarcube.sensing.menu.mouseButtons.secondary"], value: "2" },
+                            { text: editor.language["sugarcube.sensing.menu.mouseButtons.tertiary"], value: "1" },
+                            //I have learned these are called the orders of magnitude.
+                            { text: editor.language["sugarcube.sensing.menu.mouseButtons.quaternary"], value: "4" },
+                            { text: editor.language["sugarcube.sensing.menu.mouseButtons.quinary"], value: "5" },
                         ],
                         acceptReporters: true,
                     },
@@ -311,7 +314,8 @@
                         //Stuff
                         initilize: "controller_Init",
                         manualNodeValue: true,
-                        //render:"angle_Render",
+
+                        render:"controller_Value_Render",
                     },
                     Controller_Axis: {
                         acceptReporters: true,
@@ -324,7 +328,8 @@
                         //Stuff
                         initilize: "controller_Init",
                         manualNodeValue: true,
-                        //render:"angle_Render",
+
+                        render:"controller_Value_Render",
                     },
                 },
             };
@@ -384,7 +389,6 @@
         controller_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
-            field.textContent_.nodeValue = "90°";
         }
 
         controller_Editor(field) {
@@ -473,6 +477,10 @@
 
             //Return our div so we can put it on the field itself
             return div;
+        }
+
+        controller_Value_Render(value, textContent) {
+            textContent.nodeValue = editor.language[`sugarcube.sensing.field.controller.${value}`] || value;
         }
     }
 

@@ -13,26 +13,26 @@
                     {
                         opcode: "length",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "length of [A]",
+                        text: editor.language["sugarcube.strings.block.length"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                         },
                     },
                     {
                         opcode: "join",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "join [A] [B]",
+                        text: editor.language["sugarcube.strings.block.join"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                             B: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "banana",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit2"],
                             },
                         },
                     },
@@ -40,22 +40,22 @@
                     {
                         opcode: "reverse",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "reverse [A]",
+                        text: editor.language["sugarcube.strings.block.reverse"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                         },
                     },
                     {
                         opcode: "repeat",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "repeat [A] [B] times",
+                        text: editor.language["sugarcube.strings.block.repeat"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                             B: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -66,19 +66,19 @@
                     {
                         opcode: "replace",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "replace [A] in [B] with [C]",
+                        text: editor.language["sugarcube.strings.block.replace"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                             B: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple banana",
+                                defaultValue: editor.language["sugarcube.strings.block.replace.defaultValue"],
                             },
                             C: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "pear",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit3"],
                             },
                         },
                     },
@@ -86,7 +86,7 @@
                     {
                         opcode: "characterAt",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "letter [A] of [B]",
+                        text: editor.language["sugarcube.strings.block.characterAt"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -94,14 +94,14 @@
                             },
                             B: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                         },
                     },
                     {
                         opcode: "charactersBetween",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "letters [A] to [B] of [C]",
+                        text: editor.language["sugarcube.strings.block.charactersBetween"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -113,22 +113,22 @@
                             },
                             C: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                         },
                     },
                     {
                         opcode: "split",
                         type: sugarcube.BlockType.ARRAY,
-                        text: "split [A] at every [B]",
+                        text: editor.language["sugarcube.strings.block.split"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple,banana,pear",
+                                defaultValue: editor.language["sugarcube.strings.block.split.defaultValue.combined"],
                             },
                             B: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: ",",
+                                defaultValue: editor.language["sugarcube.strings.block.split.defaultValue.splitter"],
                             },
                         },
                     },
@@ -136,29 +136,29 @@
                     {
                         opcode: "ifThen",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "if [A] then [B] else [C]",
+                        text: editor.language["sugarcube.strings.block.ifThen"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.BOOLEAN,
                             },
                             B: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                             C: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "banana",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit2"],
                             },
                         },
                     },
                     {
                         opcode: "convertToCase",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "make [A] [B]",
+                        text: editor.language["sugarcube.strings.block.convertToCase"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                             B: {
                                 menu: "caseTypes",
@@ -168,11 +168,11 @@
                     {
                         opcode: "includes",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] contains [B]",
+                        text: editor.language["sugarcube.strings.block.includes"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "apple",
+                                defaultValue: editor.language["sugarcube.strings.value.fruit1"],
                             },
                             B: {
                                 type: sugarcube.ArgumentType.STRING,
@@ -183,7 +183,11 @@
                 ],
                 menus: {
                     caseTypes: {
-                        items: ["uppercase", "lowercase", "title-case"],
+                        items: [
+                            { text: editor.language["sugarcube.strings.menu.caseTypes.uppercase"], value: "uppercase" },
+                            { text: editor.language["sugarcube.strings.menu.caseTypes.lowercase"], value: "lowercase" },
+                            { text: editor.language["sugarcube.strings.menu.caseTypes.title-case"], value: "title-case" },
+                        ]
                     },
                 },
             };

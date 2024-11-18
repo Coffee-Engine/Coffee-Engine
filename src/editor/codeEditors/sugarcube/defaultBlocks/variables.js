@@ -14,7 +14,7 @@
                     {
                         opcode: "openVariableMenu",
                         type: sugarcube.BlockType.BUTTON,
-                        text: "New Variable",
+                        text: editor.language["sugarcube.variables.block.openVariableMenu"],
                     },
                     {
                         opcode: "getVariable",
@@ -26,7 +26,7 @@
                     {
                         opcode: "setVariable",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "set [var] to [val]",
+                        text: editor.language["sugarcube.variables.block.setVariable"],
                         hideFromPalette: true,
                         arguments: {
                             var: {
@@ -34,14 +34,14 @@
                             },
                             val: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "cocoa",
+                                defaultValue: editor.language["sugarcube.variables.block.setVariable.defaultValue"],
                             },
                         },
                     },
                     {
                         opcode: "changeVariable",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "change [var] by [val]",
+                        text: editor.language["sugarcube.variables.block.changeVariable"],
                         hideFromPalette: true,
                         arguments: {
                             var: {
@@ -56,7 +56,7 @@
                     {
                         opcode: "multiplyVariable",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "multiply [var] by [val]",
+                        text: editor.language["sugarcube.variables.block.multiplyVariable"],
                         hideFromPalette: true,
                         arguments: {
                             var: {

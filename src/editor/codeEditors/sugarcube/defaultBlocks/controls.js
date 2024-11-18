@@ -13,7 +13,7 @@
                     {
                         opcode: "ifStatement",
                         type: sugarcube.BlockType.CONDITIONAL,
-                        text: "if [condition] then [dummy] [statement]",
+                        text: editor.language["sugarcube.controls.block.ifStatement"],
                         arguments: {
                             condition: {
                                 type: sugarcube.ArgumentType.BOOLEAN,
@@ -29,7 +29,7 @@
                     {
                         opcode: "ifElse_Statement",
                         type: sugarcube.BlockType.CONDITIONAL,
-                        text: "if [condition] then [dummy] [statement] else [dummy2] [statement2]",
+                        text: editor.language["sugarcube.controls.block.ifElse_Statement"],
                         arguments: {
                             condition: {
                                 type: sugarcube.ArgumentType.BOOLEAN,
@@ -52,7 +52,7 @@
                     {
                         opcode: "repeat",
                         type: sugarcube.BlockType.CONDITIONAL,
-                        text: "repeat [num] [dummy] [statement]",
+                        text: editor.language["sugarcube.controls.block.repeat"],
                         arguments: {
                             num: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -69,7 +69,7 @@
                     {
                         opcode: "foreach",
                         type: sugarcube.BlockType.CONDITIONAL,
-                        text: "for each item in [array] do [dummy] [statement]",
+                        text: editor.language["sugarcube.controls.block.foreach"],
                         arguments: {
                             array: {
                                 type: sugarcube.ArgumentType.ARRAY,
@@ -85,7 +85,7 @@
                     {
                         opcode: "repeatUNT",
                         type: sugarcube.BlockType.CONDITIONAL,
-                        text: "repeat until [condition] [dummy] [statement]",
+                        text: editor.language["sugarcube.controls.block.repeatUNT"],
                         arguments: {
                             condition: {
                                 type: sugarcube.ArgumentType.BOOLEAN,
@@ -101,7 +101,7 @@
                     {
                         opcode: "while",
                         type: sugarcube.BlockType.CONDITIONAL,
-                        text: "while [condition] [dummy] [statement]",
+                        text: editor.language["sugarcube.controls.block.while"],
                         arguments: {
                             condition: {
                                 type: sugarcube.ArgumentType.BOOLEAN,
@@ -118,7 +118,7 @@
                     {
                         opcode: "call",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "call [reference]",
+                        text: editor.language["sugarcube.controls.block.call"],
                         arguments: {
                             reference: {
                                 type: sugarcube.ArgumentType.REFERENCE,

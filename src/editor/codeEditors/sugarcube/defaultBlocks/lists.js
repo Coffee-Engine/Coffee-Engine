@@ -14,7 +14,7 @@
                     {
                         opcode: "openVariableMenu",
                         type: sugarcube.BlockType.BUTTON,
-                        text: "New List",
+                        text: editor.language["sugarcube.lists.block.openVariableMenu"],
                     },
                     {
                         opcode: "getList",
@@ -27,11 +27,11 @@
                     {
                         opcode: "addItem",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "add [item] to [list]",
+                        text: editor.language["sugarcube.lists.block.addItem"],
                         hideFromPalette: true,
                         arguments: {
                             item: {
-                                defaultValue: "item",
+                                defaultValue: editor.language["sugarcube.lists.value.item"],
                                 type: sugarcube.ArgumentType.STRING,
                             },
                             list: {
@@ -42,7 +42,7 @@
                     {
                         opcode: "removeItem",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "remove item [item] from [list]",
+                        text: editor.language["sugarcube.lists.block.removeItem"],
                         hideFromPalette: true,
                         arguments: {
                             item: {
@@ -57,7 +57,7 @@
                     {
                         opcode: "clearList",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "clear [list]",
+                        text: editor.language["sugarcube.lists.block.clearList"],
                         hideFromPalette: true,
                         arguments: {
                             list: {
@@ -68,11 +68,11 @@
                     {
                         opcode: "insertItem",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "insert [value] before item [item] of [list]",
+                        text: editor.language["sugarcube.lists.block.insertItem"],
                         hideFromPalette: true,
                         arguments: {
                             value: {
-                                defaultValue: "Hello",
+                                defaultValue: editor.language["sugarcube.lists.value.greeting"],
                                 type: sugarcube.ArgumentType.STRING,
                             },
                             item: {
@@ -87,11 +87,11 @@
                     {
                         opcode: "replaceItem",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "replace item [item] of [list] with [value]",
+                        text: editor.language["sugarcube.lists.block.replaceItem"],
                         hideFromPalette: true,
                         arguments: {
                             value: {
-                                defaultValue: "Hello",
+                                defaultValue: editor.language["sugarcube.lists.value.greeting"],
                                 type: sugarcube.ArgumentType.STRING,
                             },
                             item: {
@@ -106,7 +106,7 @@
                     {
                         opcode: "getItem",
                         type: sugarcube.BlockType.REPORTER_ANY,
-                        text: "item [item] of [list]",
+                        text: editor.language["sugarcube.lists.block.getItem"],
                         hideFromPalette: true,
                         arguments: {
                             item: {
@@ -121,11 +121,11 @@
                     {
                         opcode: "getItemNumber",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "item # of [value] in [list]",
+                        text: editor.language["sugarcube.lists.block.getItemNumber"],
                         hideFromPalette: true,
                         arguments: {
                             value: {
-                                defaultValue: "Hello",
+                                defaultValue: editor.language["sugarcube.lists.value.greeting"],
                                 type: sugarcube.ArgumentType.STRING,
                             },
                             list: {
@@ -136,7 +136,7 @@
                     {
                         opcode: "length",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "length of [list]",
+                        text: editor.language["sugarcube.lists.block.length"],
                         hideFromPalette: true,
                         arguments: {
                             list: {
@@ -147,11 +147,11 @@
                     {
                         opcode: "getItemContainment",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[list] contains [value]",
+                        text: editor.language["sugarcube.lists.block.getItemContainment"],
                         hideFromPalette: true,
                         arguments: {
                             value: {
-                                defaultValue: "Hello",
+                                defaultValue: editor.language["sugarcube.lists.value.greeting"],
                                 type: sugarcube.ArgumentType.STRING,
                             },
                             list: {

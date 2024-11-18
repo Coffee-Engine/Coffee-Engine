@@ -13,7 +13,7 @@
                     {
                         opcode: "add",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] + [B]",
+                        text: editor.language["sugarcube.operators.block.add"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -26,7 +26,7 @@
                     {
                         opcode: "sub",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] - [B]",
+                        text: editor.language["sugarcube.operators.block.sub"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -39,7 +39,7 @@
                     {
                         opcode: "mul",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] * [B]",
+                        text: editor.language["sugarcube.operators.block.mul"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -52,7 +52,7 @@
                     {
                         opcode: "div",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] / [B]",
+                        text: editor.language["sugarcube.operators.block.div"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -65,7 +65,7 @@
                     {
                         opcode: "pow",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] ^ [B]",
+                        text: editor.language["sugarcube.operators.block.pow"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -78,7 +78,7 @@
                     {
                         opcode: "root",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] √ [B]",
+                        text: editor.language["sugarcube.operators.block.root"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -93,7 +93,7 @@
                     {
                         opcode: "inverse",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "-[A]",
+                        text: editor.language["sugarcube.operators.block.inverse"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -105,7 +105,7 @@
                     {
                         opcode: "randomNumber",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "random number between [A] and [B]",
+                        text: editor.language["sugarcube.operators.block.randomNumber"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -121,7 +121,7 @@
                     {
                         opcode: "notEqual",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] ≠ [B]",
+                        text: editor.language["sugarcube.operators.block.notEqual"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -135,7 +135,7 @@
                     {
                         opcode: "lessThan",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] < [B]",
+                        text: editor.language["sugarcube.operators.block.lessThan"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -149,7 +149,7 @@
                     {
                         opcode: "lessThanEqualTo",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] ≤ [B]",
+                        text: editor.language["sugarcube.operators.block.lessThanEqualTo"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -163,7 +163,7 @@
                     {
                         opcode: "equalTo",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] = [B]",
+                        text: editor.language["sugarcube.operators.block.equalTo"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -177,7 +177,7 @@
                     {
                         opcode: "moreThan",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] > [B]",
+                        text: editor.language["sugarcube.operators.block.moreThan"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -191,7 +191,7 @@
                     {
                         opcode: "moreThanEqualTo",
                         type: sugarcube.BlockType.BOOLEAN,
-                        text: "[A] ≥ [B]",
+                        text: editor.language["sugarcube.operators.block.moreThanEqualTo"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -206,7 +206,7 @@
                     {
                         opcode: "modulo",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] mod [B]",
+                        text: editor.language["sugarcube.operators.block.modulo"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -219,7 +219,7 @@
                     {
                         opcode: "round",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "round [A]",
+                        text: editor.language["sugarcube.operators.block.round"],
                         arguments: {
                             A: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -229,7 +229,7 @@
                     {
                         opcode: "arithmatic",
                         type: sugarcube.BlockType.REPORTER,
-                        text: "[A] of [B]",
+                        text: editor.language["sugarcube.operators.block.arithmatic"],
                         arguments: {
                             A: {
                                 menu: "operations",
@@ -243,20 +243,20 @@
                 menus: {
                     operations: {
                         items: [
-                            { text: "abs", value: "abs" },
-                            { text: "floor", value: "floor" },
-                            { text: "ceiling", value: "ceil" },
-                            { text: "sqrt", value: "sqrt" },
-                            { text: "sin", value: "sin" },
-                            { text: "cos", value: "cos" },
-                            { text: "tan", value: "tan" },
-                            { text: "asin", value: "asin" },
-                            { text: "acos", value: "acos" },
-                            { text: "atan", value: "atan" },
-                            { text: "ln", value: "log" },
-                            { text: "log", value: "log10" },
-                            { text: "e ^", value: "ePOW" },
-                            { text: "10 ^", value: "tenPOW" },
+                            { text: editor.language["sugarcube.operators.menu.operations.abs"], value: "abs" },
+                            { text: editor.language["sugarcube.operators.menu.operations.floor"], value: "floor" },
+                            { text: editor.language["sugarcube.operators.menu.operations.ceiling"], value: "ceil" },
+                            { text: editor.language["sugarcube.operators.menu.operations.sqrt"], value: "sqrt" },
+                            { text: editor.language["sugarcube.operators.menu.operations.sin"], value: "sin" },
+                            { text: editor.language["sugarcube.operators.menu.operations.cos"], value: "cos" },
+                            { text: editor.language["sugarcube.operators.menu.operations.tan"], value: "tan" },
+                            { text: editor.language["sugarcube.operators.menu.operations.asin"], value: "asin" },
+                            { text: editor.language["sugarcube.operators.menu.operations.acos"], value: "acos" },
+                            { text: editor.language["sugarcube.operators.menu.operations.atan"], value: "atan" },
+                            { text: editor.language["sugarcube.operators.menu.operations.ln"], value: "log" },
+                            { text: editor.language["sugarcube.operators.menu.operations.log"], value: "log10" },
+                            { text: editor.language["sugarcube.operators.menu.operations.ePOW"], value: "ePOW" },
+                            { text: editor.language["sugarcube.operators.menu.operations.tenPOW"], value: "tenPOW" },
                         ],
                     },
                 },
