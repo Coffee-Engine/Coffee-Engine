@@ -3,7 +3,7 @@
         getInfo() {
             return {
                 id: "tables",
-                name: "Tables",
+                name: editor.language["sugarcube.tables"],
                 color1: "#8672FF",
                 color2: "#855CD6",
                 color3: "#774DCB",
@@ -31,7 +31,7 @@
                         arguments: {
                             key: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: editor.language["sugarcube.lists.value.key"],
+                                defaultValue: editor.language["sugarcube.tables.value.key"],
                             },
                             var: {
                                 type: sugarcube.ArgumentType.STRING,
@@ -51,7 +51,7 @@
                         arguments: {
                             key: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: editor.language["sugarcube.lists.value.key"],
+                                defaultValue: editor.language["sugarcube.tables.value.key"],
                             },
                             var: {
                                 type: sugarcube.ArgumentType.STRING,

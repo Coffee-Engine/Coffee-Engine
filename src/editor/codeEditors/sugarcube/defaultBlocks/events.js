@@ -3,7 +3,7 @@
         getInfo() {
             return {
                 id: "events",
-                name: "Events",
+                name: editor.language["sugarcube.events"],
                 color1: "#ffbf00",
                 color2: "#e6ac00",
                 color3: "#cc9900",

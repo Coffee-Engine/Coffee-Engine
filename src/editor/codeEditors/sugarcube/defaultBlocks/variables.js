@@ -3,7 +3,7 @@
         getInfo() {
             return {
                 id: "variables",
-                name: "Variables",
+                name: editor.language["sugarcube.variables"],
                 color1: "#FF8C1A",
                 color2: "#ED7D0C",
                 color3: "#DB6E00",

@@ -4,7 +4,7 @@
         getInfo() {
             return {
                 id: "debugging",
-                name: "Debug",
+                name: editor.language["sugarcube.debugging"],
                 color1: "#29beb8",
                 color2: "#44c1bd",
                 color3: "#3aa8a4",
@@ -14,33 +14,33 @@
                     {
                         opcode: "log",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "log [ITEM]",
+                        text: editor.language["sugarcube.debugging.block.log"],
                         arguments: {
                             ITEM: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "Log Me!",
+                                defaultValue: editor.language["sugarcube.debugging.block.log.defaultValue"],
                             },
                         },
                     },
                     {
                         opcode: "warn",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "warn [ITEM]",
+                        text: editor.language["sugarcube.debugging.block.warn"],
                         arguments: {
                             ITEM: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "Whoops!",
+                                defaultValue: editor.language["sugarcube.debugging.block.warn.defaultValue"],
                             },
                         },
                     },
                     {
                         opcode: "error",
                         type: sugarcube.BlockType.COMMAND,
-                        text: "error [ITEM]",
+                        text: editor.language["sugarcube.debugging.block.error"],
                         arguments: {
                             ITEM: {
                                 type: sugarcube.ArgumentType.STRING,
-                                defaultValue: "An Error",
+                                defaultValue: editor.language["sugarcube.debugging.block.error.defaultValue"],
                             },
                         },
                     },

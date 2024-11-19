@@ -152,6 +152,7 @@ editor.EnglishLang = {
     "editor.window.createBlock.statementInput": "Statement",
     "editor.window.createBlock.referenceInput": "Function",
 
+    "sugarcube.motion": "Motion",
     "sugarcube.motion.block.movesteps":"move [steps] steps",
     "sugarcube.motion.block.gotoxy":"go to x:[x] y:[y]",
     "sugarcube.motion.block.gotoxyz":"go to x:[x] y:[y] z:[z]",
@@ -175,9 +176,17 @@ editor.EnglishLang = {
     "sugarcube.motion.pitch":"pitch",
     "sugarcube.motion.roll":"roll",
 
+    "sugarcube.looks": "Looks",
     "sugarcube.looks.block.setSprite": "set sprite to [image]",
     "sugarcube.looks.block.setTint": "tint myself [tint]",
+
+    "sugarcube.sounds": "Sounds",
+    "sugarcube.sounds.block.playLocal": "play [sound]",
+    "sugarcube.sounds.block.playGlobal": "play [sound] globally",
+    "sugarcube.sounds.block.playAtXY": "play [sound] at x: [x] y: [y]",
+    "sugarcube.sounds.block.playAtXYZ": "play [sound] at x: [x] y: [y] z: [z]",
     
+    "sugarcube.events": "Events",
     "sugarcube.events.block.onStart": "on ready",
     "sugarcube.events.block.onUpdate": "every frame",
     "sugarcube.events.block.whenKeyPressed": "when [key] key pressed",
@@ -185,6 +194,7 @@ editor.EnglishLang = {
     "sugarcube.events.block.broadcastRecieve": "when I recieve [message]",
     "sugarcube.events.block.broadcastSend": "broadcast [message]",
 
+    "sugarcube.controls": "Controls",
     "sugarcube.controls.block.ifStatement": "if [condition] then [dummy] [statement]",
     "sugarcube.controls.block.ifElse_Statement": "if [condition] then [dummy] [statement] else [dummy2] [statement2]",
     "sugarcube.controls.block.repeat": "repeat [num] [dummy] [statement]",
@@ -193,6 +203,7 @@ editor.EnglishLang = {
     "sugarcube.controls.block.while": "while [condition] [dummy] [statement]",
     "sugarcube.controls.block.call": "call [reference]",
 
+    "sugarcube.sensing": "Sensing",
     "sugarcube.sensing.block.isKeyDown": "key [key] pressed?",
     "sugarcube.sensing.block.mouseDown": "[button] mouse button down",
     "sugarcube.sensing.block.mouseX": "mouse x",
@@ -229,6 +240,7 @@ editor.EnglishLang = {
     "sugarcube.sensing.field.controller.Right-Bumper": "right bumper",
     "sugarcube.sensing.field.controller.Right-Trigger": "right trigger",
 
+    "sugarcube.scene": "Scene",
     "sugarcube.scene.block.loadScene": "load scene [scene]",
     "sugarcube.scene.block.getParent": "my parent",
     "sugarcube.scene.block.getMyself": "myself",
@@ -239,6 +251,7 @@ editor.EnglishLang = {
     "sugarcube.scene.block.setVariable": "set variable [var] of [object] to [value]",
     "sugarcube.scene.block.getVariable": "variable [var] of [object]",
 
+    "sugarcube.operators": "Operators",
     "sugarcube.operators.block.add": "[A] + [B]",
     "sugarcube.operators.block.sub": "[A] - [B]",
     "sugarcube.operators.block.mul": "[A] * [B]",
@@ -271,10 +284,10 @@ editor.EnglishLang = {
     "sugarcube.operators.menu.operations.ePOW": "e ^",
     "sugarcube.operators.menu.operations.tenPOW": "10 ^",
 
+    "sugarcube.strings": "Strings",
     "sugarcube.strings.value.fruit1": "apple",
     "sugarcube.strings.value.fruit2": "banana",
     "sugarcube.strings.value.fruit3": "pear",
-
     "sugarcube.strings.block.length": "length of [A]",
     "sugarcube.strings.block.join": "join [A] [B]",
     "sugarcube.strings.block.reverse": "reverse [A]",
@@ -293,12 +306,14 @@ editor.EnglishLang = {
     "sugarcube.strings.menu.caseTypes.lowercase": "lowercase",
     "sugarcube.strings.menu.caseTypes.title-case": "title-case",
 
+    "sugarcube.variables": "Variables",
     "sugarcube.variables.block.openVariableMenu": "New Variable",
     "sugarcube.variables.block.setVariable": "set [var] to [val]",
     "sugarcube.variables.block.setVariable.defaultValue": "cocoa",
     "sugarcube.variables.block.changeVariable": "change [var] by [val]",
     "sugarcube.variables.block.multiplyVariable": "multiply [var] by [val]",
 
+    "sugarcube.lists": "Lists",
     "sugarcube.lists.value.item": "item",
     "sugarcube.lists.value.greeting": "Hello",
     "sugarcube.lists.block.openVariableMenu": "New List",
@@ -312,15 +327,30 @@ editor.EnglishLang = {
     "sugarcube.lists.block.length": "length of [list]",
     "sugarcube.lists.block.getItemContainment": "[list] contains [value]",
 
-    "sugarcube.lists.value.key": "key",
+    "sugarcube.tables": "Tables",
+    "sugarcube.tables.value.key": "key",
     "sugarcube.tables.block.openVariableMenu": "New Table",
     "sugarcube.tables.block.setKey": "set [key] in [var] to [val]",
     "sugarcube.tables.block.getKey": "get [key] in [var]",
 
+    "sugarcube.myblocks": "My Blocks",
     "sugarcube.myblocks.block.openCustomBlockMenu": "New Block",
     "sugarcube.myblocks.block.define": "Define : ",
     "sugarcube.myblocks.contextMenu.editCustomBlock": "Edit custom block",
     "sugarcube.myblocks.contextMenu.removeCustomBlock": "Remove custom block",
     "sugarcube.myblocks.contextMenu.makeReference": "Turn into reference",
     "sugarcube.myblocks.contextMenu.makeOriginal": "Turn into block",
+
+    "sugarcube.debugging": "Debug",
+    "sugarcube.debugging.block.log.defaultValue": "Log Me!",
+    "sugarcube.debugging.block.log": "log [ITEM]",
+    "sugarcube.debugging.block.warn.defaultValue": "Whoops!",
+    "sugarcube.debugging.block.warn": "warn [ITEM]",
+    "sugarcube.debugging.block.error.defaultValue": "An Error",
+    "sugarcube.debugging.block.error": "error [ITEM]",
+
+    "sugarcube.files": "Files",
+    "sugarcube.files.block.setFile": "set file [file] to [content]",
+    "sugarcube.files.block.getFile": "contents of [file]",
+    "sugarcube.files.block.getFileExistance": "does [file] exist",
 };

@@ -3,7 +3,7 @@
         getInfo() {
             return {
                 id: "files",
-                name: "Files",
+                name: editor.language["sugarcube.files"],
                 color1: "#fcb103",
                 color2: "#db9a37",
                 color3: "#db8937",

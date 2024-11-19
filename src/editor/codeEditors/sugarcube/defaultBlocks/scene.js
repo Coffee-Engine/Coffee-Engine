@@ -3,7 +3,7 @@
         getInfo() {
             return {
                 id: "scene",
-                name: "Scene",
+                name: editor.language["sugarcube.scene"],
                 color1: "#FF4C4C",
                 color2: "#E64444",
                 color3: "#C73A3A",

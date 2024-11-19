@@ -8,7 +8,7 @@
         getInfo() {
             return {
                 id: "motion",
-                name: "Motion",
+                name: editor.language["sugarcube.motion"],
                 color1: "#4c97ff",
                 color2: "#4280d7",
                 color3: "#3373cc",
