@@ -136,6 +136,8 @@
         },
 
         deleteFile: (path) => {
+            //Sloppy code for the sloppy programmer
+            //Made to fix the tides of turn
             project.getFile(path, true).then((fileDef) => {
                 //Folders
                 if (fileDef.file[project.directoryHandleIdentifier]) {

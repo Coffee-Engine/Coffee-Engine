@@ -33,6 +33,12 @@
                     //Check if it is a file, or a folder
                     if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
                         element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
+
+                        const refreshText = () => {
+                            element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
+                            document.removeEventListener("mousedown", refreshText);
+                        }
+
                         parentDiv.appendChild(element);
     
                         element.onclick = (event) => {
@@ -54,7 +60,20 @@
                         element.contentAnswer = (value) => {
                             switch (value) {
                                 case "rename":
-                                    console.log("initilize renaming");
+                                    element.innerHTML = `<input type="text" style="padding:0px; margin:0px; width:100%;" value="${key}"></input>`;
+                                    element.children[0].focus();
+                                    element.children[0].onkeydown = (event) => {
+                                        if (event.code == "Enter") {
+                                            project.getFile(`${path}${key}`).then((file) => {
+                                                //As long as this actively doesn't kill the program, I'm fine
+                                                project.setFile(`${path}${element.children[0].value}`, file, file.type);
+                                                project.deleteFile(`${path}${key}`);
+                                            })
+                                            document.removeEventListener("mousedown", refreshText);
+                                        }
+                                    }
+
+                                    document.addEventListener("mousedown", refreshText);
                                     break;
                                 
                                 case "delete":
@@ -73,6 +92,7 @@
 
                         //Our folder dropdown
                         //Notice the sleek difference.
+                        //If somebody would take the time to add folder renaming I will give you a hug.
                         element.contextFunction = () => {
                             return [
                                 {text: `delete`, value: "delete"},
@@ -82,7 +102,7 @@
                         element.contentAnswer = (value) => {
                             switch (value) {                                
                                 case "delete":
-                                    //Delete the bastard
+                                    //Die
                                     project.deleteFile(`${path}${key}`);
                                     break;
                             
