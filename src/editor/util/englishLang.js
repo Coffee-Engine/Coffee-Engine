@@ -120,6 +120,7 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.reading": "Reading Files",
     "editor.window.fileExplorer.delete": "Delete",
     "editor.window.fileExplorer.rename": "Rename",
+    "editor.window.fileExplorer.openInCode": "Open in Code Editor",
 
     "editor.window.viewport": "Viewport",
 

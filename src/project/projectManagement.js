@@ -10,7 +10,7 @@
         directoryHandleIdentifier: "/____DIRECTORY__HANDLE____/",
 
         //Our methods for handling files
-        setFile: async (path, contents, type) => {
+        setFile: (path, contents, type) => {
             //Using a promise now!
             return new Promise(async (resolve, reject) => {
                 const split = path.split("/");
@@ -70,7 +70,7 @@
             return;
         },
 
-        addImageFromURL: async (url, destination) => {
+        addImageFromURL: (url, destination) => {
             return new Promise((resolve, reject) => {
                 fetch(url)
                     .then((response) => response.blob())

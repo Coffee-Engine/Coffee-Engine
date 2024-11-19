@@ -52,6 +52,7 @@
                         //Our file dropdown
                         element.contextFunction = () => {
                             return [
+                                {text: editor.language["editor.window.fileExplorer.openInCode"], value: "codeEditor"},
                                 {text: editor.language["editor.window.fileExplorer.rename"], value: "rename"},
                                 {text: editor.language["editor.window.fileExplorer.delete"], value: "delete"},
                             ];
@@ -59,6 +60,14 @@
 
                         element.contentAnswer = (value) => {
                             switch (value) {
+                                //Small QOL option here
+                                case "codeEditor":
+                                    if (editor.windows.existing && editor.windows.existing.codeEditor) {
+                                        const split = key.split(".");
+                                        if (editor.windows.existing.codeEditor[0]) editor.windows.existing.codeEditor[0].openFile(`${path}${key}`,split[split.length - 1])
+                                    }
+                                    break;
+
                                 case "rename":
                                     element.innerHTML = `<input type="text" style="padding:0px; margin:0px; width:100%;" value="${key}"></input>`;
                                     element.children[0].focus();
@@ -66,8 +75,9 @@
                                         if (event.code == "Enter") {
                                             project.getFile(`${path}${key}`).then((file) => {
                                                 //As long as this actively doesn't kill the program, I'm fine
-                                                project.setFile(`${path}${element.children[0].value}`, file, file.type);
-                                                project.deleteFile(`${path}${key}`);
+                                                project.setFile(`${path}${element.children[0].value}`, file, file.type).then(() => {
+                                                    project.deleteFile(`${path}${key}`);
+                                                });
                                             })
                                             document.removeEventListener("mousedown", refreshText);
                                         }

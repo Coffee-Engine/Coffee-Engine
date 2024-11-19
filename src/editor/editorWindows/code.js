@@ -35,7 +35,10 @@
             button.setAttribute("path", path);
 
             button.onclick = () => {
-                this.openFile(path, path.split(".")[1]);
+                //Remove the button once it doesn't work
+                this.openFile(path, path.split(".")[1]).catch(() => {
+                    this.scriptContainer.removeChild(button);
+                });
             };
 
             this.scriptContainer.appendChild(button);
@@ -225,14 +228,17 @@
             //Make sure its lowercase
             extension = extension.toLowerCase();
 
-            //Grab our file and read it
-            project.getFile(path).then((file) => {
-                this.fileReader.readAsText(file);
-                this.readType = extension;
-                this.filePath = path;
+            return new Promise((resolve,reject) => {
+                //Grab our file and read it
+                project.getFile(path).then((file) => {
+                    this.fileReader.readAsText(file);
+                    this.readType = extension;
+                    this.filePath = path;
 
-                this.addScriptToSidebar(path);
-            });
+                    this.addScriptToSidebar(path);
+                    resolve();
+                }).catch(() => {reject()});
+            })
         }
     };
 
