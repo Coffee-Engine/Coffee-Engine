@@ -52,8 +52,8 @@
                         //Our file dropdown
                         element.contextFunction = () => {
                             return [
-                                {text: `rename`, value: "rename"},
-                                {text: `delete`, value: "delete"},
+                                {text: editor.language["editor.window.fileExplorer.rename"], value: "rename"},
+                                {text: editor.language["editor.window.fileExplorer.delete"], value: "delete"},
                             ];
                         }
 
@@ -95,7 +95,7 @@
                         //If somebody would take the time to add folder renaming I will give you a hug.
                         element.contextFunction = () => {
                             return [
-                                {text: `delete`, value: "delete"},
+                                {text: editor.language["editor.window.fileExplorer.delete"], value: "delete"},
                             ];
                         }
 

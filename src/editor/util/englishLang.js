@@ -118,6 +118,8 @@ editor.EnglishLang = {
     "editor.window.fileExplorer": "Project Files",
     "editor.window.fileExplorer.select": "Select a File",
     "editor.window.fileExplorer.reading": "Reading Files",
+    "editor.window.fileExplorer.delete": "Delete",
+    "editor.window.fileExplorer.rename": "Rename",
 
     "editor.window.viewport": "Viewport",
 
