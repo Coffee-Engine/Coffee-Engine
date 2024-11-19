@@ -84,7 +84,7 @@
             });
         },
 
-        getFile: (path) => {
+        getFile: (path, returnDefinition) => {
             //I promise you this works
             return new Promise((resolve, reject) => {
                 const split = path.split("/");
@@ -94,6 +94,10 @@
                     if (id == split.length - 1) {
                         //check to see if its a file system handle. I want a good multi-method file grabber, not a rubbish one.
                         if (fold[split[id]] instanceof FileSystemFileHandle) {
+                            //If we really want this.
+                            if (returnDefinition) resolve({folder: fold, name: split[id], file: fold[split[id]]});
+
+                            //if we don't return the handle then do this;
                             fold[split[id]]
                                 .getFile()
                                 .then((file) => {
@@ -102,6 +106,8 @@
                                 .catch("can't get file");
                         } else {
                             if (!fold[split[id]]) reject(`File ${fold[split[id]]} does not exist`);
+
+                            if (returnDefinition) resolve({folder: fold, name: split[id], file: fold[split[id]]});
                             resolve(fold[split[id]]);
                         }
                     }
@@ -127,6 +133,29 @@
                 if (!fold[split[id]]) return false;
                 fold = fold[split[id]];
             }
+        },
+
+        deleteFile: (path) => {
+            project.getFile(path, true).then((fileDef) => {
+                //Folders
+                if (fileDef.file[project.directoryHandleIdentifier]) {
+                    fileDef.file[project.directoryHandleIdentifier].remove({recursive:true}).then(() => {
+                        delete fileDef.folder[fileDef.name];
+                        coffeeEngine.sendEvent("fileSystemUpdate", { type: "FILE_ADDED", src: path });
+                    });
+                }
+                //Files
+                else if (fileDef.file instanceof FileSystemFileHandle) {
+                    fileDef.file.remove({recursive:true}).then(() => {
+                        delete fileDef.folder[fileDef.name];
+                        coffeeEngine.sendEvent("fileSystemUpdate", { type: "FILE_ADDED", src: path });
+                    });
+                }
+                else {
+                    delete fileDef.folder[fileDef.name];
+                    coffeeEngine.sendEvent("fileSystemUpdate", { type: "FILE_ADDED", src: path });
+                }
+            })
         }
     };
 })();

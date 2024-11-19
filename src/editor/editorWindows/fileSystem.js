@@ -32,7 +32,7 @@
     
                     //Check if it is a file, or a folder
                     if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
-                        element.innerHTML = `<p style="padding:0px; margin:0px;">${key}</p>`;
+                        element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
                         parentDiv.appendChild(element);
     
                         element.onclick = (event) => {
@@ -42,10 +42,34 @@
     
                             editor.sendFileHook(split[split.length - 1], `${path}${key}`);
                         };
+
+                        //Our file dropdown
+                        element.contextFunction = () => {
+                            return [
+                                {text: "rename", value: "rename"},
+                                {text: "delete", value: "delete"},
+                            ];
+                        }
+
+                        element.contentAnswer = (value) => {
+                            switch (value) {
+                                case "rename":
+                                    console.log("initilize renaming");
+                                    break;
+                                
+                                case "delete":
+                                    console.log("initilizing deletion");
+                                    
+                                    break;
+                            
+                                default:
+                                    break;
+                            }
+                        }
                     }
                     //For folders we do something similar but with another div inside and create a sub directory basin
                     else {
-                        element.innerHTML = `<p style="padding:0px; margin:0px;">${key}</p>`;
+                        element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
     
                         const lowerDiv = document.createElement("div");
                         lowerDiv.style.margin = "0px";
