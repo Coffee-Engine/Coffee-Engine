@@ -46,8 +46,8 @@
                         //Our file dropdown
                         element.contextFunction = () => {
                             return [
-                                {text: "rename", value: "rename"},
-                                {text: "delete", value: "delete"},
+                                {text: `rename`, value: "rename"},
+                                {text: `delete`, value: "delete"},
                             ];
                         }
 
@@ -58,8 +58,8 @@
                                     break;
                                 
                                 case "delete":
-                                    console.log("initilizing deletion");
-                                    
+                                    //Delete the bastard
+                                    project.deleteFile(`${path}${key}`);
                                     break;
                             
                                 default:
@@ -70,6 +70,26 @@
                     //For folders we do something similar but with another div inside and create a sub directory basin
                     else {
                         element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
+
+                        //Our folder dropdown
+                        //Notice the sleek difference.
+                        element.contextFunction = () => {
+                            return [
+                                {text: `delete`, value: "delete"},
+                            ];
+                        }
+
+                        element.contentAnswer = (value) => {
+                            switch (value) {                                
+                                case "delete":
+                                    //Delete the bastard
+                                    project.deleteFile(`${path}${key}`);
+                                    break;
+                            
+                                default:
+                                    break;
+                            }
+                        }
     
                         const lowerDiv = document.createElement("div");
                         lowerDiv.style.margin = "0px";
