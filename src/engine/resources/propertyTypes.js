@@ -9,8 +9,8 @@ coffeeEngine.PropertyTypes = {
     VEC4: "vec4",
 
     //Colors
-    COLOR3: "COLOR3",
-    COLOR4: "COLOR4",
+    COLOR3: "color3",
+    COLOR4: "color4",
 
     //Vaguely related
     NODE: "node",

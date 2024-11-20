@@ -66,7 +66,26 @@
         }
 
         getProperties() { 
-            return ["Nothing Here"] 
+            //return ["Nothing Here"]
+            
+            //Input Testing stuff
+            return [
+                {name: "INT", type: coffeeEngine.PropertyTypes.INT},
+                {name: "FLOAT", type: coffeeEngine.PropertyTypes.FLOAT},
+                {name: "VEC2", type: coffeeEngine.PropertyTypes.VEC2},
+                {name: "VEC3", type: coffeeEngine.PropertyTypes.VEC3},
+                {name: "VEC4", type: coffeeEngine.PropertyTypes.VEC4},
+                {name: "VEC5", type: "vec5"},
+                {name: "VEC6", type: "vec6"},
+                {name: "COLOR3", type: coffeeEngine.PropertyTypes.COLOR3},
+                {name: "COLOR4", type: coffeeEngine.PropertyTypes.COLOR4},
+                {name: "NODE", type: coffeeEngine.PropertyTypes.NODE},
+                {name: "FILE", type: coffeeEngine.PropertyTypes.FILE},
+                {name: "STRING", type: coffeeEngine.PropertyTypes.STRING},
+                {name: "NAME", type: coffeeEngine.PropertyTypes.NAME},
+                {name: "ARRAY", type: coffeeEngine.PropertyTypes.ARRAY},
+                {name: "OBJECT", type: coffeeEngine.PropertyTypes.OBJECT},
+            ]
         };
     };
 })();

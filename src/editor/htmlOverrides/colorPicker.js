@@ -22,7 +22,7 @@
         </svg>`,
     };
 
-    editor.colorPicker.create = (x, y, { color, hasExtensions, callback }) => {
+    editor.colorPicker.create = (x, y, { color, hasExtensions, hasTranslucency, callback }) => {
         //Channel 3 and Channel 15
         color = color || "#0000ff";
         let split = coffeeEngine.ColorMath.HexToRGB(color);
@@ -106,12 +106,28 @@
 
             .CE_upperPrecision {
                 display:grid;
-                grid-template-columns: 0.9fr 1.1fr;
+                grid-template-columns: ${hasTranslucency ? "0.5fr 0.5fr 1fr" : "0.9fr 1.1fr"};
                 gap: 2px;
             }
 
             .CE_hueDiv {
                 background-image: linear-gradient(to bottom, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 66%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%);
+
+                border-color:var(--background-2);
+                border-radius:8px;
+                border-width:4px;
+                border-style:solid;
+
+                position:relative;
+            }
+
+            .CE_transDiv {
+                background-image: linear-gradient(0deg, var(--text-1) 25%, transparent 25%), 
+                linear-gradient(180deg, var(--text-1) 25%, transparent 25%),
+                linear-gradient(0deg, transparent 75%, var(--text-1) 75%),
+                linear-gradient(180deg, transparent 75%, var(--text-1) 75%);
+
+                background-size:8px 16px;
 
                 border-color:var(--background-2);
                 border-radius:8px;
@@ -185,6 +201,11 @@
                 <div id="ce_hueBG" class="CE_hueDiv">
                     <div id="ce_HScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%); left:50%;"></div>
                 </div>
+                ${hasTranslucency ? `
+                <div id="ce_transBG" class="CE_transDiv">
+                    <div id="ce_transScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%); left:50%;"></div>
+                </div>
+                    ` : ""}
                 <div class="CE_numInputList">
                     <input id="ce_redChannel" class="CE_numInput" style="color:#ff0000;" value="${split.r}" type="number"></input>
                     <input id="ce_greenChannel" class="CE_numInput" style="color:#00ff00;" value="${split.g}" type="number"></input>
@@ -375,9 +396,10 @@
 
     //Bad html class. Might be cool
     editor.colorPicker.class = class extends HTMLElement {
-        static observedAttributes = ["color", "disabled"];
+        static observedAttributes = ["color", "disabled", "translucency"];
 
         #color = "#ffffff";
+        translucency = false;
 
         set color(value) {
             this.#color = value;
@@ -420,6 +442,7 @@
                 editor.colorPicker.create(event.clientX, event.clientY, {
                     hasExtensions: this.hasAttribute("hasExtensions"),
                     color: this.color,
+                    hasTranslucency: this.translucency,
                     callback: (color) => {
                         this.color = color;
                         if (this.onchange) {
