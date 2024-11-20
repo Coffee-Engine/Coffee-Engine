@@ -128,10 +128,14 @@ editor.EnglishLang = {
     "editor.window.codeEditor.newScript": "New Script",
     "editor.window.codeEditor.saveScript": "Save Script",
     "editor.window.codeEditor.loadScript": "Load Script",
+    "editor.window.codeEditor.openScript": "Open Shortcut",
+    "editor.window.codeEditor.closeScript": "Remove Shortcut",
+
     "editor.window.createScript": "New Script",
     "editor.window.sugarcube": "SugarCube",
     "editor.window.javascript": "Javascript",
     "editor.window.cappuccino": "Cappuccino",
+    
     "editor.window.typed.commentMessage": "This is a default behavior!",
     "editor.window.typed.initMessage": "Code for initilization goes here.",
     "editor.window.typed.updateMessage": "Code for each frame goes here.",

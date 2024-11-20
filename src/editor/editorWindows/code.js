@@ -43,6 +43,36 @@
                 });
             };
 
+            button.contextFunction = () => {
+                return [
+                    {text: editor.language["editor.window.codeEditor.openScript"], value: "open"},
+                    {text: editor.language["editor.window.codeEditor.closeScript"], value: "close"},
+                ];
+            }
+
+            button.contentAnswer = (value) => {
+                switch (value) {                                
+                    case "open":
+                        //I'a open da file.
+                        this.openFile(path, path.split(".")[1]).catch(() => {
+                            button.onclick = () => {};
+                            this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path),1);
+                            this.scriptContainer.removeChild(button);
+                        });
+                        break;
+                    
+                    case "close":
+                        //Remove the button
+                        button.onclick = () => {};
+                        this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path),1);
+                        this.scriptContainer.removeChild(button);
+                        break;
+                
+                    default:
+                        break;
+                }
+            }
+
             this.scriptContainer.appendChild(button);
             this.scriptShortcuts.push(path);
         }
