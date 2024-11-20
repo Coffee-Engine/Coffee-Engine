@@ -159,6 +159,8 @@ editor.EnglishLang = {
     "editor.window.createBlock.statementInput": "Statement",
     "editor.window.createBlock.referenceInput": "Function",
 
+    "editor.window.properties": "Properties",
+
     "sugarcube.motion": "Motion",
     "sugarcube.motion.block.movesteps":"move [steps] steps",
     "sugarcube.motion.block.gotoxy":"go to x:[x] y:[y]",
@@ -360,4 +362,12 @@ editor.EnglishLang = {
     "sugarcube.files.block.setFile": "set file [file] to [content]",
     "sugarcube.files.block.getFile": "contents of [file]",
     "sugarcube.files.block.getFileExistance": "does [file] exist",
+
+    "engine.nodeNames.scene": "Scene",
+    "engine.nodeNames.Node": "Node",
+    "engine.nodeNames.Node2D": "Node 2D",
+    "engine.nodeNames.Sprite": "Sprite",
+    "engine.nodeNames.Node3D": "Node 3D",
+    "engine.nodeNames.Camera": "Camera",
+    "engine.nodeNames.MeshDisplay": "Mesh Display",
 };

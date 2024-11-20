@@ -1,6 +1,11 @@
 window.editor = {
     currentPage: {},
     language: {},
+    selectedNode: null,
+
+    events: {
+        nodeSelected: [],
+    },
 
     //File Hooking
     fileHooks: {},
@@ -44,6 +49,36 @@ window.editor = {
             delete sugarcube.workspace;
         }
     },
+
+    addEventListener: (event, func) => {
+        if (typeof editor.events[event] != "object") return;
+
+        editor.events[event].push(func);
+        return func;
+    },
+
+    hasEventListener: (event, func) => {
+        if (typeof editor.events[event] != "object") return;
+
+        return editor.events[event].includes(func);
+    },
+
+    removeEventListener: (event, func) => {
+        if (typeof editor.events[event] != "object") return;
+
+        if (editor.events[event].includes(func)) {
+            editor.events[event].slice(editor.events[event].indexOf(func));
+        }
+    },
+
+    sendEvent: (event, data) => {
+        if (typeof editor.events[event] != "object") return;
+
+        editor.events[event].forEach((event) => {
+            event(data);
+        });
+    },
+
     safeties: {
         secureContext: window.isSecureContext,
         folderPerimissions: window.showDirectoryPicker != undefined,

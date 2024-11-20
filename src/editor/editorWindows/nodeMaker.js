@@ -8,11 +8,12 @@
                 const nodeElement = document.createElement("button");
                 const nodeData = coffeeEngine.nodeRegister[key];
 
-                nodeElement.innerText = key;
+                nodeElement.innerText = editor.language[`engine.nodeNames.${key}`] || key;
 
                 //Add our node and close the window once we select the node we want.
                 nodeElement.onclick = () => {
                     const NewNode = new (coffeeEngine.getNode(key))();
+                    NewNode.name = editor.language[`engine.nodeNames.${key}`] || key;
                     coffeeEngine.runtime.currentScene.addChild(NewNode);
                     this._dispose();
                 }

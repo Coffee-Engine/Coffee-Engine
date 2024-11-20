@@ -77,7 +77,11 @@
             if (child == this) return;
             this.children.push(child);
             child.parent = this;
+
+            coffeeEngine.runtime.currentScene.castEvent("childAdded", child)
         }
+
+        getProperties() { return [{name: "name", type: coffeeEngine.PropertyTypes.NAME}] };
     }
 
     coffeeEngine.registerNode(node, "Node");

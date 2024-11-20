@@ -5,6 +5,7 @@
             this.events = {
                 update: [],
                 draw: [],
+                childAdded: [],
             };
 
             this.name = "scene";
@@ -31,19 +32,21 @@
             }
         }
 
+        castEvent(event, data) {
+            this.events[event].forEach((eventFunc) => {
+                eventFunc(data);
+            })
+        }
+
         update(deltaTime) {
-            this.events.update.forEach((event) => {
-                event(deltaTime);
-            });
+            this.castEvent("update", deltaTime);
         }
 
         draw() {
             coffeeEngine.renderer.daveshade.GL.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
             this.drawSky();
 
-            this.events.draw.forEach((event) => {
-                event();
-            });
+            this.castEvent("draw", {});
         }
 
         drawSky(renderer) {
@@ -58,6 +61,12 @@
             if (child == this) return;
             this.children.push(child);
             child.parent = this;
+
+            this.castEvent("childAdded", child);
         }
+
+        getProperties() { 
+            return ["Nothing Here"] 
+        };
     };
 })();

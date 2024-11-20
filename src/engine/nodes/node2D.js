@@ -26,6 +26,16 @@
 
             coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
         }
+
+        getProperties() { 
+            return [
+                {name: "name", type: coffeeEngine.PropertyTypes.NAME},
+                "---",
+                {name: "position", type: coffeeEngine.PropertyTypes.VEC2},
+                {name: "layer", type: coffeeEngine.PropertyTypes.INT},
+                {name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT},
+            ] 
+        };
     }
 
     coffeeEngine.registerNode(node, "Node2D", "Node");
