@@ -37,6 +37,8 @@
             button.onclick = () => {
                 //Remove the button once it doesn't work
                 this.openFile(path, path.split(".")[1]).catch(() => {
+                    button.onclick = () => {};
+                    this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path),1);
                     this.scriptContainer.removeChild(button);
                 });
             };
