@@ -122,12 +122,7 @@
             }
 
             .CE_transDiv {
-                background-image: linear-gradient(0deg, var(--text-1) 25%, transparent 25%), 
-                linear-gradient(180deg, var(--text-1) 25%, transparent 25%),
-                linear-gradient(0deg, transparent 75%, var(--text-1) 75%),
-                linear-gradient(180deg, transparent 75%, var(--text-1) 75%);
-
-                background-size:8px 16px;
+                background-image: linear-gradient(0deg, rgba(var(--red), var(--green), var(--blue),0) 0%, rgba(var(--red), var(--green), var(--blue),1) 100%), url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAA7SURBVDhPY+jp6fmPDU+YMAFMHz58GC/GaQAMY9OEjEcNGBQGYBNExtgMBWFYOiHbABgeNWDgDej5DwDMHvW3lMqyQQAAAABJRU5ErkJggg==);
 
                 border-color:var(--background-2);
                 border-radius:8px;
@@ -237,6 +232,10 @@
         //Grab out scrubbers
         const HueScrubber = document.getElementById("ce_HScrubber");
         const ValSatScrubber = document.getElementById("ce_SVScrubber");
+        
+        //Transparency stuff
+        const transBackground = document.getElementById("ce_transBG");
+        const transScrubber = document.getElementById("ce_transScrubber");
 
         //Done button
         const doneButton = document.getElementById("doneButton");
@@ -246,7 +245,10 @@
             const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
 
             //Adjust the backgrounds
-            colorBackground.style.setProperty("--hue", `${HSV.h}deg`);
+            colorBackground.style.setProperty("--hue", `${HSV.h}`);
+            if (hasTranslucency) transBackground.style.setProperty("--red", `${split.r}`);
+            if (hasTranslucency) transBackground.style.setProperty("--green", `${split.g}`);
+            if (hasTranslucency) transBackground.style.setProperty("--blue", `${split.b}`);
 
             //Move the scrubbers
             if (HSV.h < 0) {
@@ -335,6 +337,33 @@
 
                 HSV.h = ((event.clientY - rect.top) / rect.height) * 360;
                 HSV.h = Math.min(Math.max(HSV.h, 0), 359) % 360;
+                split = coffeeEngine.ColorMath.HSVToRGB(HSV);
+
+                updateColors();
+            };
+
+            document.addEventListener("mouseup", upEvent);
+            document.addEventListener("mousemove", moveEvent);
+        };
+
+        //Our translucency
+        if (hasTranslucency) transScrubber.onmousedown = () => {
+            //Events
+            let upEvent,
+                moveEvent = null;
+
+            upEvent = () => {
+                document.removeEventListener("mouseup", upEvent);
+                document.removeEventListener("mousemove", moveEvent);
+            };
+
+            moveEvent = (event) => {
+                const rect = transBackground.getBoundingClientRect();
+
+                const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
+
+                HSV.a = ((event.clientY - rect.top) / rect.height) * 255;
+                HSV.a = Math.min(Math.max(HSV.h, 0), 255);
                 split = coffeeEngine.ColorMath.HSVToRGB(HSV);
 
                 updateColors();

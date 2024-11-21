@@ -2,7 +2,16 @@
     coffeeEngine.ColorMath = {
         HexToRGB: (Hex) => {
             if (typeof Hex === "string") {
-                if (Hex.length > 5) {
+                if (Hex.length > 7) {
+                    const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(Hex);
+                    return {
+                        r: parseInt(splitHex[1], 16),
+                        g: parseInt(splitHex[2], 16),
+                        b: parseInt(splitHex[3], 16),
+                        a: parseInt(splitHex[4], 16),
+                    };
+                }
+                else if (Hex.length > 5) {
                     const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(Hex);
                     return {
                         r: parseInt(splitHex[1], 16),
@@ -32,6 +41,12 @@
             return new coffeeEngine.vector3(split.r, split.g, split.b);
         },
 
+        HexToVec4: (Hex) => {
+            const split = coffeeEngine.ColorMath.HexToRGB(Hex);
+
+            return new coffeeEngine.vector3(split.r, split.g, split.b, (split.a === undefined) ? 1 : split.a);
+        },
+
         RGBtoHex: (RGB) => {
             let hexR = Math.floor(RGB.r).toString(16);
             let hexG = Math.floor(RGB.g).toString(16);
@@ -40,6 +55,14 @@
             if (hexR.length == 1) hexR = "0" + hexR;
             if (hexG.length == 1) hexG = "0" + hexG;
             if (hexB.length == 1) hexB = "0" + hexB;
+
+            //Transparency
+            if (RGB.a) {
+                let hexA = Math.floor(RGB.a).toString(16);
+                if (hexA.length == 1) hexA = "0" + hexA;
+                
+                return `#${hexR}${hexG}${hexB}${hexA}`;
+            }
 
             return `#${hexR}${hexG}${hexB}`;
         },
