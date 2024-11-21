@@ -367,8 +367,6 @@
 
                 HSV.a = 255 - (((event.clientY - rect.top) / rect.height) * 255);
                 HSV.a = Math.min(Math.max(HSV.a, 0), 255);
-
-                console.log(HSV.a);
                 split = coffeeEngine.ColorMath.HSVToRGB(HSV);
 
                 updateColors();
