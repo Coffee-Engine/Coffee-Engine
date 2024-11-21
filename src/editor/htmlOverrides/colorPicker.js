@@ -260,6 +260,9 @@
             ValSatScrubber.style.left = `${HSV.s * 100}%`;
             ValSatScrubber.style.backgroundColor = coffeeEngine.ColorMath.RGBtoHex(split);
 
+            
+            if (hasTranslucency) transScrubber.style.top = `${((255 - HSV.a) / 2.55) % 100}%`;
+
             //Set the inputs
             redInput.value = split.r;
             greenInput.value = split.g;
@@ -362,8 +365,10 @@
 
                 const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
 
-                HSV.a = ((event.clientY - rect.top) / rect.height) * 255;
-                HSV.a = Math.min(Math.max(HSV.h, 0), 255);
+                HSV.a = 255 - (((event.clientY - rect.top) / rect.height) * 255);
+                HSV.a = Math.min(Math.max(HSV.a, 0), 255);
+
+                console.log(HSV.a);
                 split = coffeeEngine.ColorMath.HSVToRGB(HSV);
 
                 updateColors();
