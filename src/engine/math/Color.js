@@ -172,6 +172,7 @@
                 h: H,
                 s: S,
                 v: CMax,
+                a: RGB.a
             };
         },
 
@@ -212,6 +213,7 @@
             RGB.r = (RGB.r + m) * 255;
             RGB.g = (RGB.g + m) * 255;
             RGB.b = (RGB.b + m) * 255;
+            RGB.a = HSV.a;
 
             return RGB;
         },
