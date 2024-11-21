@@ -67,7 +67,7 @@
             sugarcube.extensionInstances = {};
         }
 
-        blockArgDefs = {};
+        blockDefs = {};
 
         updateFunctions = {};
 
@@ -361,8 +361,8 @@
                         //Wierd block hack
                         //I wish blockly preserved block inputs inside the actual block itself instead of having
                         //half in the actual block, half in an outside definition
-                        if (this.blockArgDefs[block.extensionID ? block.extensionID : extension.id][block.of]) {
-                            blockData.inputs = this.blockArgDefs[block.extensionID ? block.extensionID : extension.id][block.of];
+                        if (this.blockDefs[block.extensionID ? block.extensionID : extension.id][block.of].inputs) {
+                            blockData.inputs = this.blockDefs[block.extensionID ? block.extensionID : extension.id][block.of].inputs;
                         }
                         break;
 
@@ -590,6 +590,11 @@
                             blockDef["lastDummyAlign0"] = block.alignment;
                         }
 
+                        //For the funni!
+                        if (block.filter) {
+                            defArgs.filter = block.filter;
+                        }
+
                         //If there is an output or tooltip add them to the block definition
                         //Note that output only determines what the block puts out.
                         if (block.mutator) {
@@ -617,7 +622,7 @@
                 }
             }
 
-            this.blockArgDefs[extension.id][block.opcode] = blockData.inputs;
+            this.blockDefs[extension.id][block.opcode] = blockData;
 
             if (!block.hideFromPalette) {
                 return blockData;
@@ -902,7 +907,7 @@
 
                 //Loop through each block deciding its fate!
                 extension.defaultBlockInfo = [];
-                this.blockArgDefs[myInfo.id] = {};
+                this.blockDefs[myInfo.id] = {};
                 myInfo.blocks.forEach((block) => {
                     let blockDat = this.addBlock(block, myInfo);
 

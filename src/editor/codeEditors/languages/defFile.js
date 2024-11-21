@@ -65,6 +65,7 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
         useBlocklyEditor: true,
         fileExtension: "cescr",
         //Sugarcube's is the most bare bones
+        //Also the most function based
         defaultBehavior: (sugarcubeInheritence) => { return '{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{},' + 
             `"inheritence":${(function() {
                 //inheritence... home
