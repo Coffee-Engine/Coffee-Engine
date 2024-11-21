@@ -132,6 +132,7 @@ editor.EnglishLang = {
     "editor.window.codeEditor.closeScript": "Remove Shortcut",
 
     "editor.window.createScript": "New Script",
+    "editor.window.createScript.inherits": "inherits",
     "editor.window.sugarcube": "SugarCube",
     "editor.window.javascript": "Javascript",
     "editor.window.cappuccino": "Cappuccino",

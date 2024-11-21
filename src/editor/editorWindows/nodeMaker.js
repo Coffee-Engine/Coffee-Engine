@@ -3,6 +3,7 @@
         init(container) {
             this.elements = {};
             this.title = editor.language["editor.window.nodeMaker"];
+            const myself = this;
 
             Object.keys(coffeeEngine.nodeRegister).forEach(key => {
                 const nodeElement = document.createElement("button");
@@ -12,10 +13,7 @@
 
                 //Add our node and close the window once we select the node we want.
                 nodeElement.onclick = () => {
-                    const NewNode = new (coffeeEngine.getNode(key))();
-                    NewNode.name = editor.language[`engine.nodeNames.${key}`] || key;
-                    coffeeEngine.runtime.currentScene.addChild(NewNode);
-                    this._dispose();
+                    myself.onNodeClicked(key);
                 }
                 
                 //Get our layers deep and data off the parent if plausible
@@ -37,6 +35,13 @@
             container.style.gridTemplateRows = "24px ".repeat(Object.keys(coffeeEngine.nodeRegister).length);
             container.style.margin = "0px";
             container.style.overflow = "hidden";
+        }
+
+        onNodeClicked = (nodeName) => {
+            const NewNode = new (coffeeEngine.getNode(nodeName))();
+            NewNode.name = editor.language[`engine.nodeNames.${nodeName}`] || key;
+            coffeeEngine.runtime.currentScene.addChild(NewNode);
+            this._dispose();
         }
 
         resized() {}

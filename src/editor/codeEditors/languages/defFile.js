@@ -65,7 +65,21 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
         useBlocklyEditor: true,
         fileExtension: "cescr",
         //Sugarcube's is the most bare bones
-        defaultBehavior: () => { return '{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{}}'},
+        defaultBehavior: (sugarcubeInheritence) => { return '{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{},' + 
+            `"inheritence":${(function() {
+                //inheritence... home
+                let inheritenceTree = [];
+                let currentInheritence = coffeeEngine.nodeRegister[sugarcubeInheritence];
+                inheritenceTree.push(sugarcubeInheritence);
+                while (currentInheritence) {
+                    if (coffeeEngine.nodeRegister[currentInheritence[1]]) {
+                        inheritenceTree.push(currentInheritence[1]);
+                    }
+                    currentInheritence = coffeeEngine.nodeRegister[currentInheritence[1]];
+                }
+                console.log(inheritenceTree);
+                return JSON.stringify(inheritenceTree);
+            })()}}`},
         //So we know what to do with our code
         compileFunction:(workspace) => {
             return sugarcube.generator.workspaceToCode(workspace);
