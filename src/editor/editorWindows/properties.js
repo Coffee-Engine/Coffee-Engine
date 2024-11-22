@@ -432,6 +432,38 @@
 
                 return input;
             },
+
+            file: (node, property) => {
+                const inputHolder = document.createElement("div");
+                inputHolder.style.display = "inline-grid";
+                inputHolder.style.gridTemplateColumns = "1fr 1fr";
+                
+                const pathText = document.createElement("p");
+                const button = document.createElement("button");
+
+                pathText.innerText = node[property.name || "name"] || "";
+                
+                button.onclick = () => {
+                    //loadl
+                    const newLoadal = new editor.windows.modalFileExplorer(400, 400);
+
+                    newLoadal.__moveToTop();
+
+                    //Note that gifs will not be animated, they do come as non animated too. Like PNGs
+                    newLoadal.acceptTypes = property.fileType;
+                    newLoadal.x = window.innerWidth.width / 2 - 200;
+                    newLoadal.y = window.innerHeight.height / 2 - 200;
+                    newLoadal.onFileSelected = (path) => {
+                        node[property.name] = path;
+                        pathText.innerText = path;
+                    };
+                }
+
+                inputHolder.appendChild(pathText);
+                inputHolder.appendChild(button);
+
+                return inputHolder;
+            }
         }
     };
 

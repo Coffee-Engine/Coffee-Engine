@@ -13,7 +13,19 @@
             return this.#spritePath;
         }
 
-        modulatedColor = [1,1,1,1];
+        #modulatedColorArr = [1,1,1,1];
+        #modulatedColor = "#ffffffff";
+
+        set modulatedColor(value) {
+            this.#modulatedColor = value;
+
+            const split = coffeeEngine.ColorMath.HexToRGB(value);
+            this.#modulatedColorArr = [split.r / 255, split.g / 255, split.b / 255, split.a / 255];
+        }
+
+        get modulatedColor() {
+            return this.#modulatedColor;
+        }
 
         shader = coffeeEngine.renderer.mainShaders.unlit
 
@@ -27,7 +39,7 @@
             coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
 
             if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
-            if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.modulatedColor;
+            if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
 
             coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
         }

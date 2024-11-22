@@ -107,11 +107,12 @@
     
                 uniform sampler2D u_texture;
                 uniform float u_wFactor;
+                uniform vec4 u_colorMod;
                 
                 void main()
                 {
                     vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor);
-                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color;
+                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color * u_colorMod;
 
                     if (gl_FragColor.w == 0.0) {
                         discard;
