@@ -60,7 +60,8 @@
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
             this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
-            this.projection = coffeeEngine.matrix4.projection(90, this.canvas.width / this.canvas.height, 0.001, 1000);
+            this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
+            this.aspectRatio = this.canvas.width / this.canvas.height;
 
             this.wFactor += (1 - this.wFactor) * 0.125;
             if (this.wFactor > 0.9875) {
@@ -81,7 +82,8 @@
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
             this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
-            this.projection = coffeeEngine.matrix4.projection(90, this.canvas.width / this.canvas.height, 0.001, 1000);
+            this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
+            this.aspectRatio = this.canvas.width / this.canvas.height;
 
             //Smooth transition
             this.wFactor += (0 - this.wFactor) * 0.125;
@@ -100,6 +102,7 @@
             coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
             coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
             coffeeEngine.renderer.cameraData.wFactor = this.wFactor;
+            coffeeEngine.renderer.cameraData.aspectRatio = this.aspectRatio;
 
             coffeeEngine.runtime.currentScene.draw();
         }

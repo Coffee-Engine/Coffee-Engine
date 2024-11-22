@@ -49,23 +49,12 @@
         }
 
         scale(x, y, z) {
-            const scaled = new coffeeEngine.matrix4(this.contents);
-            scaled.contents[0][0] *= x;
-            scaled.contents[0][1] *= x;
-            scaled.contents[0][2] *= x;
-            scaled.contents[0][3] *= x;
+            const scalor = coffeeEngine.matrix4.identity();
+            scalor.contents[0][0] *= x;
+            scalor.contents[1][1] *= y;
+            scalor.contents[2][2] *= z;
 
-            scaled.contents[1][0] *= y;
-            scaled.contents[1][1] *= y;
-            scaled.contents[1][2] *= y;
-            scaled.contents[1][3] *= y;
-
-            scaled.contents[2][0] *= z;
-            scaled.contents[2][1] *= z;
-            scaled.contents[2][2] *= z;
-            scaled.contents[2][3] *= z;
-
-            return scaled;
+            return this.multiply(scalor);
         }
         /*
         ? Generated the table below using this function

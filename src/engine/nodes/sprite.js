@@ -38,6 +38,10 @@
         draw() {
             super.draw();
 
+            //Sprite scaling
+            this.matrix = this.matrix.scale(this.textureWidth, this.textureHeight, 1);
+            coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
+
             coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
 
             if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;

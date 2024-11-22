@@ -33,6 +33,15 @@
             get res() {
                 return coffeeEngine.renderer.cameraData.storedRes;
             },
+            set aspectRatio(value) {
+                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                    if (shader.uniforms.u_aspectRatio) shader.uniforms.u_aspectRatio.value = value;
+                });
+                coffeeEngine.renderer.cameraData.storedAspect = value;
+            },
+            get aspectRatio() {
+                return coffeeEngine.renderer.cameraData.storedAspect;
+            },
 
             //Because orthographic projection wouldn't like me
             set wFactor(value) {
@@ -48,6 +57,7 @@
             storedTransform: coffeeEngine.matrix4.identity(),
             storedProjection: coffeeEngine.matrix4.identity(),
             storedRes: [480, 360],
+            storedAspect: 1,
         };
 
         coffeeEngine.renderer.mainShaders = {
@@ -73,6 +83,7 @@
                 uniform mat4 u_projection;
                 uniform mat4 u_camera;
                 uniform float u_wFactor;
+                uniform float u_aspectRatio;
     
                 uniform sampler2D u_texture;
     
@@ -84,13 +95,14 @@
                     v_texCoord = a_texCoord;
     
                     //Transform my stuff!
-                    gl_Position = a_position * u_model * u_camera * u_projection;
+                    gl_Position = (a_position * u_model * u_camera) * u_projection;
                     v_position = a_position.xyz;
 
                     //W manipulation... wait not in that way
                     gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor);
                     gl_Position.w = gl_Position.z;
                     gl_Position -= vec4(0,0,1,0);
+                    gl_Position.x /= u_aspectRatio;
 
                     v_warp = gl_Position.w;
                 }
