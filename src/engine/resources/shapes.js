@@ -14,13 +14,13 @@ coffeeEngine.shapes = {
 
         a_texCoord: new Float32Array(
             [
+                0,1,
                 0,0,
-                0,1,
-                1,0,
-
-                0,1,
-                1,0,
                 1,1,
+
+                0,0,
+                1,1,
+                1,0,
             ]
         ),
 

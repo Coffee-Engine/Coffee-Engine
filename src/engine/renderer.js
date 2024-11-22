@@ -2,7 +2,7 @@
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas) => {
         coffeeEngine.renderer.canvas = canvas;
-        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, { preserveDrawingBuffer: true });
+        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: false, blendFunc: ["FUNC_ADD", "ONE_MINUS_CONSTANT_ALPHA", "ONE_MINUS_SRC_ALPHA"] });
         coffeeEngine.renderer.daveshade.useZBuffer(true);
 
         coffeeEngine.renderer.cameraData = {
@@ -114,9 +114,11 @@
                     vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor);
                     gl_FragColor = texture2D(u_texture, v_texCoord) * v_color * u_colorMod;
 
-                    if (gl_FragColor.w == 0.0) {
+                    if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
                         discard;
                     }
+
+                    gl_FragColor.xyz *= gl_FragColor.w;
                 }
                 `
             ),

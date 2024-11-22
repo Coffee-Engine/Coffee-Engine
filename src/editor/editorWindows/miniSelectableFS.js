@@ -4,7 +4,8 @@
         directoryBasin = {};
 
         set acceptTypes(value) {
-            this.acceptedTypes = value.split(",");
+            if (value) this.acceptedTypes = value.split(",");
+            else this.acceptedTypes = [];
 
             //Refresh our FS
             this.displayDirectory(project.fileSystem, this.container, false);

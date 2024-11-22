@@ -87,6 +87,13 @@ window.DaveShade = {};
             SHADERS: [],
         };
 
+        if (SETTINGS.blendFunc) {
+            daveShadeInstance.blendFunc = SETTINGS.blendFunc;
+            delete SETTINGS.blendFunc;
+
+            console.log(daveShadeInstance.blendFunc);
+        }
+
         daveShadeInstance.GL = CANVAS.getContext("webgl2", SETTINGS);
         daveShadeInstance.GL_TYPE = "webgl2";
         if (!daveShadeInstance.GL) {
@@ -94,6 +101,12 @@ window.DaveShade = {};
             daveShadeInstance.GL_TYPE = "webgl";
         }
         const GL = daveShadeInstance.GL;
+
+        if (daveShadeInstance.blendFunc) {
+            GL.enable(GL.BLEND);
+            GL.blendEquation(GL[daveShadeInstance.blendFunc[0]]);
+            GL.blendFunc(GL[daveShadeInstance.blendFunc[1]], GL[daveShadeInstance.blendFunc[2]]);
+        }
 
         //*When we need to split the shader into 2 parts due to it being in a single file. good for keeping storage sizes down
         daveShadeInstance.decomposeShader = (shaderCode) => {
