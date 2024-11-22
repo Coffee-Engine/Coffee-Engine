@@ -333,11 +333,14 @@ window.DaveShade = {};
                 daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_S, daveShadeInstance.GL.CLAMP_TO_EDGE);
                 daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_T, daveShadeInstance.GL.CLAMP_TO_EDGE);
                 daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_MIN_FILTER, daveShadeInstance.GL.LINEAR);
+
+                width = data.width;
+                height = data.height;
             } else {
                 daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, width, height, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
             }
 
-            return texture;
+            return {texture:texture, width:width, height:height};
         };
 
         daveShadeInstance.dispose = () => {

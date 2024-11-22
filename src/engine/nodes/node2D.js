@@ -1,6 +1,7 @@
 (function () {
     class node extends coffeeEngine.getNode("Node") {
         position = new coffeeEngine.vector2(0, 0);
+        scale = new coffeeEngine.vector2(1, 1);
 
         #layer = 1;
         set layer(value) {
@@ -21,6 +22,7 @@
             super.draw();
 
             this.matrix = coffeeEngine.matrix4.identity();
+            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
             this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
             this.matrix = this.matrix.rotationZ(this.rotation);
 
@@ -34,6 +36,7 @@
                 {name: "position", type: coffeeEngine.PropertyTypes.VEC2},
                 {name: "layer", type: coffeeEngine.PropertyTypes.INT},
                 {name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT},
+                {name: "scale", type: coffeeEngine.PropertyTypes.VEC2},
             ] 
         };
     }

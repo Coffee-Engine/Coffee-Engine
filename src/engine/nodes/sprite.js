@@ -5,7 +5,9 @@
         set spritePath(value) {
             this.#spritePath = value
             coffeeEngine.renderer.fileToTexture(value).then((texture) => {
-                this.texture = texture;
+                this.texture = texture.texture;
+                this.textureWidth = texture.width;
+                this.textureHeight = texture.height;
             });
         }
 
@@ -51,6 +53,7 @@
                 {name: "position", type: coffeeEngine.PropertyTypes.VEC2},
                 {name: "layer", type: coffeeEngine.PropertyTypes.INT},
                 {name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT},
+                {name: "scale", type: coffeeEngine.PropertyTypes.VEC2},
                 "---",
                 {name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif"},
                 {name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange:true},

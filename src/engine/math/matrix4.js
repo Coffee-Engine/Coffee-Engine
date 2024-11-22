@@ -50,20 +50,20 @@
 
         scale(x, y, z) {
             const scaled = new coffeeEngine.matrix4(this.contents);
-            scaled[0][0] *= x;
-            scaled[0][1] *= x;
-            scaled[0][2] *= x;
-            scaled[0][3] *= x;
+            scaled.contents[0][0] *= x;
+            scaled.contents[0][1] *= x;
+            scaled.contents[0][2] *= x;
+            scaled.contents[0][3] *= x;
 
-            scaled[1][0] *= y;
-            scaled[1][1] *= y;
-            scaled[1][2] *= y;
-            scaled[1][3] *= y;
+            scaled.contents[1][0] *= y;
+            scaled.contents[1][1] *= y;
+            scaled.contents[1][2] *= y;
+            scaled.contents[1][3] *= y;
 
-            scaled[2][0] *= z;
-            scaled[2][1] *= z;
-            scaled[2][2] *= z;
-            scaled[2][3] *= z;
+            scaled.contents[2][0] *= z;
+            scaled.contents[2][1] *= z;
+            scaled.contents[2][2] *= z;
+            scaled.contents[2][3] *= z;
 
             return scaled;
         }

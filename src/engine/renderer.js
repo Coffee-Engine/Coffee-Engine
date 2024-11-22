@@ -172,7 +172,7 @@
 
         coffeeEngine.renderer.fileToTexture = (src) => {
             return new Promise((resolve, reject) => {
-                const desiredFile = project
+                project
                     .getFile(src)
                     .then((file) => {
                         const trackedImage = new Image();
