@@ -25,8 +25,6 @@
             this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
             this.matrix = this.matrix.rotationZ(this.rotation);
             this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
-
-            coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
         }
 
         getProperties() { 
