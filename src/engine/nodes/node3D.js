@@ -2,6 +2,7 @@
     class node extends coffeeEngine.getNode("Node") {
         position = new coffeeEngine.vector3(0, 0, 0);
         rotation = new coffeeEngine.vector3(0, 0, 0);
+        scale = new coffeeEngine.vector3(1, 1, 1);
         matrix = coffeeEngine.matrix4.identity();
 
         update(deltaTime) {
@@ -19,6 +20,16 @@
 
             coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
         }
+
+        getProperties() { 
+            return [
+                {name: "name", type: coffeeEngine.PropertyTypes.NAME},
+                "---",
+                {name: "position", type: coffeeEngine.PropertyTypes.VEC3},
+                {name: "rotation", type: coffeeEngine.PropertyTypes.VEC3},
+                {name: "scale", type: coffeeEngine.PropertyTypes.VEC3},
+            ] 
+        };
     }
 
     coffeeEngine.registerNode(node, "Node3D", "Node");

@@ -29,7 +29,9 @@
             return this.#modulatedColor;
         }
 
-        shader = coffeeEngine.renderer.mainShaders.unlit
+        shader = coffeeEngine.renderer.mainShaders.unlit;
+
+        scaleMultiplier = 1.0;
 
         update(deltaTime) {
             super.update(deltaTime);
@@ -39,7 +41,7 @@
             super.draw();
 
             //Sprite scaling
-            this.matrix = this.matrix.scale(this.textureWidth, this.textureHeight, 1);
+            this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
             coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
 
             coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
@@ -61,6 +63,7 @@
                 "---",
                 {name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif"},
                 {name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange:true},
+                {name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT},
             ] 
         };
     }
