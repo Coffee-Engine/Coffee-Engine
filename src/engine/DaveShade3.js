@@ -261,10 +261,12 @@ window.DaveShade = {};
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
-                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
+                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.DYNAMIC_DRAW);
                 };
 
                 //* Assign values dependant on types
+                console.log(attributeDef.name);
+                console.log(shader.attributes[attributeDef.name].type);
                 switch (shader.attributes[attributeDef.name].type) {
                     case 5126:
                         shader.attributes[attributeDef.name].divisions = 1;

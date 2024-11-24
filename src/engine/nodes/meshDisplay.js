@@ -23,6 +23,7 @@
 
                     coffeeEngine.renderer.mainShaders.unlit.setBuffers(data);
                     coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
+                    coffeeEngine.renderer.mainShaders.unlit.uniforms.u_colorMod.value = [1,1,1,1];
                     coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(pointCount);
                 }
             }
