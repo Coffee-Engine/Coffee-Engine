@@ -3,7 +3,7 @@
     coffeeEngine.mesh = {
         class: class {
             data = {};
-            pointCount = 0;
+            pointCount = [];
         },
 
         fromProjectFile: (src) => {
