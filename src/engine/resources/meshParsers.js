@@ -1,7 +1,6 @@
 (function() {
     coffeeEngine.mesh.parsers = {
         obj: (contents, meshData) => {
-            console.log(contents);
 
             meshData.data = []
 
@@ -89,19 +88,15 @@
                                 dataHolder.a_normal[thirdNormal]
                             );
 
-                            meshData.data[meshData.data.length - 1].a_color.push(1,1,1,1);
+                            meshData.data[meshData.data.length - 1].a_color.push(
+                                1,1,1,1,
+                                1,1,1,1,
+                                1,1,1,1
+                            );
 
                             //Update our point count
                             meshData.pointCount[meshData.pointCount.length - 1] += 3;
                         }
-
-                        //Flatten em
-                        meshData.data[meshData.data.length - 1].a_position = meshData.data[meshData.data.length - 1].a_position.flat(4);
-                        meshData.data[meshData.data.length - 1].a_texCoord = meshData.data[meshData.data.length - 1].a_texCoord.flat(4);
-                        meshData.data[meshData.data.length - 1].a_normal = meshData.data[meshData.data.length - 1].a_normal.flat(4);
-                        meshData.data[meshData.data.length - 1].a_color = meshData.data[meshData.data.length - 1].a_color.flat(4);
-
-                        console.log(meshData);
                         break;
                 
                     default:
@@ -109,7 +104,11 @@
                 }
             });
 
-            console.log(dataHolder);
+            //Flatten em
+            meshData.data[meshData.data.length - 1].a_position = new Float32Array(meshData.data[meshData.data.length - 1].a_position.flat(4));
+            meshData.data[meshData.data.length - 1].a_texCoord = new Float32Array(meshData.data[meshData.data.length - 1].a_texCoord.flat(4));
+            meshData.data[meshData.data.length - 1].a_normal = new Float32Array(meshData.data[meshData.data.length - 1].a_normal.flat(4));
+            meshData.data[meshData.data.length - 1].a_color = new Float32Array(meshData.data[meshData.data.length - 1].a_color.flat(4));
         }
     }
 })();

@@ -9,7 +9,10 @@
         fromProjectFile: (src) => {
             return new Promise((resolve,reject) => {
                 //If the mesh exists in RAM, load it
-                if (coffeeEngine.mesh.storage[src]) resolve(coffeeEngine.mesh.storage[src]);
+                if (coffeeEngine.mesh.storage[src]) {
+                    resolve(coffeeEngine.mesh.storage[src]); 
+                    return;
+                }
 
                 //If the mesh does not exist load it
                 project.getFile(src).then((file) => {
