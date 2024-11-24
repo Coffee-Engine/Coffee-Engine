@@ -17,7 +17,7 @@
                     const extension = split[split.length - 1].toLowerCase();
         
                     fileReader.onload = () => {
-                        const stored = new coffeeEngine.mesh();
+                        const stored = new coffeeEngine.mesh.class();
                         coffeeEngine.mesh.storage[src] = stored;
         
                         if (coffeeEngine.mesh.parsers[extension]) coffeeEngine.mesh.parsers[extension](fileReader.result, stored);
