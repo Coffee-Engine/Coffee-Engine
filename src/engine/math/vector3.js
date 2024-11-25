@@ -1,10 +1,19 @@
 (function () {
     coffeeEngine.vector3 = class {
+        #x = 0;
+        #y = 0;
+        #z = 0;
+        set x(value) {this.#x = value; this.setter();} get x() {return this.#x}
+        set y(value) {this.#y = value; this.setter();} get y() {return this.#y}
+        set z(value) {this.#z = value; this.setter();} get z() {return this.#z}
+
         constructor(x, y, z) {
             this.x = x;
             this.y = typeof y == "undefined" ? x : y;
             this.z = typeof z == "undefined" ? x : z;
         }
+
+        setter() {}
 
         add(b) {
             return new coffeeEngine.vector3(this.x + b.x, this.y + b.y, this.z + b.z);

@@ -68,6 +68,7 @@
 
         draw() {
             // prettier-ignore
+            coffeeEngine.renderer.nodesRendered += 1;
             if (this.#script && this.#script.draw) {
                 this.#script.draw();
             }

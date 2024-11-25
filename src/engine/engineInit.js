@@ -7,7 +7,9 @@ window.coffeeEngine = {
     runtime: {},
     classes: {},
     resources: {},
-    renderer: {},
+    renderer: {
+        nodesRendered:0
+    },
     nodeRegister: {},
     //Just a simple node registrar thing
     registerNode: (node, name, parentNode) => {

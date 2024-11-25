@@ -25,7 +25,7 @@
 </svg>
 <!--rotationCenter:40.14274417710297:36.529159655786174-->`;
 
-    const profilerIcon = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    const profilerIcon = `<svg style="position:absolute;top:0px;left:0px;width:16px;height:16px;margin:4px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
     width="80.18823" height="80.18823" viewBox="0,0,80.18823,80.18823">
     <g transform="translate(-199.90588,-139.90588)">
         <g fill="none" stroke-miterlimit="10">
@@ -160,9 +160,13 @@
             this.profiler.style.backgroundColor = "var(--background-1)";
 
             setInterval(() => {
-                this.profiler.innerHTML = `FPS:${Math.floor(1/coffeeEngine.runtime.deltaTime)}<br>Delta:${coffeeEngine.runtime.deltaTime}<br>Triangles:${coffeeEngine.renderer.daveshade.triCount}`;
-                coffeeEngine.runtime.deltaTime = (Date.now() - coffeeEngine.runtime.lastTick) / 1000;
-                coffeeEngine.runtime.lastTick = Date.now();
+                this.profiler.innerHTML = `
+                FPS:${Math.floor(1/coffeeEngine.runtime.deltaTime)}<br>
+                Delta:${coffeeEngine.runtime.deltaTime}<br>
+                Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
+                Nodes:${coffeeEngine.renderer.nodesRendered}`;
+                
+                coffeeEngine.runtime.frameStart();
                 this.renderLoop();
             }, 16);
 
@@ -181,6 +185,7 @@
                 //ortho Button
                 this.viewmodeButton = document.createElement("button");
                 this.viewmodeButton.innerHTML = perspectiveIcon;
+                this.viewmodeButton.style.position = "relative";
                 this.viewmodeButton.onclick = () => {
                     this.orthographicMode = !this.orthographicMode;
                     this.viewmodeButton.innerHTML = this.orthographicMode ? orthographicIcon : perspectiveIcon;
@@ -189,10 +194,13 @@
 
                 //profiler Button
                 this.profilerButton = document.createElement("button");
+                this.profilerButton.innerHTML = profilerIcon;
+                this.profilerButton.style.position = "relative";
+                this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
                 {
                     this.profilerButton.onclick = () => {
                         this.profilerToggle = !this.profilerToggle;
-                        this.viewmodeButton.style.visibility = this.profilerToggle ? "visible" : "hidden";
+                        this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
                     };
                 }
                 this.buttonHolder.appendChild(this.profilerButton);

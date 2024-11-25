@@ -1,9 +1,16 @@
 (function () {
     coffeeEngine.vector2 = class {
+        #x = 0;
+        #y = 0;
+        set x(value) {this.#x = value; this.setter();} get x() {return this.#x}
+        set y(value) {this.#y = value; this.setter();} get y() {return this.#y}
+
         constructor(x, y) {
             this.x = x;
             this.y = y;
         }
+
+        setter() {}
 
         add(b) {
             return new coffeeEngine.vector2(this.x + b.x, this.y + b.y);

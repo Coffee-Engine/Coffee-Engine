@@ -1,11 +1,22 @@
 (function () {
     coffeeEngine.vector4 = class {
+        #x = 0;
+        #y = 0;
+        #z = 0;
+        #w = 0;
+        set x(value) {this.#x = value; this.setter();} get x() {return this.#x}
+        set y(value) {this.#y = value; this.setter();} get y() {return this.#y}
+        set z(value) {this.#z = value; this.setter();} get z() {return this.#z}
+        set w(value) {this.#w = value; this.setter();} get w() {return this.#w}
+
         constructor(x, y, z, w) {
             this.x = x;
             this.y = y;
             this.z = z;
             this.w = w;
         }
+
+        setter() {}
 
         add(b) {
             return new coffeeEngine.vector4(this.x + b.x, this.y + b.y, this.z + b.z, this.w + b.w);
