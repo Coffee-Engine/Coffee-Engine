@@ -434,14 +434,9 @@
             },
 
             file: (node, property) => {
-                const inputHolder = document.createElement("div");
-                inputHolder.style.display = "inline-grid";
-                inputHolder.style.gridTemplateColumns = "1fr 1fr";
-                
-                const pathText = document.createElement("p");
                 const button = document.createElement("button");
 
-                pathText.innerText = node[property.name || "name"] || "";
+                button.innerText = node[property.name || "name"] || editor.language["editor.window.properties.noFile"];
                 
                 button.onclick = () => {
                     //loadl
@@ -455,14 +450,11 @@
                     newLoadal.y = window.innerHeight.height / 2 - 200;
                     newLoadal.onFileSelected = (path) => {
                         node[property.name] = path;
-                        pathText.innerText = path;
+                        button.innerText = path;
                     };
                 }
 
-                inputHolder.appendChild(pathText);
-                inputHolder.appendChild(button);
-
-                return inputHolder;
+                return button;
             }
         }
     };

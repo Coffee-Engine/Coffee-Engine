@@ -13,6 +13,20 @@
             return this.#meshPath;
         }
 
+        #modulatedColorArr = [1,1,1,1];
+        #modulatedColor = "#ffffffff";
+
+        set modulatedColor(value) {
+            this.#modulatedColor = value;
+
+            const split = coffeeEngine.ColorMath.HexToRGB(value);
+            this.#modulatedColorArr = [split.r / 255, split.g / 255, split.b / 255, split.a / 255];
+        }
+
+        get modulatedColor() {
+            return this.#modulatedColor;
+        }
+
         draw() {
             super.draw();
 
@@ -23,7 +37,7 @@
 
                     coffeeEngine.renderer.mainShaders.unlit.setBuffers(data);
                     coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
-                    coffeeEngine.renderer.mainShaders.unlit.uniforms.u_colorMod.value = [1,1,1,1];
+                    if (coffeeEngine.renderer.mainShaders.unlit.uniforms.u_colorMod) coffeeEngine.renderer.mainShaders.unlit.uniforms.u_colorMod.value = this.#modulatedColorArr;
                     coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(pointCount);
                 }
             }

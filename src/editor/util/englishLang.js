@@ -161,6 +161,7 @@ editor.EnglishLang = {
     "editor.window.createBlock.referenceInput": "Function",
 
     "editor.window.properties": "Properties",
+    "editor.window.properties.noFile": "No File Selected",
 
     "sugarcube.motion": "Motion",
     "sugarcube.motion.block.movesteps":"move [steps] steps",

@@ -90,15 +90,16 @@ window.DaveShade = {};
         if (SETTINGS.blendFunc) {
             daveShadeInstance.blendFunc = SETTINGS.blendFunc;
             delete SETTINGS.blendFunc;
-
-            console.log(daveShadeInstance.blendFunc);
         }
 
         daveShadeInstance.GL = CANVAS.getContext("webgl2", SETTINGS);
         daveShadeInstance.GL_TYPE = "webgl2";
+        daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL
         if (!daveShadeInstance.GL) {
             daveShadeInstance.GL = CANVAS.getContext("webgl", SETTINGS);
             daveShadeInstance.GL_TYPE = "webgl";
+            //Webgl doesn't have native support for VOAs so we add the addon for VOAs
+            daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL.getExtension("OES_vertex_array_object");
         }
         const GL = daveShadeInstance.GL;
 
@@ -262,7 +263,8 @@ window.DaveShade = {};
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
-                    GL.bufferSubData(GL.ARRAY_BUFFER, 0, newValue);
+                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
+                    GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
                 };
 
                 //* Assign values dependant on types
