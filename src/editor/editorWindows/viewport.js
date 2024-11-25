@@ -25,6 +25,21 @@
 </svg>
 <!--rotationCenter:40.14274417710297:36.529159655786174-->`;
 
+    const profilerIcon = `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+    width="80.18823" height="80.18823" viewBox="0,0,80.18823,80.18823">
+    <g transform="translate(-199.90588,-139.90588)">
+        <g fill="none" stroke-miterlimit="10">
+            <path d="M206.48312,211.805h67.03375v-63.60999" stroke="currentColor" stroke-width="4"
+                stroke-linecap="round" />
+            <path
+                d="M207.20392,201.53369l8.46689,-7.439l16.70362,9.66789l16.79956,-11.82384l7.27997,8.54477l13.45895,-47.42317"
+                stroke="currentColor" stroke-width="4" stroke-linecap="round" />
+            <path d="M199.90588,220.09412v-80.18823h80.18823v80.18823z" stroke="none"
+                stroke-width="0" stroke-linecap="butt" />
+        </g>
+    </g>
+</svg><!--rotationCenter:40.09411684282881:40.094116842829095-->`;
+
     editor.windows.viewport = class extends editor.windows.base {
         viewportControlsProjection() {
             //Dragging on the screen!
@@ -114,6 +129,7 @@
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";
             this.orthographicMode = false;
+            this.profilerToggle = false;
             this.wFactor = 1;
 
             container.style.overflow = "hidden";
@@ -135,7 +151,18 @@
                 yaw: 0,
                 pitch: 0,
             };
+
+            this.profiler = document.createElement("div");
+            this.profiler.style.position = "absolute";
+            this.profiler.style.left = "100%";
+            this.profiler.style.top = "0%";
+            this.profiler.style.transform = "translate(-100%,0%";
+            this.profiler.style.backgroundColor = "var(--background-1)";
+
             setInterval(() => {
+                this.profiler.innerHTML = `FPS:${Math.floor(1/coffeeEngine.runtime.deltaTime)}<br>Delta:${coffeeEngine.runtime.deltaTime}<br>Triangles:${coffeeEngine.renderer.daveshade.triCount}`;
+                coffeeEngine.runtime.deltaTime = (Date.now() - coffeeEngine.runtime.lastTick) / 1000;
+                coffeeEngine.runtime.lastTick = Date.now();
                 this.renderLoop();
             }, 16);
 
@@ -151,7 +178,7 @@
                 this.buttonHolder.style.top = "4px";
                 this.buttonHolder.style.left = "4px";
 
-                //orthoButton
+                //ortho Button
                 this.viewmodeButton = document.createElement("button");
                 this.viewmodeButton.innerHTML = perspectiveIcon;
                 this.viewmodeButton.onclick = () => {
@@ -160,17 +187,18 @@
                 };
                 this.buttonHolder.appendChild(this.viewmodeButton);
 
-                //orthoButton
-                this.otherButton = document.createElement("button");
+                //profiler Button
+                this.profilerButton = document.createElement("button");
                 {
-                    this.otherButton.onclick = () => {
-                        console.log(this.orthographicMode);
-                        this.orthographicMode = !this.orthographicMode;
+                    this.profilerButton.onclick = () => {
+                        this.profilerToggle = !this.profilerToggle;
+                        this.viewmodeButton.style.visibility = this.profilerToggle ? "visible" : "hidden";
                     };
                 }
-                this.buttonHolder.appendChild(this.otherButton);
+                this.buttonHolder.appendChild(this.profilerButton);
             }
             container.appendChild(this.buttonHolder);
+            container.appendChild(this.profiler);
         }
 
         resized() {

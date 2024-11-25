@@ -17,6 +17,7 @@
                         r: parseInt(splitHex[1], 16),
                         g: parseInt(splitHex[2], 16),
                         b: parseInt(splitHex[3], 16),
+                        a: 255
                     };
                 } else {
                     const splitHex = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(Hex);
@@ -24,6 +25,7 @@
                         r: parseInt(splitHex[1], 16),
                         g: parseInt(splitHex[2], 16),
                         b: parseInt(splitHex[3], 16),
+                        a: 255
                     };
                 }
             }
@@ -32,6 +34,7 @@
                 r: Math.floor(Hex / 65536),
                 g: Math.floor(Hex / 256) % 256,
                 b: Hex % 256,
+                a: 255
             };
         },
 
@@ -64,7 +67,7 @@
                 return `#${hexR}${hexG}${hexB}${hexA}`;
             }
 
-            return `#${hexR}${hexG}${hexB}`;
+            return `#${hexR}${hexG}${hexB}ff`;
         },
 
         BrightestChannel: (Color) => {

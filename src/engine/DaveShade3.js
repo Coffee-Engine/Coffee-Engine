@@ -296,6 +296,10 @@ window.DaveShade = {};
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
                 //* Attribute keys. Whoopee
+                if (daveShadeInstance.currentBuffer == attributeJSON) return;
+
+                //Worst case scenario, we have 100 objects with different meshes in completely seperate draw orders
+                daveShadeInstance.currentBuffer = attributeJSON;
                 const attributeKeys = Object.keys(attributeJSON);
 
                 //? Loop through the keys
@@ -313,6 +317,7 @@ window.DaveShade = {};
                 GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
                 GL.useProgram(shader.program);
                 GL.drawArrays(GL.TRIANGLES, 0, triAmount);
+                daveShadeInstance.triCount += triAmount;
             };
 
             //*Add it to the list of shaders to dispose of when the instance no longer exists.
@@ -357,6 +362,11 @@ window.DaveShade = {};
             }
             delete daveShadeInstance.CANVAS;
         };
+
+        daveShadeInstance.clear = (bufferBits) => {
+            daveShadeInstance.triCount = 0;
+            daveShadeInstance.GL.clear(bufferBits);
+        }
 
         return daveShadeInstance;
     };

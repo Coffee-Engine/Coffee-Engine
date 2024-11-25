@@ -27,7 +27,7 @@
                 if (coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
                     coffeeEngine.runtime.currentScene.removeEventListener("draw", this.draw)
                 }
-            } else {
+            } else {W
                 console.error(`cannot set parent to ${String(value)}`);
             }
         }
@@ -78,7 +78,7 @@
             this.children.push(child);
             child.parent = this;
 
-            coffeeEngine.runtime.currentScene.castEvent("childAdded", child)
+            coffeeEngine.runtime.currentScene.castEvent("childAdded", child);
         }
 
         getProperties() { return [{name: "name", type: coffeeEngine.PropertyTypes.NAME}] };

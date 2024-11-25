@@ -43,7 +43,7 @@
         }
 
         draw() {
-            coffeeEngine.renderer.daveshade.GL.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
+            coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
             this.drawSky();
 
             this.castEvent("draw", {});
@@ -57,12 +57,12 @@
             coffeeEngine.renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
 
-        addChild(child) {
+        addChild(child,disruptUpdateEvent) {
             if (child == this) return;
             this.children.push(child);
             child.parent = this;
 
-            this.castEvent("childAdded", child);
+            if (!disruptUpdateEvent) this.castEvent("childAdded", child);
         }
 
         getProperties() { 
