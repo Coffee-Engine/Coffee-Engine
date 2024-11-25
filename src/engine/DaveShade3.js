@@ -257,16 +257,15 @@ window.DaveShade = {};
                 //* Create the buffer
                 shader.attributes[attributeDef.name].buffer = GL.createBuffer();
                 GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
+                GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(65536), GL.STATIC_DRAW);
 
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
-                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.DYNAMIC_DRAW);
+                    GL.bufferSubData(GL.ARRAY_BUFFER, 0, newValue);
                 };
 
                 //* Assign values dependant on types
-                console.log(attributeDef.name);
-                console.log(shader.attributes[attributeDef.name].type);
                 switch (shader.attributes[attributeDef.name].type) {
                     case 5126:
                         shader.attributes[attributeDef.name].divisions = 1;

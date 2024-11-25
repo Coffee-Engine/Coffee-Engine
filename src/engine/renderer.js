@@ -124,8 +124,8 @@
                 void main()
                 {
                     vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor);
-                    gl_FragColor = vec4(1);
-                    //gl_FragColor = texture2D(u_texture, v_texCoord) * v_color * u_colorMod;
+                    //gl_FragColor = vec4(1);
+                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color * u_colorMod;
 
                     if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
                         discard;
