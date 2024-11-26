@@ -11,7 +11,6 @@
         },
 
         //Setting it to null for now.
-        mouseOutTimer: null,
         axisNameToID: {
             "left-stick-x": 0,
             "left-stick-y": 1,
@@ -72,19 +71,11 @@
     });
 
     //Mouse movement
-    coffeeEngine.inputs.mouseOutTimer = null;
     window.addEventListener("mousemove", (event) => {
         coffeeEngine.inputs.mouse.movementX = event.movementX;
         coffeeEngine.inputs.mouse.movementY = event.movementY;
         coffeeEngine.inputs.mouse.screenX = event.clientX;
         coffeeEngine.inputs.mouse.screenY = event.clientY;
-
-        //Auto Stopping
-        if (coffeeEngine.inputs.mouseOutTimer) clearTimeout(coffeeEngine.inputs.mouseOutTimer);
-        timer = setTimeout(() => {
-            coffeeEngine.inputs.mouse.movementX = 0;
-            coffeeEngine.inputs.mouse.movementY = 0;
-        }, 33 || coffeeEngine.runtime.stepMS);
     });
 
     window.addEventListener("mouseout", () => {

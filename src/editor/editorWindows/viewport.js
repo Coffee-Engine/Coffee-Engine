@@ -200,8 +200,8 @@
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
                 Nodes:${coffeeEngine.renderer.nodesRendered}`;
                 
-                coffeeEngine.runtime.frameStart();
                 this.renderLoop();
+                coffeeEngine.runtime.frameStart();
             }, 16);
 
             this.buttonHolder = document.createElement("div");
