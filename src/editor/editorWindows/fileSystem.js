@@ -6,7 +6,24 @@
         minWidth = 400;
         minHeight = 200;
 
+        set systemRoot(value) {
+            this.currentSystemRoot = value;
+            
+            this.Content.innerHTML = "";
+
+            this.directoryBasin = {
+                div: container,
+                contents: {},
+            };
+            this.displayDirectory(this.systemRoot, this.Contents, this.directoryBasin, false);
+        }
+        
+        get systemRoot() {
+            return this.currentSystemRoot;
+        }
+
         init(container) {
+            this.currentSystemRoot = project.fileSystem;
             this.title = editor.language["editor.window.fileExplorer"];
             container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             //Our display function
@@ -157,7 +174,7 @@
                             div: container,
                             contents: {},
                         };
-                        this.displayDirectory(project.fileSystem, container, this.directoryBasin, false);
+                        this.displayDirectory(this.systemRoot, container, this.directoryBasin, false);
                         break;
                     }
 
@@ -169,7 +186,7 @@
                             div: container,
                             contents: {},
                         };
-                        this.displayDirectory(project.fileSystem, container, this.directoryBasin, false);
+                        this.displayDirectory(this.systemRoot, container, this.directoryBasin, false);
                         break;
                     }
 

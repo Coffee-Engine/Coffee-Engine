@@ -137,6 +137,60 @@
                 }
                 `
             ),
+            solid: coffeeEngine.renderer.daveshade.createShader(
+                //Vertex
+                `
+                precision highp float;
+    
+                attribute vec4 a_position;
+                attribute vec4 a_color;
+    
+                varying vec4 v_color;
+                varying vec3 v_position;
+    
+                uniform mat4 u_model;
+                uniform mat4 u_projection;
+                uniform mat4 u_camera;
+                uniform vec2 u_wFactor;
+                uniform float u_aspectRatio;
+    
+                void main()
+                {
+                    //Our passed in attriubtes
+                    v_color = a_color;
+    
+                    //Transform my stuff!
+                    gl_Position = (a_position * u_model * u_camera) * u_projection;
+                    v_position = a_position.xyz;
+
+                    //W manipulation... wait not in that way
+                    gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor.x);
+                    gl_Position.xy /= u_wFactor.y;
+                    gl_Position.w = gl_Position.z;
+                    gl_Position -= vec4(0,0,1,0);
+                    gl_Position.x /= u_aspectRatio;
+                }
+                `,
+                //Fragment
+                `
+                precision highp float;
+    
+                varying vec4 v_color;
+                varying vec3 v_position;
+                uniform vec4 u_colorMod;
+                
+                void main()
+                {
+                    gl_FragColor = vec4(1) * u_colorMod;
+
+                    if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
+                        discard;
+                    }
+
+                    gl_FragColor.xyz *= gl_FragColor.w;
+                }
+                `
+            ),
             skyplane: coffeeEngine.renderer.daveshade.createShader(
                 //Vertex
                 `
@@ -207,6 +261,38 @@
                     });
             });
         };
+
+        
+        //? what does this do exactly?
+        //* It stores material data. thats it;
+        coffeeEngine.renderer.material = class {
+            constructor(shader, params) {
+                //Internal shaders
+                if (shader.startsWith("coffee://")) {
+                    //Remove the coffee predesessor, and get the default shader
+                    this.shader = coffeeEngine.renderer.mainShaders[shader.replace("coffee://","")];
+                }
+                else {
+                    //Get it from the path
+                    coffeeEngine.renderer.shaderFrom(shader).then(shader => {
+                        this.shader = shader;
+                    });
+                }
+                this.shaderPath = shader;
+                this.params = params;
+            }
+
+            use() {
+                //Loop through our params and set the keys
+                if (this.shader) {
+                    Object.keys(this.params).forEach(key => {
+                        this.shader.uniforms[key] = this.params[key];
+                    });
+                }
+            }
+        }
+
+        coffeeEngine.renderer.defaultMaterial = new coffeeEngine.renderer.material("coffee://solid",{u_colorMod:[0,1,1,1]});
 
         return coffeeEngine.renderer;
     };

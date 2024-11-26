@@ -14,8 +14,25 @@
         get acceptTypes() {
             return (this.acceptedTypes || []).join(",");
         }
+        
+        set systemRoot(value) {
+            this.currentSystemRoot = value;
+            
+            this.Content.innerHTML = "";
+
+            this.directoryBasin = {
+                div: container,
+                contents: {},
+            };
+            this.displayDirectory(this.systemRoot, this.Contents, this.directoryBasin, false);
+        }
+        
+        get systemRoot() {
+            return this.currentSystemRoot;
+        }
 
         init(container) {
+            this.currentSystemRoot = project.fileSystem;
             this.acceptedTypes = [];
             this.container = container;
 
@@ -36,7 +53,7 @@
                     element.className = "fileButton";
 
                     //Check if it is a file, or a folder
-                    if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
+                    if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle || typeof directory[key] === "string") {
                         //Check the file extension to make sure the key we are using is aligned with the accepted types
                         let split = key.split(".");
                         if (this.acceptedTypes.length > 0 && !this.acceptedTypes.includes(split[split.length - 1])) return;
@@ -82,7 +99,7 @@
                 });
             };
 
-            this.displayDirectory(project.fileSystem, container, false);
+            this.displayDirectory(this.systemRoot, container, false);
         }
 
         //Just so we can have our path and eat it too
