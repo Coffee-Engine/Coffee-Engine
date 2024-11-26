@@ -11,6 +11,12 @@
                 a_normal:[],
             }
 
+            const defaults = {
+                a_position: [0,0,0,1],
+                a_normal: [0,0,0],
+                a_texCoord: [0,0]
+            }
+
             contents.split("\n").forEach(line => {
                 //Split the line into multiple sections
                 const split = line.split(" ");
@@ -34,8 +40,8 @@
 
                     case "vt":
                         dataHolder.a_texCoord.push([
-                            Number(split[1]),
-                            Number(split[2]),
+                            Number(split[1]) || 0,
+                            Number(split[2]) || 0,
                         ]);
                         break;
 
@@ -71,21 +77,21 @@
 
                             //Push our data
                             meshData.data[meshData.data.length - 1].a_position.push(
-                                [dataHolder.a_position[firstPosition],1],
-                                [dataHolder.a_position[secondPosition],1],
-                                [dataHolder.a_position[thirdPosition],1]
+                                [dataHolder.a_position[firstPosition] || defaults.a_position,1],
+                                [dataHolder.a_position[secondPosition] || defaults.a_position,1],
+                                [dataHolder.a_position[thirdPosition] || defaults.a_position,1]
                             );
 
                             meshData.data[meshData.data.length - 1].a_texCoord.push(
-                                dataHolder.a_texCoord[firstUV],
-                                dataHolder.a_texCoord[secondUV],
-                                dataHolder.a_texCoord[thirdUV]
+                                dataHolder.a_texCoord[firstUV] || defaults.a_position,
+                                dataHolder.a_texCoord[secondUV] || defaults.a_position,
+                                dataHolder.a_texCoord[thirdUV] || defaults.a_position
                             );
                             
                             meshData.data[meshData.data.length - 1].a_normal.push(
-                                dataHolder.a_normal[firstNormal],
-                                dataHolder.a_normal[secondNormal],
-                                dataHolder.a_normal[thirdNormal]
+                                dataHolder.a_normal[firstNormal] || defaults.a_position,
+                                dataHolder.a_normal[secondNormal] || defaults.a_position,
+                                dataHolder.a_normal[thirdNormal] || defaults.a_position
                             );
 
                             meshData.data[meshData.data.length - 1].a_color.push(

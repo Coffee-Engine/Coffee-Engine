@@ -408,7 +408,7 @@
                         contents: [
                             {
                                 size: 70,
-                                content: ["codeEditor", "viewport"],
+                                content: ["viewport", "codeEditor"],
                             },
                             {
                                 size: 30,
