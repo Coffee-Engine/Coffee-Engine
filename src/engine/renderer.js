@@ -239,14 +239,23 @@
             //lit:coffeeEngine.renderer.daveshade.createShader()
         };
 
+        coffeeEngine.renderer.textureStorage = {};
+        coffeeEngine.renderer.materialStorage = {};
+
         coffeeEngine.renderer.fileToTexture = (src) => {
             return new Promise((resolve, reject) => {
+                if (coffeeEngine.renderer.textureStorage[src]) {
+                    resolve(coffeeEngine.renderer.textureStorage[src]);
+                    return;
+                }
+
                 project
                     .getFile(src)
                     .then((file) => {
                         const trackedImage = new Image();
 
                         trackedImage.onload = () => {
+                            coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
                             resolve(coffeeEngine.renderer.daveshade.createTexture(trackedImage));
                         };
 
@@ -261,6 +270,24 @@
                     });
             });
         };
+
+        coffeeEngine.renderer.fileToMateial = (src) => {
+            return new Promise((resolve,reject) => {
+                //Hardcoding this for funsies
+                if (src == "coffee:/default.material") {
+                    resolve(coffeeEngine.renderer.defaultMaterial);
+                }
+                else {
+                    project.getFile(src)
+                    .then((file) => {
+
+                    })
+                    .catch(() => {
+                        reject("File doesn't exist");
+                    })
+                }
+            })
+        }
 
         
         //? what does this do exactly?

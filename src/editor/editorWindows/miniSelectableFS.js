@@ -21,10 +21,10 @@
             this.Content.innerHTML = "";
 
             this.directoryBasin = {
-                div: container,
+                div: this.Content,
                 contents: {},
             };
-            this.displayDirectory(this.systemRoot, this.Contents, this.directoryBasin, false);
+            this.displayDirectory(this.systemRoot, this.Content, this.directoryBasin, false);
         }
         
         get systemRoot() {

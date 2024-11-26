@@ -433,6 +433,7 @@
                 return input;
             },
 
+            //Files
             file: (node, property) => {
                 const button = document.createElement("button");
 
@@ -446,6 +447,7 @@
 
                     //Note that gifs will not be animated, they do come as non animated too. Like PNGs
                     newLoadal.acceptTypes = property.fileType;
+                    if (property.systemRoot) newLoadal.systemRoot = property.systemRoot;
                     newLoadal.x = window.innerWidth.width / 2 - 200;
                     newLoadal.y = window.innerHeight.height / 2 - 200;
                     newLoadal.onFileSelected = (path) => {
