@@ -58,6 +58,7 @@
             storedProjection: coffeeEngine.matrix4.identity(),
             storedRes: [480, 360],
             storedAspect: 1,
+            storedWFactor: [1, 1],
         };
 
         coffeeEngine.renderer.mainShaders = {
@@ -82,7 +83,7 @@
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
                 uniform mat4 u_camera;
-                uniform float u_wFactor;
+                uniform vec2 u_wFactor;
                 uniform float u_aspectRatio;
     
                 uniform sampler2D u_texture;
@@ -99,7 +100,8 @@
                     v_position = a_position.xyz;
 
                     //W manipulation... wait not in that way
-                    gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor);
+                    gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor.x);
+                    gl_Position.xy /= u_wFactor.y;
                     gl_Position.w = gl_Position.z;
                     gl_Position -= vec4(0,0,1,0);
                     gl_Position.x /= u_aspectRatio;
@@ -118,12 +120,12 @@
                 varying float v_warp;
     
                 uniform sampler2D u_texture;
-                uniform float u_wFactor;
+                uniform vec2 u_wFactor;
                 uniform vec4 u_colorMod;
                 
                 void main()
                 {
-                    vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor);
+                    vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor.x);
                     gl_FragColor = vec4(1) * u_colorMod;
                     //gl_FragColor = texture2D(u_texture, v_texCoord) * v_color * u_colorMod;
 

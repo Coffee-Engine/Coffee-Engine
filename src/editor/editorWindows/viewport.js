@@ -49,25 +49,25 @@
 
                 this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch, -1.5707), 1.5707);
 
-                if (coffeeEngine.inputs.keys["e"]) this.previewCamera.y -= 0.05;
-                if (coffeeEngine.inputs.keys["q"]) this.previewCamera.y += 0.05;
+                if (coffeeEngine.inputs.keys["e"]) this.previewCamera.y -= 0.05 * this.previewCamera.speed;
+                if (coffeeEngine.inputs.keys["q"]) this.previewCamera.y += 0.05 * this.previewCamera.speed;
 
                 if (coffeeEngine.inputs.keys["d"]) {
-                    this.previewCamera.x -= Math.cos(this.previewCamera.yaw) * 0.05;
-                    this.previewCamera.z -= Math.sin(this.previewCamera.yaw) * 0.05;
+                    this.previewCamera.x -= Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
+                    this.previewCamera.z -= Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
                 if (coffeeEngine.inputs.keys["a"]) {
-                    this.previewCamera.x += Math.cos(this.previewCamera.yaw) * 0.05;
-                    this.previewCamera.z += Math.sin(this.previewCamera.yaw) * 0.05;
+                    this.previewCamera.x += Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
+                    this.previewCamera.z += Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
 
                 if (coffeeEngine.inputs.keys["w"]) {
-                    this.previewCamera.x += Math.sin(this.previewCamera.yaw) * 0.05;
-                    this.previewCamera.z -= Math.cos(this.previewCamera.yaw) * 0.05;
+                    this.previewCamera.x += Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
+                    this.previewCamera.z -= Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
                 if (coffeeEngine.inputs.keys["s"]) {
-                    this.previewCamera.x -= Math.sin(this.previewCamera.yaw) * 0.05;
-                    this.previewCamera.z += Math.cos(this.previewCamera.yaw) * 0.05;
+                    this.previewCamera.x -= Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
+                    this.previewCamera.z += Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
             }
 
@@ -75,19 +75,21 @@
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
             this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
-            this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
+            this.projection = coffeeEngine.matrix4.projection(this.previewCamera.fov, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
-            this.wFactor += (1 - this.wFactor) * 0.125;
-            if (this.wFactor > 0.9875) {
-                this.wFactor = 1;
+            this.wFactor[0] += (1 - this.wFactor[0]) * 0.125;
+            if (this.wFactor[0] > 0.9875) {
+                this.wFactor[0] = 1;
             }
+
+            this.wFactor[1] += (1 - this.wFactor[1]) * 0.125;
         }
 
         viewportControlsOrtho() {
             if (coffeeEngine.inputs.mouse["2"]) {
-                this.previewCamera.x += coffeeEngine.inputs.mouse.movementX / 180;
-                this.previewCamera.y -= coffeeEngine.inputs.mouse.movementY / 180;
+                this.previewCamera.x += (coffeeEngine.inputs.mouse.movementX / 180) * this.previewCamera.zoom;
+                this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom;
             }
 
             this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
@@ -101,10 +103,12 @@
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
             //Smooth transition
-            this.wFactor += (0 - this.wFactor) * 0.125;
-            if (this.wFactor < 0.0125) {
-                this.wFactor = 0;
+            this.wFactor[0] += (0 - this.wFactor[0]) * 0.125;
+            if (this.wFactor[0] < 0.0125) {
+                this.wFactor[0] = 0;
             }
+
+            this.wFactor[1] += (this.previewCamera.zoom - this.wFactor[1]) * 0.125;
         }
 
         renderLoop() {
@@ -125,16 +129,21 @@
         init(container) {
             this.title = editor.language["editor.window.viewport"];
 
+            //The main canvas
             this.canvas = document.createElement("canvas");
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";
-            this.orthographicMode = false;
-            this.profilerToggle = false;
-            this.wFactor = 1;
+            container.appendChild(this.canvas);
+
+            //The profiler in the corner
+            this.profiler = document.createElement("div");
+            this.profiler.style.position = "absolute";
+            this.profiler.style.left = "100%";
+            this.profiler.style.top = "0%";
+            this.profiler.style.transform = "translate(-100%,0%";
+            this.profiler.style.backgroundColor = "var(--background-1)";
 
             container.style.overflow = "hidden";
-
-            container.appendChild(this.canvas);
 
             this.resized();
             window.addEventListener("resize", () => {
@@ -144,20 +153,45 @@
             //Setup our renderer
             this.renderer = coffeeEngine.renderer.create(this.canvas);
 
+            //Our camera
+            this.orthographicMode = false;
+            this.profilerToggle = false;
+            this.wFactor = [1, 1];
             this.previewCamera = {
                 x: 0,
                 y: 0,
                 z: 0,
                 yaw: 0,
                 pitch: 0,
+                zoom: 1,
+                fov: 90,
+                speed: 1
             };
 
-            this.profiler = document.createElement("div");
-            this.profiler.style.position = "absolute";
-            this.profiler.style.left = "100%";
-            this.profiler.style.top = "0%";
-            this.profiler.style.transform = "translate(-100%,0%";
-            this.profiler.style.backgroundColor = "var(--background-1)";
+            //Our controls and render time
+            this.canvas.addEventListener("wheel", (event) => {
+                if (this.orthographicMode) {
+                    this.previewCamera.zoom += (event.deltaY) * 0.0125;
+    
+                    if (this.previewCamera.zoom > 25) {
+                        this.previewCamera.zoom = 25;
+                    }
+                    else if (this.previewCamera.zoom < 1) {
+                        this.previewCamera.zoom = 1;
+                    }
+                }
+                else {
+                    if (coffeeEngine.inputs.mouse["2"]) {
+                        this.previewCamera.speed -= (event.deltaY) * 0.0125;
+                        if (this.previewCamera.speed < 0.25) {
+                            this.previewCamera.speed = 0.25;
+                        }
+                        else if (this.previewCamera.speed > 10) {
+                            this.previewCamera.speed = 10;
+                        }
+                    }
+                }
+            });
 
             setInterval(() => {
                 this.profiler.innerHTML = `

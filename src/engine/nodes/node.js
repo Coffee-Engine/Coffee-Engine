@@ -82,6 +82,8 @@
             coffeeEngine.runtime.currentScene.castEvent("childAdded", child);
         }
 
+        sortValue() { return 0; }
+
         getProperties() { return [{name: "name", type: coffeeEngine.PropertyTypes.NAME}] };
     }
 
