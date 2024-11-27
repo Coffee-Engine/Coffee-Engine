@@ -137,31 +137,55 @@
                 }
                 `
             ),
-            solid: coffeeEngine.renderer.daveshade.createShader(
+            basis: coffeeEngine.renderer.daveshade.createShader(
                 //Vertex
                 `
                 precision highp float;
     
                 attribute vec4 a_position;
                 attribute vec4 a_color;
+                attribute vec3 a_normal;
+                attribute vec2 a_texCoord;
     
                 varying vec4 v_color;
                 varying vec3 v_position;
+                varying vec3 v_normal;
+                varying vec2 v_texCoord;
     
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
                 uniform mat4 u_camera;
                 uniform vec2 u_wFactor;
                 uniform float u_aspectRatio;
+
+                vec3 POSITION;
+                vec4 COLOR;
+                vec3 NORMAL;
+                vec2 UV;
+
+                void vertex() {}
     
                 void main()
                 {
                     //Our passed in attriubtes
-                    v_color = a_color;
+                    //These are the variables we allow the user to modify
+                    POSITION = a_position.xyz;
+                    COLOR = a_color;
+                    NORMAL = a_normal;
+                    UV = a_texCoord;
+
+                    //Call our user input
+                    //If there is none, we return the mesh input 1-1
+                    vertex();
+
+                    //Then we pass them to the fragment shader
+                    v_color = COLOR;
+                    v_normal = NORMAL;
+                    v_texCoord = UV;
     
                     //Transform my stuff!
-                    gl_Position = (a_position * u_model * u_camera) * u_projection;
-                    v_position = a_position.xyz;
+                    gl_Position = (vec4(POSITION,1) * u_model * u_camera) * u_projection;
+                    v_position = POSITION;
 
                     //W manipulation... wait not in that way
                     gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor.x);
@@ -177,17 +201,41 @@
     
                 varying vec4 v_color;
                 varying vec3 v_position;
+                varying vec3 v_normal;
+                varying vec2 v_texCoord;
                 uniform vec4 u_colorMod;
+
+                vec4 COLOR;
+                vec3 EMISSION;
+                float ROUGHNESS;
+                float SPECULAR;
+                float LIGHT_AFFECTION;
+                float ALPHA_GLOW;
+
+                void fragment() {}
                 
                 void main()
                 {
-                    gl_FragColor = vec4(1) * u_colorMod;
+                    //Set our variables
+                    LIGHT_AFFECTION = 1.0;
+                    COLOR = v_color;
+                    EMISSION = vec3(0);
+                    ROUGHNESS = 0.0;
+                    SPECULAR = 0.0;
+                    LIGHT_AFFECTION = 1.0;
+                    ALPHA_GLOW = 0.0;
 
+                    //Call our user function
+                    fragment();
+
+                    //Then the rest of our calculations
+                    gl_FragColor = COLOR * u_colorMod;
                     if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
                         discard;
                     }
 
-                    gl_FragColor.xyz *= gl_FragColor.w;
+                    //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
+                    gl_FragColor.xyz *= mix(gl_FragColor.w,1.0,ALPHA_GLOW);
                 }
                 `
             ),
@@ -243,117 +291,8 @@
         coffeeEngine.renderer.shaderStorage = {};
         coffeeEngine.renderer.materialStorage = {};
 
-        //* We store what we need in RAM
-        coffeeEngine.renderer.fileToTexture = (src) => {
-            //Make sure we allocate this in storage first
-            if (coffeeEngine.renderer.textureStorage[src]) return;
-            coffeeEngine.renderer.textureStorage[src] = {};
-
-            //Then we make our promise
-            return new Promise((resolve, reject) => {
-                if (coffeeEngine.renderer.textureStorage[src]) {
-                    resolve(coffeeEngine.renderer.textureStorage[src]);
-                    return;
-                }
-
-                project
-                    .getFile(src)
-                    .then((file) => {
-                        const trackedImage = new Image();
-
-                        trackedImage.onload = () => {
-                            coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
-                            resolve(coffeeEngine.renderer.daveshade.createTexture(trackedImage));
-                        };
-
-                        trackedImage.onerror = () => {
-                            reject("error loading image");
-                        };
-
-                        trackedImage.src = window.URL.createObjectURL(file);
-                    })
-                    .catch((exception) => {
-                        reject("file doesn't exist");
-                    });
-            });
-        };
-
-        coffeeEngine.renderer.fileToShader = (src) => {
-            //Make sure we allocate this in storage first
-            if (coffeeEngine.renderer.shaderStorage[src]) return;
-            coffeeEngine.renderer.shaderStorage[src] = {};
-
-            //Then we make our promise
-            return new Promise((resolve,reject) => {
-                const fileReader = new FileReader();
-
-                fileReader.onload = () => {
-                    resolve(fileReader.result);
-                }
-
-                project.getFile(src).then((file) => {
-                    fileReader.readAsText(file);
-                }).catch(() => {
-                    delete coffeeEngine.renderer.shaderStorage[src];
-                    reject("File does not exist");
-                })
-            })
-        }
-
-        coffeeEngine.renderer.fileToMaterial = (src) => {
-            //Make sure we allocate this in storage first
-            if (coffeeEngine.renderer.materialStorage[src]) return;
-            coffeeEngine.renderer.materialStorage[src] = {};
-
-            //Then we make our promise
-            return new Promise((resolve,reject) => {
-                //Hardcoding this for funsies
-                if (src == "coffee:/default.material") {
-                    resolve(coffeeEngine.renderer.defaultMaterial);
-                }
-                else {
-                    project.getFile(src)
-                    .then((file) => {
-                        
-                    })
-                    .catch(() => {
-                        reject("File doesn't exist");
-                    })
-                }
-            })
-        }
-
-        
-        //? what does this do exactly?
-        //* It stores material data. thats it;
-        coffeeEngine.renderer.material = class {
-            constructor(shader, params) {
-                //Internal shaders
-                if (shader.startsWith("coffee:/")) {
-                    //Remove the coffee predesessor, and get the default shader
-                    this.shader = coffeeEngine.renderer.mainShaders[shader.replace("coffee:/","")];
-                }
-                else {
-                    //Get it from the path
-                    coffeeEngine.renderer.fileToShader(shader).then(shader => {
-                        this.shader = shader;
-                    });
-                }
-                this.shaderPath = shader;
-                this.params = params;
-            }
-
-            use() {
-                //Loop through our params and set the keys
-                if (this.shader) {
-                    Object.keys(this.params).forEach(key => {
-                        this.shader.uniforms[key] = this.params[key];
-                    });
-                }
-            }
-        }
-
-        coffeeEngine.renderer.defaultMaterial = new coffeeEngine.renderer.material("coffee://solid",{u_colorMod:[0,1,1,1]});
+        coffeeEngine.renderer.initilizeFileConversions()
+        coffeeEngine.renderer.initilizeMaterials()
 
         return coffeeEngine.renderer;
     };
