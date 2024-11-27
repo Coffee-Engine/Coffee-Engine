@@ -240,9 +240,16 @@
         };
 
         coffeeEngine.renderer.textureStorage = {};
+        coffeeEngine.renderer.shaderStorage = {};
         coffeeEngine.renderer.materialStorage = {};
 
+        //* We store what we need in RAM
         coffeeEngine.renderer.fileToTexture = (src) => {
+            //Make sure we allocate this in storage first
+            if (coffeeEngine.renderer.textureStorage[src]) return;
+            coffeeEngine.renderer.textureStorage[src] = {};
+
+            //Then we make our promise
             return new Promise((resolve, reject) => {
                 if (coffeeEngine.renderer.textureStorage[src]) {
                     resolve(coffeeEngine.renderer.textureStorage[src]);
@@ -271,7 +278,34 @@
             });
         };
 
-        coffeeEngine.renderer.fileToMateial = (src) => {
+        coffeeEngine.renderer.fileToShader = (src) => {
+            //Make sure we allocate this in storage first
+            if (coffeeEngine.renderer.shaderStorage[src]) return;
+            coffeeEngine.renderer.shaderStorage[src] = {};
+
+            //Then we make our promise
+            return new Promise((resolve,reject) => {
+                const fileReader = new FileReader();
+
+                fileReader.onload = () => {
+                    resolve(fileReader.result);
+                }
+
+                project.getFile(src).then((file) => {
+                    fileReader.readAsText(file);
+                }).catch(() => {
+                    delete coffeeEngine.renderer.shaderStorage[src];
+                    reject("File does not exist");
+                })
+            })
+        }
+
+        coffeeEngine.renderer.fileToMaterial = (src) => {
+            //Make sure we allocate this in storage first
+            if (coffeeEngine.renderer.materialStorage[src]) return;
+            coffeeEngine.renderer.materialStorage[src] = {};
+
+            //Then we make our promise
             return new Promise((resolve,reject) => {
                 //Hardcoding this for funsies
                 if (src == "coffee:/default.material") {
@@ -280,7 +314,7 @@
                 else {
                     project.getFile(src)
                     .then((file) => {
-
+                        
                     })
                     .catch(() => {
                         reject("File doesn't exist");
@@ -295,13 +329,13 @@
         coffeeEngine.renderer.material = class {
             constructor(shader, params) {
                 //Internal shaders
-                if (shader.startsWith("coffee://")) {
+                if (shader.startsWith("coffee:/")) {
                     //Remove the coffee predesessor, and get the default shader
-                    this.shader = coffeeEngine.renderer.mainShaders[shader.replace("coffee://","")];
+                    this.shader = coffeeEngine.renderer.mainShaders[shader.replace("coffee:/","")];
                 }
                 else {
                     //Get it from the path
-                    coffeeEngine.renderer.shaderFrom(shader).then(shader => {
+                    coffeeEngine.renderer.fileToShader(shader).then(shader => {
                         this.shader = shader;
                     });
                 }
