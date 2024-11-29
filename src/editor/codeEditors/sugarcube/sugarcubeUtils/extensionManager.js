@@ -201,7 +201,7 @@
             //Custom compiler instructions.
             if (blockCompileFunc) {
                 sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator);
+                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator, this);
                     if (block.outputConnection) {
                         return [code, 0];
                     }
@@ -1009,7 +1009,7 @@
         updateExtensionBlocks(extensionID) {
             if (!extensionID) {
                 Object.keys(this.updateFunctions).forEach((func) => {
-                    func();
+                    this.updateFunctions[func]();
                 });
             } else {
                 if (!this.updateFunctions[extensionID]) return;

@@ -280,6 +280,16 @@
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.sensing.block.timer"],
                     },
+                    {
+                        opcode: "dayMonthYear",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sensing.block.dayMonthYear"],
+                        arguments: {
+                            timespan: {
+                                menu: "timespans",
+                            },
+                        },
+                    },
                 ],
                 menus: {
                     keys: {
@@ -301,6 +311,20 @@
                         items: ["1", "2", "3", "4"],
                         acceptReporters: true,
                     },
+                    timespans: {
+                        items: [
+                            { text: editor.language["sugarcube.sensing.menu.timespans.century"], value: "getCentury" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.decade"], value: "getDecade" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.year"], value: "getFullYear" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.month"], value: "getMonth" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.day"], value: "getDate" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.weekday"], value: "getDay" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.hour"], value: "getHours" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.minute"], value: "getMinutes" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.second"], value: "getSeconds" },
+                            { text: editor.language["sugarcube.sensing.menu.timespans.millisecond"], value: "getMilliseconds" },
+                        ],
+                    }
                 },
                 fields: {
                     Controller: {
@@ -384,6 +408,23 @@
 
         timer() {
             return coffeeEngine.timer;
+        }
+
+        dayMonthYear({ timespan }) {
+            const dateOBJ = new Date(Date.now());
+            switch (timespan) {
+                case "getCentury":
+                    //Get the century
+                    return Math.floor(dateOBJ.getFullYear() / 100) + 1;
+
+                case "getDecade":
+                    //Get the decade
+                    return (dateOBJ.getFullYear() / 10) % 10;
+            
+                default:
+                    if (dateOBJ[timespan]) return dateOBJ[timespan]();
+                    return 0;
+            }
         }
 
         controller_Init(field) {

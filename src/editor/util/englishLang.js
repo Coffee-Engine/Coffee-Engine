@@ -111,7 +111,7 @@ editor.EnglishLang = {
     "editor.window.debugLog.clear": "clear",
 
     "editor.window.sceneTree": "Scene Tree",
-    "editor.window.sceneTree.addObject": "Add Object",
+    "editor.window.sceneTree.addObject": "Add Node",
 
     "editor.window.nodeMaker":"Add a Node",
 
@@ -206,6 +206,7 @@ editor.EnglishLang = {
     "sugarcube.events.block.broadcastSend": "broadcast [message]",
 
     "sugarcube.controls": "Controls",
+    "sugarcube.controls.block.wait": "wait [seconds] seconds",
     "sugarcube.controls.block.ifStatement": "if [condition] then [dummy] [statement]",
     "sugarcube.controls.block.ifElse_Statement": "if [condition] then [dummy] [statement] else [dummy2] [statement2]",
     "sugarcube.controls.block.repeat": "repeat [num] [dummy] [statement]",
@@ -225,11 +226,22 @@ editor.EnglishLang = {
     "sugarcube.sensing.block.controllerButtonValue": "value of [button] on controller [id]",
     "sugarcube.sensing.block.controllerButton": "is [button] down on controller [id]",
     "sugarcube.sensing.block.timer": "timer",
+    "sugarcube.sensing.block.dayMonthYear": "current [timespan]",
     "sugarcube.sensing.menu.mouseButtons.primary": "primary",
     "sugarcube.sensing.menu.mouseButtons.secondary": "secondary",
     "sugarcube.sensing.menu.mouseButtons.tertiary": "tertiary",
     "sugarcube.sensing.menu.mouseButtons.quaternary": "quaternary",
     "sugarcube.sensing.menu.mouseButtons.quinary": "quinary",
+    "sugarcube.sensing.menu.timespans.century": "century",
+    "sugarcube.sensing.menu.timespans.decade": "decade",
+    "sugarcube.sensing.menu.timespans.year": "year",
+    "sugarcube.sensing.menu.timespans.month": "month",
+    "sugarcube.sensing.menu.timespans.day": "date",
+    "sugarcube.sensing.menu.timespans.weekday": "weekday",
+    "sugarcube.sensing.menu.timespans.hour": "hour",
+    "sugarcube.sensing.menu.timespans.minute": "minute",
+    "sugarcube.sensing.menu.timespans.second": "second",
+    "sugarcube.sensing.menu.timespans.millisecond": "millisecond",
     "sugarcube.sensing.field.controller.Left-Stick": "left stick",
     "sugarcube.sensing.field.controller.left-stick-x": "left stick horizontal",
     "sugarcube.sensing.field.controller.left-stick-y": "left stick vertical",
@@ -372,4 +384,5 @@ editor.EnglishLang = {
     "engine.nodeNames.Node3D": "Node 3D",
     "engine.nodeNames.Camera": "Camera",
     "engine.nodeNames.MeshDisplay": "Mesh Display",
+    "engine.nodeNames.Billboard": "Billboard",
 };
