@@ -101,6 +101,26 @@
             if (!disruptUpdateEvent) this.castEvent("childAdded", child);
         }
 
+        serialize() {
+            const goDown = (children) => {
+                const returnedObject = [];
+                children.forEach(child => {
+                    returnedObject.push({
+                        name:child.name,
+                        nodeType:null,
+                        children:goDown(child.children)}
+                    );
+                });
+                return returnedObject;
+            }
+        
+            return {
+                name:this.name,
+                nodeType:"scene",
+                children:goDown(coffeeEngine.runtime.currentScene.children)
+            };
+        }
+
         getProperties() { 
             //return ["Nothing Here"]
             
