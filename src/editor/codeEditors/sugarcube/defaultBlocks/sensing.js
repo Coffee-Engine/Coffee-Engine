@@ -364,7 +364,7 @@
         }
 
         mouseDown({ button }) {
-            return false;
+            return sugarcube.cast.toBoolean(coffeeEngine.inputs.mouse[button]);
         }
 
         //Really simple!

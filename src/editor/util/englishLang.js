@@ -107,6 +107,11 @@ editor.EnglishLang = {
 
     "editor.dropdown.window": "Windows",
 
+    "editor.dropdown.scene": "Scene",
+    "editor.dropdown.scene.new": "New Scene",
+    "editor.dropdown.scene.save": "Save Scene",
+    "editor.dropdown.scene.load": "Load Scene",
+
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
 
