@@ -252,7 +252,12 @@
                 </dropdown-menu>
                 <dropdown-menu id="coffeeEngineWindowDropdown">
                     ${editor.language["editor.dropdown.window"]}
-                    <dropdown-item class="dropdown-menu-fill-down"  value="settings">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
+                </dropdown-menu>
+                <dropdown-menu id="coffeeEngineSceneDropdown">
+                    ${editor.language["editor.dropdown.scene"]}
+                    <dropdown-item class="dropdown-menu-fill-down"  value="new">${editor.language["editor.dropdown.scene.new"]}</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down"  value="save">${editor.language["editor.dropdown.scene.save"]}</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down"  value="load">${editor.language["editor.dropdown.scene.load"]}</dropdown-item>
                 </dropdown-menu>
             </div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
