@@ -37,6 +37,8 @@
                 {name: "scale", type: coffeeEngine.PropertyTypes.VEC2},
             ] 
         };
+
+        sortValue() { return this.position.y; }
     }
 
     coffeeEngine.registerNode(node, "Node2D", "Node");

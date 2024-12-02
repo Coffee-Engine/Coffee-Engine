@@ -10,22 +10,22 @@
 
                 //* Add our event listeners if they don't exist.
                 // prettier-ignore
-                if (!coffeeEngine.runtime.currentScene.hasEventListener("update", () => {this.update()})) {
-                    coffeeEngine.runtime.currentScene.addEventListener("update", () => {this.update()})
+                if (!coffeeEngine.runtime.currentScene.hasEventListener("update", (deltaTime) => {this.update(deltaTime)})) {
+                    coffeeEngine.runtime.currentScene.addEventListener("update", (deltaTime) => {this.update(deltaTime)});
                 }
                 // prettier-ignore
-                if (!coffeeEngine.runtime.currentScene.hasEventListener("draw", () => {this.draw()})) {
-                    coffeeEngine.runtime.currentScene.addEventListener("draw", () => {this.draw()})
+                if (!coffeeEngine.runtime.currentScene.inDrawList(this)) {
+                    coffeeEngine.runtime.currentScene.addToDrawList(this);
                 }
             } else if (typeof value == "undefined" || value == null) {
                 //* Remove our event listeners.
                 // prettier-ignore
-                if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.update)) {
-                    coffeeEngine.runtime.currentScene.removeEventListener("update", this.update)
+                if (coffeeEngine.runtime.currentScene.hasEventListener("update", (deltaTime) => {this.update(deltaTime)})) {
+                    coffeeEngine.runtime.currentScene.removeEventListener("update", (deltaTime) => {this.update(deltaTime)});
                 }
                 // prettier-ignore
-                if (coffeeEngine.runtime.currentScene.hasEventListener("draw", this.draw)) {
-                    coffeeEngine.runtime.currentScene.removeEventListener("draw", this.draw)
+                if (coffeeEngine.runtime.currentScene.inDrawList(this)) {
+                    coffeeEngine.runtime.currentScene.removeFromDrawList(this);
                 }
             } else {W
                 console.error(`cannot set parent to ${String(value)}`);

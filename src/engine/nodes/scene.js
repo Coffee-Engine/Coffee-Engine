@@ -4,9 +4,9 @@
             this.children = [];
             this.events = {
                 update: [],
-                draw: [],
                 childAdded: [],
             };
+            this.drawList = [];
 
             this.name = "scene";
         }
@@ -32,6 +32,20 @@
             }
         }
 
+        addToDrawList(object) {
+            this.drawList.push(object);
+        }
+
+        inDrawList(object) {
+            return this.drawList.includes(object);
+        }
+
+        removeFromDrawList(object) {
+            if (this.drawList.includes(object)) {
+                this.drawList.slice(this.drawList.indexOf(object));
+            }
+        }
+
         castEvent(event, data) {
             this.events[event].forEach((eventFunc) => {
                 eventFunc(data);
@@ -46,7 +60,29 @@
             coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
             this.drawSky();
 
-            this.castEvent("draw", {});
+            //Clear the depth here, just so the sky doesn't ever overlap the world.
+            coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
+
+            //Sort em
+            this.drawList.sort((node1, node2) => {
+                //Don't spend the extra time recomputing the value
+                const node1Sort = node1.sortValue();
+                const node2Sort = node2.sortValue();
+                if (node1Sort < node2Sort) {
+                    return -1;
+                }
+                else if (node1Sort > node2Sort) {
+                    return 1;
+                }
+
+                return 0;
+            })
+
+            //Now lets draw the objects
+            for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
+                const node = this.drawList[drawItem];
+                node.draw();
+            }
         }
 
         drawSky(renderer) {

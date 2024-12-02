@@ -39,6 +39,9 @@
                 {name: "scale", type: coffeeEngine.PropertyTypes.VEC3},
             ] 
         };
+
+        //Oh yeah mr krabs
+        sortValue() { return this.position.add(coffeeEngine.renderer.cameraData.position).length(); }
     }
 
     coffeeEngine.registerNode(node, "Node3D", "Node");

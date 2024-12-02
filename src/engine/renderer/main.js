@@ -6,6 +6,8 @@
         coffeeEngine.renderer.daveshade.useZBuffer(true);
 
         coffeeEngine.renderer.cameraData = {
+            position: new coffeeEngine.vector3(0,0,0),
+            
             set transform(value) {
                 Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
