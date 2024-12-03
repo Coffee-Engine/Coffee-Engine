@@ -165,7 +165,7 @@
         };
 
         loadFile.onclick = () => {
-            //The two genders. Firefox, google
+            //The two genders. Every other browser, google
             if (!editor.safeties.filePermissions) {
                 const fileInput = document.createElement("input");
                 fileInput.type = "file";

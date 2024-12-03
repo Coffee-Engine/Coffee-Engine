@@ -28,6 +28,7 @@ editor.EnglishLang = {
     "engine.settings.welcome": "Engine Settings",
 
     "engine.settings.category.Editor": "Editor",
+    "engine.settings.category.Editor.customLanguage": "Custom Language File",
     "engine.settings.category.Editor.changeLanguage": "Change Language",
     "engine.settings.category.Editor.changeLayout": "Change Layout",
     "engine.settings.category.Editor.clearLocalStorage": "Clear Data",

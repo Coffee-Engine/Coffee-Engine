@@ -1,6 +1,7 @@
 (function () {
     editor.defaultSettings = {
         Editor: {
+            customLanguage:"",
             changeLanguage:"",
             changeLayout:"",
             clearLocalStorage:"",
@@ -88,6 +89,49 @@
 
     editor.settingDefs = {
         Editor: {
+            customLanguage: {
+                type:"button",
+                onClick:() => {
+                    const fileReader = new FileReader();
+                    fileReader.onload = () => {
+                        if (JSON.parse(fileReader.result)) {
+                            const parsed = JSON.parse(fileReader.result);
+                            editor.Storage.setStorage("language", parsed);
+                            editor.Storage.setStorage("languageName", "custom");
+                            editor.language = Object.assign({}, editor.EnglishLang, parsed);
+
+                            editor.settings.initilize();
+                        }
+                    }
+                    //The two genders. Every other browser, google
+                    if (!editor.safeties.filePermissions) {
+                        const fileInput = document.createElement("input");
+                        fileInput.type = "file";
+                        fileInput.accept = ".json";
+
+                        fileInput.onchange = () => {
+                            fileReader.readAsText(fileInput.files[0]);
+                        };
+
+                        fileInput.click();
+                    } else {
+                        window
+                            .showOpenFilePicker({
+                                types: [
+                                    {
+                                        description: "Coffee Engine Project",
+                                        accept: {
+                                            "application/json": [".json"],
+                                        },
+                                    },
+                                ],
+                            })
+                            .then((result) => {
+                                fileReader.readAsText(result);
+                            });
+                    }
+                }
+            },
             changeLanguage: {
                 type:"button",
                 onClick:() => {
