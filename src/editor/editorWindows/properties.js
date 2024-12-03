@@ -58,6 +58,21 @@
             editor.removeEventListener("nodeSelected", () => {myself.refreshListing();});
         }
 
+        addVectorInput(node,property,nodeValue,partition,color) {
+            const input = document.createElement("input");
+            input.type = "number";
+            input.style.minWidth = "0px";
+            input.style.borderLeftColor = color;
+
+            input.value = nodeValue[partition];
+            input.onchange = () => {
+                node[property.name][partition] = input.value;
+                input.value = nodeValue[partition];
+            }
+
+            return input;
+        }
+
         propertyDisplays = {
             string: (node, property) => {
                 const input = document.createElement("input");
@@ -126,32 +141,10 @@
                 inputHolder.style.display = "inline-grid";
                 inputHolder.style.gridTemplateColumns = "1fr 1fr";
 
-                let NodeValue = node[property.name || "name"] || {x:0,y:0};
+                let nodeValue = node[property.name || "name"] || {x:0,y:0};
 
-                const xInput = document.createElement("input");
-                xInput.type = "number";
-                xInput.style.minWidth = "0px";
-                xInput.style.borderLeftColor = "#ff0000";
-
-                xInput.value = NodeValue.x;
-                xInput.onchange = () => {
-                    node[property.name].x = xInput.value;
-                    xInput.value = NodeValue.x;
-                }
-
-                const yInput = document.createElement("input");
-                yInput.type = "number";
-                yInput.style.minWidth = "0px";
-                yInput.style.borderLeftColor = "#00ff00";
-
-                yInput.value = NodeValue.y;
-                yInput.onchange = () => {
-                    node[property.name].y = yInput.value;
-                    yInput.value = NodeValue.y;
-                }
-
-                inputHolder.appendChild(xInput);
-                inputHolder.appendChild(yInput);
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"x","#ff0000"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"y","#00ff00"));
 
                 return inputHolder;
             },
@@ -161,44 +154,11 @@
                 inputHolder.style.display = "inline-grid";
                 inputHolder.style.gridTemplateColumns = "1fr 1fr 1fr";
 
-                let NodeValue = node[property.name || "name"] || {x:0,y:0,z:0};
+                let nodeValue = node[property.name || "name"] || {x:0,y:0,z:0};
 
-                const xInput = document.createElement("input");
-                xInput.type = "number";
-                xInput.style.minWidth = "0px";
-                xInput.style.borderLeftColor = "#ff0000";
-
-                xInput.value = NodeValue.x;
-                xInput.onchange = () => {
-                    node[property.name].x = xInput.value;
-                    xInput.value = NodeValue.x;
-                }
-
-                const yInput = document.createElement("input");
-                yInput.type = "number";
-                yInput.style.minWidth = "0px";
-                yInput.style.borderLeftColor = "#00ff00";
-
-                yInput.value = NodeValue.y;
-                yInput.onchange = () => {
-                    node[property.name].y = yInput.value;
-                    yInput.value = NodeValue.y;
-                }
-
-                const zInput = document.createElement("input");
-                zInput.type = "number";
-                zInput.style.minWidth = "0px";
-                zInput.style.borderLeftColor = "#0000ff";
-
-                zInput.value = NodeValue.z;
-                zInput.onchange = () => {
-                    node[property.name].z = zInput.value;
-                    zInput.value = NodeValue.z;
-                }
-
-                inputHolder.appendChild(xInput);
-                inputHolder.appendChild(yInput);
-                inputHolder.appendChild(zInput);
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"x","#ff0000"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"y","#00ff00"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"z","#0000ff"));
 
                 return inputHolder;
             },
@@ -208,56 +168,12 @@
                 inputHolder.style.display = "inline-grid";
                 inputHolder.style.gridTemplateColumns = "1fr 1fr 1fr 1fr";
 
-                let NodeValue = node[property.name || "name"] || {x:0,y:0,z:0,w:0};
+                let nodeValue = node[property.name || "name"] || {x:0,y:0,z:0,w:0};
 
-                const xInput = document.createElement("input");
-                xInput.type = "number";
-                xInput.style.minWidth = "0px";
-                xInput.style.borderLeftColor = "#ff0000";
-
-                xInput.value = NodeValue.x;
-                xInput.onchange = () => {
-                    node[property.name].x = xInput.value;
-                    xInput.value = NodeValue.x;
-                }
-
-                const yInput = document.createElement("input");
-                yInput.type = "number";
-                yInput.style.minWidth = "0px";
-                yInput.style.borderLeftColor = "#00ff00";
-
-                yInput.value = NodeValue.y;
-                yInput.onchange = () => {
-                    node[property.name].y = yInput.value;
-                    yInput.value = NodeValue.y;
-                }
-
-                const zInput = document.createElement("input");
-                zInput.type = "number";
-                zInput.style.minWidth = "0px";
-                zInput.style.borderLeftColor = "#0000ff";
-
-                zInput.value = NodeValue.z;
-                zInput.onchange = () => {
-                    node[property.name].z = zInput.value;
-                    zInput.value = NodeValue.z;
-                }
-
-                const wInput = document.createElement("input");
-                wInput.type = "number";
-                wInput.style.minWidth = "0px";
-                wInput.style.borderLeftColor = "#ffff00";
-
-                wInput.value = NodeValue.w;
-                wInput.onchange = () => {
-                    node[property.name].w = wInput.value;
-                    wInput.value = NodeValue.w;
-                }
-
-                inputHolder.appendChild(xInput);
-                inputHolder.appendChild(yInput);
-                inputHolder.appendChild(zInput);
-                inputHolder.appendChild(wInput);
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"x","#ff0000"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"y","#00ff00"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"z","#0000ff"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"w","#ffff00"));
 
                 return inputHolder;
             },
@@ -268,68 +184,13 @@
                 inputHolder.style.display = "inline-grid";
                 inputHolder.style.gridTemplateColumns = "1fr 1fr 1fr 1fr 1fr";
 
-                let NodeValue = node[property.name || "name"] || {x:0,y:0,z:0,w:0,u:0};
+                let nodeValue = node[property.name || "name"] || {x:0,y:0,z:0,w:0,u:0};
 
-                const xInput = document.createElement("input");
-                xInput.type = "number";
-                xInput.style.minWidth = "0px";
-                xInput.style.borderLeftColor = "#ff0000";
-
-                xInput.value = NodeValue.x;
-                xInput.onchange = () => {
-                    node[property.name].x = xInput.value;
-                    xInput.value = NodeValue.x;
-                }
-
-                const yInput = document.createElement("input");
-                yInput.type = "number";
-                yInput.style.minWidth = "0px";
-                yInput.style.borderLeftColor = "#00ff00";
-
-                yInput.value = NodeValue.y;
-                yInput.onchange = () => {
-                    node[property.name].y = yInput.value;
-                    yInput.value = NodeValue.y;
-                }
-
-                const zInput = document.createElement("input");
-                zInput.type = "number";
-                zInput.style.minWidth = "0px";
-                zInput.style.borderLeftColor = "#0000ff";
-
-                zInput.value = NodeValue.z;
-                zInput.onchange = () => {
-                    node[property.name].z = zInput.value;
-                    zInput.value = NodeValue.z;
-                }
-
-                const wInput = document.createElement("input");
-                wInput.type = "number";
-                wInput.style.minWidth = "0px";
-                wInput.style.borderLeftColor = "#ffff00";
-
-                wInput.value = NodeValue.w;
-                wInput.onchange = () => {
-                    node[property.name].w = wInput.value;
-                    wInput.value = NodeValue.w;
-                }
-
-                const uInput = document.createElement("input");
-                uInput.type = "number";
-                uInput.style.minWidth = "0px";
-                uInput.style.borderLeftColor = "#00ffff";
-
-                uInput.value = NodeValue.u;
-                uInput.onchange = () => {
-                    node[property.name].u = uInput.value;
-                    uInput.value = NodeValue.u;
-                }
-
-                inputHolder.appendChild(xInput);
-                inputHolder.appendChild(yInput);
-                inputHolder.appendChild(zInput);
-                inputHolder.appendChild(wInput);
-                inputHolder.appendChild(uInput);
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"x","#ff0000"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"y","#00ff00"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"z","#0000ff"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"w","#ffff00"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"u","#00ffff"));
 
                 return inputHolder;
             },
@@ -339,80 +200,14 @@
                 inputHolder.style.display = "inline-grid";
                 inputHolder.style.gridTemplateColumns = "1fr 1fr 1fr 1fr 1fr 1fr";
 
-                let NodeValue = node[property.name || "name"] || {x:0,y:0,z:0,w:0,u:0,v:0};
+                let nodeValue = node[property.name || "name"] || {x:0,y:0,z:0,w:0,u:0,v:0};
 
-                const xInput = document.createElement("input");
-                xInput.type = "number";
-                xInput.style.minWidth = "0px";
-                xInput.style.borderLeftColor = "#ff0000";
-
-                xInput.value = NodeValue.x;
-                xInput.onchange = () => {
-                    node[property.name].x = xInput.value;
-                    xInput.value = NodeValue.x;
-                }
-
-                const yInput = document.createElement("input");
-                yInput.type = "number";
-                yInput.style.minWidth = "0px";
-                yInput.style.borderLeftColor = "#00ff00";
-
-                yInput.value = NodeValue.y;
-                yInput.onchange = () => {
-                    node[property.name].y = yInput.value;
-                    yInput.value = NodeValue.y;
-                }
-
-                const zInput = document.createElement("input");
-                zInput.type = "number";
-                zInput.style.minWidth = "0px";
-                zInput.style.borderLeftColor = "#0000ff";
-
-                zInput.value = NodeValue.z;
-                zInput.onchange = () => {
-                    node[property.name].z = zInput.value;
-                    zInput.value = NodeValue.z;
-                }
-
-                const wInput = document.createElement("input");
-                wInput.type = "number";
-                wInput.style.minWidth = "0px";
-                wInput.style.borderLeftColor = "#ffff00";
-
-                wInput.value = NodeValue.w;
-                wInput.onchange = () => {
-                    node[property.name].w = wInput.value;
-                    wInput.value = NodeValue.w;
-                }
-
-                const uInput = document.createElement("input");
-                uInput.type = "number";
-                uInput.style.minWidth = "0px";
-                uInput.style.borderLeftColor = "#00ffff";
-
-                uInput.value = NodeValue.u;
-                uInput.onchange = () => {
-                    node[property.name].u = uInput.value;
-                    uInput.value = NodeValue.u;
-                }
-
-                const vInput = document.createElement("input");
-                vInput.type = "number";
-                vInput.style.minWidth = "0px";
-                vInput.style.borderLeftColor = "#ff00ff";
-
-                vInput.value = NodeValue.v;
-                vInput.onchange = () => {
-                    node[property.name].v = vInput.value;
-                    vInput.value = NodeValue.v;
-                }
-
-                inputHolder.appendChild(xInput);
-                inputHolder.appendChild(yInput);
-                inputHolder.appendChild(zInput);
-                inputHolder.appendChild(wInput);
-                inputHolder.appendChild(uInput);
-                inputHolder.appendChild(vInput);
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"x","#ff0000"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"y","#00ff00"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"z","#0000ff"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"w","#ffff00"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"u","#00ffff"));
+                inputHolder.appendChild(this.addVectorInput(node,property,nodeValue,"v","#ff00ff"));
 
                 return inputHolder;
             },
