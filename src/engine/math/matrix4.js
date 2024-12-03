@@ -113,6 +113,10 @@
         webGLValue() {
             return this.contents.flat(2);
         }
+
+        serialize() {
+            return this.contents;
+        }
     };
 
     coffeeEngine.matrix4.identity = () => {

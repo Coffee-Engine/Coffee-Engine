@@ -105,11 +105,19 @@
             const goDown = (children) => {
                 const returnedObject = [];
                 children.forEach(child => {
+                    const properties = {};
+
+                    Object.keys(child).forEach(key => {
+                        if (child[key].serialize) properties[key] = child[key].serialize();
+                        else properties[key] = child[key];
+                    })
+
                     returnedObject.push({
                         name:child.name,
-                        nodeType:null,
-                        children:goDown(child.children)}
-                    );
+                        nodeType:coffeeEngine.getNodeName(child),
+                        children:goDown(child.children),
+                        properties:properties
+                    });
                 });
                 return returnedObject;
             }

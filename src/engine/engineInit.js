@@ -21,6 +21,18 @@ window.coffeeEngine = {
         if (!coffeeEngine.nodeRegister[name]) return;
         return coffeeEngine.nodeRegister[name][0];
     },
+    getNodeName: (node) => {
+        const keys = Object.keys(coffeeEngine.nodeRegister);
+
+        for (let keyIndex = 0; keyIndex < keys.length; keyIndex++) {
+            const key = keys[keyIndex];
+            if (coffeeEngine.nodeRegister[key]) {
+                if (coffeeEngine.nodeRegister[key][0] == node.constructor) return key;
+            }            
+        }
+
+        return "Node";
+    },
 
     timer: 0,
     addEventListener: (event, func) => {

@@ -58,5 +58,9 @@
         webGLValue() {
             return [this.x, this.y, this.z, this.w];
         }
+
+        serialize() {
+            return this.webGLValue();
+        }
     };
 })();
