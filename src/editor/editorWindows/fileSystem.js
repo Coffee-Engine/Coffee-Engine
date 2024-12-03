@@ -50,6 +50,7 @@
                     //Check if it is a file, or a folder
                     if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
                         element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
+                        element.lastClick = 0;
 
                         const refreshText = () => {
                             element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
@@ -62,8 +63,9 @@
                             //Stop propogation
                             event.stopPropagation();
                             const split = key.split(".");
-    
-                            editor.sendFileHook(split[split.length - 1], `${path}${key}`);
+                            
+                            if (Date.now() - element.lastClick < 333) editor.sendFileHook(split[split.length - 1], `${path}${key}`);
+                            element.lastClick = Date.now();
                         };
 
                         //Our file dropdown
