@@ -64,7 +64,8 @@
                             event.stopPropagation();
                             const split = key.split(".");
                             
-                            if (Date.now() - element.lastClick < 333) editor.sendFileHook(split[split.length - 1], `${path}${key}`);
+                            //Hopefully 66 milliseconds is good requires <15fps to break.
+                            if (Date.now() - element.lastClick < 200) editor.sendFileHook(split[split.length - 1], `${path}${key}`);
                             element.lastClick = Date.now();
                         };
 
