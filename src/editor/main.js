@@ -9,6 +9,7 @@ window.editor = {
 
     //File Hooking
     fileHooks: {},
+    filePropertyEditors: {},
 
     //File hooks these send out signals when we try to open a file
     addFileOpenHook: (fileExtension, callback, parent) => {
@@ -35,6 +36,12 @@ window.editor = {
         editor.fileHooks[fileExtension].forEach((hook) => {
             hook.call(hook.parent || this, path, fileExtension);
         });
+    },
+
+    registerFilePropertyEditor: (fileExtension, callback) => {
+        //No overriding
+        if (!editor.filePropertyEditors[fileExtension]) return;
+        editor.filePropertyEditors[fileExtension] = callback;
     },
 
     changePage: () => {
