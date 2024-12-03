@@ -221,7 +221,7 @@
 
             holder.innerHTML = `
             <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
-            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]", projectJSON.modified || Date.now())}</p>
+            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]", projectJSON.modified || Date.now())} | ${editor.language["engine.home.type"].replace("[TYPE]",editor.language[`engine.home.type.${projectJSON.type || "file"}`])}</p>
             `;
 
             holder.style.setProperty("--childID", recentProjectsPage.children.length);
@@ -230,5 +230,9 @@
 
             recentProjectsPage.innerHTML += "<br>";
         };
+
+        addRecentProject({Name:"Coffee", modified:Date.now(), type:"folder"});
+        addRecentProject({Name:"Debug", modified:Date.now(), type:"file"});
+        addRecentProject({Name:"Bugbait", modified:Date.now(), type:"folder"});
     };
 })();

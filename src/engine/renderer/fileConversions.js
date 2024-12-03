@@ -67,6 +67,7 @@
             return new Promise((resolve,reject) => {
                 //Hardcoding this for funsies
                 if (src == "coffee:/default.material") {
+                    coffeeEngine.renderer.materialStorage[src] = coffeeEngine.renderer.defaultMaterial;
                     resolve(coffeeEngine.renderer.defaultMaterial);
                 }
                 else {

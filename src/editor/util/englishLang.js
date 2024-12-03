@@ -12,6 +12,9 @@ editor.EnglishLang = {
     "engine.home.loadFolder": "Load from Folder",
     "engine.home.noRecentProjects": "No Recent Projects",
     "engine.home.lastEdited": "Last edited : [TIME]",
+    "engine.home.type": "Project Type : [TYPE]",
+    "engine.home.type.file": "File",
+    "engine.home.type.folder": "Folder",
     "engine.home.engineConfig": "Engine Settings",
     "engine.home.engineCredits": "Engine Credits",
 
