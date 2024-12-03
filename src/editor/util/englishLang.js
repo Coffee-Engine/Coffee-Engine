@@ -170,6 +170,7 @@ editor.EnglishLang = {
 
     "editor.window.properties": "Properties",
     "editor.window.properties.noFile": "No File Selected",
+    "editor.window.properties.notFound": "No Editable Properties Found",
 
     "sugarcube.motion": "Motion",
     "sugarcube.motion.block.movesteps":"move [steps] steps",

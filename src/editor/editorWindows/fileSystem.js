@@ -64,9 +64,12 @@
                             event.stopPropagation();
                             const split = key.split(".");
                             
-                            //Hopefully 66 milliseconds is good requires <15fps to break.
+                            //Hopefully 66 milliseconds is good requires like fps<5 to break.
                             if (Date.now() - element.lastClick < 200) editor.sendFileHook(split[split.length - 1], `${path}${key}`);
                             element.lastClick = Date.now();
+                            editor.selectedNode = directory[key];
+
+                            editor.sendEvent("nodeSelected", {target:directory[key], type:"file"});
                         };
 
                         //Our file dropdown

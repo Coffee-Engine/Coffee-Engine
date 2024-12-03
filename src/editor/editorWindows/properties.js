@@ -5,11 +5,25 @@
 
             const myself = this;
 
-            editor.addEventListener("nodeSelected", (node) => {myself.refreshListing(myself,node);});
+            editor.addEventListener("nodeSelected", (node) => {myself.refreshListing(myself,node.target,node.type);});
         }
 
-        refreshListing(myself, node) {
+        refreshListing(myself, node, type) {
             myself.Content.innerHTML = "";
+
+            //If we are a file display our name in the property panel
+            if (type == "file") myself.Content.innerHTML = `<h2 style="text-align:center;">${node.name}</h2>`;
+
+            //If there is no property editor for this thing
+            if (!node.getProperties) {
+                const notFound = document.createElement("h3");
+                notFound.innerText = editor.language["editor.window.properties.notFound"];
+                notFound.style.textAlign = "center";
+                myself.Content.appendChild(notFound);
+
+                //Halt the train here
+                return;
+            }
 
             node.getProperties().forEach(property => {
                 const element = document.createElement("div");
@@ -28,7 +42,7 @@
 
                     case "object":
                         //Create a grid
-                        element.innerHTML = `${property.name || "unknown"} : `;
+                        element.innerText = `${property.name || "unknown"} : `;
                         if (myself.propertyDisplays[property.type]) element.appendChild(myself.propertyDisplays[property.type](node, property));
                         break
                 

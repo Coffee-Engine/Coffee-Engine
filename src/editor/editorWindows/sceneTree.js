@@ -53,7 +53,7 @@
                 event.stopPropagation();
                 editor.selectedNode = Node;
 
-                editor.sendEvent("nodeSelected", Node);
+                editor.sendEvent("nodeSelected", {target:Node, type:"node"});
             }
 
             element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${Node.name}</p>`;
