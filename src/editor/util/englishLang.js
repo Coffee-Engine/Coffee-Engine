@@ -116,6 +116,10 @@ editor.EnglishLang = {
     "editor.dropdown.scene.save": "Save Scene",
     "editor.dropdown.scene.load": "Load Scene",
 
+    "editor.notification.saveScene": "Scene saved to \"[path]\"",
+    "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
+    "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
+
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
 

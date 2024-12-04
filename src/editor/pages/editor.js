@@ -659,9 +659,19 @@
             createdWindow.y = window.innerHeight / 2 - 200;
         };
 
-        editor.dropdownBar.scene.onchange = () => {
+        editor.dropdownBar.scene.onchange = (value) => {
             if (!coffeeEngine.runtime.currentScene) return;
-            project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
+
+            switch (value) {
+                case "save":
+                    //Its actually that easy
+                    project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
+                    console.log(editor.language["editor.notification.saveScene"].replace("[path]",coffeeEngine.runtime.currentScene.scenePath));
+                    break;
+            
+                default:
+                    break;
+            }
         }
 
         //Load sugarcube blocks

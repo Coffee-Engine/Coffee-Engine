@@ -174,12 +174,12 @@
 
             //Saving for our two code editors
             project.setFile(this.filePath, useBlocklyEditor ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(), "text/javascript").then(() => {
-                console.log(`Saved ${this.filePath} sucessfully`);
+                console.log(editor.language["editor.notification.saveScript"].replace("[path]",this.filePath));
             });
 
             if (compileFunction) {
                 project.setFile(`${this.filePath.split(".")[0]}.cjs`, compileFunction((useBlocklyEditor) ? sugarcube.workspace : monacoManager.workspace.getValue()), "text/javascript").then(() => {
-                    console.log(`Compiled ${this.filePath} as ${`${this.filePath.split(".")[0]}.cjs`} sucessfully`);
+                    console.log(editor.language["editor.notification.compileScript"].replace("[input]",this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));
                 });
             }
 
