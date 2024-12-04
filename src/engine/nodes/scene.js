@@ -1,3 +1,4 @@
+//? Technically its a node, a very strange node yes. but like... a very distant cousin.
 (function () {
     coffeeEngine.sceneClass = class {
         constructor() {
@@ -58,7 +59,7 @@
 
         draw() {
             coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
-            this.drawSky();
+            this.drawSky(coffeeEngine.renderer);
 
             //Clear the depth here, just so the sky doesn't ever overlap the world.
             coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
@@ -86,11 +87,11 @@
         }
 
         drawSky(renderer) {
-            coffeeEngine.renderer.cameraData.res = [coffeeEngine.renderer.canvas.width, coffeeEngine.renderer.canvas.height];
+            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
-            coffeeEngine.renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
+            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
 
-            coffeeEngine.renderer.mainShaders.skyplane.drawFromBuffers(6);
+            renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
 
         addChild(child,disruptUpdateEvent) {
@@ -107,9 +108,14 @@
                 children.forEach(child => {
                     const properties = {};
 
-                    Object.keys(child).forEach(key => {
-                        if (child[key].serialize) properties[key] = child[key].serialize();
-                        else properties[key] = child[key];
+                    child.getProperties().forEach(property => {
+                        //Make sure its a property and not a label
+                        if (typeof property != "object") return;
+
+                        //Safeties
+                        if (!child[property.name]) return;
+                        if (child[property.name].serialize) properties[property.name] = child[property.name].serialize();
+                        else properties[property.name] = child[property.name];
                     })
 
                     returnedObject.push({
