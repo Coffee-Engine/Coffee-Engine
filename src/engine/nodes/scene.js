@@ -1,6 +1,8 @@
 //? Technically its a node, a very strange node yes. but like... a very distant cousin.
 (function () {
     coffeeEngine.sceneClass = class {
+        scenePath = coffeeEngine.defaultScenePath || "scenes/default.scene";
+
         constructor() {
             this.children = [];
             this.events = {

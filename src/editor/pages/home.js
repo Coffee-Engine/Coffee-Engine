@@ -169,7 +169,7 @@
             if (!editor.safeties.filePermissions) {
                 const fileInput = document.createElement("input");
                 fileInput.type = "file";
-                fileInput.accept = ".decaf";
+                fileInput.accept = `.${coffeeEngine.projectFormat}`;
 
                 fileInput.onchange = () => {
                     project.load("file", fileInput.files[0]);
@@ -177,14 +177,15 @@
 
                 fileInput.click();
             } else {
-                window
-                    .showOpenFilePicker({
+
+                const accept = {}
+                accept[`application/${coffeeEngine.projectFormat}`] = [`.${coffeeEngine.projectFormat}`];
+
+                window.showOpenFilePicker({
                         types: [
                             {
                                 description: "Coffee Engine Project",
-                                accept: {
-                                    "application/decaf": [".decaf"],
-                                },
+                                accept: accept,
                             },
                         ],
                     })

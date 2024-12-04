@@ -5,7 +5,7 @@
         project.setFile("project.json", JSON.stringify(json), "text/plain");
 
         //Add tiramisu :)
-        project.addImageFromURL("editor/images/TiramisuA.png", "tiramisu.png").then(() => {
+        project.addImageFromURL(coffeeEngine.defaultSprite, coffeeEngine.defaultSpriteName).then(() => {
             editor.editorPage.initilize();
 
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
@@ -115,7 +115,7 @@
                         const blobURL = URL.createObjectURL(blob);
                         const link = document.createElement("a");
                         link.href = blobURL;
-                        link.download = "project.decaf";
+                        link.download = `project.${coffeeEngine.projectFormat}`;
                         link.click();
                         URL.revokeObjectURL(blobURL);
                     } else {
