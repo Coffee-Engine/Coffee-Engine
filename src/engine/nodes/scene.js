@@ -14,6 +14,7 @@
             this.name = "scene";
         }
 
+        //Event listener stuff
         addEventListener(event, func) {
             if (typeof this.events[event] != "object") return;
 
@@ -35,6 +36,7 @@
             }
         }
 
+        //This is so we know what to draw like event listeners, but with nodes instead of functions
         addToDrawList(object) {
             this.drawList.push(object);
         }
@@ -49,6 +51,7 @@
             }
         }
 
+        //Lets us cast an event
         castEvent(event, data) {
             this.events[event].forEach((eventFunc) => {
                 eventFunc(data);
@@ -104,12 +107,15 @@
             if (!disruptUpdateEvent) this.castEvent("childAdded", child);
         }
 
+        //Scene serialization and stuff
         serialize() {
+            //We want to recursively go downwards and get the properties and types of each child
             const goDown = (children) => {
                 const returnedObject = [];
                 children.forEach(child => {
                     const properties = {};
 
+                    //Loop through child properties and validate/add each one
                     child.getProperties().forEach(property => {
                         //Make sure its a property and not a label
                         if (typeof property != "object") return;
@@ -120,6 +126,7 @@
                         else properties[property.name] = child[property.name];
                     })
 
+                    //Push the child to the returned object array
                     returnedObject.push({
                         name:child.name,
                         nodeType:coffeeEngine.getNodeName(child),
@@ -130,6 +137,7 @@
                 return returnedObject;
             }
         
+            //Once we got all that juicy data we return our array
             return {
                 name:this.name,
                 nodeType:"scene",
@@ -138,9 +146,10 @@
         }
 
         getProperties() { 
-            //return ["Nothing Here"]
+            return ["Nothing Here"];
             
             //Input Testing stuff
+            /*
             return [
                 {name: "INT", type: coffeeEngine.PropertyTypes.INT},
                 {name: "FLOAT", type: coffeeEngine.PropertyTypes.FLOAT},
@@ -158,6 +167,7 @@
                 {name: "ARRAY", type: coffeeEngine.PropertyTypes.ARRAY},
                 {name: "OBJECT", type: coffeeEngine.PropertyTypes.OBJECT},
             ]
+            */
         };
     };
 })();
