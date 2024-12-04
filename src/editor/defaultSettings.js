@@ -103,7 +103,7 @@
                             editor.settings.initilize();
                         }
                     }
-                    //The two genders. Every other browser, google
+                    //Yeah this google thing is getting on my nerves a wee bit
                     if (!editor.safeties.filePermissions) {
                         const fileInput = document.createElement("input");
                         fileInput.type = "file";
@@ -127,7 +127,9 @@
                                 ],
                             })
                             .then((result) => {
-                                fileReader.readAsText(result);
+                                result.getFile().then((file) => {
+                                    fileReader.readAsText(file);
+                                })
                             });
                     }
                 }

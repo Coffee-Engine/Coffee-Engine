@@ -6,7 +6,7 @@
         directoryHandle: null,
 
         //? Why so odd?
-        //* Well its simple the user can't make a file or directory with this name
+        //* Well its simple the user can't (AND SHOULDN'T BE ABLE TO) make a file or directory with this name
         directoryHandleIdentifier: "/____DIRECTORY__HANDLE____/",
 
         //Our methods for handling files
