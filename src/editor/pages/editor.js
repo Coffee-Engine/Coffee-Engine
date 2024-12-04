@@ -610,6 +610,7 @@
         editor.dropdownBar = {
             file: document.getElementById("coffeeEngineProjectDropdown"),
             window: document.getElementById("coffeeEngineWindowDropdown"),
+            scene: document.getElementById("coffeeEngineSceneDropdown"),
         };
 
         editor.dropdownBar.file.onchange = (value) => {
@@ -657,6 +658,11 @@
             createdWindow.x = window.innerWidth / 2 - 200;
             createdWindow.y = window.innerHeight / 2 - 200;
         };
+
+        editor.dropdownBar.scene.onchange = () => {
+            if (!coffeeEngine.runtime.currentScene) return;
+            project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
+        }
 
         //Load sugarcube blocks
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");
