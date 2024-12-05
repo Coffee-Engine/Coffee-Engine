@@ -3,7 +3,7 @@
         #spritePath = "";
 
         set spritePath(value) {
-            this.#spritePath = value
+            this.#spritePath = value;
             coffeeEngine.renderer.fileToTexture(value).then((texture) => {
                 this.texture = texture.texture;
                 this.textureWidth = texture.width;
@@ -15,7 +15,7 @@
             return this.#spritePath;
         }
 
-        #modulatedColorArr = [1,1,1,1];
+        #modulatedColorArr = [1, 1, 1, 1];
         #modulatedColor = "#ffffffff";
 
         set modulatedColor(value) {
@@ -44,30 +44,19 @@
                 //Sprite scaling
                 this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
                 coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
-    
+
                 coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
-    
+
                 if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-    
+
                 coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
             }
         }
 
-        getProperties() { 
-            return [
-                {name: "name", type: coffeeEngine.PropertyTypes.NAME},
-                "---",
-                {name: "position", type: coffeeEngine.PropertyTypes.VEC2},
-                {name: "layer", type: coffeeEngine.PropertyTypes.INT},
-                {name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT},
-                {name: "scale", type: coffeeEngine.PropertyTypes.VEC2},
-                "---",
-                {name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg"},
-                {name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange:true},
-                {name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT},
-            ] 
-        };
+        getProperties() {
+            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, { name: "layer", type: coffeeEngine.PropertyTypes.INT }, { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }, "---", { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true }, { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }];
+        }
     }
 
     coffeeEngine.registerNode(sprite, "Sprite", "Node2D");

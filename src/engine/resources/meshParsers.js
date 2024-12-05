@@ -1,56 +1,44 @@
-(function() {
+(function () {
     coffeeEngine.mesh.parsers = {
         obj: (contents, meshData) => {
-
-            meshData.data = []
+            meshData.data = [];
 
             const dataHolder = {
-                a_position:[],
-                a_texCoord:[],
-                a_color:[],
-                a_normal:[],
-            }
+                a_position: [],
+                a_texCoord: [],
+                a_color: [],
+                a_normal: [],
+            };
 
             const defaults = {
-                a_position: [0,0,0,1],
-                a_normal: [0,0,0],
-                a_texCoord: [0,0]
-            }
+                a_position: [0, 0, 0, 1],
+                a_normal: [0, 0, 0],
+                a_texCoord: [0, 0],
+            };
 
-            contents.split("\n").forEach(line => {
+            contents.split("\n").forEach((line) => {
                 //Split the line into multiple sections
                 const split = line.split(" ");
 
                 switch (split[0]) {
                     case "v":
-                        dataHolder.a_position.push([
-                            Number(split[1]),
-                            Number(split[2]),
-                            Number(split[3]),
-                        ]);
+                        dataHolder.a_position.push([Number(split[1]), Number(split[2]), Number(split[3])]);
                         break;
 
                     case "vn":
-                        dataHolder.a_normal.push([
-                            Number(split[1]),
-                            Number(split[2]),
-                            Number(split[3]),
-                        ]);
+                        dataHolder.a_normal.push([Number(split[1]), Number(split[2]), Number(split[3])]);
                         break;
 
                     case "vt":
-                        dataHolder.a_texCoord.push([
-                            Number(split[1]) || 0,
-                            Number(split[2]) || 0,
-                        ]);
+                        dataHolder.a_texCoord.push([Number(split[1]) || 0, Number(split[2]) || 0]);
                         break;
 
                     case "usemtl":
                         meshData.data.push({
-                            a_position:[],
-                            a_texCoord:[],
-                            a_color:[],
-                            a_normal:[],
+                            a_position: [],
+                            a_texCoord: [],
+                            a_color: [],
+                            a_normal: [],
                         });
                         meshData.pointCount.push(0);
                         break;
@@ -76,35 +64,19 @@
                             thirdNormal = Number(thirdNormal) - 1;
 
                             //Push our data
-                            meshData.data[meshData.data.length - 1].a_position.push(
-                                [dataHolder.a_position[firstPosition] || defaults.a_position,1],
-                                [dataHolder.a_position[secondPosition] || defaults.a_position,1],
-                                [dataHolder.a_position[thirdPosition] || defaults.a_position,1]
-                            );
+                            meshData.data[meshData.data.length - 1].a_position.push([dataHolder.a_position[firstPosition] || defaults.a_position, 1], [dataHolder.a_position[secondPosition] || defaults.a_position, 1], [dataHolder.a_position[thirdPosition] || defaults.a_position, 1]);
 
-                            meshData.data[meshData.data.length - 1].a_texCoord.push(
-                                dataHolder.a_texCoord[firstUV] || defaults.a_position,
-                                dataHolder.a_texCoord[secondUV] || defaults.a_position,
-                                dataHolder.a_texCoord[thirdUV] || defaults.a_position
-                            );
-                            
-                            meshData.data[meshData.data.length - 1].a_normal.push(
-                                dataHolder.a_normal[firstNormal] || defaults.a_position,
-                                dataHolder.a_normal[secondNormal] || defaults.a_position,
-                                dataHolder.a_normal[thirdNormal] || defaults.a_position
-                            );
+                            meshData.data[meshData.data.length - 1].a_texCoord.push(dataHolder.a_texCoord[firstUV] || defaults.a_position, dataHolder.a_texCoord[secondUV] || defaults.a_position, dataHolder.a_texCoord[thirdUV] || defaults.a_position);
 
-                            meshData.data[meshData.data.length - 1].a_color.push(
-                                1,1,1,1,
-                                1,1,1,1,
-                                1,1,1,1
-                            );
+                            meshData.data[meshData.data.length - 1].a_normal.push(dataHolder.a_normal[firstNormal] || defaults.a_position, dataHolder.a_normal[secondNormal] || defaults.a_position, dataHolder.a_normal[thirdNormal] || defaults.a_position);
+
+                            meshData.data[meshData.data.length - 1].a_color.push(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
                             //Update our point count
                             meshData.pointCount[meshData.pointCount.length - 1] += 3;
                         }
                         break;
-                
+
                     default:
                         break;
                 }
@@ -115,6 +87,6 @@
             meshData.data[meshData.data.length - 1].a_texCoord = new Float32Array(meshData.data[meshData.data.length - 1].a_texCoord.flat(4));
             meshData.data[meshData.data.length - 1].a_normal = new Float32Array(meshData.data[meshData.data.length - 1].a_normal.flat(4));
             meshData.data[meshData.data.length - 1].a_color = new Float32Array(meshData.data[meshData.data.length - 1].a_color.flat(4));
-        }
-    }
+        },
+    };
 })();

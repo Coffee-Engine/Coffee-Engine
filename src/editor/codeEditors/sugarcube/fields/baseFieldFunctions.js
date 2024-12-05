@@ -35,13 +35,12 @@
                         }
                         this.updateSize_();
                     };
-                }
-                else {
+                } else {
                     this.render_ = () => {
                         if (this.textContent_) this.textContent_.nodeValue = this.value_;
-            
+
                         this.updateSize_();
-                    }
+                    };
                 }
 
                 if (fieldData.sizeOverride) {

@@ -25,7 +25,7 @@
 
                 createdWindow.x = window.innerWidth / 2 - 200;
                 createdWindow.y = window.innerHeight / 2 - 175;
-            }
+            };
 
             this.logControls.appendChild(this.addObject);
             container.appendChild(this.logControls);
@@ -36,12 +36,12 @@
             this.refreshContents = () => {
                 //Remove 'em
                 myself.sceneContainer.innerHTML = "";
-    
+
                 myself.createNodeElement(coffeeEngine.runtime.currentScene, myself.sceneContainer, false);
-            }
+            };
 
             this.refreshContents();
-            coffeeEngine.runtime.currentScene.addEventListener("childAdded",this.refreshContents);
+            coffeeEngine.runtime.currentScene.addEventListener("childAdded", this.refreshContents);
         }
 
         createNodeElement(Node, parentElement, even) {
@@ -53,8 +53,8 @@
                 event.stopPropagation();
                 editor.selectedNode = Node;
 
-                editor.sendEvent("nodeSelected", {target:Node, type:"node"});
-            }
+                editor.sendEvent("nodeSelected", { target: Node, type: "node" });
+            };
 
             element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${Node.name}</p>`;
 
@@ -67,7 +67,7 @@
 
             parentElement.appendChild(element);
 
-            Node.children.forEach(childNode => {
+            Node.children.forEach((childNode) => {
                 this.createNodeElement(childNode, lowerDiv, !even);
             });
 
@@ -75,7 +75,7 @@
         }
 
         dispose() {
-            coffeeEngine.runtime.currentScene.removeEventListener("childAdded",this.refreshContents);
+            coffeeEngine.runtime.currentScene.removeEventListener("childAdded", this.refreshContents);
         }
     };
 

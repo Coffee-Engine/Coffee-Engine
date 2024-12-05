@@ -1,502 +1,421 @@
 (function () {
-  window.cappuccino = {};
+    window.cappuccino = {};
 
-  //Replacement opcodes for the transpiler.
-  cappuccino.opcodes = {
-    //loops
-    repeat: (code, index) => {
-      const inner = cappuccino.codeRunner(code, index, 'until');
-      const conditional = cappuccino.codeRunner(
-        code,
-        cappuccino.codeRunnerPosition,
-        null,
-        "\n"
-      );
+    //Replacement opcodes for the transpiler.
+    cappuccino.opcodes = {
+        //loops
+        repeat: (code, index) => {
+            const inner = cappuccino.codeRunner(code, index, "until");
+            const conditional = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, null, "\n");
 
-      return `while (!(${conditional[0].replaceAll('\n', '')})) {${inner[0]}}\n`;
-    },
-    while: (code, index) => {
-      const conditional = cappuccino.codeRunner(code, index, 'do');
-      const inner = cappuccino.codeRunner(
-        code,
-        cappuccino.codeRunnerPosition,
-        'end'
-      );
+            return `while (!(${conditional[0].replaceAll("\n", "")})) {${inner[0]}}\n`;
+        },
+        while: (code, index) => {
+            const conditional = cappuccino.codeRunner(code, index, "do");
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, "end");
 
-      return `while (${conditional[0].replaceAll('\n', '')}) {${inner[0]}}\n`;
-    },
-    for: (code,index) => {
-      let text = `for (let `;
-      const variableName = cappuccino.codeRunner(code, index, false, "=");
-      const initialValue = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, "do", false);
-      
-      //Remove trailing = if needed
-      if (initialValue[0].charAt(0) == '=') initialValue[0] = initialValue[0].replace('=', '');
-      const split = initialValue[0].split(",");
+            return `while (${conditional[0].replaceAll("\n", "")}) {${inner[0]}}\n`;
+        },
+        for: (code, index) => {
+            let text = `for (let `;
+            const variableName = cappuccino.codeRunner(code, index, false, "=");
+            const initialValue = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, "do", false);
 
-      switch (split.length) {
-        case 1:
-          console.error(`Error while parsing Cappuchino code, For loop incomplete at character ${index}, transcript "${variableName[1]}=${split}" `);
-          break;
+            //Remove trailing = if needed
+            if (initialValue[0].charAt(0) == "=") initialValue[0] = initialValue[0].replace("=", "");
+            const split = initialValue[0].split(",");
 
-        case 2:
-          text += `${variableName[1]} = ${split[0]}; ${variableName[1]} > ${split[1]}; ${variableName[1]}++`;
-          break;
+            switch (split.length) {
+                case 1:
+                    console.error(`Error while parsing Cappuchino code, For loop incomplete at character ${index}, transcript "${variableName[1]}=${split}" `);
+                    break;
 
-        case 3:
-          text += `${variableName[1]} = ${split[0]}; ${variableName[1]} > ${split[1]}; ${variableName[1]}+=${split[2]}`;
-          break;
-      
-        default:
-          console.error(`Error while parsing Cappuchino code, For loop invalid at character ${index}, transcript "${variableName[1]}=${split}" `);
-          break;
-      }
+                case 2:
+                    text += `${variableName[1]} = ${split[0]}; ${variableName[1]} > ${split[1]}; ${variableName[1]}++`;
+                    break;
 
-      const inner = cappuccino.codeRunner(
-        code,
-        cappuccino.codeRunnerPosition,
-        'end'
-      );
+                case 3:
+                    text += `${variableName[1]} = ${split[0]}; ${variableName[1]} > ${split[1]}; ${variableName[1]}+=${split[2]}`;
+                    break;
 
-      text += `) {${inner[0]}}`;
-      return text;
-    },
+                default:
+                    console.error(`Error while parsing Cappuchino code, For loop invalid at character ${index}, transcript "${variableName[1]}=${split}" `);
+                    break;
+            }
 
-    //Functions
-    function: (code, index, char, wrap) => {
-      const conditional = cappuccino.codeRunner(code, index, null, "\n");
-      const inner = cappuccino.codeRunner(
-        code,
-        cappuccino.codeRunnerPosition,
-        'end'
-      );
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, "end");
 
-      return `${wrap == "class" ? ""  : "function"} ${conditional[0].replaceAll('\n', '')} {${inner[0]}}\n`;
-    },
+            text += `) {${inner[0]}}`;
+            return text;
+        },
 
-    class: (code, index, char, wrap) => {
-      const name = cappuccino.codeRunner(code, index, ["from", "constructed"], "\n");
-      let text = `class ${name[0]}`;
-      let parentClass = [];
-      if (name[1] == "from") {
-        parentClass = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["constructed", "contains"], "\n");
-        text += ` extends ${parentClass[0]}`;
-      }
+        //Functions
+        function: (code, index, char, wrap) => {
+            const conditional = cappuccino.codeRunner(code, index, null, "\n");
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, "end");
 
-      //If we skip straight to containment we contain our object
-      if (name[1] == "constructed" || parentClass[1] == "constructed") {
-        const constructorArgs = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["contains"], ")", wrap, true);
-        //Skip the )
-        cappuccino.codeRunnerPosition += 1;
-        const constructor = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["contains"], false);
-        text += `{\n constructor ${constructorArgs[0].length > 1 ? constructorArgs[0] : "()"} {${constructor[0]}\n}\n`;
-      }
-      else {
-        //remove the last contains with a really wierd method.
-        if (text.endsWith("contains")) text = text.substring(0, text.length - 8);
+            return `${wrap == "class" ? "" : "function"} ${conditional[0].replaceAll("\n", "")} {${inner[0]}}\n`;
+        },
 
-        text += `${(parentClass.length > 0) ? "{\n constructor() \n{\nsuper()\n}\n" : "{\n constructor() {}\n"}`;
-      }
+        class: (code, index, char, wrap) => {
+            const name = cappuccino.codeRunner(code, index, ["from", "constructed"], "\n");
+            let text = `class ${name[0]}`;
+            let parentClass = [];
+            if (name[1] == "from") {
+                parentClass = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["constructed", "contains"], "\n");
+                text += ` extends ${parentClass[0]}`;
+            }
 
-      const inner = cappuccino.codeRunner(
-        code,
-        cappuccino.codeRunnerPosition,
-        'end',
-        false,
-        "class"
-      );
+            //If we skip straight to containment we contain our object
+            if (name[1] == "constructed" || parentClass[1] == "constructed") {
+                const constructorArgs = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["contains"], ")", wrap, true);
+                //Skip the )
+                cappuccino.codeRunnerPosition += 1;
+                const constructor = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["contains"], false);
+                text += `{\n constructor ${constructorArgs[0].length > 1 ? constructorArgs[0] : "()"} {${constructor[0]}\n}\n`;
+            } else {
+                //remove the last contains with a really wierd method.
+                if (text.endsWith("contains")) text = text.substring(0, text.length - 8);
 
-      text += inner[0];
+                text += `${parentClass.length > 0 ? "{\n constructor() \n{\nsuper()\n}\n" : "{\n constructor() {}\n"}`;
+            }
 
-      return `${text}}\n`;
-    },
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, "end", false, "class");
 
-    //Statements
-    if: (code, index) => {
-      const conditional = cappuccino.codeRunner(code, index, 'then');
-      const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, [
-        'end',
-        'else',
-        'elseif',
-      ]);
-      let post = '';
-      if (inner[1] == 'elseif')
-        post = cappuccino.opcodes.elseif(code, cappuccino.codeRunnerPosition);
-      if (inner[1] == 'else')
-        post = cappuccino.opcodes.else(code, cappuccino.codeRunnerPosition);
+            text += inner[0];
 
-      return `if (${conditional[0].replaceAll('\n', '')}) {${
-        inner[0]
-      }}\n${post}`;
-    },
-    else: (code, index) => {
-      const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, [
-        'end',
-        'elseif',
-      ]);
+            return `${text}}\n`;
+        },
 
-      return `else {${inner[0]}}\n`;
-    },
-    elseif: (code, index) => {
-      const conditional = cappuccino.codeRunner(code, index, 'then');
-      const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, [
-        'end',
-        'else',
-        'elseif',
-      ]);
-      let post = '';
-      if (inner[1] == 'elseif')
-        post = cappuccino.opcodes.elseif(code, cappuccino.codeRunnerPosition);
-      if (inner[1] == 'else')
-        post = cappuccino.opcodes.else(code, cappuccino.codeRunnerPosition);
+        //Statements
+        if: (code, index) => {
+            const conditional = cappuccino.codeRunner(code, index, "then");
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["end", "else", "elseif"]);
+            let post = "";
+            if (inner[1] == "elseif") post = cappuccino.opcodes.elseif(code, cappuccino.codeRunnerPosition);
+            if (inner[1] == "else") post = cappuccino.opcodes.else(code, cappuccino.codeRunnerPosition);
 
-      return `else if (${conditional[0].replaceAll('\n', '')}) {${
-        inner[0]
-      }}\n${post}`;
-    },
+            return `if (${conditional[0].replaceAll("\n", "")}) {${inner[0]}}\n${post}`;
+        },
+        else: (code, index) => {
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["end", "elseif"]);
 
-    print:(code, index, char) => {
-      return `console.log${char}`;
-    },
+            return `else {${inner[0]}}\n`;
+        },
+        elseif: (code, index) => {
+            const conditional = cappuccino.codeRunner(code, index, "then");
+            const inner = cappuccino.codeRunner(code, cappuccino.codeRunnerPosition, ["end", "else", "elseif"]);
+            let post = "";
+            if (inner[1] == "elseif") post = cappuccino.opcodes.elseif(code, cappuccino.codeRunnerPosition);
+            if (inner[1] == "else") post = cappuccino.opcodes.else(code, cappuccino.codeRunnerPosition);
 
-    //Conditions
-    and: (code, index, char) => {
-      return `&&${char}`;
-    },
-    or: (code, index, char) => {
-      return `||${char}`;
-    },
-    not: (code, index, char) => {
-      return `!${char}`;
-    },
-  };
+            return `else if (${conditional[0].replaceAll("\n", "")}) {${inner[0]}}\n${post}`;
+        },
 
-  cappuccino.whitespaces = [' ', '\n', '\t', '(', ')', ",", "="];
+        print: (code, index, char) => {
+            return `console.log${char}`;
+        },
 
-  cappuccino.codeRunnerPosition = 0;
-  cappuccino.codeRunnerOpcode = false;
-  cappuccino.lastChar = "";
+        //Conditions
+        and: (code, index, char) => {
+            return `&&${char}`;
+        },
+        or: (code, index, char) => {
+            return `||${char}`;
+        },
+        not: (code, index, char) => {
+            return `!${char}`;
+        },
+    };
 
-  //Opcodes for the coderunner that aren't for generation
-  cappuccino.comboStoppers = {
-    //Comments
-    "//": (char,lastChar) => {
-      if (char == "\n") cappuccino.codeRunnerOpcode = false;
-    },
-    "/*": (char, lastChar) => {
-      if (`${lastChar}${char}` == "*/") cappuccino.codeRunnerOpcode = false;
-    },
+    cappuccino.whitespaces = [" ", "\n", "\t", "(", ")", ",", "="];
 
-    //Strings
-    "\"": (char, lastChar) => {
-      if ((char == "\"" && lastChar != "\\") || char == "\n") cappuccino.codeRunnerOpcode = false;
-    },
-    "'": (char, lastChar) => {
-      if ((char == "'" && lastChar != "\\") || char == "\n") cappuccino.codeRunnerOpcode = false;
-    },
-    "`": (char, lastChar) => {
-      if (char == "`" && lastChar != "\\") cappuccino.codeRunnerOpcode = false;
-    }
-  }
-
-  //Runs through our code and compiles it to js
-  cappuccino.codeRunner = (code, index, untilWord, untilNewline, wrapperIdentifier, prepend) => {
-    let string = '';
-    let word = '';
-
-    for (
-      cappuccino.codeRunnerPosition = index;
-      cappuccino.codeRunnerPosition < code.length;
-      cappuccino.codeRunnerPosition++
-    ) {
-      const char = code.charAt(cappuccino.codeRunnerPosition);
-      //If we have a code runner opcode;
-      if (cappuccino.codeRunnerOpcode) {
-        cappuccino.codeRunnerOpcode(char,cappuccino.lastChar);
-
-        string += char;
-        cappuccino.lastChar = char;
-        continue;
-      }
-      if (cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`]) {
-        cappuccino.codeRunnerOpcode = cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`];
-
-        string += word + char;
-        word = ""
-        cappuccino.lastChar = char;
-        continue;
-      }
-
-      //if we don't do this;
-      if (cappuccino.whitespaces.includes(char) || char === untilNewline) {
-        //If we reach our until word(s) stop
-        if (Array.isArray(untilWord)) {
-          if (untilWord.includes(word)) {
-            cappuccino.lastChar = char;
-            return [string, word];
-          }
-        } else {
-          if (word === untilWord) {
-            cappuccino.lastChar = char;
-            return [string, word];
-          }
-        }
-
-        //If we stop at a newline then we do
-        if (char === untilNewline) {
-          if (prepend) {
-            string += word;
-            string += char;
-          }
-          else {
-            string += char;
-            string += word;
-          }
-          cappuccino.lastChar = char;
-          return [string, word];
-        }
-
-        //check for opcodes
-        if (cappuccino.opcodes[word]) {
-          //cappuccino.codeRunnerPosition++;
-          string += cappuccino.opcodes[word](code, cappuccino.codeRunnerPosition,char,wrapperIdentifier);
-          cappuccino.lastChar = char;
-        } else {
-          string += word;
-          string += char;
-          cappuccino.lastChar = char;
-        }
-        word = '';
-      } else {
-        word += char;
-        cappuccino.lastChar = char;
-      }
-    }
-
+    cappuccino.codeRunnerPosition = 0;
+    cappuccino.codeRunnerOpcode = false;
     cappuccino.lastChar = "";
-    return [string, word];
-  };
 
-  cappuccino.compile = code => {
-    //Add an extra line for easy EOF detection
-    return cappuccino.codeRunner(code + "\n", 0, ' ')[0];
-  };
+    //Opcodes for the coderunner that aren't for generation
+    cappuccino.comboStoppers = {
+        //Comments
+        "//": (char, lastChar) => {
+            if (char == "\n") cappuccino.codeRunnerOpcode = false;
+        },
+        "/*": (char, lastChar) => {
+            if (`${lastChar}${char}` == "*/") cappuccino.codeRunnerOpcode = false;
+        },
 
-  //Register our lanaguage if we have monaco in the website
-  if (window.monaco) {
-      monaco.languages.register({ id: "cappu" });
+        //Strings
+        '"': (char, lastChar) => {
+            if ((char == '"' && lastChar != "\\") || char == "\n") cappuccino.codeRunnerOpcode = false;
+        },
+        "'": (char, lastChar) => {
+            if ((char == "'" && lastChar != "\\") || char == "\n") cappuccino.codeRunnerOpcode = false;
+        },
+        "`": (char, lastChar) => {
+            if (char == "`" && lastChar != "\\") cappuccino.codeRunnerOpcode = false;
+        },
+    };
 
-      monaco.languages.setMonarchTokensProvider("cappu", {
-          keywords: [
-              'and',
-              'break',
-              'continue',
-              'do',
-              'else',
-              'elseif',
-              'end',
-              'false',
-              'for',
-              'function',
-              'if',
-              //'in',
-              'let',
-              'const',
-              'null',
-              'not',
-              'or',
-              'repeat',
-              'return',
-              'then',
-              'true',
-              'until',
-              'while',
-              'class',
-              'from',
-              'constructed',
-              'contains',
-          ],
-          
-          operators: [
-              '+',
-              '-',
-              '*',
-              '/',
-              '%',
-              '^',
-              '#',
-              '==',
-              '~=',
-              '<=',
-              '>=',
-              '<',
-              '>',
-              '=',
-              ';',
-              ':',
-              ',',
-          ],
-  
-          // we include these common regular expressions
-          symbols: /[=><!~?:&|+\-*\/\^%]+/,
-          escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
-          digits: /\d+(_+\d+)*/,
-          octaldigits: /[0-7]+(_+[0-7]+)*/,
-          binarydigits: /[0-1]+(_+[0-1]+)*/,
-          hexdigits: /[[0-9a-fA-F]+(_+[0-9a-fA-F]+)*/,
-  
-          regexpctl: /[(){}\[\]\$\^|\-*+?\.]/,
-          regexpesc: /\\(?:[bBdDfnrstvwWn0\\\/]|@regexpctl|c[A-Z]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})/,
-  
-          // The main tokenizer for our languages
-          tokenizer: {
-              root: [[/[{}]/, 'delimiter.bracket'], { include: 'common' }],
-  
-              common: [
-                  // identifiers and keywords
-                  [
-                      /#?[a-z_$][\w$]*/,
-                      {
-                          cases: {
-                              '@keywords': 'keyword',
-                              '@default': 'identifier'
-                          }
-                      }
-                  ],
-                  [/[A-Z][\w\$]*/, 'type.identifier'], // to show class names nicely
-                  // [/[A-Z][\w\$]*/, 'identifier'],
-  
-                  // whitespace
-                  { include: '@whitespace' },
-  
-                  // regular expression: ensure it is terminated before beginning (otherwise it is an opeator)
-                  [
-                      /\/(?=([^\\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
-                      { token: 'regexp', bracket: '@open', next: '@regexp' }
-                  ],
-  
-                  // delimiters and operators
-                  [/[()\[\]]/, '@brackets'],
-                  [/[<>](?!@symbols)/, '@brackets'],
-                  [/!(?=([^=]|$))/, 'delimiter'],
-                  [
-                      /@symbols/,
-                      {
-                          cases: {
-                              '@operators': 'delimiter',
-                              '@default': ''
-                          }
-                      }
-                  ],
-  
-                  // numbers
-                  [/(@digits)[eE]([\-+]?(@digits))?/, 'number.float'],
-                  [/(@digits)\.(@digits)([eE][\-+]?(@digits))?/, 'number.float'],
-                  [/0[xX](@hexdigits)n?/, 'number.hex'],
-                  [/0[oO]?(@octaldigits)n?/, 'number.octal'],
-                  [/0[bB](@binarydigits)n?/, 'number.binary'],
-                  [/(@digits)n?/, 'number'],
-  
-                  // delimiter: after number because of .\d floats
-                  [/[;,.]/, 'delimiter'],
-  
-                  // strings
-                  [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
-                  [/'([^'\\]|\\.)*$/, 'string.invalid'], // non-teminated string
-                  [/"/, 'string', '@string_double'],
-                  [/'/, 'string', '@string_single'],
-                  [/`/, 'string', '@string_backtick']
-              ],
-  
-              whitespace: [
-                  [/[ \t\r\n]+/, ''],
-                  [/\/\*\*(?!\/)/, 'comment.doc', '@jsdoc'],
-                  [/\/\*/, 'comment', '@comment'],
-                  [/\/\/.*$/, 'comment']
-              ],
-  
-              comment: [
-                  [/[^\/*]+/, 'comment'],
-                  [/\*\//, 'comment', '@pop'],
-                  [/[\/*]/, 'comment']
-              ],
-  
-              jsdoc: [
-                  [/[^\/*]+/, 'comment.doc'],
-                  [/\*\//, 'comment.doc', '@pop'],
-                  [/.*[@]example/, 'comment.doc.keyword'],
-                  [/.*[@]returns/, 'comment.doc.keyword',"@jsdocSyntax"],
-                  [/.*[@]return/, 'comment.doc.keyword',"@jsdocSyntax"],
-                  [/.*[@]param/, "comment.doc.keyword","@jsdocSyntax"],
-                  [/[\/*]/, 'comment.doc']
-              ],
-  
-              jsdocSyntax: [
-                  [/\{.*\}/, 'comment.doc.type', "@pop"],
-              ],
-  
-              // We match regular expression quite precisely
-              regexp: [
-                  [
-                      /(\{)(\d+(?:,\d*)?)(\})/,
-                      ['regexp.escape.control', 'regexp.escape.control', 'regexp.escape.control']
-                  ],
-                  [
-                      /(\[)(\^?)(?=(?:[^\]\\\/]|\\.)+)/,
-                      ['regexp.escape.control', { token: 'regexp.escape.control', next: '@regexrange' }]
-                  ],
-                  [/(\()(\?:|\?=|\?!)/, ['regexp.escape.control', 'regexp.escape.control']],
-                  [/[()]/, 'regexp.escape.control'],
-                  [/@regexpctl/, 'regexp.escape.control'],
-                  [/[^\\\/]/, 'regexp'],
-                  [/@regexpesc/, 'regexp.escape'],
-                  [/\\\./, 'regexp.invalid'],
-                  [/(\/)([dgimsuy]*)/, [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']]
-              ],
-  
-              regexrange: [
-                  [/-/, 'regexp.escape.control'],
-                  [/\^/, 'regexp.invalid'],
-                  [/@regexpesc/, 'regexp.escape'],
-                  [/[^\]]/, 'regexp'],
-                  [
-                      /\]/,
-                      {
-                          token: 'regexp.escape.control',
-                          next: '@pop',
-                          bracket: '@close'
-                      }
-                  ]
-              ],
-  
-              string_double: [
-                  [/[^\\"]+/, 'string'],
-                  [/@escapes/, 'string.escape'],
-                  [/\\./, 'string.escape.invalid'],
-                  [/"/, 'string', '@pop']
-              ],
-  
-              string_single: [
-                  [/[^\\']+/, 'string'],
-                  [/@escapes/, 'string.escape'],
-                  [/\\./, 'string.escape.invalid'],
-                  [/'/, 'string', '@pop']
-              ],
-  
-              string_backtick: [
-                  [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
-                  [/[^\\`$]+/, 'string'],
-                  [/@escapes/, 'string.escape'],
-                  [/\\./, 'string.escape.invalid'],
-                  [/`/, 'string', '@pop']
-              ],
-  
-              bracketCounting: [
-                  [/\{/, 'delimiter.bracket', '@bracketCounting'],
-                  [/\}/, 'delimiter.bracket', '@pop'],
-                  { include: 'common' }
-              ]
-          }
-      });
-  }
+    //Runs through our code and compiles it to js
+    cappuccino.codeRunner = (code, index, untilWord, untilNewline, wrapperIdentifier, prepend) => {
+        let string = "";
+        let word = "";
+
+        for (cappuccino.codeRunnerPosition = index; cappuccino.codeRunnerPosition < code.length; cappuccino.codeRunnerPosition++) {
+            const char = code.charAt(cappuccino.codeRunnerPosition);
+            //If we have a code runner opcode;
+            if (cappuccino.codeRunnerOpcode) {
+                cappuccino.codeRunnerOpcode(char, cappuccino.lastChar);
+
+                string += char;
+                cappuccino.lastChar = char;
+                continue;
+            }
+            if (cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`]) {
+                cappuccino.codeRunnerOpcode = cappuccino.comboStoppers[`${cappuccino.lastChar}${char}`] || cappuccino.comboStoppers[`${char}`];
+
+                string += word + char;
+                word = "";
+                cappuccino.lastChar = char;
+                continue;
+            }
+
+            //if we don't do this;
+            if (cappuccino.whitespaces.includes(char) || char === untilNewline) {
+                //If we reach our until word(s) stop
+                if (Array.isArray(untilWord)) {
+                    if (untilWord.includes(word)) {
+                        cappuccino.lastChar = char;
+                        return [string, word];
+                    }
+                } else {
+                    if (word === untilWord) {
+                        cappuccino.lastChar = char;
+                        return [string, word];
+                    }
+                }
+
+                //If we stop at a newline then we do
+                if (char === untilNewline) {
+                    if (prepend) {
+                        string += word;
+                        string += char;
+                    } else {
+                        string += char;
+                        string += word;
+                    }
+                    cappuccino.lastChar = char;
+                    return [string, word];
+                }
+
+                //check for opcodes
+                if (cappuccino.opcodes[word]) {
+                    //cappuccino.codeRunnerPosition++;
+                    string += cappuccino.opcodes[word](code, cappuccino.codeRunnerPosition, char, wrapperIdentifier);
+                    cappuccino.lastChar = char;
+                } else {
+                    string += word;
+                    string += char;
+                    cappuccino.lastChar = char;
+                }
+                word = "";
+            } else {
+                word += char;
+                cappuccino.lastChar = char;
+            }
+        }
+
+        cappuccino.lastChar = "";
+        return [string, word];
+    };
+
+    cappuccino.compile = (code) => {
+        //Add an extra line for easy EOF detection
+        return cappuccino.codeRunner(code + "\n", 0, " ")[0];
+    };
+
+    //Register our lanaguage if we have monaco in the website
+    if (window.monaco) {
+        monaco.languages.register({ id: "cappu" });
+
+        monaco.languages.setMonarchTokensProvider("cappu", {
+            keywords: [
+                "and",
+                "break",
+                "continue",
+                "do",
+                "else",
+                "elseif",
+                "end",
+                "false",
+                "for",
+                "function",
+                "if",
+                //'in',
+                "let",
+                "const",
+                "null",
+                "not",
+                "or",
+                "repeat",
+                "return",
+                "then",
+                "true",
+                "until",
+                "while",
+                "class",
+                "from",
+                "constructed",
+                "contains",
+            ],
+
+            operators: ["+", "-", "*", "/", "%", "^", "#", "==", "~=", "<=", ">=", "<", ">", "=", ";", ":", ","],
+
+            // we include these common regular expressions
+            symbols: /[=><!~?:&|+\-*\/\^%]+/,
+            escapes: /\\(?:[abfnrtv\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/,
+            digits: /\d+(_+\d+)*/,
+            octaldigits: /[0-7]+(_+[0-7]+)*/,
+            binarydigits: /[0-1]+(_+[0-1]+)*/,
+            hexdigits: /[[0-9a-fA-F]+(_+[0-9a-fA-F]+)*/,
+
+            regexpctl: /[(){}\[\]\$\^|\-*+?\.]/,
+            regexpesc: /\\(?:[bBdDfnrstvwWn0\\\/]|@regexpctl|c[A-Z]|x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4})/,
+
+            // The main tokenizer for our languages
+            tokenizer: {
+                root: [[/[{}]/, "delimiter.bracket"], { include: "common" }],
+
+                common: [
+                    // identifiers and keywords
+                    [
+                        /#?[a-z_$][\w$]*/,
+                        {
+                            cases: {
+                                "@keywords": "keyword",
+                                "@default": "identifier",
+                            },
+                        },
+                    ],
+                    [/[A-Z][\w\$]*/, "type.identifier"], // to show class names nicely
+                    // [/[A-Z][\w\$]*/, 'identifier'],
+
+                    // whitespace
+                    { include: "@whitespace" },
+
+                    // regular expression: ensure it is terminated before beginning (otherwise it is an opeator)
+                    [/\/(?=([^\\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/, { token: "regexp", bracket: "@open", next: "@regexp" }],
+
+                    // delimiters and operators
+                    [/[()\[\]]/, "@brackets"],
+                    [/[<>](?!@symbols)/, "@brackets"],
+                    [/!(?=([^=]|$))/, "delimiter"],
+                    [
+                        /@symbols/,
+                        {
+                            cases: {
+                                "@operators": "delimiter",
+                                "@default": "",
+                            },
+                        },
+                    ],
+
+                    // numbers
+                    [/(@digits)[eE]([\-+]?(@digits))?/, "number.float"],
+                    [/(@digits)\.(@digits)([eE][\-+]?(@digits))?/, "number.float"],
+                    [/0[xX](@hexdigits)n?/, "number.hex"],
+                    [/0[oO]?(@octaldigits)n?/, "number.octal"],
+                    [/0[bB](@binarydigits)n?/, "number.binary"],
+                    [/(@digits)n?/, "number"],
+
+                    // delimiter: after number because of .\d floats
+                    [/[;,.]/, "delimiter"],
+
+                    // strings
+                    [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
+                    [/'([^'\\]|\\.)*$/, "string.invalid"], // non-teminated string
+                    [/"/, "string", "@string_double"],
+                    [/'/, "string", "@string_single"],
+                    [/`/, "string", "@string_backtick"],
+                ],
+
+                whitespace: [
+                    [/[ \t\r\n]+/, ""],
+                    [/\/\*\*(?!\/)/, "comment.doc", "@jsdoc"],
+                    [/\/\*/, "comment", "@comment"],
+                    [/\/\/.*$/, "comment"],
+                ],
+
+                comment: [
+                    [/[^\/*]+/, "comment"],
+                    [/\*\//, "comment", "@pop"],
+                    [/[\/*]/, "comment"],
+                ],
+
+                jsdoc: [
+                    [/[^\/*]+/, "comment.doc"],
+                    [/\*\//, "comment.doc", "@pop"],
+                    [/.*[@]example/, "comment.doc.keyword"],
+                    [/.*[@]returns/, "comment.doc.keyword", "@jsdocSyntax"],
+                    [/.*[@]return/, "comment.doc.keyword", "@jsdocSyntax"],
+                    [/.*[@]param/, "comment.doc.keyword", "@jsdocSyntax"],
+                    [/[\/*]/, "comment.doc"],
+                ],
+
+                jsdocSyntax: [[/\{.*\}/, "comment.doc.type", "@pop"]],
+
+                // We match regular expression quite precisely
+                regexp: [
+                    [/(\{)(\d+(?:,\d*)?)(\})/, ["regexp.escape.control", "regexp.escape.control", "regexp.escape.control"]],
+                    [/(\[)(\^?)(?=(?:[^\]\\\/]|\\.)+)/, ["regexp.escape.control", { token: "regexp.escape.control", next: "@regexrange" }]],
+                    [/(\()(\?:|\?=|\?!)/, ["regexp.escape.control", "regexp.escape.control"]],
+                    [/[()]/, "regexp.escape.control"],
+                    [/@regexpctl/, "regexp.escape.control"],
+                    [/[^\\\/]/, "regexp"],
+                    [/@regexpesc/, "regexp.escape"],
+                    [/\\\./, "regexp.invalid"],
+                    [/(\/)([dgimsuy]*)/, [{ token: "regexp", bracket: "@close", next: "@pop" }, "keyword.other"]],
+                ],
+
+                regexrange: [
+                    [/-/, "regexp.escape.control"],
+                    [/\^/, "regexp.invalid"],
+                    [/@regexpesc/, "regexp.escape"],
+                    [/[^\]]/, "regexp"],
+                    [
+                        /\]/,
+                        {
+                            token: "regexp.escape.control",
+                            next: "@pop",
+                            bracket: "@close",
+                        },
+                    ],
+                ],
+
+                string_double: [
+                    [/[^\\"]+/, "string"],
+                    [/@escapes/, "string.escape"],
+                    [/\\./, "string.escape.invalid"],
+                    [/"/, "string", "@pop"],
+                ],
+
+                string_single: [
+                    [/[^\\']+/, "string"],
+                    [/@escapes/, "string.escape"],
+                    [/\\./, "string.escape.invalid"],
+                    [/'/, "string", "@pop"],
+                ],
+
+                string_backtick: [
+                    [/\$\{/, { token: "delimiter.bracket", next: "@bracketCounting" }],
+                    [/[^\\`$]+/, "string"],
+                    [/@escapes/, "string.escape"],
+                    [/\\./, "string.escape.invalid"],
+                    [/`/, "string", "@pop"],
+                ],
+
+                bracketCounting: [[/\{/, "delimiter.bracket", "@bracketCounting"], [/\}/, "delimiter.bracket", "@pop"], { include: "common" }],
+            },
+        });
+    }
 })();

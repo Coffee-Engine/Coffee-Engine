@@ -2,8 +2,20 @@
     coffeeEngine.vector2 = class {
         #x = 0;
         #y = 0;
-        set x(value) {this.#x = value; this.setter();} get x() {return this.#x}
-        set y(value) {this.#y = value; this.setter();} get y() {return this.#y}
+        set x(value) {
+            this.#x = value;
+            this.setter();
+        }
+        get x() {
+            return this.#x;
+        }
+        set y(value) {
+            this.#y = value;
+            this.setter();
+        }
+        get y() {
+            return this.#y;
+        }
 
         constructor(x, y) {
             this.x = x;
@@ -58,13 +70,13 @@
         }
 
         serialize() {
-            return {"/-_-PROTOTYPE-_-/":"vector2", value: this.webGLValue()};
+            return { "/-_-PROTOTYPE-_-/": "vector2", value: this.webGLValue() };
         }
     };
 
     coffeeEngine.vector2.deserialize = (property, data) => {
-        if (!property instanceof coffeeEngine.vector2) property = new coffeeEngine.vector2(0,0);
+        if ((!property) instanceof coffeeEngine.vector2) property = new coffeeEngine.vector2(0, 0);
         property.x = Number(data[0]);
         property.y = Number(data[1]);
-    }
+    };
 })();

@@ -345,7 +345,7 @@
         const onSelect = () => {
             if (!goToOptions) editor.home.initilize();
             else editor.settings.initilize();
-        }
+        };
 
         document.getElementById("scratched").onclick = () => {
             editor.layout = {

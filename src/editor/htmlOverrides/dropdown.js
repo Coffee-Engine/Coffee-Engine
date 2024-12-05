@@ -78,7 +78,9 @@
         disabled = false;
 
         getContent() {
-            return Array.from(this.children).map(child => { return {text:child.innerHTML, value:child.value} });
+            return Array.from(this.children).map((child) => {
+                return { text: child.innerHTML, value: child.value };
+            });
         }
 
         constructor() {

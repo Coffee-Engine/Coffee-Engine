@@ -1,8 +1,8 @@
 //Definition File for showing languages in CE
 window.programmingLanguages = [
     {
-        id:"javascript",
-        hasTranslation:true,
+        id: "javascript",
+        hasTranslation: true,
         useBlocklyEditor: false,
         fileExtension: "js",
         //We do a function so that our translations work
@@ -28,8 +28,8 @@ coffeeEngine.registerBehavior("behavior",behavior);`;
         },
     },
     {
-        id:"cappuccino",
-        hasTranslation:true,
+        id: "cappuccino",
+        hasTranslation: true,
         useBlocklyEditor: false,
         fileExtension: "cappu",
         //We do a function so that our translations work
@@ -55,35 +55,39 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
         },
 
         //So we know what to do with our code
-        compileFunction:(code) => {
+        compileFunction: (code) => {
             return cappuccino.compile(code);
-        }
+        },
     },
     {
-        id:"sugarcube",
-        hasTranslation:true,
+        id: "sugarcube",
+        hasTranslation: true,
         useBlocklyEditor: true,
         fileExtension: "cescr",
         //Sugarcube's is the most bare bones
         //Also the most function based
-        defaultBehavior: (sugarcubeInheritence) => { return '{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{},' + 
-            `"inheritence":${(function() {
-                //inheritence... home
-                let inheritenceTree = [];
-                let currentInheritence = coffeeEngine.nodeRegister[sugarcubeInheritence];
-                inheritenceTree.push(sugarcubeInheritence);
-                while (currentInheritence) {
-                    if (coffeeEngine.nodeRegister[currentInheritence[1]]) {
-                        inheritenceTree.push(currentInheritence[1]);
+        defaultBehavior: (sugarcubeInheritence) => {
+            return (
+                '{"code":{"blocks":{"languageVersion":0,"blocks":[{"type":"events_onStart","id":"ths{fk?x7MsmGG^g`k@I","x":379,"y":140}]}},"variables":{},"customBlocks":{},' +
+                `"inheritence":${(function () {
+                    //inheritence... home
+                    let inheritenceTree = [];
+                    let currentInheritence = coffeeEngine.nodeRegister[sugarcubeInheritence];
+                    inheritenceTree.push(sugarcubeInheritence);
+                    while (currentInheritence) {
+                        if (coffeeEngine.nodeRegister[currentInheritence[1]]) {
+                            inheritenceTree.push(currentInheritence[1]);
+                        }
+                        currentInheritence = coffeeEngine.nodeRegister[currentInheritence[1]];
                     }
-                    currentInheritence = coffeeEngine.nodeRegister[currentInheritence[1]];
-                }
-                console.log(inheritenceTree);
-                return JSON.stringify(inheritenceTree);
-            })()}}`},
+                    console.log(inheritenceTree);
+                    return JSON.stringify(inheritenceTree);
+                })()}}`
+            );
+        },
         //So we know what to do with our code
-        compileFunction:(workspace) => {
+        compileFunction: (workspace) => {
             return sugarcube.generator.workspaceToCode(workspace);
-        }
-    }
-]
+        },
+    },
+];

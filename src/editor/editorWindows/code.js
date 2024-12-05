@@ -38,40 +38,40 @@
                 //Remove the button once it doesn't work
                 this.openFile(path, path.split(".")[1]).catch(() => {
                     button.onclick = () => {};
-                    this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path),1);
+                    this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path), 1);
                     this.scriptContainer.removeChild(button);
                 });
             };
 
             button.contextFunction = () => {
                 return [
-                    {text: editor.language["editor.window.codeEditor.openScript"], value: "open"},
-                    {text: editor.language["editor.window.codeEditor.closeScript"], value: "close"},
+                    { text: editor.language["editor.window.codeEditor.openScript"], value: "open" },
+                    { text: editor.language["editor.window.codeEditor.closeScript"], value: "close" },
                 ];
-            }
+            };
 
             button.contentAnswer = (value) => {
-                switch (value) {                                
+                switch (value) {
                     case "open":
                         //I'a open da file.
                         this.openFile(path, path.split(".")[1]).catch(() => {
                             button.onclick = () => {};
-                            this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path),1);
+                            this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path), 1);
                             this.scriptContainer.removeChild(button);
                         });
                         break;
-                    
+
                     case "close":
                         //Remove the button
                         button.onclick = () => {};
-                        this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path),1);
+                        this.scriptShortcuts.splice(this.scriptShortcuts.indexOf(path), 1);
                         this.scriptContainer.removeChild(button);
                         break;
-                
+
                     default:
                         break;
                 }
-            }
+            };
 
             this.scriptContainer.appendChild(button);
             this.scriptShortcuts.push(path);
@@ -174,17 +174,16 @@
 
             //Saving for our two code editors
             project.setFile(this.filePath, useBlocklyEditor ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(), "text/javascript").then(() => {
-                console.log(editor.language["editor.notification.saveScript"].replace("[path]",this.filePath));
+                console.log(editor.language["editor.notification.saveScript"].replace("[path]", this.filePath));
             });
 
             if (compileFunction) {
-                project.setFile(`${this.filePath.split(".")[0]}.cjs`, compileFunction((useBlocklyEditor) ? sugarcube.workspace : monacoManager.workspace.getValue()), "text/javascript").then(() => {
-                    console.log(editor.language["editor.notification.compileScript"].replace("[input]",this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));
+                project.setFile(`${this.filePath.split(".")[0]}.cjs`, compileFunction(useBlocklyEditor ? sugarcube.workspace : monacoManager.workspace.getValue()), "text/javascript").then(() => {
+                    console.log(editor.language["editor.notification.compileScript"].replace("[input]", this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));
                 });
             }
 
             if (this.filePath.split(".")[1].toLowerCase() == "cescr") {
-                
             }
         }
 
@@ -260,19 +259,24 @@
             //Make sure its lowercase
             extension = extension.toLowerCase();
 
-            return new Promise((resolve,reject) => {
+            return new Promise((resolve, reject) => {
                 //Grab our file and read it
-                project.getFile(path).then((file) => {
-                    this.fileReader.readAsText(file);
-                    this.readType = extension;
-                    this.filePath = path;
+                project
+                    .getFile(path)
+                    .then((file) => {
+                        this.fileReader.readAsText(file);
+                        this.readType = extension;
+                        this.filePath = path;
 
-                    this.addScriptToSidebar(path);
-                    resolve();
-                }).catch(() => {reject()});
-            })
+                        this.addScriptToSidebar(path);
+                        resolve();
+                    })
+                    .catch(() => {
+                        reject();
+                    });
+            });
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.codeEditor, "codeEditor", {onlyOne:true});
+    editor.windows.__Serialization.register(editor.windows.codeEditor, "codeEditor", { onlyOne: true });
 })();

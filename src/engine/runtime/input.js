@@ -64,9 +64,10 @@
         if (event.target.nodeName != "INPUT") event.preventDefault();
         if (event.target.contextFunction) {
             if (!event.defaultPrevented) event.preventDefault();
-            if (editor && editor.dropdown && editor.dropdown.fromArray) editor.dropdown.fromArray(event.clientX, event.clientY, event.target.contextFunction()).then((value) => {
-                if (event.target.contentAnswer) event.target.contentAnswer(value);
-            });
+            if (editor && editor.dropdown && editor.dropdown.fromArray)
+                editor.dropdown.fromArray(event.clientX, event.clientY, event.target.contextFunction()).then((value) => {
+                    if (event.target.contentAnswer) event.target.contentAnswer(value);
+                });
         }
     });
 

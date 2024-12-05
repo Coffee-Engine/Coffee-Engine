@@ -8,7 +8,7 @@ window.coffeeEngine = {
     classes: {},
     resources: {},
     renderer: {
-        nodesRendered:0
+        nodesRendered: 0,
     },
     nodeRegister: {},
     //Just a simple node registrar thing
@@ -28,7 +28,7 @@ window.coffeeEngine = {
             const key = keys[keyIndex];
             if (coffeeEngine.nodeRegister[key]) {
                 if (coffeeEngine.nodeRegister[key][0] == node.constructor) return key;
-            }            
+            }
         }
 
         return "Node";

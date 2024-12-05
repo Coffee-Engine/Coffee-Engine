@@ -142,14 +142,20 @@
             element.innerHTML = `<img style="height:48px;" src="${userInf.image}"></img><p><a href="${userInf.link}">${userInf.name}</a></p>`;
 
             return element;
-        }
+        };
 
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();
         };
 
-        editor.credits.engineContributors.forEach(contributor => {programmers.appendChild(makeElement(contributor));});
-        editor.credits.translators.forEach(contributor => {translators.appendChild(makeElement(contributor));});
-        editor.credits.assetMakers.forEach(contributor => {makers.appendChild(makeElement(contributor));});
+        editor.credits.engineContributors.forEach((contributor) => {
+            programmers.appendChild(makeElement(contributor));
+        });
+        editor.credits.translators.forEach((contributor) => {
+            translators.appendChild(makeElement(contributor));
+        });
+        editor.credits.assetMakers.forEach((contributor) => {
+            makers.appendChild(makeElement(contributor));
+        });
     };
 })();

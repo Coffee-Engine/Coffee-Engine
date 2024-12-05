@@ -144,7 +144,7 @@
 
         wait(block, generator, manager) {
             return `setTimeout(() => {
-    ${manager.nextBlockToCode(block,generator)}
+    ${manager.nextBlockToCode(block, generator)}
 }, ${generator.valueToCode(block, "seconds", 0) * 1000});`;
         }
 

@@ -14,10 +14,10 @@
         get acceptTypes() {
             return (this.acceptedTypes || []).join(",");
         }
-        
+
         set systemRoot(value) {
             this.currentSystemRoot = value;
-            
+
             this.Content.innerHTML = "";
 
             this.directoryBasin = {
@@ -26,7 +26,7 @@
             };
             this.displayDirectory(this.systemRoot, this.Content, this.directoryBasin, false);
         }
-        
+
         get systemRoot() {
             return this.currentSystemRoot;
         }

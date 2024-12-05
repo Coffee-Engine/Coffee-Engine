@@ -196,11 +196,15 @@
                 <div id="ce_hueBG" class="CE_hueDiv">
                     <div id="ce_HScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%); left:50%;"></div>
                 </div>
-                ${hasTranslucency ? `
+                ${
+                    hasTranslucency
+                        ? `
                 <div id="ce_transBG" class="CE_transDiv">
                     <div id="ce_transScrubber" class="CE_scrubber" style="transform:translate(-50%,-50%); left:50%;"></div>
                 </div>
-                    ` : ""}
+                    `
+                        : ""
+                }
                 <div class="CE_numInputList">
                     <input id="ce_redChannel" class="CE_numInput" style="color:#ff0000;" value="${split.r}" type="number"></input>
                     <input id="ce_greenChannel" class="CE_numInput" style="color:#00ff00;" value="${split.g}" type="number"></input>
@@ -232,7 +236,7 @@
         //Grab out scrubbers
         const HueScrubber = document.getElementById("ce_HScrubber");
         const ValSatScrubber = document.getElementById("ce_SVScrubber");
-        
+
         //Transparency stuff
         const transBackground = document.getElementById("ce_transBG");
         const transScrubber = document.getElementById("ce_transScrubber");
@@ -260,7 +264,6 @@
             ValSatScrubber.style.left = `${HSV.s * 100}%`;
             ValSatScrubber.style.backgroundColor = coffeeEngine.ColorMath.RGBtoHex(split);
 
-            
             if (hasTranslucency) transScrubber.style.top = `${((255 - HSV.a) / 2.55) % 100}%`;
 
             //Set the inputs
@@ -350,31 +353,32 @@
         };
 
         //Our translucency
-        if (hasTranslucency) transScrubber.onmousedown = () => {
-            //Events
-            let upEvent,
-                moveEvent = null;
+        if (hasTranslucency)
+            transScrubber.onmousedown = () => {
+                //Events
+                let upEvent,
+                    moveEvent = null;
 
-            upEvent = () => {
-                document.removeEventListener("mouseup", upEvent);
-                document.removeEventListener("mousemove", moveEvent);
+                upEvent = () => {
+                    document.removeEventListener("mouseup", upEvent);
+                    document.removeEventListener("mousemove", moveEvent);
+                };
+
+                moveEvent = (event) => {
+                    const rect = transBackground.getBoundingClientRect();
+
+                    const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
+
+                    HSV.a = 255 - ((event.clientY - rect.top) / rect.height) * 255;
+                    HSV.a = Math.min(Math.max(HSV.a, 0), 255);
+                    split = coffeeEngine.ColorMath.HSVToRGB(HSV);
+
+                    updateColors();
+                };
+
+                document.addEventListener("mouseup", upEvent);
+                document.addEventListener("mousemove", moveEvent);
             };
-
-            moveEvent = (event) => {
-                const rect = transBackground.getBoundingClientRect();
-
-                const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
-
-                HSV.a = 255 - (((event.clientY - rect.top) / rect.height) * 255);
-                HSV.a = Math.min(Math.max(HSV.a, 0), 255);
-                split = coffeeEngine.ColorMath.HSVToRGB(HSV);
-
-                updateColors();
-            };
-
-            document.addEventListener("mouseup", upEvent);
-            document.addEventListener("mousemove", moveEvent);
-        };
 
         ValSatScrubber.onmousedown = () => {
             //Events

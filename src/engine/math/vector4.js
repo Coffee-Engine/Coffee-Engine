@@ -4,10 +4,34 @@
         #y = 0;
         #z = 0;
         #w = 0;
-        set x(value) {this.#x = value; this.setter();} get x() {return this.#x}
-        set y(value) {this.#y = value; this.setter();} get y() {return this.#y}
-        set z(value) {this.#z = value; this.setter();} get z() {return this.#z}
-        set w(value) {this.#w = value; this.setter();} get w() {return this.#w}
+        set x(value) {
+            this.#x = value;
+            this.setter();
+        }
+        get x() {
+            return this.#x;
+        }
+        set y(value) {
+            this.#y = value;
+            this.setter();
+        }
+        get y() {
+            return this.#y;
+        }
+        set z(value) {
+            this.#z = value;
+            this.setter();
+        }
+        get z() {
+            return this.#z;
+        }
+        set w(value) {
+            this.#w = value;
+            this.setter();
+        }
+        get w() {
+            return this.#w;
+        }
 
         constructor(x, y, z, w) {
             this.x = x;
@@ -60,15 +84,15 @@
         }
 
         serialize() {
-            return {"/-_-PROTOTYPE-_-/":"vector4", value: this.webGLValue()};
+            return { "/-_-PROTOTYPE-_-/": "vector4", value: this.webGLValue() };
         }
     };
 
     coffeeEngine.vector4.deserialize = (property, data) => {
-        if (!property instanceof coffeeEngine.vector4) property = new coffeeEngine.vector4(0,0,0,0);
+        if ((!property) instanceof coffeeEngine.vector4) property = new coffeeEngine.vector4(0, 0, 0, 0);
         property.x = Number(data[0]);
         property.y = Number(data[1]);
         property.z = Number(data[2]);
         property.w = Number(data[3]);
-    }
+    };
 })();

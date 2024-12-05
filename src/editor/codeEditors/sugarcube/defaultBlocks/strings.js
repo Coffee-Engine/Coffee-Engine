@@ -187,7 +187,7 @@
                             { text: editor.language["sugarcube.strings.menu.caseTypes.uppercase"], value: "uppercase" },
                             { text: editor.language["sugarcube.strings.menu.caseTypes.lowercase"], value: "lowercase" },
                             { text: editor.language["sugarcube.strings.menu.caseTypes.title-case"], value: "title-case" },
-                        ]
+                        ],
                     },
                 },
             };

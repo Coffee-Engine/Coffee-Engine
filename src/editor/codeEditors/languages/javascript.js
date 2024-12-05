@@ -1,103 +1,11 @@
 //Loading js into monaco
-(function() {
+(function () {
     monaco.languages.register({ id: "js" });
 
     monaco.languages.setMonarchTokensProvider("js", {
-        keywords: [
-            'break',
-            'case',
-            'catch',
-            'class',
-            'continue',
-            'const',
-            'constructor',
-            'debugger',
-            'default',
-            'delete',
-            'do',
-            'else',
-            'export',
-            'extends',
-            'false',
-            'finally',
-            'for',
-            'from',
-            'function',
-            'get',
-            'if',
-            'import',
-            'in',
-            'instanceof',
-            'let',
-            'new',
-            'null',
-            'return',
-            'set',
-            'static',
-            'super',
-            'switch',
-            'symbol',
-            'this',
-            'throw',
-            'true',
-            'try',
-            'typeof',
-            'undefined',
-            'var',
-            'void',
-            'while',
-            'with',
-            'yield',
-            'async',
-            'await',
-            'of'
-        ],
-        
-        operators: [
-            '<=',
-            '>=',
-            '==',
-            '!=',
-            '===',
-            '!==',
-            '=>',
-            '+',
-            '-',
-            '**',
-            '*',
-            '/',
-            '%',
-            '++',
-            '--',
-            '<<',
-            '</',
-            '>>',
-            '>>>',
-            '&',
-            '|',
-            '^',
-            '!',
-            '~',
-            '&&',
-            '||',
-            '??',
-            '?',
-            ':',
-            '=',
-            '+=',
-            '-=',
-            '*=',
-            '**=',
-            '/=',
-            '%=',
-            '<<=',
-            '>>=',
-            '>>>=',
-            '&=',
-            '|=',
-            '^=',
-            '@'
-        ],
+        keywords: ["break", "case", "catch", "class", "continue", "const", "constructor", "debugger", "default", "delete", "do", "else", "export", "extends", "false", "finally", "for", "from", "function", "get", "if", "import", "in", "instanceof", "let", "new", "null", "return", "set", "static", "super", "switch", "symbol", "this", "throw", "true", "try", "typeof", "undefined", "var", "void", "while", "with", "yield", "async", "await", "of"],
+
+        operators: ["<=", ">=", "==", "!=", "===", "!==", "=>", "+", "-", "**", "*", "/", "%", "++", "--", "<<", "</", ">>", ">>>", "&", "|", "^", "!", "~", "&&", "||", "??", "?", ":", "=", "+=", "-=", "*=", "**=", "/=", "%=", "<<=", ">>=", ">>>=", "&=", "|=", "^=", "@"],
 
         // we include these common regular expressions
         symbols: /[=><!~?:&|+\-*\/\^%]+/,
@@ -112,7 +20,7 @@
 
         // The main tokenizer for our languages
         tokenizer: {
-            root: [[/[{}]/, 'delimiter.bracket'], { include: 'common' }],
+            root: [[/[{}]/, "delimiter.bracket"], { include: "common" }],
 
             common: [
                 // identifiers and keywords
@@ -120,144 +28,129 @@
                     /#?[a-z_$][\w$]*/,
                     {
                         cases: {
-                            '@keywords': 'keyword',
-                            '@default': 'identifier'
-                        }
-                    }
+                            "@keywords": "keyword",
+                            "@default": "identifier",
+                        },
+                    },
                 ],
-                [/[A-Z][\w\$]*/, 'type.identifier'], // to show class names nicely
+                [/[A-Z][\w\$]*/, "type.identifier"], // to show class names nicely
                 // [/[A-Z][\w\$]*/, 'identifier'],
 
                 // whitespace
-                { include: '@whitespace' },
+                { include: "@whitespace" },
 
                 // regular expression: ensure it is terminated before beginning (otherwise it is an opeator)
-                [
-                    /\/(?=([^\\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/,
-                    { token: 'regexp', bracket: '@open', next: '@regexp' }
-                ],
+                [/\/(?=([^\\\/]|\\.)+\/([dgimsuy]*)(\s*)(\.|;|,|\)|\]|\}|$))/, { token: "regexp", bracket: "@open", next: "@regexp" }],
 
                 // delimiters and operators
-                [/[()\[\]]/, '@brackets'],
-                [/[<>](?!@symbols)/, '@brackets'],
-                [/!(?=([^=]|$))/, 'delimiter'],
+                [/[()\[\]]/, "@brackets"],
+                [/[<>](?!@symbols)/, "@brackets"],
+                [/!(?=([^=]|$))/, "delimiter"],
                 [
                     /@symbols/,
                     {
                         cases: {
-                            '@operators': 'delimiter',
-                            '@default': ''
-                        }
-                    }
+                            "@operators": "delimiter",
+                            "@default": "",
+                        },
+                    },
                 ],
 
                 // numbers
-                [/(@digits)[eE]([\-+]?(@digits))?/, 'number.float'],
-                [/(@digits)\.(@digits)([eE][\-+]?(@digits))?/, 'number.float'],
-                [/0[xX](@hexdigits)n?/, 'number.hex'],
-                [/0[oO]?(@octaldigits)n?/, 'number.octal'],
-                [/0[bB](@binarydigits)n?/, 'number.binary'],
-                [/(@digits)n?/, 'number'],
+                [/(@digits)[eE]([\-+]?(@digits))?/, "number.float"],
+                [/(@digits)\.(@digits)([eE][\-+]?(@digits))?/, "number.float"],
+                [/0[xX](@hexdigits)n?/, "number.hex"],
+                [/0[oO]?(@octaldigits)n?/, "number.octal"],
+                [/0[bB](@binarydigits)n?/, "number.binary"],
+                [/(@digits)n?/, "number"],
 
                 // delimiter: after number because of .\d floats
-                [/[;,.]/, 'delimiter'],
+                [/[;,.]/, "delimiter"],
 
                 // strings
-                [/"([^"\\]|\\.)*$/, 'string.invalid'], // non-teminated string
-                [/'([^'\\]|\\.)*$/, 'string.invalid'], // non-teminated string
-                [/"/, 'string', '@string_double'],
-                [/'/, 'string', '@string_single'],
-                [/`/, 'string', '@string_backtick']
+                [/"([^"\\]|\\.)*$/, "string.invalid"], // non-teminated string
+                [/'([^'\\]|\\.)*$/, "string.invalid"], // non-teminated string
+                [/"/, "string", "@string_double"],
+                [/'/, "string", "@string_single"],
+                [/`/, "string", "@string_backtick"],
             ],
 
             whitespace: [
-                [/[ \t\r\n]+/, ''],
-                [/\/\*\*(?!\/)/, 'comment.doc', '@jsdoc'],
-                [/\/\*/, 'comment', '@comment'],
-                [/\/\/.*$/, 'comment']
+                [/[ \t\r\n]+/, ""],
+                [/\/\*\*(?!\/)/, "comment.doc", "@jsdoc"],
+                [/\/\*/, "comment", "@comment"],
+                [/\/\/.*$/, "comment"],
             ],
 
             comment: [
-                [/[^\/*]+/, 'comment'],
-                [/\*\//, 'comment', '@pop'],
-                [/[\/*]/, 'comment']
+                [/[^\/*]+/, "comment"],
+                [/\*\//, "comment", "@pop"],
+                [/[\/*]/, "comment"],
             ],
 
             jsdoc: [
-                [/[^\/*]+/, 'comment.doc'],
-                [/\*\//, 'comment.doc', '@pop'],
-                [/.*[@]example/, 'comment.doc.keyword'],
-                [/.*[@]returns/, 'comment.doc.keyword',"@jsdocSyntax"],
-                [/.*[@]return/, 'comment.doc.keyword',"@jsdocSyntax"],
-                [/.*[@]param/, "comment.doc.keyword","@jsdocSyntax"],
-                [/[\/*]/, 'comment.doc']
+                [/[^\/*]+/, "comment.doc"],
+                [/\*\//, "comment.doc", "@pop"],
+                [/.*[@]example/, "comment.doc.keyword"],
+                [/.*[@]returns/, "comment.doc.keyword", "@jsdocSyntax"],
+                [/.*[@]return/, "comment.doc.keyword", "@jsdocSyntax"],
+                [/.*[@]param/, "comment.doc.keyword", "@jsdocSyntax"],
+                [/[\/*]/, "comment.doc"],
             ],
 
-            jsdocSyntax: [
-                [/\{.*\}/, 'comment.doc.type', "@pop"],
-            ],
+            jsdocSyntax: [[/\{.*\}/, "comment.doc.type", "@pop"]],
 
             // We match regular expression quite precisely
             regexp: [
-                [
-                    /(\{)(\d+(?:,\d*)?)(\})/,
-                    ['regexp.escape.control', 'regexp.escape.control', 'regexp.escape.control']
-                ],
-                [
-                    /(\[)(\^?)(?=(?:[^\]\\\/]|\\.)+)/,
-                    ['regexp.escape.control', { token: 'regexp.escape.control', next: '@regexrange' }]
-                ],
-                [/(\()(\?:|\?=|\?!)/, ['regexp.escape.control', 'regexp.escape.control']],
-                [/[()]/, 'regexp.escape.control'],
-                [/@regexpctl/, 'regexp.escape.control'],
-                [/[^\\\/]/, 'regexp'],
-                [/@regexpesc/, 'regexp.escape'],
-                [/\\\./, 'regexp.invalid'],
-                [/(\/)([dgimsuy]*)/, [{ token: 'regexp', bracket: '@close', next: '@pop' }, 'keyword.other']]
+                [/(\{)(\d+(?:,\d*)?)(\})/, ["regexp.escape.control", "regexp.escape.control", "regexp.escape.control"]],
+                [/(\[)(\^?)(?=(?:[^\]\\\/]|\\.)+)/, ["regexp.escape.control", { token: "regexp.escape.control", next: "@regexrange" }]],
+                [/(\()(\?:|\?=|\?!)/, ["regexp.escape.control", "regexp.escape.control"]],
+                [/[()]/, "regexp.escape.control"],
+                [/@regexpctl/, "regexp.escape.control"],
+                [/[^\\\/]/, "regexp"],
+                [/@regexpesc/, "regexp.escape"],
+                [/\\\./, "regexp.invalid"],
+                [/(\/)([dgimsuy]*)/, [{ token: "regexp", bracket: "@close", next: "@pop" }, "keyword.other"]],
             ],
 
             regexrange: [
-                [/-/, 'regexp.escape.control'],
-                [/\^/, 'regexp.invalid'],
-                [/@regexpesc/, 'regexp.escape'],
-                [/[^\]]/, 'regexp'],
+                [/-/, "regexp.escape.control"],
+                [/\^/, "regexp.invalid"],
+                [/@regexpesc/, "regexp.escape"],
+                [/[^\]]/, "regexp"],
                 [
                     /\]/,
                     {
-                        token: 'regexp.escape.control',
-                        next: '@pop',
-                        bracket: '@close'
-                    }
-                ]
+                        token: "regexp.escape.control",
+                        next: "@pop",
+                        bracket: "@close",
+                    },
+                ],
             ],
 
             string_double: [
-                [/[^\\"]+/, 'string'],
-                [/@escapes/, 'string.escape'],
-                [/\\./, 'string.escape.invalid'],
-                [/"/, 'string', '@pop']
+                [/[^\\"]+/, "string"],
+                [/@escapes/, "string.escape"],
+                [/\\./, "string.escape.invalid"],
+                [/"/, "string", "@pop"],
             ],
 
             string_single: [
-                [/[^\\']+/, 'string'],
-                [/@escapes/, 'string.escape'],
-                [/\\./, 'string.escape.invalid'],
-                [/'/, 'string', '@pop']
+                [/[^\\']+/, "string"],
+                [/@escapes/, "string.escape"],
+                [/\\./, "string.escape.invalid"],
+                [/'/, "string", "@pop"],
             ],
 
             string_backtick: [
-                [/\$\{/, { token: 'delimiter.bracket', next: '@bracketCounting' }],
-                [/[^\\`$]+/, 'string'],
-                [/@escapes/, 'string.escape'],
-                [/\\./, 'string.escape.invalid'],
-                [/`/, 'string', '@pop']
+                [/\$\{/, { token: "delimiter.bracket", next: "@bracketCounting" }],
+                [/[^\\`$]+/, "string"],
+                [/@escapes/, "string.escape"],
+                [/\\./, "string.escape.invalid"],
+                [/`/, "string", "@pop"],
             ],
 
-            bracketCounting: [
-                [/\{/, 'delimiter.bracket', '@bracketCounting'],
-                [/\}/, 'delimiter.bracket', '@pop'],
-                { include: 'common' }
-            ]
-        }
+            bracketCounting: [[/\{/, "delimiter.bracket", "@bracketCounting"], [/\}/, "delimiter.bracket", "@pop"], { include: "common" }],
+        },
     });
 })();

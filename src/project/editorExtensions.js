@@ -63,7 +63,7 @@
                             //Isolate the context;
                             scriptElement.innerHTML = `(function() {\n${scriptContents}\n})();`;
                             document.body.appendChild(scriptElement);
-    
+
                             resolve();
                         };
 

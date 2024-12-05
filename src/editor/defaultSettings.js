@@ -1,10 +1,10 @@
 (function () {
     editor.defaultSettings = {
         Editor: {
-            customLanguage:"",
-            changeLanguage:"",
-            changeLayout:"",
-            clearLocalStorage:"",
+            customLanguage: "",
+            changeLanguage: "",
+            changeLayout: "",
+            clearLocalStorage: "",
         },
         Window: {
             grabSize: 8,
@@ -90,8 +90,8 @@
     editor.settingDefs = {
         Editor: {
             customLanguage: {
-                type:"button",
-                onClick:() => {
+                type: "button",
+                onClick: () => {
                     const fileReader = new FileReader();
                     fileReader.onload = () => {
                         if (JSON.parse(fileReader.result)) {
@@ -102,7 +102,7 @@
 
                             editor.settings.initilize();
                         }
-                    }
+                    };
                     //Yeah this google thing is getting on my nerves a wee bit
                     if (!editor.safeties.filePermissions) {
                         const fileInput = document.createElement("input");
@@ -129,30 +129,30 @@
                             .then((result) => {
                                 result.getFile().then((file) => {
                                     fileReader.readAsText(file);
-                                })
+                                });
                             });
                     }
-                }
+                },
             },
             changeLanguage: {
-                type:"button",
-                onClick:() => {
+                type: "button",
+                onClick: () => {
                     editor.setup.initilizeLang(true);
-                }
+                },
             },
             changeLayout: {
-                type:"button",
-                onClick:() => {
+                type: "button",
+                onClick: () => {
                     editor.setup.initilizeLayout(true);
-                }
+                },
             },
             clearLocalStorage: {
-                type:"button",
-                onClick:(element) => {
+                type: "button",
+                onClick: (element) => {
                     element.innerHTML = editor.language[`engine.settings.category.Editor.clearLocalStorage.cleared`];
                     localStorage.clear();
-                }
-            }
+                },
+            },
         },
         Window: {
             grabSize: {
@@ -538,7 +538,7 @@
 
                         //Color Conversions
                         const split = coffeeEngine.ColorMath.HexToRGB(value);
-                        
+
                         if (coffeeEngine.ColorMath.BrightestChannel(value) > 10) {
                             document.body.style.setProperty(
                                 "--link-2",
@@ -587,7 +587,7 @@
                         }
                     }
                 },
-            }
+            },
         },
         SugarCube: {
             notchWidth: {

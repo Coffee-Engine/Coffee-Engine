@@ -48,7 +48,7 @@
         </g>
     </g>
 </svg>
-<!--rotationCenter:42.263227662355774:42.263227662355774-->`
+<!--rotationCenter:42.263227662355774:42.263227662355774-->`;
 
     //This will contain the editor's windows
     editor.windowLayer = 0;
@@ -60,12 +60,12 @@
     editor.windows.__Serialization = {
         register: (classOBJ, id, jsonData) => {
             //Extra json can be used to add special data to windows like only allowing 1 to be open at a time.
-            editor.windows.__Serialization.all[id] = classOBJ;//{object: classOBJ, extraJson:jsonData};
+            editor.windows.__Serialization.all[id] = classOBJ; //{object: classOBJ, extraJson:jsonData};
             editor.windows.__Serialization.data[id] = jsonData || {};
         },
 
         all: {},
-        data: {}
+        data: {},
     };
 
     editor.windows.base = class {
@@ -197,7 +197,7 @@
         __addToExistingArray() {
             //Filter
             const serializationList = editor.windows.__Serialization.all;
-            let signifierID = Object.keys(serializationList).filter(item => serializationList[item] == this.constructor);
+            let signifierID = Object.keys(serializationList).filter((item) => serializationList[item] == this.constructor);
             if (!signifierID) return;
 
             //Get our actual title
@@ -544,24 +544,24 @@
                 for (let tabIndex = 0; tabIndex < this.tabs.length; tabIndex++) {
                     const tab = this.tabs[tabIndex];
                     const tabElement = document.createElement("div");
-                    
+
                     //Create the objects on the tab
                     if (tabIndex > 0) {
                         const tabText = document.createElement("p");
                         tabText.innerText = tab.owner.title || tab.tabName || "Unknown Tab";
                         tabText.style.margin = "0px";
                         tabText.style.padding = "0px";
-    
+
                         //Cool image
                         const detabButton = document.createElement("div");
                         detabButton.innerHTML = undockTabSVG;
                         detabButton.style.aspectRatio = "1";
-    
+
                         detabButton.onclick = (event) => {
                             event.stopPropagation();
-    
+
                             //Remove us from the tab propogation and reconstruct, then refresh the taskbar
-                            this.tabs.splice(tabIndex,1);
+                            this.tabs.splice(tabIndex, 1);
                             tab.owner.__reconstruct();
                             tab.owner.__moveToTop();
 
@@ -572,15 +572,15 @@
                             tab.content.style.zIndex = "1";
 
                             this.__refreshTaskbar();
-                        }
-    
+                        };
+
                         //add and configure the tab
                         tabElement.appendChild(tabText);
                         tabElement.appendChild(detabButton);
                     }
                     //If we are the first tab stop us from being dedocked from ourself
                     else {
-                        tabElement.innerText = tab.owner.title || tab.tabName || "Unknown Tab";;
+                        tabElement.innerText = tab.owner.title || tab.tabName || "Unknown Tab";
                     }
                     tabElement.className = "windowTab";
 
@@ -680,7 +680,7 @@
 
             //Now we remove it from our global list of existing window objects
             const serializationList = editor.windows.__Serialization.all;
-            let signifierID = Object.keys(serializationList).filter(item => serializationList[item] == this.constructor);
+            let signifierID = Object.keys(serializationList).filter((item) => serializationList[item] == this.constructor);
             if (!signifierID) return;
 
             //Get our actual title
@@ -688,10 +688,10 @@
 
             //Make sure our array exists
             editor.windows.existing[signifierID];
-            
+
             //Find it and remove it
             const objectIndex = editor.windows.existing[signifierID].indexOf(this);
-            editor.windows.existing[signifierID].splice(objectIndex,1);
+            editor.windows.existing[signifierID].splice(objectIndex, 1);
         }
 
         //Allow us to destroy the window;

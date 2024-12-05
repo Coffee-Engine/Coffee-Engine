@@ -1,4 +1,4 @@
-(function() {
+(function () {
     coffeeEngine.renderer.initilizeFileConversions = () => {
         //* We store what we need in RAM
         coffeeEngine.renderer.fileToTexture = (src) => {
@@ -8,7 +8,7 @@
                     resolve(coffeeEngine.renderer.textureStorage[src]);
                     return;
                 }
-                
+
                 coffeeEngine.renderer.textureStorage[src] = {};
 
                 project
@@ -35,12 +35,12 @@
 
         coffeeEngine.renderer.fileToShader = (src) => {
             //Then we make our promise
-            return new Promise((resolve,reject) => {
+            return new Promise((resolve, reject) => {
                 //Make sure we allocate this in storage first
                 if (coffeeEngine.renderer.shaderStorage[src]) {
                     resolve(coffeeEngine.renderer.shaderStorage[src]);
                     return;
-                };
+                }
                 coffeeEngine.renderer.shaderStorage[src] = {};
 
                 const fileReader = new FileReader();
@@ -48,42 +48,43 @@
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
                     resolve(fileReader.result);
-                }
+                };
 
-                project.getFile(src).then((file) => {
-                    fileReader.readAsText(file);
-                }).catch(() => {
-                    delete coffeeEngine.renderer.shaderStorage[src];
-                    reject("File does not exist");
-                })
-            })
-        }
+                project
+                    .getFile(src)
+                    .then((file) => {
+                        fileReader.readAsText(file);
+                    })
+                    .catch(() => {
+                        delete coffeeEngine.renderer.shaderStorage[src];
+                        reject("File does not exist");
+                    });
+            });
+        };
 
         coffeeEngine.renderer.fileToMaterial = (src) => {
             //Then we make our promise
-            return new Promise((resolve,reject) => {
+            return new Promise((resolve, reject) => {
                 //Make sure we allocate this in storage first
                 if (coffeeEngine.renderer.materialStorage[src]) {
                     resolve(coffeeEngine.renderer.materialStorage[src]);
                     return;
-                };
+                }
                 coffeeEngine.renderer.shaderStorage[src] = {};
-                
+
                 //Hardcoding this for funsies
                 if (src == "coffee:/default.material") {
                     coffeeEngine.renderer.materialStorage[src] = coffeeEngine.renderer.defaultMaterial;
                     resolve(coffeeEngine.renderer.defaultMaterial);
+                } else {
+                    project
+                        .getFile(src)
+                        .then((file) => {})
+                        .catch(() => {
+                            reject("File doesn't exist");
+                        });
                 }
-                else {
-                    project.getFile(src)
-                    .then((file) => {
-                        
-                    })
-                    .catch(() => {
-                        reject("File doesn't exist");
-                    })
-                }
-            })
-        }
-    }
+            });
+        };
+    };
 })();

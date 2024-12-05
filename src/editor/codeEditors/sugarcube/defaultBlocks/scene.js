@@ -17,9 +17,9 @@
                         arguments: {
                             scene: {
                                 type: sugarcube.ArgumentType.CUSTOM,
-                                customType:"Scene"
-                            }
-                        }
+                                customType: "Scene",
+                            },
+                        },
                     },
                     "---",
                     {
@@ -105,11 +105,11 @@
                 fields: {
                     Scene: {
                         acceptReporters: true,
-                        editor:"file_Editor",
+                        editor: "file_Editor",
 
                         initilize: "file_Init",
-                    }
-                }
+                    },
+                },
             };
         }
 
