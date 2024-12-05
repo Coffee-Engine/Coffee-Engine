@@ -115,7 +115,7 @@
         }
 
         serialize() {
-            return this.contents;
+            return {"/-_-PROTOTYPE-_-/":"matrix4", value: this.contents};
         }
     };
 
@@ -144,6 +144,10 @@
 
         return returned;
     };
+
+    coffeeEngine.matrix4.deserialize = (data) => {
+        return new coffeeEngine.matrix4(data);
+    }
 
     //Code adapted from m4.js at twgl
     //Don't dead open inside

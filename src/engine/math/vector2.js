@@ -58,7 +58,11 @@
         }
 
         serialize() {
-            return this.webGLValue();
+            return {"/-_-PROTOTYPE-_-/":"vector2", value: this.webGLValue()};
         }
     };
+
+    coffeeEngine.vector2.deserialize = (data) => {
+        return new coffeeEngine.vector2(data[0], data[1]);
+    }
 })();
