@@ -13,6 +13,21 @@
             return this.#meshPath;
         }
 
+        #materialPath = "";
+        #material = "";
+
+        set material(value) {
+            this.#materialPath = value;
+            coffeeEngine.renderer.fileToMaterial(value).then((material) => {
+                this.#material = material;
+                console.log(this.#material);
+            });
+        }
+
+        get material() {
+            return this.#materialPath
+        }
+
         #modulatedColorArr = [1,1,1,1];
         #modulatedColor = "#ffffffff";
 
@@ -30,15 +45,16 @@
         draw() {
             super.draw();
 
-            if (this.meshData && this.meshData instanceof coffeeEngine.mesh.class) {
+            if (this.meshData && this.#material && this.meshData instanceof coffeeEngine.mesh.class) {
+                this.#material.use();
                 for (let subMeshIndex = 0; subMeshIndex < this.meshData.pointCount.length; subMeshIndex++) {
                     const data = this.meshData.data[subMeshIndex];
                     const pointCount = this.meshData.pointCount[subMeshIndex];
 
-                    coffeeEngine.renderer.mainShaders.unlit.setBuffers(data);
-                    coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
-                    if (coffeeEngine.renderer.mainShaders.unlit.uniforms.u_colorMod) coffeeEngine.renderer.mainShaders.unlit.uniforms.u_colorMod.value = this.#modulatedColorArr;
-                    coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(pointCount);
+                    this.#material.shader.setBuffers(data);
+                    this.#material.shader.uniforms.u_model.value = this.matrix.webGLValue();
+                    if (this.#material.shader.uniforms.u_colorMod) this.#material.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                    this.#material.shader.drawFromBuffers(pointCount);
                 }
             }
         }

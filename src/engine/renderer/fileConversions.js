@@ -2,9 +2,6 @@
     coffeeEngine.renderer.initilizeFileConversions = () => {
         //* We store what we need in RAM
         coffeeEngine.renderer.fileToTexture = (src) => {
-            //Make sure we allocate this in storage first
-            if (coffeeEngine.renderer.textureStorage[src]) return;
-
             //Then we make our promise
             return new Promise((resolve, reject) => {
                 if (coffeeEngine.renderer.textureStorage[src]) {
@@ -37,12 +34,15 @@
         };
 
         coffeeEngine.renderer.fileToShader = (src) => {
-            //Make sure we allocate this in storage first
-            if (coffeeEngine.renderer.shaderStorage[src]) return;
-            coffeeEngine.renderer.shaderStorage[src] = {};
-
             //Then we make our promise
             return new Promise((resolve,reject) => {
+                //Make sure we allocate this in storage first
+                if (coffeeEngine.renderer.shaderStorage[src]) {
+                    resolve(coffeeEngine.renderer.shaderStorage[src]);
+                    return;
+                };
+                coffeeEngine.renderer.shaderStorage[src] = {};
+
                 const fileReader = new FileReader();
 
                 //When our file loads we get our shader to compile
@@ -60,12 +60,15 @@
         }
 
         coffeeEngine.renderer.fileToMaterial = (src) => {
-            //Make sure we allocate this in storage first
-            if (coffeeEngine.renderer.materialStorage[src]) return;
-            coffeeEngine.renderer.materialStorage[src] = {};
-
             //Then we make our promise
             return new Promise((resolve,reject) => {
+                //Make sure we allocate this in storage first
+                if (coffeeEngine.renderer.materialStorage[src]) {
+                    resolve(coffeeEngine.renderer.materialStorage[src]);
+                    return;
+                };
+                coffeeEngine.renderer.shaderStorage[src] = {};
+                
                 //Hardcoding this for funsies
                 if (src == "coffee:/default.material") {
                     coffeeEngine.renderer.materialStorage[src] = coffeeEngine.renderer.defaultMaterial;

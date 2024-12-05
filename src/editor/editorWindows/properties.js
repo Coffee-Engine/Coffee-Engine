@@ -179,6 +179,7 @@
             },
 
             //Stupid ridiculous never to be used vectors :)
+            //I swear to god if someone finds a use for these
             vec5: (node, property) => {
                 const inputHolder = document.createElement("div");
                 inputHolder.style.display = "inline-grid";
