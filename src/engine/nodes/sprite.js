@@ -40,16 +40,18 @@
         draw() {
             super.draw();
 
-            //Sprite scaling
-            this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
-            coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
-
-            coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
-
-            if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
-            if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-
-            coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
+            if (this.texture) {
+                //Sprite scaling
+                this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
+                coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
+    
+                coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
+    
+                if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
+                if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+    
+                coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
+            }
         }
 
         getProperties() { 
