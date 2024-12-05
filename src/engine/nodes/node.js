@@ -7,7 +7,8 @@
         set parent(value) {
             if (value != null && value.addChild) {
                 // prettier-ignore
-                if (this.parent) this.#parent.removeChild(this);
+                //We add true to remove recursion
+                if (this.parent) this.#parent.removeChild(this,true);
 
                 this.#parent = value;
 
@@ -21,12 +22,14 @@
                 if (!coffeeEngine.runtime.currentScene.inDrawList(this)) {
                     coffeeEngine.runtime.currentScene.addToDrawList(this);
                 }
+                
+                value.addChild(this,true);
             } else if (typeof value == "undefined" || value == null) {
                 console.log("trying to remove child")
                 //* Remove our event listeners.
                 
                 // prettier-ignore
-                if (this.parent) this.#parent.removeChild(this);
+                if (this.parent) this.#parent.removeChild(this,true);
                 
                 // prettier-ignore
                 if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.__storedUpdate)) {
@@ -95,13 +98,15 @@
         addChild(child) {
             if (child == this) return;
             this.children.push(child);
-            child.parent = this;
+            if (!arguments[1]) child.parent = this;
 
             coffeeEngine.runtime.currentScene.castEvent("childAdded", child);
         }
 
         removeChild(child) {
             if (child == this) return;
+
+            if (!arguments[1]) child.parent = null;
             //Splice the child
             if (this.children.includes(child)) {
                 this.children.splice(this.children.indexOf(child),1);

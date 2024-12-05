@@ -99,16 +99,19 @@
             renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
 
-        addChild(child,disruptUpdateEvent) {
+        //Child management
+        addChild(child) {
             if (child == this) return;
             this.children.push(child);
-            child.parent = this;
+            if (!arguments[1]) child.parent = this;
 
-            if (!disruptUpdateEvent) this.castEvent("childAdded", child);
+            this.castEvent("childAdded", child);
         }
 
         removeChild(child) {
             if (child == this) return;
+
+            if (!arguments[1]) child.parent = null;
             //Splice the child
             if (this.children.includes(child)) {
                 this.children.splice(this.children.indexOf(child),1);
@@ -170,6 +173,38 @@
         deserialize(data) {
             //Clear out children from memory and registry
             this.__clearChildren(this);
+
+            //If we have no data assume this is a new scene
+            if (!data) data = {"name": "scene","nodeType": "scene","children": []};
+            
+            //Rename the scene
+            this.name = data.name;
+
+            //Now we cycle through every child
+            const _loopThroughChildren = (parent,physicalParent) => {
+                parent.children.forEach(child => {
+                    //Get our node class
+                    const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
+                    const node = new nodeClass();
+                    node.name = child.name;
+                    node.parent = physicalParent;
+
+                    //Loop through the node's properties
+                    Object.keys(child.properties).forEach(property => {
+                        //Make sure we aren't using a ""PROTOTYPE"" definition
+                        if (property["/-_-PROTOTYPE-_-/"]) {
+
+                        }
+                        else {
+                            node[property] = child.properties[property];
+                        }
+                    })
+
+                    console.log(node);
+                });
+            }
+
+            _loopThroughChildren(data,this);
         }
 
         getProperties() { 
