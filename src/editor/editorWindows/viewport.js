@@ -98,7 +98,7 @@
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
+            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, 0);
             this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 

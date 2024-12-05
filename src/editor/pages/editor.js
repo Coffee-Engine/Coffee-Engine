@@ -690,5 +690,18 @@
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/myBlocks.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/debugger.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
+
+        const fileReader = new FileReader();
+
+        //Add our scene file hook
+        editor.addFileOpenHook("scene", (path) => {
+            project.getFile(path).then((file) => {
+                fileReader.onload = () => {
+                    coffeeEngine.runtime.currentScene.deserialize(JSON.parse(fileReader.result));
+                }
+    
+                fileReader.readAsText(file);
+            });
+        }, this);
     };
 })();
