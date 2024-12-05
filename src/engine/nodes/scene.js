@@ -145,6 +145,10 @@
             };
         }
 
+        deserialize(data) {
+
+        }
+
         getProperties() { 
             return ["Nothing Here"];
             
