@@ -32,7 +32,7 @@
             if (typeof this.events[event] != "object") return;
 
             if (this.events[event].includes(func)) {
-                this.events[event].slice(this.events[event].indexOf(func));
+                this.events[event].splice(this.events[event].indexOf(func),1);
             }
         }
 
@@ -47,7 +47,7 @@
 
         removeFromDrawList(object) {
             if (this.drawList.includes(object)) {
-                this.drawList.slice(this.drawList.indexOf(object));
+                this.drawList.splice(this.drawList.indexOf(object),1);
             }
         }
 
@@ -64,7 +64,7 @@
 
         draw() {
             coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
-            this.drawSky(coffeeEngine.renderer);
+            this.__drawSky(coffeeEngine.renderer);
 
             //Clear the depth here, just so the sky doesn't ever overlap the world.
             coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
@@ -91,7 +91,7 @@
             }
         }
 
-        drawSky(renderer) {
+        __drawSky(renderer) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
             renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
@@ -105,6 +105,28 @@
             child.parent = this;
 
             if (!disruptUpdateEvent) this.castEvent("childAdded", child);
+        }
+
+        removeChild(child) {
+            if (child == this) return;
+            //Splice the child
+            if (this.children.includes(child)) {
+                this.children.splice(this.children.indexOf(child),1);
+            }
+        }
+
+        __clearChildren(node) {
+            node.children.forEach(child => {
+                this.__clearChildren(child);
+            });
+
+            //Check if the node we are clearing is the scene
+            if (node == this) return;
+            //Remove them from events
+            node.parent = null;
+            node.dispose();
+            //Remove the child from memory, we have to rely on the garbage collector because this is 'strict' mode?
+            node = null;
         }
 
         //Scene serialization and stuff
@@ -146,7 +168,8 @@
         }
 
         deserialize(data) {
-
+            //Clear out children from memory and registry
+            this.__clearChildren(this);
         }
 
         getProperties() { 
