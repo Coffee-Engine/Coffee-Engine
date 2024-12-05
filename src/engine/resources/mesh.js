@@ -1,5 +1,4 @@
 (function() {
-    const fileReader = new FileReader();
     coffeeEngine.mesh = {
         class: class {
             data = {};
@@ -7,6 +6,7 @@
         },
 
         fromProjectFile: (src) => {
+            const fileReader = new FileReader();
             return new Promise((resolve,reject) => {
                 //If the mesh exists in RAM, load it
                 if (coffeeEngine.mesh.storage[src]) {
