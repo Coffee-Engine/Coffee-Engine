@@ -20,7 +20,6 @@
             this.#materialPath = value;
             coffeeEngine.renderer.fileToMaterial(value).then((material) => {
                 this.#material = material;
-                console.log(this.#material);
             });
         }
 

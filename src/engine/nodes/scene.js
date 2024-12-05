@@ -119,14 +119,16 @@
         }
 
         __clearChildren(node) {
-            node.children.forEach((child) => {
-                this.__clearChildren(child);
-            });
+            //Remove all children
+            const childCount = node.children.length;
+            for (let index = 0; index < childCount; index++) {
+                this.__clearChildren(node.children[0]);
+            }
 
             //Check if the node we are clearing is the scene
             if (node == this) return;
             //Remove them from events
-            node.parent = null;
+            node.parent.removeChild(node);
             node.dispose();
             //Remove the child from memory, we have to rely on the garbage collector because this is 'strict' mode?
             node = null;

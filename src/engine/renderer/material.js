@@ -5,11 +5,9 @@
         coffeeEngine.renderer.material = class {
             constructor(shader, params) {
                 //Internal shaders
-                console.log(shader);
                 if (shader.startsWith("coffee:/")) {
                     //Remove the coffee predesessor, and get the default shader
                     this.shader = coffeeEngine.renderer.mainShaders[shader.replace("coffee:/", "")];
-                    console.log(shader.replace("coffee:/", ""));
                 } else {
                     //Get it from the path
                     coffeeEngine.renderer.fileToShader(shader).then((shader) => {
