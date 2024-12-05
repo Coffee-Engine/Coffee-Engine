@@ -97,6 +97,7 @@
         //Children addition
         addChild(child) {
             if (child == this) return;
+            if (this.children.includes(child)) return;
             this.children.push(child);
             if (!arguments[1]) child.parent = this;
 

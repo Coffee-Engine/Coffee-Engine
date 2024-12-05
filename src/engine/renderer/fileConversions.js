@@ -4,7 +4,6 @@
         coffeeEngine.renderer.fileToTexture = (src) => {
             //Make sure we allocate this in storage first
             if (coffeeEngine.renderer.textureStorage[src]) return;
-            coffeeEngine.renderer.textureStorage[src] = {};
 
             //Then we make our promise
             return new Promise((resolve, reject) => {
@@ -12,6 +11,8 @@
                     resolve(coffeeEngine.renderer.textureStorage[src]);
                     return;
                 }
+                
+                coffeeEngine.renderer.textureStorage[src] = {};
 
                 project
                     .getFile(src)
@@ -20,7 +21,7 @@
 
                         trackedImage.onload = () => {
                             coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
-                            resolve(coffeeEngine.renderer.daveshade.createTexture(trackedImage));
+                            resolve(coffeeEngine.renderer.textureStorage[src]);
                         };
 
                         trackedImage.onerror = () => {

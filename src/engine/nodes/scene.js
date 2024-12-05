@@ -102,6 +102,7 @@
         //Child management
         addChild(child) {
             if (child == this) return;
+            if (this.children.includes(child)) return;
             this.children.push(child);
             if (!arguments[1]) child.parent = this;
 
@@ -192,15 +193,18 @@
                     //Loop through the node's properties
                     Object.keys(child.properties).forEach(property => {
                         //Make sure we aren't using a ""PROTOTYPE"" definition
-                        if (property["/-_-PROTOTYPE-_-/"]) {
-
+                        const propertyData = child.properties[property];
+                        if (typeof propertyData == "object" && propertyData["/-_-PROTOTYPE-_-/"]) {
+                            if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
+                                coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
+                            }
                         }
                         else {
-                            node[property] = child.properties[property];
+                            node[property] = propertyData;
                         }
-                    })
+                    });
 
-                    console.log(node);
+                    _loopThroughChildren(child,node);
                 });
             }
 

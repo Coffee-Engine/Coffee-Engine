@@ -73,7 +73,10 @@
         }
     };
 
-    coffeeEngine.vector3.deserialize = (data) => {
-        return new coffeeEngine.vector3(data[0], data[1], data[2]);
+    coffeeEngine.vector3.deserialize = (property, data) => {
+        if (!property instanceof coffeeEngine.vector3) property = new coffeeEngine.vector3(0,0,0,0);
+        property.x = Number(data[0]);
+        property.y = Number(data[1]);
+        property.z = Number(data[2]);
     }
 })();
