@@ -63,7 +63,7 @@
                 {name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT},
                 {name: "scale", type: coffeeEngine.PropertyTypes.VEC2},
                 "---",
-                {name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif"},
+                {name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg"},
                 {name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange:true},
                 {name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT},
             ] 
