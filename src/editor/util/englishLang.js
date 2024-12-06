@@ -11,6 +11,7 @@ editor.EnglishLang = {
     "engine.home.loadFile": "Load from File",
     "engine.home.loadFolder": "Load from Folder",
     "engine.home.noRecentProjects": "No Recent Projects",
+    "engine.home.recentProjectsNotAvailable": "Recent projects aren't supported on your browser",
     "engine.home.lastEdited": "Last edited : [TIME]",
     "engine.home.type": "Project Type : [TYPE]",
     "engine.home.type.file": "File",

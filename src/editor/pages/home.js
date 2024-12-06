@@ -62,6 +62,7 @@
                 text-align: left;
 
                 margin-left:4px;
+                align-self: center;
 
                 animation: projectAdded 750ms cubic-bezier(0.65, 0, 0.35, 1) 1;
                 animation-fill-mode: forwards;
@@ -95,6 +96,11 @@
                 border-color: var(--background-3);
                 
                 font-size: large;
+            }
+
+            .recentDisplay {
+                display: flex;
+                flex-direction: column;
             }
 
             @keyframes boot {
@@ -139,7 +145,7 @@
                 <button class="projectInitButton" id="openSettings">${editor.language["engine.home.engineConfig"]}</button>
             </div>
 
-            <div class="fullWidth centerText noCenterElements" style="border-top: 4px solid var(--background-3); background-color: var(--background-2); padding-bottom:4px;" id="recentProjects">
+            <div class="fullWidth centerText noCenterElements recentDisplay" style="border-top: 4px solid var(--background-3); background-color: var(--background-2); padding-bottom:4px;" id="recentProjects">
                 <h1>${editor.language["engine.home.noRecentProjects"]}</h1>
             </div>
         </div>
@@ -251,7 +257,7 @@
             });
         }
         else {
-            recentProjectsPage.innerHTML = `<h2>Recent projects aren't supported on your browser</h2>`;
+            recentProjectsPage.innerHTML = `<h2>${editor.language["engine.home.recentProjectsNotAvailable"]}</h2>`;
         }
     };
 })();
