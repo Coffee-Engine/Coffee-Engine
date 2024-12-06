@@ -102,5 +102,6 @@
         editor.indexedDB.db = event.target.result;
 
         if (!editor.indexedDB.upgraded) editor.indexedDB.getStore("recentprojects",false);
+        editor.boot();
     };
 })();
