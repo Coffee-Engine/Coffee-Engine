@@ -36,19 +36,21 @@
             editor.indexedDB.stores[name] = {
                 object: objectStore,
                 transaction: transaction,
-                setKey: (key, value) => {
+                prepareTransaction: () => {
                     transaction = editor.indexedDB.db.transaction([name], "readwrite");
                     objectStore = transaction.objectStore(name);
+                },
+                
+                setKey: (key, value) => {
+                    editor.indexedDB.stores[name].prepareTransaction();
                     return editor.indexedDB.promisifyRequest(objectStore.add(value, key));
                 },
                 getKey: (key) => {
-                    transaction = editor.indexedDB.db.transaction([name], "readwrite");
-                    objectStore = transaction.objectStore(name);
+                    editor.indexedDB.stores[name].prepareTransaction();
                     return editor.indexedDB.promisifyRequest(objectStore.get(key));
                 },
                 getKeys: () => {
-                    transaction = editor.indexedDB.db.transaction([name], "readwrite");
-                    objectStore = transaction.objectStore(name);
+                    editor.indexedDB.stores[name].prepareTransaction();
                     return editor.indexedDB.promisifyRequest(objectStore.getAllKeys());
                 }
             }
