@@ -10,4 +10,4 @@ coffeeEngine.defaultScenePath = "scenes/default.scene";
 coffeeEngine.projectFormat = "decaf";
 
 coffeeEngine.recentProjectDB = "coffeeProjects";
-coffeeEngine.recentProjectDBVersion = 1;
+coffeeEngine.recentProjectDBVersion = 6;

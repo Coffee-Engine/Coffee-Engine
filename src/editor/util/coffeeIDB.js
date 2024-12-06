@@ -19,13 +19,13 @@
         },
 
         //Creates our storage and the objects within
-        createStore:(name,fromUpgrade) => {
+        getStore:(name,fromUpgrade) => {
             //Set up our store and transaction
             let transaction;
             let objectStore;
 
             if (fromUpgrade) {
-                objectStore = editor.indexedDB.db.createObjectStore(name);
+                if (!editor.indexedDB.db.objectStoreNames.contains(name)) objectStore = editor.indexedDB.db.createObjectStore(name);
             }
             else {
                 transaction = editor.indexedDB.db.transaction([name], "readwrite");
@@ -36,11 +36,14 @@
             editor.indexedDB.stores[name] = {
                 object: objectStore,
                 transaction: transaction,
+
+                //Allows us to initilize a transaction
                 prepareTransaction: () => {
                     transaction = editor.indexedDB.db.transaction([name], "readwrite");
                     objectStore = transaction.objectStore(name);
                 },
-                
+
+                //Our transactions
                 setKey: (key, value) => {
                     editor.indexedDB.stores[name].prepareTransaction();
                     return editor.indexedDB.promisifyRequest(objectStore.add(value, key));
@@ -64,18 +67,21 @@
     coffeeDBRequest.onerror = (event) => {
         console.log("Cannot connect to recent project database");
     };
+
+    coffeeDBRequest.onupgradeneeded = (event) => {
+        console.log(`Upgraded DB version to ${coffeeEngine.recentProjectDBVersion}`);
+        editor.indexedDB.available = true;
+        editor.indexedDB.upgraded = true;
+        editor.indexedDB.db = event.target.result;
+
+        editor.indexedDB.getStore("recentprojects",true);
+    }
     
     coffeeDBRequest.onsuccess = (event) => {
         console.info("Connected to recent database");
         editor.indexedDB.available = true;
         editor.indexedDB.db = event.target.result;
+
+        if (!editor.indexedDB.upgraded) editor.indexedDB.getStore("recentprojects",false);
     };
-
-    coffeeDBRequest.onupgradeneeded = (event) => {
-        console.log(`Upgraded DB version to ${coffeeEngine.recentProjectDBVersion}`);
-        editor.indexedDB.available = true;
-        editor.indexedDB.db = event.target.result;
-
-        editor.indexedDB.createStore("recentprojects",true);
-    }
 })();

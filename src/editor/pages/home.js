@@ -159,6 +159,9 @@
         const loadFile = document.getElementById("loadFile");
         const loadFolder = document.getElementById("loadFolder");
 
+        //Our indexedDB store
+        const store = editor.indexedDB.getStore("recentprojects",false);
+
         //For starting a new project
         newButton.onclick = () => {
             editor.projectSetup.initilize();
@@ -232,8 +235,17 @@
             recentProjectsPage.innerHTML += "<br>";
         };
 
-        addRecentProject({ Name: "Coffee", modified: Date.now(), type: "folder" });
-        addRecentProject({ Name: "Debug", modified: Date.now(), type: "file" });
-        addRecentProject({ Name: "Bugbait", modified: Date.now(), type: "folder" });
+        if (editor.safeties.filePermissions || editor.safeties.folderPerimissions) {
+            store.getKey("projects").then((result) => {
+                if (result) {
+                    addRecentProject({ Name: "Coffee", modified: Date.now(), type: "folder" });
+                    addRecentProject({ Name: "Debug", modified: Date.now(), type: "file" });
+                    addRecentProject({ Name: "Bugbait", modified: Date.now(), type: "folder" });
+                }
+            });
+        }
+        else {
+            recentProjectsPage.innerHTML = `<h2>Recent projects aren't supported on your browser</h2>`;
+        }
     };
 })();
