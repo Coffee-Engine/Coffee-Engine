@@ -168,28 +168,25 @@
                 pitch: 0,
                 zoom: 1,
                 fov: 90,
-                speed: 1
+                speed: 1,
             };
 
             //Our controls and render time
             this.canvas.addEventListener("wheel", (event) => {
                 if (this.orthographicMode) {
-                    this.previewCamera.zoom += (event.deltaY) * 0.0125;
-    
+                    this.previewCamera.zoom += event.deltaY * 0.0125;
+
                     if (this.previewCamera.zoom > 25) {
                         this.previewCamera.zoom = 25;
-                    }
-                    else if (this.previewCamera.zoom < 1) {
+                    } else if (this.previewCamera.zoom < 1) {
                         this.previewCamera.zoom = 1;
                     }
-                }
-                else {
+                } else {
                     if (coffeeEngine.inputs.mouse["2"]) {
-                        this.previewCamera.speed -= (event.deltaY) * 0.0125;
+                        this.previewCamera.speed -= event.deltaY * 0.0125;
                         if (this.previewCamera.speed < 0.25) {
                             this.previewCamera.speed = 0.25;
-                        }
-                        else if (this.previewCamera.speed > 10) {
+                        } else if (this.previewCamera.speed > 10) {
                             this.previewCamera.speed = 10;
                         }
                     }
@@ -198,11 +195,11 @@
 
             setInterval(() => {
                 this.profiler.innerHTML = `
-                FPS:${Math.floor(1/coffeeEngine.runtime.deltaTime)}<br>
+                FPS:${Math.floor(1 / coffeeEngine.runtime.deltaTime)}<br>
                 Delta:${coffeeEngine.runtime.deltaTime}<br>
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
                 Nodes:${coffeeEngine.renderer.nodesRendered}`;
-                
+
                 this.renderLoop();
                 coffeeEngine.runtime.frameStart();
             }, 16);
@@ -253,5 +250,5 @@
         }
     };
 
-    editor.windows.__Serialization.register(editor.windows.viewport, "viewport", {onlyOne:true});
+    editor.windows.__Serialization.register(editor.windows.viewport, "viewport", { onlyOne: true });
 })();

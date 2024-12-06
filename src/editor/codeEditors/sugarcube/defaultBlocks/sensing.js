@@ -324,7 +324,7 @@
                             { text: editor.language["sugarcube.sensing.menu.timespans.second"], value: "getSeconds" },
                             { text: editor.language["sugarcube.sensing.menu.timespans.millisecond"], value: "getMilliseconds" },
                         ],
-                    }
+                    },
                 },
                 fields: {
                     Controller: {
@@ -339,7 +339,7 @@
                         initilize: "controller_Init",
                         manualNodeValue: true,
 
-                        render:"controller_Value_Render",
+                        render: "controller_Value_Render",
                     },
                     Controller_Axis: {
                         acceptReporters: true,
@@ -353,7 +353,7 @@
                         initilize: "controller_Init",
                         manualNodeValue: true,
 
-                        render:"controller_Value_Render",
+                        render: "controller_Value_Render",
                     },
                 },
             };
@@ -420,7 +420,7 @@
                 case "getDecade":
                     //Get the decade
                     return (dateOBJ.getFullYear() / 10) % 10;
-            
+
                 default:
                     if (dateOBJ[timespan]) return dateOBJ[timespan]();
                     return 0;

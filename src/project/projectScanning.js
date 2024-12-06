@@ -44,7 +44,7 @@
                 //why use await? because. I don't want ".then((result) => {})" hell
                 if (!file.dir) {
                     const blob = await file.async("blob");
-                    await project.setFile(fileName, blob);              
+                    await project.setFile(fileName, blob);
                 }
             }
 

@@ -10,14 +10,13 @@
                         b: parseInt(splitHex[3], 16),
                         a: parseInt(splitHex[4], 16),
                     };
-                }
-                else if (Hex.length > 5) {
+                } else if (Hex.length > 5) {
                     const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(Hex);
                     return {
                         r: parseInt(splitHex[1], 16),
                         g: parseInt(splitHex[2], 16),
                         b: parseInt(splitHex[3], 16),
-                        a: 255
+                        a: 255,
                     };
                 } else {
                     const splitHex = /^#?([a-f\d]{1})([a-f\d]{1})([a-f\d]{1})$/i.exec(Hex);
@@ -25,7 +24,7 @@
                         r: parseInt(splitHex[1], 16),
                         g: parseInt(splitHex[2], 16),
                         b: parseInt(splitHex[3], 16),
-                        a: 255
+                        a: 255,
                     };
                 }
             }
@@ -34,7 +33,7 @@
                 r: Math.floor(Hex / 65536),
                 g: Math.floor(Hex / 256) % 256,
                 b: Hex % 256,
-                a: 255
+                a: 255,
             };
         },
 
@@ -47,7 +46,7 @@
         HexToVec4: (Hex) => {
             const split = coffeeEngine.ColorMath.HexToRGB(Hex);
 
-            return new coffeeEngine.vector3(split.r, split.g, split.b, (split.a === undefined) ? 1 : split.a);
+            return new coffeeEngine.vector3(split.r, split.g, split.b, split.a === undefined ? 1 : split.a);
         },
 
         RGBtoHex: (RGB) => {
@@ -63,7 +62,7 @@
             if (RGB.a) {
                 let hexA = Math.floor(RGB.a).toString(16);
                 if (hexA.length == 1) hexA = "0" + hexA;
-                
+
                 return `#${hexR}${hexG}${hexB}${hexA}`;
             }
 
@@ -175,7 +174,7 @@
                 h: H,
                 s: S,
                 v: CMax,
-                a: RGB.a
+                a: RGB.a,
             };
         },
 

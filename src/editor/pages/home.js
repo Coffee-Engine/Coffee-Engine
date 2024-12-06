@@ -153,7 +153,7 @@
 
         document.getElementById("openCredits").onclick = () => {
             editor.creditsPage.initilize();
-        }
+        };
 
         const newButton = document.getElementById("newProject");
         const loadFile = document.getElementById("loadFile");
@@ -177,11 +177,11 @@
 
                 fileInput.click();
             } else {
-
-                const accept = {}
+                const accept = {};
                 accept[`application/${coffeeEngine.projectFormat}`] = [`.${coffeeEngine.projectFormat}`];
 
-                window.showOpenFilePicker({
+                window
+                    .showOpenFilePicker({
                         types: [
                             {
                                 description: "Coffee Engine Project",
@@ -222,7 +222,7 @@
 
             holder.innerHTML = `
             <h2 style="margin-bottom:2px;">${projectJSON.Name || "Project"}</h2>
-            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]", projectJSON.modified || Date.now())} | ${editor.language["engine.home.type"].replace("[TYPE]",editor.language[`engine.home.type.${projectJSON.type || "file"}`])}</p>
+            <p style="margin-top:2px;">${editor.language["engine.home.lastEdited"].replace("[TIME]", projectJSON.modified || Date.now())} | ${editor.language["engine.home.type"].replace("[TYPE]", editor.language[`engine.home.type.${projectJSON.type || "file"}`])}</p>
             `;
 
             holder.style.setProperty("--childID", recentProjectsPage.children.length);
@@ -232,8 +232,8 @@
             recentProjectsPage.innerHTML += "<br>";
         };
 
-        addRecentProject({Name:"Coffee", modified:Date.now(), type:"folder"});
-        addRecentProject({Name:"Debug", modified:Date.now(), type:"file"});
-        addRecentProject({Name:"Bugbait", modified:Date.now(), type:"folder"});
+        addRecentProject({ Name: "Coffee", modified: Date.now(), type: "folder" });
+        addRecentProject({ Name: "Debug", modified: Date.now(), type: "file" });
+        addRecentProject({ Name: "Bugbait", modified: Date.now(), type: "folder" });
     };
 })();

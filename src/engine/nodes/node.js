@@ -22,15 +22,15 @@
                 if (!coffeeEngine.runtime.currentScene.inDrawList(this)) {
                     coffeeEngine.runtime.currentScene.addToDrawList(this);
                 }
-                
-                value.addChild(this,true);
+
+                value.addChild(this, true);
             } else if (typeof value == "undefined" || value == null) {
-                console.log("trying to remove child")
+                console.log("trying to remove child");
                 //* Remove our event listeners.
-                
+
                 // prettier-ignore
                 if (this.parent) this.#parent.removeChild(this,true);
-                
+
                 // prettier-ignore
                 if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.__storedUpdate)) {
                     coffeeEngine.runtime.currentScene.removeEventListener("update", this.__storedUpdate);
@@ -42,7 +42,7 @@
                 if (coffeeEngine.runtime.currentScene.inDrawList(this)) {
                     coffeeEngine.runtime.currentScene.removeFromDrawList(this);
                 }
-                
+
                 this.#parent = null;
             } else {
                 console.error(`cannot set parent to ${String(value)}`);
@@ -110,15 +110,19 @@
             if (!arguments[1]) child.parent = null;
             //Splice the child
             if (this.children.includes(child)) {
-                this.children.splice(this.children.indexOf(child),1);
+                this.children.splice(this.children.indexOf(child), 1);
             }
         }
 
         //Determines how the object will be sorted
-        sortValue() { return 0; }
+        sortValue() {
+            return 0;
+        }
 
         //Determines what properties are serialized and added;
-        getProperties() { return [{name: "name", type: coffeeEngine.PropertyTypes.NAME}] };
+        getProperties() {
+            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }];
+        }
     }
 
     coffeeEngine.registerNode(node, "Node");

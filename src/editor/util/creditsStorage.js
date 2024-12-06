@@ -1,5 +1,5 @@
 //Doing this because I am not brave enough to give out a public octokit token lol
-(function() {
+(function () {
     editor.credits = {
         engineContributors: [
             {
@@ -13,7 +13,7 @@
                 link: "https://github.com/0hStormy",
                 image: "https://avatars.githubusercontent.com/u/80485413?v=4",
                 comment: "Linux Testing",
-            }
+            },
         ],
 
         translators: [],
@@ -23,7 +23,7 @@
                 name: "hammouda101010",
                 link: "https://github.com/hammouda101010",
                 image: "https://avatars.githubusercontent.com/u/114447430?v=4",
-            }
-        ]
-    }
+            },
+        ],
+    };
 })();

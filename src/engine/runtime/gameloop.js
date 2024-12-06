@@ -23,5 +23,5 @@
         coffeeEngine.inputs.mouse.movementX = 0;
         coffeeEngine.inputs.mouse.movementY = 0;
         coffeeEngine.renderer.nodesRendered = 0;
-    }
+    };
 })();

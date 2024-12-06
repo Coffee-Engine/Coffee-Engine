@@ -25,7 +25,7 @@
 
             this.inheritence.innerHTML = `${editor.language["editor.window.createScript.inherits"]} : ${editor.language["engine.nodeNames.Node"]}`;
             this.inheritence.onclick = () => {
-                const nodeMaker = new editor.windows.nodeMaker(400,200);
+                const nodeMaker = new editor.windows.nodeMaker(400, 200);
 
                 nodeMaker.__moveToTop();
 
@@ -36,14 +36,14 @@
                     sugarcubeInheritence = nodeName;
                     this.inheritence.innerHTML = `${editor.language["editor.window.createScript.inherits"]} : ${editor.language[`engine.nodeNames.${nodeName}`]}`;
                     nodeMaker._dispose();
-                }
-            }
+                };
+            };
 
             //Populate the type dropdown
-            programmingLanguages.forEach(languageDef => {
+            programmingLanguages.forEach((languageDef) => {
                 const optionElement = document.createElement("option");
 
-                optionElement.innerHTML = `${(languageDef.hasTranslation) ? editor.language[`editor.window.${languageDef.id}`] : languageDef.id} (${languageDef.fileExtension})`;
+                optionElement.innerHTML = `${languageDef.hasTranslation ? editor.language[`editor.window.${languageDef.id}`] : languageDef.id} (${languageDef.fileExtension})`;
                 optionElement.value = languageDef.fileExtension;
 
                 this.type.appendChild(optionElement);
@@ -56,8 +56,7 @@
                     container.style.gridTemplateRows = "50px 50px 50px 50px";
                     this.inheritence.style.visibility = "visible";
                     this.inheritence.style.pointerEvents = "all";
-                }
-                else {
+                } else {
                     container.style.gridTemplateRows = "66px 66px 0px 66px";
                     this.inheritence.style.visibility = "hidden";
                     this.inheritence.style.pointerEvents = "none";

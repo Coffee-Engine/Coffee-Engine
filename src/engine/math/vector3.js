@@ -3,9 +3,27 @@
         #x = 0;
         #y = 0;
         #z = 0;
-        set x(value) {this.#x = value; this.setter();} get x() {return this.#x}
-        set y(value) {this.#y = value; this.setter();} get y() {return this.#y}
-        set z(value) {this.#z = value; this.setter();} get z() {return this.#z}
+        set x(value) {
+            this.#x = value;
+            this.setter();
+        }
+        get x() {
+            return this.#x;
+        }
+        set y(value) {
+            this.#y = value;
+            this.setter();
+        }
+        get y() {
+            return this.#y;
+        }
+        set z(value) {
+            this.#z = value;
+            this.setter();
+        }
+        get z() {
+            return this.#z;
+        }
 
         constructor(x, y, z) {
             this.x = x;
@@ -69,14 +87,14 @@
         }
 
         serialize() {
-            return {"/-_-PROTOTYPE-_-/":"vector3", value: this.webGLValue()};
+            return { "/-_-PROTOTYPE-_-/": "vector3", value: this.webGLValue() };
         }
     };
 
     coffeeEngine.vector3.deserialize = (property, data) => {
-        if (!property instanceof coffeeEngine.vector3) property = new coffeeEngine.vector3(0,0,0,0);
+        if ((!property) instanceof coffeeEngine.vector3) property = new coffeeEngine.vector3(0, 0, 0, 0);
         property.x = Number(data[0]);
         property.y = Number(data[1]);
         property.z = Number(data[2]);
-    }
+    };
 })();

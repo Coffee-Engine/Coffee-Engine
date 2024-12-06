@@ -32,9 +32,9 @@
                         arguments: {
                             image: {
                                 type: sugarcube.ArgumentType.CUSTOM,
-                                customType:"Image"
-                            }
-                        }
+                                customType: "Image",
+                            },
+                        },
                     },
                     {
                         opcode: "setTint",
@@ -44,10 +44,10 @@
                         arguments: {
                             tint: {
                                 type: sugarcube.ArgumentType.COLOR,
-                                defaultValue:"#0000ff",
-                            }
-                        }
-                    }
+                                defaultValue: "#0000ff",
+                            },
+                        },
+                    },
                 ],
                 fields: {
                     Color: {
@@ -64,10 +64,10 @@
                     },
                     Image: {
                         acceptReporters: true,
-                        editor:"file_Editor",
+                        editor: "file_Editor",
 
                         initilize: "file_Init",
-                    }
+                    },
                 },
             };
         }

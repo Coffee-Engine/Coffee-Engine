@@ -20,4 +20,4 @@ coffeeEngine.PropertyTypes = {
 
     ARRAY: "array",
     OBJECT: "object",
-}
+};

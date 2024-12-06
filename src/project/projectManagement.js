@@ -95,7 +95,7 @@
                         //check to see if its a file system handle. I want a good multi-method file grabber, not a rubbish one.
                         if (fold[split[id]] instanceof FileSystemFileHandle) {
                             //If we really want this.
-                            if (returnDefinition) resolve({folder: fold, name: split[id], file: fold[split[id]]});
+                            if (returnDefinition) resolve({ folder: fold, name: split[id], file: fold[split[id]] });
 
                             //if we don't return the handle then do this;
                             fold[split[id]]
@@ -107,7 +107,7 @@
                         } else {
                             if (!fold[split[id]]) reject(`File ${fold[split[id]]} does not exist`);
 
-                            if (returnDefinition) resolve({folder: fold, name: split[id], file: fold[split[id]]});
+                            if (returnDefinition) resolve({ folder: fold, name: split[id], file: fold[split[id]] });
                             resolve(fold[split[id]]);
                         }
                     }
@@ -141,23 +141,22 @@
             project.getFile(path, true).then((fileDef) => {
                 //Folders
                 if (fileDef.file[project.directoryHandleIdentifier]) {
-                    fileDef.file[project.directoryHandleIdentifier].remove({recursive:true}).then(() => {
+                    fileDef.file[project.directoryHandleIdentifier].remove({ recursive: true }).then(() => {
                         delete fileDef.folder[fileDef.name];
                         coffeeEngine.sendEvent("fileSystemUpdate", { type: "FILE_ADDED", src: path });
                     });
                 }
                 //Files
                 else if (fileDef.file instanceof FileSystemFileHandle) {
-                    fileDef.file.remove({recursive:true}).then(() => {
+                    fileDef.file.remove({ recursive: true }).then(() => {
                         delete fileDef.folder[fileDef.name];
                         coffeeEngine.sendEvent("fileSystemUpdate", { type: "FILE_ADDED", src: path });
                     });
-                }
-                else {
+                } else {
                     delete fileDef.folder[fileDef.name];
                     coffeeEngine.sendEvent("fileSystemUpdate", { type: "FILE_ADDED", src: path });
                 }
-            })
-        }
+            });
+        },
     };
 })();

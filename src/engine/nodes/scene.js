@@ -32,7 +32,7 @@
             if (typeof this.events[event] != "object") return;
 
             if (this.events[event].includes(func)) {
-                this.events[event].splice(this.events[event].indexOf(func),1);
+                this.events[event].splice(this.events[event].indexOf(func), 1);
             }
         }
 
@@ -47,7 +47,7 @@
 
         removeFromDrawList(object) {
             if (this.drawList.includes(object)) {
-                this.drawList.splice(this.drawList.indexOf(object),1);
+                this.drawList.splice(this.drawList.indexOf(object), 1);
             }
         }
 
@@ -55,7 +55,7 @@
         castEvent(event, data) {
             this.events[event].forEach((eventFunc) => {
                 eventFunc(data);
-            })
+            });
         }
 
         update(deltaTime) {
@@ -76,13 +76,12 @@
                 const node2Sort = node2.sortValue();
                 if (node1Sort < node2Sort) {
                     return -1;
-                }
-                else if (node1Sort > node2Sort) {
+                } else if (node1Sort > node2Sort) {
                     return 1;
                 }
 
                 return 0;
-            })
+            });
 
             //Now lets draw the objects
             for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
@@ -115,19 +114,21 @@
             if (!arguments[1]) child.parent = null;
             //Splice the child
             if (this.children.includes(child)) {
-                this.children.splice(this.children.indexOf(child),1);
+                this.children.splice(this.children.indexOf(child), 1);
             }
         }
 
         __clearChildren(node) {
-            node.children.forEach(child => {
-                this.__clearChildren(child);
-            });
+            //Remove all children
+            const childCount = node.children.length;
+            for (let index = 0; index < childCount; index++) {
+                this.__clearChildren(node.children[0]);
+            }
 
             //Check if the node we are clearing is the scene
             if (node == this) return;
             //Remove them from events
-            node.parent = null;
+            node.parent.removeChild(node);
             node.dispose();
             //Remove the child from memory, we have to rely on the garbage collector because this is 'strict' mode?
             node = null;
@@ -138,11 +139,11 @@
             //We want to recursively go downwards and get the properties and types of each child
             const goDown = (children) => {
                 const returnedObject = [];
-                children.forEach(child => {
+                children.forEach((child) => {
                     const properties = {};
 
                     //Loop through child properties and validate/add each one
-                    child.getProperties().forEach(property => {
+                    child.getProperties().forEach((property) => {
                         //Make sure its a property and not a label
                         if (typeof property != "object") return;
 
@@ -150,24 +151,24 @@
                         if (!child[property.name]) return;
                         if (child[property.name].serialize) properties[property.name] = child[property.name].serialize();
                         else properties[property.name] = child[property.name];
-                    })
+                    });
 
                     //Push the child to the returned object array
                     returnedObject.push({
-                        name:child.name,
-                        nodeType:coffeeEngine.getNodeName(child),
-                        children:goDown(child.children),
-                        properties:properties
+                        name: child.name,
+                        nodeType: coffeeEngine.getNodeName(child),
+                        children: goDown(child.children),
+                        properties: properties,
                     });
                 });
                 return returnedObject;
-            }
-        
+            };
+
             //Once we got all that juicy data we return our array
             return {
-                name:this.name,
-                nodeType:"scene",
-                children:goDown(coffeeEngine.runtime.currentScene.children)
+                name: this.name,
+                nodeType: "scene",
+                children: goDown(coffeeEngine.runtime.currentScene.children),
             };
         }
 
@@ -176,14 +177,14 @@
             this.__clearChildren(this);
 
             //If we have no data assume this is a new scene
-            if (!data) data = {"name": "scene","nodeType": "scene","children": []};
-            
+            if (!data) data = { name: "scene", nodeType: "scene", children: [] };
+
             //Rename the scene
             this.name = data.name;
 
             //Now we cycle through every child
-            const _loopThroughChildren = (parent,physicalParent) => {
-                parent.children.forEach(child => {
+            const _loopThroughChildren = (parent, physicalParent) => {
+                parent.children.forEach((child) => {
                     //Get our node class
                     const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
                     const node = new nodeClass();
@@ -191,29 +192,28 @@
                     node.parent = physicalParent;
 
                     //Loop through the node's properties
-                    Object.keys(child.properties).forEach(property => {
+                    Object.keys(child.properties).forEach((property) => {
                         //Make sure we aren't using a ""PROTOTYPE"" definition
                         const propertyData = child.properties[property];
                         if (typeof propertyData == "object" && propertyData["/-_-PROTOTYPE-_-/"]) {
                             if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
                                 coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
                             }
-                        }
-                        else {
+                        } else {
                             node[property] = propertyData;
                         }
                     });
 
-                    _loopThroughChildren(child,node);
+                    _loopThroughChildren(child, node);
                 });
-            }
+            };
 
-            _loopThroughChildren(data,this);
+            _loopThroughChildren(data, this);
         }
 
-        getProperties() { 
+        getProperties() {
             return ["Nothing Here"];
-            
+
             //Input Testing stuff
             /*
             return [
@@ -234,6 +234,6 @@
                 {name: "OBJECT", type: coffeeEngine.PropertyTypes.OBJECT},
             ]
             */
-        };
+        }
     };
 })();

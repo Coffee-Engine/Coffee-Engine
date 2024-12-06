@@ -276,9 +276,9 @@
                     direction: {
                         acceptReporters: true,
                         items: [
-                            {text:editor.language["sugarcube.motion.yaw"], value:"yaw"}, 
-                            {text:editor.language["sugarcube.motion.pitch"], value:"pitch"}, 
-                            {text:editor.language["sugarcube.motion.roll"], value:"roll"}
+                            { text: editor.language["sugarcube.motion.yaw"], value: "yaw" },
+                            { text: editor.language["sugarcube.motion.pitch"], value: "pitch" },
+                            { text: editor.language["sugarcube.motion.roll"], value: "roll" },
                         ],
                     },
                 },

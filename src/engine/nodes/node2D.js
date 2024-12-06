@@ -27,18 +27,13 @@
             this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
         }
 
-        getProperties() { 
-            return [
-                {name: "name", type: coffeeEngine.PropertyTypes.NAME},
-                "---",
-                {name: "position", type: coffeeEngine.PropertyTypes.VEC2},
-                {name: "layer", type: coffeeEngine.PropertyTypes.INT},
-                {name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT},
-                {name: "scale", type: coffeeEngine.PropertyTypes.VEC2},
-            ] 
-        };
+        getProperties() {
+            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, { name: "layer", type: coffeeEngine.PropertyTypes.INT }, { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }];
+        }
 
-        sortValue() { return this.position.y; }
+        sortValue() {
+            return this.position.y;
+        }
     }
 
     coffeeEngine.registerNode(node, "Node2D", "Node");

@@ -94,7 +94,7 @@ window.DaveShade = {};
 
         daveShadeInstance.GL = CANVAS.getContext("webgl2", SETTINGS);
         daveShadeInstance.GL_TYPE = "webgl2";
-        daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL
+        daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL;
         if (!daveShadeInstance.GL) {
             daveShadeInstance.GL = CANVAS.getContext("webgl", SETTINGS);
             daveShadeInstance.GL_TYPE = "webgl";
@@ -348,7 +348,7 @@ window.DaveShade = {};
                 daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, width, height, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
             }
 
-            return {texture:texture, width:width, height:height};
+            return { texture: texture, width: width, height: height };
         };
 
         daveShadeInstance.dispose = () => {
@@ -366,7 +366,7 @@ window.DaveShade = {};
         daveShadeInstance.clear = (bufferBits) => {
             daveShadeInstance.triCount = 0;
             daveShadeInstance.GL.clear(bufferBits);
-        }
+        };
 
         return daveShadeInstance;
     };

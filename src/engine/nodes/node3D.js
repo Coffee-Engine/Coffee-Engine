@@ -16,9 +16,15 @@
 
         constructor() {
             super();
-            this.position.setter = () => {this.updateMatrix();};
-            this.rotation.setter = () => {this.updateMatrix();};
-            this.scale.setter = () => {this.updateMatrix();};
+            this.position.setter = () => {
+                this.updateMatrix();
+            };
+            this.rotation.setter = () => {
+                this.updateMatrix();
+            };
+            this.scale.setter = () => {
+                this.updateMatrix();
+            };
             this.updateMatrix();
         }
 
@@ -30,18 +36,14 @@
             super.draw();
         }
 
-        getProperties() { 
-            return [
-                {name: "name", type: coffeeEngine.PropertyTypes.NAME},
-                "---",
-                {name: "position", type: coffeeEngine.PropertyTypes.VEC3},
-                {name: "rotation", type: coffeeEngine.PropertyTypes.VEC3},
-                {name: "scale", type: coffeeEngine.PropertyTypes.VEC3},
-            ] 
-        };
+        getProperties() {
+            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 }];
+        }
 
         //Oh yeah mr krabs
-        sortValue() { return this.position.add(coffeeEngine.renderer.cameraData.position).length(); }
+        sortValue() {
+            return this.position.add(coffeeEngine.renderer.cameraData.position).length();
+        }
     }
 
     coffeeEngine.registerNode(node, "Node3D", "Node");

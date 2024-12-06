@@ -362,45 +362,43 @@
                 window.dockedColumn = column;
                 if (rowOveride !== undefined && editor.dock.element.children[column].children[rowOveride]) {
                     console.log(adjancency);
-                    editor.dock.element.children[column].children[rowOveride].insertAdjacentElement(adjancency,window.windowDiv);
-                }
-                else {
+                    editor.dock.element.children[column].children[rowOveride].insertAdjacentElement(adjancency, window.windowDiv);
+                } else {
                     editor.dock.element.children[column].appendChild(window.windowDiv);
                 }
             },
 
-            dockWindow: (window,column,row,newColumn,columnBefore,useRows) => {
+            dockWindow: (window, column, row, newColumn, columnBefore, useRows) => {
                 let adjancency = "beforebegin";
 
                 if (newColumn) {
                     //Differentiate between rows and columns
                     if (useRows) {
                         //Resize the columns
-                        const halfSize = editor.layout.layout[column].contents[row].size/2
-                        editor.layout.layout[column].contents.splice(columnBefore ? row : row + 1,0,{size:halfSize, content:window});
+                        const halfSize = editor.layout.layout[column].contents[row].size / 2;
+                        editor.layout.layout[column].contents.splice(columnBefore ? row : row + 1, 0, { size: halfSize, content: window });
                         editor.layout.layout[column].contents[row + (columnBefore ? 1 : 0)].size = halfSize;
 
                         //row = columnBefore ? row : row + 1;
                         adjancency = columnBefore ? "beforebegin" : "afterend";
-                    }
-                    else {
+                    } else {
                         //Resize the columns
-                        const halfSize = editor.layout.layout[column].size/2
-                        editor.layout.layout.splice(columnBefore ? column : column + 1,0,{size:halfSize, contents:[{size:100,content:window}]});
+                        const halfSize = editor.layout.layout[column].size / 2;
+                        editor.layout.layout.splice(columnBefore ? column : column + 1, 0, { size: halfSize, contents: [{ size: 100, content: window }] });
                         editor.layout.layout[column + (columnBefore ? 1 : 0)].size = halfSize;
-    
+
                         const subDock = document.createElement("div");
                         subDock.style.display = "grid";
                         subDock.style.gridTemplateRows = "var(--dockGridVertical)";
-    
+
                         editor.dock.element.children[column].insertAdjacentElement(columnBefore ? "beforebegin" : "afterend", subDock);
 
                         //MOVE COLUMNS THAT NEED TO BE MOVED!
                         for (let columnPush = column + 1; columnPush < editor.layout.layout.length; columnPush++) {
                             const column = editor.layout.layout[columnPush];
-                            column.contents.forEach(window => {
+                            column.contents.forEach((window) => {
                                 window.content.dockedColumn = columnPush;
-                            })
+                            });
                         }
 
                         column = columnBefore ? column : column + 1;
@@ -442,7 +440,7 @@
                 editor.dock.overlayElement.innerHTML = "";
             },
 
-            dockWindowUI: (targetWindow,callback) => {
+            dockWindowUI: (targetWindow, callback) => {
                 let percentages = "";
 
                 //Make our overlay visible
@@ -462,10 +460,10 @@
                     leftPusher.style.opacity = "50%";
 
                     leftPusher.onclick = () => {
-                        editor.dock.dockWindow(targetWindow,ID,0,true,true);
+                        editor.dock.dockWindow(targetWindow, ID, 0, true, true);
                         editor.dock.closeDockWindowUI();
                         callback();
-                    }
+                    };
 
                     let rightPusher = document.createElement("div");
                     rightPusher.style.margin = "8px";
@@ -474,11 +472,11 @@
                     rightPusher.style.opacity = "50%";
 
                     rightPusher.onclick = () => {
-                        editor.dock.dockWindow(targetWindow,ID,0,true,false);
+                        editor.dock.dockWindow(targetWindow, ID, 0, true, false);
                         editor.dock.closeDockWindowUI();
                         callback();
-                    }
-                    
+                    };
+
                     //Get the "Sub Dock" which is the vertical part of the dock
                     let subDock = document.createElement("div");
                     subDock.style.display = "grid";
@@ -491,7 +489,7 @@
                     let rowPercentage = "";
                     for (let rowID = 0; rowID < editor.layout.layout[ID].contents.length; rowID++) {
                         const window = editor.layout.layout[ID].contents[rowID];
-                        
+
                         rowPercentage += `1.5% ${window.size - 3}% 1.5% `;
 
                         //Our up and down pushers these push elements up and down
@@ -502,10 +500,10 @@
                         topPusher.style.opacity = "50%";
 
                         topPusher.onclick = () => {
-                            editor.dock.dockWindow(targetWindow,ID,rowID,true,true,true);
+                            editor.dock.dockWindow(targetWindow, ID, rowID, true, true, true);
                             editor.dock.closeDockWindowUI();
                             callback();
-                        }
+                        };
 
                         const bottomPusher = document.createElement("div");
                         bottomPusher.style.marginLeft = "8px";
@@ -514,10 +512,10 @@
                         bottomPusher.style.opacity = "50%";
 
                         bottomPusher.onclick = () => {
-                            editor.dock.dockWindow(targetWindow,ID,rowID,true,false,true);
+                            editor.dock.dockWindow(targetWindow, ID, rowID, true, false, true);
                             editor.dock.closeDockWindowUI();
                             callback();
-                        }
+                        };
 
                         const row = document.createElement("div");
                         row.style.margin = "8px";
@@ -565,12 +563,11 @@
                     if (!windowType) {
                         overrideName = content;
                         windowType = editor.windows.base;
-                    }
-                    else {
+                    } else {
                         windowType = windowType;
                     }
 
-                    const newWindow = new (windowType)();
+                    const newWindow = new windowType();
                     if (overrideName) {
                         newWindow.title = overrideName;
                     }
@@ -634,25 +631,25 @@
             const windows = [];
             const serializationObject = editor.windows.__Serialization;
 
-            Object.keys(serializationObject.all).forEach(windowName => {
+            Object.keys(serializationObject.all).forEach((windowName) => {
                 if (windowName == "baseWindow") return;
 
                 //If we only allow one window
                 if (serializationObject.data[windowName].onlyOne && editor.windows.existing[windowName]) {
                     if (editor.windows.existing[windowName].length > 0) return;
-                };
+                }
 
                 //Add it to the list
-                windows.push({text: editor.language[`editor.window.${windowName}`] || windowName, value: windowName});
-            })
+                windows.push({ text: editor.language[`editor.window.${windowName}`] || windowName, value: windowName });
+            });
 
             return windows;
-        }
+        };
 
         editor.dropdownBar.window.onchange = (value) => {
             if (!editor.windows.__Serialization.all[value]) return;
 
-            const createdWindow = new (editor.windows.__Serialization.all[value])(400,400);
+            const createdWindow = new editor.windows.__Serialization.all[value](400, 400);
             createdWindow.__moveToTop();
 
             createdWindow.x = window.innerWidth / 2 - 200;
@@ -666,13 +663,13 @@
                 case "save":
                     //Its actually that easy
                     project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
-                    console.log(editor.language["editor.notification.saveScene"].replace("[path]",coffeeEngine.runtime.currentScene.scenePath));
+                    console.log(editor.language["editor.notification.saveScene"].replace("[path]", coffeeEngine.runtime.currentScene.scenePath));
                     break;
-            
+
                 default:
                     break;
             }
-        }
+        };
 
         //Load sugarcube blocks
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");
@@ -694,14 +691,18 @@
         const fileReader = new FileReader();
 
         //Add our scene file hook
-        editor.addFileOpenHook("scene", (path) => {
-            project.getFile(path).then((file) => {
-                fileReader.onload = () => {
-                    coffeeEngine.runtime.currentScene.deserialize(JSON.parse(fileReader.result));
-                }
-    
-                fileReader.readAsText(file);
-            });
-        }, this);
+        editor.addFileOpenHook(
+            "scene",
+            (path) => {
+                project.getFile(path).then((file) => {
+                    fileReader.onload = () => {
+                        coffeeEngine.runtime.currentScene.deserialize(JSON.parse(fileReader.result));
+                    };
+
+                    fileReader.readAsText(file);
+                });
+            },
+            this
+        );
     };
 })();

@@ -73,7 +73,7 @@ button:disabled {
     border-color: var(--background-4);
 }
 
-blockquote>p {
+blockquote > p {
     border-color: var(--background-1);
     padding: 4px;
     border-left-width: 4px;
