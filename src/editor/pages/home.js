@@ -230,17 +230,23 @@
 
             holder.style.setProperty("--childID", recentProjectsPage.children.length);
 
+            holder.onclick = () => {
+                console.log(projectJSON);
+                project.load(projectJSON.type, projectJSON.handle);
+            }
+
             recentProjectsPage.appendChild(holder);
 
-            recentProjectsPage.innerHTML += "<br>";
+            //recentProjectsPage.innerHTML += "<br>";
         };
 
+        //Load our recent projects if need be
         if (editor.safeties.filePermissions || editor.safeties.folderPerimissions) {
             store.getKey("projects").then((result) => {
                 if (result) {
-                    addRecentProject({ Name: "Coffee", modified: Date.now(), type: "folder" });
-                    addRecentProject({ Name: "Debug", modified: Date.now(), type: "file" });
-                    addRecentProject({ Name: "Bugbait", modified: Date.now(), type: "folder" });
+                    result.forEach(project => {
+                        addRecentProject(project);
+                    });
                 }
             });
         }

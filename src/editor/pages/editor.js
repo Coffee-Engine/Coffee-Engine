@@ -610,9 +610,55 @@
             scene: document.getElementById("coffeeEngineSceneDropdown"),
         };
 
+        //Our indexedDB store
+        const store = editor.indexedDB.getStore("recentprojects",false);
+
+        editor.updateProjectDB = () => {
+            project.getFile("project.json").then(result => {
+                const fileReader = new FileReader();
+
+                //Load our projectJSON
+                fileReader.onload = () => {
+                    //Get our declaration and JSON
+                    const projectJSON = JSON.parse(fileReader.result);
+                    const projectDeclaration = {
+                        handle: (project.isFolder) ? project.directoryHandle : project.fileHandle,
+                        type: (project.isFolder) ? "folder" : "file",
+                        modified: Date.now(),
+                        Name:projectJSON.name,
+                        projectJSON:fileReader.result
+                    };
+
+                    //Then store it, detecting if the store exists or not
+                    store.getKey("projects").then(result => {
+                        if (result) {
+                            //Delete any copies of this project
+                            const existing = result.find(item => {return item.projectJSON == fileReader.result;});
+                            if (existing) {
+                                result.splice(result.indexOf(existing),1);
+                            }
+
+                            //Add our project and update our key
+                            result.unshift(projectDeclaration);
+                            store.setKey("projects", result);
+                        }
+                        else {
+                            //Initilize our key
+                            store.setKey("projects", [projectDeclaration]);
+                        }
+                    })
+                }
+
+                fileReader.readAsText(result);
+            })
+        }
+
         editor.dropdownBar.file.onchange = (value) => {
             switch (value) {
                 case "save":
+                    if (editor.safeties.filePermissions) {
+                        editor.updateProjectDB();                        
+                    }
                     project.decaf.save();
                     break;
 

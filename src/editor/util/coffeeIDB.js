@@ -12,7 +12,8 @@
                     resolve(request.result);
                 };
 
-                request.onerror = () => {
+                request.onerror = (event) => {
+                    console.log(event);
                     reject("Request failed");
                 }
             })
@@ -45,8 +46,26 @@
 
                 //Our transactions
                 setKey: (key, value) => {
-                    editor.indexedDB.stores[name].prepareTransaction();
-                    return editor.indexedDB.promisifyRequest(objectStore.add(value, key));
+                    return new Promise((resolve, reject) => {
+                        editor.indexedDB.stores[name].deleteKey(key).then(() => {
+                            editor.indexedDB.stores[name].prepareTransaction();
+                            editor.indexedDB.promisifyRequest(objectStore.add(value, key)).then(resolve).catch(reject);
+                        });
+                    });
+                },
+                deleteKey: (key, value) => {
+                    //Pain
+                    return new Promise((resolve, reject) => {
+                        editor.indexedDB.stores[name].getKey(key).then(result => {
+                            if (result) {
+                                editor.indexedDB.stores[name].prepareTransaction();
+                                editor.indexedDB.promisifyRequest(objectStore.delete(key)).then(resolve).catch(reject);
+                            }
+                            else {
+                                resolve();
+                            }
+                        });
+                    })
                 },
                 getKey: (key) => {
                     editor.indexedDB.stores[name].prepareTransaction();
