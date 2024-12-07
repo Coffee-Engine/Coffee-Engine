@@ -13,7 +13,11 @@
         refreshListing(myself, read, type) {
             myself.Content.innerHTML = "";
 
-            let properties = read.getProperties;
+            let properties = read;
+            //Allow for the property panel on files to refresh the parental listing
+            let refreshListing = () => {
+                myself.refreshListing(myself,read,type);
+            }
 
             //If we are a file display our name in the property panel
             //If our file has an editor get the property
@@ -27,7 +31,7 @@
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    properties = editor.filePropertyEditors[extension];
+                    properties = editor.filePropertyEditors[extension]({panel:myself, refreshListing:refreshListing});
                 }
             }
 
@@ -43,7 +47,7 @@
             }
 
             //Get properties from our node
-            properties().forEach((property) => {
+            properties.getProperties().forEach((property) => {
                 //Create our element
                 const element = document.createElement("div");
                 element.style.margin = "2px";
@@ -59,8 +63,10 @@
                         break;
 
                     case "object":
-                        //Create a grid
+                        //Define the property type
                         element.innerText = `${property.name || "unknown"} : `;
+
+                        //Get the property editor of each item
                         if (myself.propertyDisplays[property.type]) element.appendChild(myself.propertyDisplays[property.type](read, property));
                         break;
 

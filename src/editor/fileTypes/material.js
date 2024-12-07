@@ -1,8 +1,15 @@
 (function () {
-    const matEditor = (propertyPanel) => {
-        return [
-            {name:"test", type: coffeeEngine.PropertyTypes.VEC3}
-        ]
+    const matEditor = ({panel, refreshListing}) => {
+        return {
+            getProperties:() => {
+                return [
+                    {name:"test", type: coffeeEngine.PropertyTypes.VEC3}
+                ];
+            },
+            onPropertyChange:(property, value) => {
+                
+            }
+        }
     };
 
     editor.registerFilePropertyEditor("material", matEditor);
