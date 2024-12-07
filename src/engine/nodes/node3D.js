@@ -37,7 +37,15 @@
         }
 
         getProperties() {
-            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 }];
+            return [
+                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---", 
+                { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 },
+                "---",
+                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+            ];
         }
 
         //Oh yeah mr krabs

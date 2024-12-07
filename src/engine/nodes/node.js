@@ -121,7 +121,11 @@
 
         //Determines what properties are serialized and added;
         getProperties() {
-            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }];
+            return [
+                { name: "name", type: coffeeEngine.PropertyTypes.NAME },
+                "---",
+                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+            ];
         }
     }
 

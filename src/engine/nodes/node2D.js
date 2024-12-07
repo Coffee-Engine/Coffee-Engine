@@ -28,7 +28,16 @@
         }
 
         getProperties() {
-            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, { name: "layer", type: coffeeEngine.PropertyTypes.INT }, { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }];
+            return [
+                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---", 
+                { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "layer", type: coffeeEngine.PropertyTypes.INT }, 
+                { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 },
+                "---",
+                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+            ];
         }
 
         sortValue() {

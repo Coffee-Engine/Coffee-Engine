@@ -55,7 +55,20 @@
         }
 
         getProperties() {
-            return [{ name: "name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, { name: "layer", type: coffeeEngine.PropertyTypes.INT }, { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }, "---", { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true }, { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }];
+            return [
+                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---", 
+                { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "layer", type: coffeeEngine.PropertyTypes.INT }, 
+                { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                "---", 
+                { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
+                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true }, 
+                { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
+                "---",
+                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+            ];
         }
     }
 
