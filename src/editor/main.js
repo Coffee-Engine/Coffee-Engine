@@ -40,7 +40,7 @@ window.editor = {
 
     registerFilePropertyEditor: (fileExtension, callback) => {
         //No overriding
-        if (!editor.filePropertyEditors[fileExtension]) return;
+        if (editor.filePropertyEditors[fileExtension]) return;
         editor.filePropertyEditors[fileExtension] = callback;
     },
 

@@ -10,14 +10,29 @@
             });
         }
 
-        refreshListing(myself, node, type) {
+        refreshListing(myself, read, type) {
             myself.Content.innerHTML = "";
 
+            let properties = read.getProperties;
+
             //If we are a file display our name in the property panel
-            if (type == "file") myself.Content.innerHTML = `<h2 style="text-align:center;">${node.name}</h2>`;
+            //If our file has an editor get the property
+            if (type == "file") {
+                //Split the filename and get the file extension
+                const split = read.name.split(".");
+                const extension = split[split.length - 1];
+
+                //Declare what file we are editing inside of the div
+                myself.Content.innerHTML = `<h2 style="text-align:center;">${read.name}</h2>`;
+
+                //Check for a property editor
+                if (editor.filePropertyEditors[extension]) {
+                    properties = editor.filePropertyEditors[extension];
+                }
+            }
 
             //If there is no property editor for this thing
-            if (!node.getProperties) {
+            if (!properties) {
                 const notFound = document.createElement("h3");
                 notFound.innerText = editor.language["editor.window.properties.notFound"];
                 notFound.style.textAlign = "center";
@@ -27,7 +42,9 @@
                 return;
             }
 
-            node.getProperties().forEach((property) => {
+            //Get properties from our node
+            properties().forEach((property) => {
+                //Create our element
                 const element = document.createElement("div");
                 element.style.margin = "2px";
                 myself.Content.appendChild(element);
@@ -44,7 +61,7 @@
                     case "object":
                         //Create a grid
                         element.innerText = `${property.name || "unknown"} : `;
-                        if (myself.propertyDisplays[property.type]) element.appendChild(myself.propertyDisplays[property.type](node, property));
+                        if (myself.propertyDisplays[property.type]) element.appendChild(myself.propertyDisplays[property.type](read, property));
                         break;
 
                     default:

@@ -213,7 +213,7 @@
                 </div>
             </div>
 
-            <button id="doneButton">done</button>
+            <button id="doneButton">${editor.language["engine.generic.done"]}</button>
         </div>
         ` +
             (hasExtensions
