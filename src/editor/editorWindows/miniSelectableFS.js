@@ -8,7 +8,7 @@
             else this.acceptedTypes = [];
 
             //Refresh our FS
-            this.displayDirectory(project.fileSystem, this.container, false);
+            this.displayDirectory(project.fileSystem, this.container, true);
         }
 
         get acceptTypes() {
@@ -24,7 +24,7 @@
                 div: this.Content,
                 contents: {},
             };
-            this.displayDirectory(this.systemRoot, this.Content, this.directoryBasin, false);
+            this.displayDirectory(this.systemRoot, this.Content, true);
         }
 
         get systemRoot() {

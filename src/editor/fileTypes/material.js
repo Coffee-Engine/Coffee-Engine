@@ -2,12 +2,17 @@
     const matEditor = ({panel, refreshListing}) => {
         return {
             getProperties:() => {
+                //Get shaders
+                let baseShaders = {};
+                Object.keys(coffeeEngine.renderer.mainShaders).map((key) => {baseShaders[`${key}.glsl`] = key; return key});
+
                 return [
-                    {name:"test", type: coffeeEngine.PropertyTypes.FLOAT}
+                    {name:"shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "coffee:": baseShaders, project: project.fileSystem }}
                 ];
             },
             onPropertyChange:(property, value, node) => {
                 console.log(property,value,node);
+                if (property.name == "shader") refreshListing();
             }
         }
     };
