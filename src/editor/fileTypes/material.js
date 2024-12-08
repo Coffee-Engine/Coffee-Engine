@@ -6,7 +6,7 @@
                     {name:"test", type: coffeeEngine.PropertyTypes.VEC3}
                 ];
             },
-            onPropertyChange:(property, value) => {
+            onPropertyChange:(property, value, node) => {
                 
             }
         }
