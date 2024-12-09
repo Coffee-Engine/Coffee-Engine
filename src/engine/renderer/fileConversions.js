@@ -86,5 +86,10 @@
                 }
             });
         };
+
+        //Add our preloading function
+        coffeeEngine.preloadFunctions["shaders"] = coffeeEngine.renderer.fileToShader;
+        coffeeEngine.preloadFunctions["materials"] = coffeeEngine.renderer.fileToMaterial;
+        coffeeEngine.preloadFunctions["textures"] = coffeeEngine.renderer.fileToTexture;
     };
 })();

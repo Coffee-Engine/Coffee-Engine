@@ -40,4 +40,7 @@
 
         storage: {},
     };
+
+    //Add our preloading function
+    coffeeEngine.preloadFunctions["meshes"] = coffeeEngine.mesh.fromProjectFile;
 })();

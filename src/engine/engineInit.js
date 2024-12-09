@@ -10,6 +10,7 @@ window.coffeeEngine = {
     renderer: {
         nodesRendered: 0,
     },
+    preloadFunctions: {},
     nodeRegister: {},
     //Just a simple node registrar thing
     registerNode: (node, name, parentNode) => {

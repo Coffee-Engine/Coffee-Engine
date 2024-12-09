@@ -1,6 +1,4 @@
 (function () {
-    coffeeEngine.runtime.currentScene = new coffeeEngine.sceneClass();
-
     coffeeEngine.runtime.paused = false;
     coffeeEngine.runtime.lastTick = Date.now();
     coffeeEngine.runtime.deltaTime = 0.016;

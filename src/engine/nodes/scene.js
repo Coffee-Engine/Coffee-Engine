@@ -182,46 +182,93 @@
                 name: this.name,
                 nodeType: "scene",
                 children: goDown(coffeeEngine.runtime.currentScene.children),
+                preload: {
+                    shaders:Object.keys(coffeeEngine.renderer.shaderStorage),
+                    materials:Object.keys(coffeeEngine.renderer.materialStorage),
+                    textures:Object.keys(coffeeEngine.renderer.textureStorage),
+                    meshes:Object.keys(coffeeEngine.mesh.storage),
+                }
             };
         }
 
         deserialize(data) {
-            //Clear out children from memory and registry
-            this.__clearChildren(this);
-
-            //If we have no data assume this is a new scene
-            if (!data) data = { name: "scene", nodeType: "scene", children: [] };
-
-            //Rename the scene
-            this.name = data.name;
-
-            //Now we cycle through every child
-            const _loopThroughChildren = (parent, physicalParent) => {
-                parent.children.forEach((child) => {
-                    //Get our node class
-                    const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
-                    const node = new nodeClass();
-                    node.name = child.name;
-                    node.parent = physicalParent;
-
-                    //Loop through the node's properties
-                    Object.keys(child.properties).forEach((property) => {
-                        //Make sure we aren't using a ""PROTOTYPE"" definition
-                        const propertyData = child.properties[property];
-                        if (typeof propertyData == "object" && propertyData["/-_-PROTOTYPE-_-/"]) {
-                            if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
-                                coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
+            //Our function for actually loading the scene
+            const loadNodes = () => {
+                //Clear out children from memory and registry
+                this.__clearChildren(this);
+    
+                //If we have no data assume this is a new scene
+                if (!data) data = { name: "scene", nodeType: "scene", children: [] };
+    
+                //Rename the scene
+                this.name = data.name;
+    
+                //Now we cycle through every child
+                const _loopThroughChildren = (parent, physicalParent) => {
+                    parent.children.forEach((child) => {
+                        //Get our node class
+                        const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
+                        const node = new nodeClass();
+                        node.name = child.name;
+                        node.parent = physicalParent;
+    
+                        //Loop through the node's properties
+                        Object.keys(child.properties).forEach((property) => {
+                            //Make sure we aren't using a ""PROTOTYPE"" definition
+                            const propertyData = child.properties[property];
+                            if (typeof propertyData == "object" && propertyData["/-_-PROTOTYPE-_-/"]) {
+                                if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
+                                    coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
+                                }
+                            } else {
+                                node[property] = propertyData;
                             }
-                        } else {
-                            node[property] = propertyData;
-                        }
+                        });
+    
+                        _loopThroughChildren(child, node);
                     });
+                };
+    
+                _loopThroughChildren(data, this);
 
-                    _loopThroughChildren(child, node);
-                });
-            };
+            }
 
-            _loopThroughChildren(data, this);
+            //Check if preload exists
+            if (!data.preload) {
+                loadNodes();
+                return;
+            }
+
+            //Get our count of preloaded data
+            const preloadCount = Object.values(data.preload).flat(2).length;
+            let preloadFinished = 0;
+
+            //Then load them
+            Object.keys(data.preload).forEach(preloadCategory => {
+                //Make sure the category has a preload function
+                const preloadFunction = coffeeEngine.preloadFunctions[preloadCategory];
+                //If it does preload the data
+                if (preloadFunction) {
+                    data.preload[preloadCategory].forEach(path => {
+                        preloadFunction(path).then(() => {
+                            //Increment our preload finished, and check if we are done
+                            preloadFinished++;
+                            if (preloadFinished == preloadCount) {
+                                loadNodes();
+                            };
+                        }).catch(() => {
+                            //!THIS "ERROR" SOMETIMES WORKS SOMETIMES DOESN'T
+                            //!FOR SOME REASON IT ERRORS AT 'default.material' AND ONLY 'default.material'
+                            //!EVEN THOUGH WE RESOLVE THE PROMISE BEFORE IT CAN EVEN CHECK FOR 'default.material' IN THE MAIN FILESYSTEM!
+                            //Increment our preload finished, and check if we are done
+                            preloadFinished++;
+                            if (preloadFinished == preloadCount) {
+                                loadNodes();
+                            };
+                        });
+                    })
+                }
+            })
         }
 
         openScene(path) {
@@ -258,4 +305,7 @@
             */
         }
     };
+
+    //Make current scene our scene class
+    coffeeEngine.runtime.currentScene = new coffeeEngine.sceneClass();
 })();
