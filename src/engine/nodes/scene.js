@@ -2,6 +2,7 @@
 (function () {
     coffeeEngine.sceneClass = class {
         scenePath = coffeeEngine.defaultScenePath || "scenes/default.scene";
+        fileReader = new FileReader();
 
         constructor() {
             this.children = [];
@@ -12,6 +13,18 @@
             this.drawList = [];
 
             this.name = "scene";
+
+            this.fileReader.onload = () => {
+                //Make sure our scene is JSON
+                const parsed = JSON.parse(this.fileReader.result);
+                if (!parsed) {
+                    console.log(`"${this.scenePath}" is INVALID! Opening an empty scene with that path.`);
+                    return;
+                }
+
+                //if it is deserialize it.
+                this.deserialize(parsed);
+            }
         }
 
         //Event listener stuff
@@ -209,6 +222,15 @@
             };
 
             _loopThroughChildren(data, this);
+        }
+
+        openScene(path) {
+            project.getFile(path).then(file => {
+                if (file) {
+                    this.scenePath = path;
+                    this.fileReader.readAsText(file);
+                }
+            })
         }
 
         getProperties() {

@@ -25,7 +25,6 @@
 
                 value.addChild(this, true);
             } else if (typeof value == "undefined" || value == null) {
-                console.log("trying to remove child");
                 //* Remove our event listeners.
 
                 // prettier-ignore

@@ -740,15 +740,15 @@
         editor.addFileOpenHook(
             "scene",
             (path) => {
-                project.getFile(path).then((file) => {
-                    fileReader.onload = () => {
-                        coffeeEngine.runtime.currentScene.deserialize(JSON.parse(fileReader.result));
-                    };
-
-                    fileReader.readAsText(file);
-                });
+                coffeeEngine.runtime.currentScene.openScene(path);
             },
             this
         );
+
+        //Open the user into the defaultScene
+        project.getFile("scenes/default.scene").then(file => {
+            if (!file) return;
+            coffeeEngine.runtime.currentScene.openScene("scenes/default.scene")
+        })
     };
 })();
