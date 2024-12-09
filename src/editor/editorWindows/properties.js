@@ -28,7 +28,7 @@
                 const extension = split[split.length - 1];
 
                 //Declare what file we are editing inside of the div
-                myself.Content.innerHTML = `<h2 style="text-align:center;">${read.name}</h2>`;
+                myself.Content.innerHTML = `<h2 style="text-align:center;">${read.name}</h2><h3 style="text-align:center;">${Math.floor(read.size / 100)/10}KB</h3>`;
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
