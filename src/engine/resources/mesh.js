@@ -42,5 +42,5 @@
     };
 
     //Add our preloading function
-    coffeeEngine.preloadFunctions["meshes"] = coffeeEngine.mesh.fromProjectFile;
+    coffeeEngine.preloadFunctions["meshes"] = {function:coffeeEngine.mesh.fromProjectFile, storage:coffeeEngine.mesh.storage};
 })();

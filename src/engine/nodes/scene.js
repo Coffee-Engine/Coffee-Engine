@@ -177,17 +177,25 @@
                 return returnedObject;
             };
 
+            //Get our preloaded asset paths
+            const keys = {};
+            Object.keys(coffeeEngine.preloadFunctions).forEach(key => {
+                //Make sure we have a preload function
+                const preloadFunction = coffeeEngine.preloadFunctions[key];
+                if (preloadFunction) {
+                    //Then we get the keys
+                    keys[key] = Object.keys(preloadFunction.storage);
+                }
+            });
+
+            console.log(keys);
+
             //Once we got all that juicy data we return our array
             return {
                 name: this.name,
                 nodeType: "scene",
                 children: goDown(coffeeEngine.runtime.currentScene.children),
-                preload: {
-                    shaders:Object.keys(coffeeEngine.renderer.shaderStorage),
-                    materials:Object.keys(coffeeEngine.renderer.materialStorage),
-                    textures:Object.keys(coffeeEngine.renderer.textureStorage),
-                    meshes:Object.keys(coffeeEngine.mesh.storage),
-                }
+                preload: keys
             };
         }
 
@@ -250,7 +258,7 @@
                 //If it does preload the data
                 if (preloadFunction) {
                     data.preload[preloadCategory].forEach(path => {
-                        preloadFunction(path).then(() => {
+                        preloadFunction.function(path).then(() => {
                             //Increment our preload finished, and check if we are done
                             preloadFinished++;
                             if (preloadFinished == preloadCount) {

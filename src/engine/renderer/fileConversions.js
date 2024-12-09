@@ -88,8 +88,8 @@
         };
 
         //Add our preloading function
-        coffeeEngine.preloadFunctions["shaders"] = coffeeEngine.renderer.fileToShader;
-        coffeeEngine.preloadFunctions["materials"] = coffeeEngine.renderer.fileToMaterial;
-        coffeeEngine.preloadFunctions["textures"] = coffeeEngine.renderer.fileToTexture;
+        coffeeEngine.preloadFunctions["shaders"] = {function:coffeeEngine.renderer.fileToShader, storage:coffeeEngine.renderer.shaderStorage};
+        coffeeEngine.preloadFunctions["materials"] = {function:coffeeEngine.renderer.fileToMaterial, storage:coffeeEngine.renderer.materialStorage};
+        coffeeEngine.preloadFunctions["textures"] = {function:coffeeEngine.renderer.fileToTexture, storage:coffeeEngine.renderer.textureStorage};
     };
 })();
