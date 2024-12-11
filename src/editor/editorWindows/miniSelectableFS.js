@@ -1,8 +1,5 @@
 (function () {
     editor.windows.modalFileExplorer = class extends editor.windows.base {
-        //For later use. I have an idea of how this can be optimized
-        directoryBasin = {};
-
         set acceptTypes(value) {
             if (value) this.acceptedTypes = value.split(",");
             else this.acceptedTypes = [];
@@ -19,11 +16,7 @@
             this.currentSystemRoot = value;
 
             this.Content.innerHTML = "";
-
-            this.directoryBasin = {
-                div: this.Content,
-                contents: {},
-            };
+            
             this.displayDirectory(this.systemRoot, this.Content, true);
         }
 
@@ -102,7 +95,7 @@
                         else {
                             this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
                         }
-                        
+
                         lowerDiv.fitHeight = lowerDiv.clientHeight;
                         lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                     }

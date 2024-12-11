@@ -1,8 +1,5 @@
 (function () {
     editor.windows.fileExplorer = class extends editor.windows.base {
-        //For later use. I have an idea of how this can be optimized
-        directoryBasin = {};
-
         minWidth = 400;
         minHeight = 200;
 
@@ -11,11 +8,7 @@
 
             this.Content.innerHTML = "";
 
-            this.directoryBasin = {
-                div: this.Content,
-                contents: {},
-            };
-            this.displayDirectory(this.systemRoot, this.Content, this.directoryBasin, false);
+            this.displayDirectory(this.systemRoot, this.Content, false);
         }
 
         get systemRoot() {
@@ -27,7 +20,7 @@
             this.title = editor.language["editor.window.fileExplorer"];
             container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             //Our display function
-            this.displayDirectory = (directory, parentDiv, basin, even, path) => {
+            this.displayDirectory = (directory, parentDiv, even, path) => {
                 path = path || "";
                 const keys = Object.keys(directory).sort();
 
@@ -40,14 +33,6 @@
                     const element = document.createElement("div");
                     element.setAttribute("even", even.toString());
                     element.className = "fileButton";
-
-                    //Basin declaration
-                    basin.contents[key] = { element: element, isDirectory: !Array.isArray(directory[key]) };
-
-                    //If we are a directory add contents
-                    if (basin.contents[key].isDirectory) {
-                        basin.contents[key].contents = {};
-                    }
 
                     //Check if it is a file, or a folder
                     if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
@@ -170,7 +155,7 @@
                         else {
                             this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
                         }
-                        
+
                         lowerDiv.fitHeight = lowerDiv.clientHeight;
                         lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                     }
@@ -183,12 +168,7 @@
                 switch (event.type) {
                     case "ALL": {
                         container.innerHTML = "";
-
-                        this.directoryBasin = {
-                            div: container,
-                            contents: {},
-                        };
-                        this.displayDirectory(this.systemRoot, container, this.directoryBasin, false);
+                        this.displayDirectory(this.systemRoot, container, false);
                         break;
                     }
 
@@ -196,11 +176,7 @@
                     case "FILE_ADDED": {
                         container.innerHTML = "";
 
-                        this.directoryBasin = {
-                            div: container,
-                            contents: {},
-                        };
-                        this.displayDirectory(this.systemRoot, container, this.directoryBasin, false);
+                        this.displayDirectory(this.systemRoot, container, false);
                         break;
                     }
 
