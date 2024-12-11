@@ -44,9 +44,11 @@
                 path = path || "";
                 const keys = Object.keys(directory).sort();
 
+                const hasNamepspaceID = keys[project.namespaceIdentifier] !== undefined;
+
                 keys.forEach((key) => {
                     //The coffee engine directory handle
-                    if (key == project.directoryHandleIdentifier) return;
+                    if (key == project.directoryHandleIdentifier || key == project.namespaceIdentifier) return;
 
                     const element = document.createElement("div");
                     element.setAttribute("even", even.toString());
@@ -92,7 +94,15 @@
 
                         //Do it in this specific order. or else KABOOM!
                         parentDiv.appendChild(element);
-                        this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
+
+                        //Special functionality for namepsaces
+                        if (hasNamepspaceID && key == "project:") {
+                            this.displayDirectory(directory[key], lowerDiv, !even, ``);
+                        }
+                        else {
+                            this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
+                        }
+                        
                         lowerDiv.fitHeight = lowerDiv.clientHeight;
                         lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
                     }

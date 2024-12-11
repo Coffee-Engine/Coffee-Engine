@@ -1,5 +1,8 @@
 (function () {
     class sensing {
+
+        date = new Date(Date.now());
+
         controllerSVG = `<svg style="width:100%; height:100%; padding:0px; margin:0px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"
     height="340.84147" viewBox="0,0,279.53576,340.84147">
     <g transform="translate(-100.23211,-9.57927)">
@@ -411,18 +414,18 @@
         }
 
         dayMonthYear({ timespan }) {
-            const dateOBJ = new Date(Date.now());
+            this.date.setTime();
             switch (timespan) {
                 case "getCentury":
                     //Get the century
-                    return Math.floor(dateOBJ.getFullYear() / 100) + 1;
+                    return Math.floor(this.date.getFullYear() / 100) + 1;
 
                 case "getDecade":
                     //Get the decade
-                    return (dateOBJ.getFullYear() / 10) % 10;
+                    return (this.date.getFullYear() / 10) % 10;
 
                 default:
-                    if (dateOBJ[timespan]) return dateOBJ[timespan]();
+                    if (this.date[timespan]) return this.date[timespan]();
                     return 0;
             }
         }

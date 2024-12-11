@@ -6,8 +6,9 @@
         directoryHandle: null,
 
         //? Why so odd?
-        //* Well its simple the user can't (AND SHOULDN'T BE ABLE TO) make a file or directory with this name
+        //* Well its simple the user can't (AND SHOULDN'T BE ABLE TO) make a file or directory with these names
         directoryHandleIdentifier: "/____DIRECTORY__HANDLE____/",
+        namespaceIdentifier: "/____NAMESPACE__IDENTIFIER____/",
 
         //Our methods for handling files
         setFile: (path, contents, type) => {
