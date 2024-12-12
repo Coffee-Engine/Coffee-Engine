@@ -150,12 +150,17 @@ editor.EnglishLang = {
     "editor.window.sugarcube": "SugarCube",
     "editor.window.javascript": "Javascript",
     "editor.window.cappuccino": "Cappuccino",
+    "editor.window.glslShader": "Shader",
 
     "editor.window.typed.commentMessage": "This is a default behavior!",
     "editor.window.typed.initMessage": "Code for initilization goes here.",
     "editor.window.typed.updateMessage": "Code for each frame goes here.",
     "editor.window.typed.drawUncommentMessage": "If you want custom draw code uncomment this function.",
     "editor.window.typed.drawMessage": "Draw Code Here",
+
+    "editor.window.typed.shaderMessage": "This is a shader!",
+    "editor.window.typed.vertexMessage": "Code for vertex manipulation goes here.",
+    "editor.window.typed.fragmentMessage": "Code for pixel manipulation goes here.",
 
     "editor.window.createVar": "Create a Variable",
     "editor.window.createVar.temporaryName": "Variable Name",

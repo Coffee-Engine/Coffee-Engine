@@ -90,4 +90,20 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
             return sugarcube.generator.workspaceToCode(workspace);
         },
     },
+    {
+        id: "glslShader",
+        hasTranslation: true,
+        fileExtension: "glsl",
+        //We do a function so that our translations work
+        defaultBehavior: () => {
+            return `//${editor.language["editor.window.typed.shaderMessage"]}
+void vertex() {
+    //${editor.language["editor.window.typed.vertexMessage"]}
+}
+
+void fragment() {
+    //${editor.language["editor.window.typed.fragmentMessage"]}
+}`;
+        },
+    },
 ];
