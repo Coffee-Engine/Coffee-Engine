@@ -12,7 +12,12 @@
             },
             onPropertyChange:(property, value, node) => {
                 console.log(property,value,node);
+                console.log(node);
                 if (property.name == "shader") refreshListing();
+                else {
+                    node.params[property] = value;
+                    console.log(value);
+                }
             }
         }
     };
