@@ -13,9 +13,15 @@
 
         refreshListing(myself, read, type) {
             myself.Content.innerHTML = "";
+            myself.Current = read;
 
+            //? Just hope to Zues this works
+            if (read["/__coffeeEngine_CurrentlyParsing__/"]) read["/__coffeeEngine_CurrentlyParsing__/"] = null;
+
+            //The two things we ?Maybe? need;
             let properties = read;
             let onchange;
+            
             //Allow for the property panel on files to refresh the parental listing
             let refreshListing = () => {
                 myself.refreshListing(myself,read,type);
