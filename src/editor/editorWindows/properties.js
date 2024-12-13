@@ -7,43 +7,72 @@
             const myself = this;
 
             editor.addEventListener("nodeSelected", (node) => {
-                myself.refreshListing(myself, node.target, node.type);
+                console.log(node);
+                myself.refreshListing(myself, node);
             });
         }
 
-        refreshListing(myself, read, type) {
+        //Gets the proper listing for object's properties
+        refreshListing(myself, {target, type, path}) {
             myself.Content.innerHTML = "";
-            myself.Current = read;
 
             //? Just hope to Zues this works
-            if (read["/__coffeeEngine_CurrentlyParsing__/"]) read["/__coffeeEngine_CurrentlyParsing__/"] = null;
+            //if (target["/__coffeeEngine_CurrentlyParsing__/"]) target["/__coffeeEngine_CurrentlyParsing__/"] = null;
 
             //The two things we ?Maybe? need;
-            let properties = read;
+            let properties = target;
             let onchange;
             
             //Allow for the property panel on files to refresh the parental listing
             let refreshListing = () => {
-                myself.refreshListing(myself,read,type);
+                myself.refreshListing(myself,{target: target, type: type, path: path});
             }
 
             //If we are a file display our name in the property panel
             //If our file has an editor get the property
             if (type == "file") {
                 //Split the filename and get the file extension
-                const split = read.name.split(".");
+                const split = target.name.split(".");
                 const extension = split[split.length - 1];
 
                 //Declare what file we are editing inside of the div
-                myself.Content.innerHTML = `<h2 style="text-align:center;">${read.name}</h2><h3 style="text-align:center;">${Math.floor(read.size / 100)/10}KB</h3>`;
+                myself.Content.innerHTML = `<h2 style="text-align:center;">${target.name}</h2><h3 style="text-align:center;">${Math.floor(target.size / 100)/10}KB</h3>`;
                 
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
                     properties = editor.filePropertyEditors[extension]({panel:myself, refreshListing:refreshListing});
-                    onchange = properties.onPropertyChange;
+
+                    //Special properties for this aka Saving the file
+                    onchange = (propertyDef, propertyValue, node) => {
+                        properties.onPropertyChange(propertyDef, propertyValue, node);
+                        project.setFile(path, JSON.stringify());
+                    };
+
+                    //Read and parse if nessasary? Necesary? needed... needed.
+                    myself.fileReader.onload = () => {
+                        myself.ParsedObject = JSON.parse(myself.fileReader.result) || {};
+                        this.displayProperties(myself, {read: myself.ParsedObject, target: target, properties: properties}, onchange);
+                    }
+
+                    //Check to make sure we don't already have this parsed and read
+                    if (myself.Current != target) myself.fileReader.readAsText(target);
+                    else {
+                        this.displayProperties(myself, {read: myself.ParsedObject, target: target, properties: properties}, onchange);
+                    }
+                    myself.Current = target;
                 }
+
+                return;
             }
+
+            //If we are a scene node just display our properties
+            this.displayProperties(myself, {read: target, properties: properties}, onchange);
+        }
+
+        //Actually displays the properties of an object
+        displayProperties(myself, {read, target, properties}, onchange) {
+            target = target || read;
 
             //If there is no property editor for this thing
             if (!properties.getProperties) {
