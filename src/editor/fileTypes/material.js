@@ -1,4 +1,5 @@
 (function () {
+    let shader = {};
     const matEditor = ({panel, refreshListing}) => {
         return {
             getProperties:() => {
@@ -13,7 +14,12 @@
             onPropertyChange:(property, value, node) => {
                 console.log(property,value,node);
                 console.log(node);
-                if (property.name == "shader") refreshListing();
+                if (property.name == "shader") {
+                    coffeeEngine.renderer.fileToShader(value).then(value => {
+                        console.log(value);
+                    });
+                    refreshListing();
+                }
                 else {
                     node.params[property] = value;
                     console.log(value);

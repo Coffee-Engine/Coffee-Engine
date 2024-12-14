@@ -7,13 +7,12 @@
             const myself = this;
 
             editor.addEventListener("nodeSelected", (node) => {
-                console.log(node);
                 myself.refreshListing(myself, node);
             });
         }
 
         //Gets the proper listing for object's properties
-        refreshListing(myself, {target, type, path}) {
+        refreshListing(myself, {target, type, path, unique}) {
             myself.Content.innerHTML = "";
 
             //? Just hope to Zues this works
@@ -46,7 +45,7 @@
                     //Special properties for this aka Saving the file
                     onchange = (propertyDef, propertyValue, node) => {
                         properties.onPropertyChange(propertyDef, propertyValue, node);
-                        project.setFile(path, JSON.stringify());
+                        project.setFile(path, JSON.stringify(node));
                     };
 
                     //Read and parse if nessasary? Necesary? needed... needed.
