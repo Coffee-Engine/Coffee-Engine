@@ -22,12 +22,12 @@
                 //Loop through our params and set the keys
                 if (this.shader) {
                     for (const key in this.params) {
-                        this.shader.uniforms[key] = this.params[key];
+                        if (this.shader.uniforms[key]) this.shader.uniforms[key].value = this.params[key];
                     }
                 }
             }
         };
 
-        coffeeEngine.renderer.defaultMaterial = new coffeeEngine.renderer.material("coffee:/basis", { COLOR: [0, 1, 1, 1] });
+        coffeeEngine.renderer.defaultMaterial = new coffeeEngine.renderer.material("coffee:/basis", {});
     };
 })();
