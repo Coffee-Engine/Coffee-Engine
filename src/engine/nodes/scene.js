@@ -66,9 +66,9 @@
 
         //Lets us cast an event
         castEvent(event, data) {
-            this.events[event].forEach((eventFunc) => {
-                eventFunc(data);
-            });
+            for (const eventFunc in this.events[event]) {
+                this.events[event][eventFunc](data);
+            }
         }
 
         update(deltaTime) {

@@ -60,8 +60,8 @@ window.coffeeEngine = {
     sendEvent: (event, data) => {
         if (typeof coffeeEngine.events[event] != "object") return;
 
-        coffeeEngine.events[event].forEach((event) => {
-            event(data);
-        });
+        for (const eventFunc in coffeeEngine.events[event]) {
+            coffeeEngine.events[event][eventFunc](data);
+        }
     },
 };
