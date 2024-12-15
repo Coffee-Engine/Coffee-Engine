@@ -43,6 +43,12 @@
                 }
                 coffeeEngine.renderer.shaderStorage[src] = {};
 
+                if (src.startsWith("coffee:/")) {
+                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.mainShaders[src.replace("coffee:/","").replace(".glsl","")];
+                    resolve(coffeeEngine.renderer.shaderStorage[src]);
+                    return;
+                }
+
                 const fileReader = new FileReader();
 
                 //When our file loads we get our shader to compile

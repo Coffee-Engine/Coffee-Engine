@@ -21,9 +21,9 @@
             use() {
                 //Loop through our params and set the keys
                 if (this.shader) {
-                    Object.keys(this.params).forEach((key) => {
+                    for (const key in this.params) {
                         this.shader.uniforms[key] = this.params[key];
-                    });
+                    }
                 }
             }
         };
