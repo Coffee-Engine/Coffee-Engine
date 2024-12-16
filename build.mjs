@@ -23,19 +23,19 @@ const readline = readlineLib.createInterface({
 });
 
 //Make this a thing.
-if (!fs.existsSync("build")) {
-    fs.mkdirSync("build");
-    fs.mkdirSync("build/output");
+if (!fs.existsSync("out")) {
+    fs.mkdirSync("out");
+    fs.mkdirSync("out/html");
 }
 
 //Check if the build name exists
-if (!fs.existsSync("build/persist.txt")) {
+if (!fs.existsSync("out/persist.txt")) {
     //If not ask
     colorLog("Enter build name. Will be saved for later.\x1b[0m \n", colors.BackGreen);
 
     readline.question("\x1b[32m Dev Prefix \x1b[0m: ", (name) => {
         //Save for later builds
-        fs.appendFileSync("build/persist.txt", `${name}\n0`, (err) => {
+        fs.appendFileSync("out/persist.txt", `${name}\n0`, (err) => {
             if (err) {
                 colorLog("Name saving failed", colors.BackRed);
             } else {
@@ -51,7 +51,7 @@ if (!fs.existsSync("build/persist.txt")) {
 function build() {
     //Get build data
     const buildData = fs
-        .readFileSync("build/persist.txt", {
+        .readFileSync("out/persist.txt", {
             encoding: "utf8",
             flag: "r",
         })
@@ -62,7 +62,7 @@ function build() {
     buildData[1] += 1;
 
     //Then save the new build number
-    fs.writeFileSync("build/persist.txt", `${buildData[0]}\n${buildData[1]}`, (err) => {
+    fs.writeFileSync("out/persist.txt", `${buildData[0]}\n${buildData[1]}`, (err) => {
         if (err) {
             colorLog("Data saving failed", colors.BackRed);
         } else {
