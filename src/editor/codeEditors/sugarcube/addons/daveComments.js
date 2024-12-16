@@ -58,12 +58,14 @@
         #height = 0;
 
         set width(value) {
+            if (value < 48) value = 48;
             this.rect.setAttribute("width", value);
             this.bar.setAttribute("width", value);
             this.foreignObject.setAttribute("width", value);
             this.#width = value;
         }
         set height(value) {
+            if (value < 16) value = 16;
             this.rect.setAttribute("height", value);
             this.foreignObject.setAttribute("height", value - 20);
             this.#height = value;
@@ -82,26 +84,25 @@
             this.bar = sugarcube.createSVGEL("rect");
             this.foreignObject = sugarcube.createSVGEL("foreignObject");
             this.text = document.createElement("p");
-            this.dragger = document.createElement("svg");
+            this.dragger = document.createElement("img");
 
             //Dragger icon and stuff
-            this.dragger.innerHTML = `
-            <g class="scratchCommentResizeSE" transform="translate(182,182)">
-                <polygon points="-8 20 20 20 20 -8"></polygon>
-                <line style="stroke:#888;" x1="5.333333333333333" y1="15" x2="15" y2="5.333333333333333"></line>
-                <line style="stroke:#888;" x1="10.666666666666666" y1="15" x2="15" y2="10.666666666666666"></line>
-            </g>`;
             this.dragger.style.position = "absolute";
             this.dragger.style.top = "100%";
             this.dragger.style.left = "100%";
+            this.dragger.style.width = "16px";
+            this.dragger.style.height = "16px";
             this.dragger.style.transform = "translate(-100%,-100%)";
-            this.dragger.setAttributeNS("http://www.w3.org/2000/svg", "viewbox", "0 0 24 24");
-            this.dragger.setAttributeNS("http://www.w3.org/2000/svg", "width", "24");
-            this.dragger.setAttributeNS("http://www.w3.org/2000/svg", "height", "24");
+            this.dragger.draggable = "false"
+            this.dragger.className = "genericNonSelect";
+            this.dragger.ondragstart = () => {return false;};
 
-            this.text.contentEditable = true;
+            //Using a dataURI because the svg was a no show
+            this.dragger.src = `data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHdpZHRoPSIxOC45OTEzMiIgaGVpZ2h0PSIxOC45OTEzMiIgdmlld0JveD0iMCwwLDE4Ljk5MTMyLDE4Ljk5MTMyIj48ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMjMwLjUwNDM0LC0xNzAuNTA0MzQpIj48ZyBmaWxsPSJub25lIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiPjxwYXRoIGQ9Ik0yMzMuMjkxNjIsMTg2LjYzNzUybDEzLjM2OTUyLC0xMy4zNjk1MiIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTIzOC4wMTU4MywxODYuNzMybDguNjkyNTUsLTguNjkyNTQiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzMuMjkxNjIsMTg2LjYzNzUybDEzLjM2OTUyLC0xMy4zNjk1MiIgc3Ryb2tlPSIjZmZmZmZmIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PHBhdGggZD0iTTIzOC4wMTU4MywxODYuNzMybDguNjkyNTUsLTguNjkyNTQiIHN0cm9rZT0iI2ZmZmZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxwYXRoIGQ9Ik0yMzAuNTA0MzQsMTg5LjQ5NTY2di0xOC45OTEzMmgxOC45OTEzMnYxOC45OTEzMnoiIHN0cm9rZT0ibm9uZSIgc3Ryb2tlLXdpZHRoPSIwIiBzdHJva2UtbGluZWNhcD0iYnV0dCIvPjwvZz48L2c+PC9zdmc+PCEtLXJvdGF0aW9uQ2VudGVyOjkuNDk1NjU5OTk5OTk5OTg3OjkuNDk1NjU5OTk5OTk5OTg3LS0+`;
 
             //Style the text area
+            this.text.contentEditable = true;
+
             this.text.style.width = "100%";
             this.text.style.height = "100%";
             this.text.style.margin = "0px";
@@ -110,15 +111,23 @@
             this.text.style.left = "0px";
             this.text.style.position = "absolute";
             this.text.style.backgroundColor = "#00000000";
+            this.text.style.color = "#000000";
             this.text.style.borderStyle = "none";
             this.text.style.borderWidth = "0px";
             this.text.placeholder = "comment here!";
 
             //Resizing
-            browserEvents.bind(this.foreignObject, "pointerdown", this, () => {
-                this.dragging = browserEvents.bind(document, "pointermove", this, () => {
-                    this.width = this.text.clientWidth;
-                    this.height = this.text.clientHeight + 20;
+            browserEvents.bind(this.dragger, "pointerdown", this, (event) => {
+                event.stopImmediatePropagation();
+                let desiredWidth = this.width;
+                let desiredHeight = this.width;
+
+                this.dragging = browserEvents.bind(document, "pointermove", this, (subEvent) => {
+                    desiredWidth += (subEvent.movementX) / sugarcube.workspace.scale;
+                    desiredHeight += (subEvent.movementY) / sugarcube.workspace.scale;
+
+                    this.width = desiredWidth;
+                    this.height = desiredHeight;
                 });
 
                 this.up = browserEvents.bind(document, "pointerup", this, () => {
@@ -130,6 +139,7 @@
                     }
                 });
             });
+
             this.foreignObject.appendChild(this.text);
             this.foreignObject.appendChild(this.dragger);
 
@@ -155,7 +165,6 @@
                 this.dragging = browserEvents.bind(document, "pointermove", document, (event) => {
                     this.x += event.movementX / sugarcube.workspace.scale;
                     this.y += event.movementY / sugarcube.workspace.scale;
-                    console.log(event);
                 });
 
                 this.up = browserEvents.bind(document, "pointerup", document, () => {
@@ -166,7 +175,6 @@
                         this.up = null;
                     }
                 });
-                console.log(event);
             });
 
             this.x = x;
@@ -183,7 +191,7 @@
         }
     }
 
-    const commentCallback = (scope, e) => {
+    const commentCallback = (scope) => {
         //Setup our comment structure
         const comment = new daveComment(0, 0);
 
