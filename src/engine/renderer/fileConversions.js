@@ -54,6 +54,11 @@
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
                     resolve(fileReader.result);
+                    const vertex = DaveShade.findFunctionInGLSL(fileReader.result,"vertex");
+                    const frag = DaveShade.findFunctionInGLSL(fileReader.result,"fragment");
+
+                    console.log(vertex);
+                    console.log(frag);
                 };
 
                 project

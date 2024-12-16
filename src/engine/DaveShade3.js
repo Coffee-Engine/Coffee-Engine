@@ -370,4 +370,36 @@ window.DaveShade = {};
 
         return daveShadeInstance;
     };
+
+    DaveShade.findFunctionInGLSL = (glsl, func, type) => {
+        type = type || "void";
+        func = func || "func";
+
+        //Match out the function
+        const matches = glsl.match(RegExp(`(${type})(\\s*)(${func})`));
+        if (matches && matches.length > 0) {
+            let matcher = matches[0];
+            let inFunction = 0;
+            let funcCode = "";
+            const charIndex = glsl.indexOf(matcher);
+
+            //Loop through every character until we get out of the function
+            for (let index = charIndex; index < glsl.length; index++) {
+                let char = glsl.charAt(index);
+                funcCode += char;
+
+                if (char == "{") { inFunction++; }
+                else if (char == "}") {
+                    inFunction--;
+                    if (inFunction == 0) {
+                        //Return our code if we get out of our function
+                        return funcCode;
+                    }
+                }
+            }
+        }
+
+        //Return a blank if we don't have any function
+        return "";
+    }
 })();
