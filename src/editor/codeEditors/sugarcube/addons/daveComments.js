@@ -58,7 +58,7 @@
         #height = 0;
 
         set width(value) {
-            if (value < 48) value = 48;
+            if (value < 100) value = 100;
             this.rect.setAttribute("width", value);
             this.bar.setAttribute("width", value);
             this.foreignObject.setAttribute("width", value);
