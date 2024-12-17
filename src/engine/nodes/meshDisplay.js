@@ -67,7 +67,7 @@
                 { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 "---", 
                 { name: "meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,gltf" }, 
-                { name: "material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "coffee:": { "default.material": "defaultMaterial" }, project: project.fileSystem } }, 
+                { name: "material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "/____NAMESPACE__IDENTIFIER____/":true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } }, 
                 { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 "---",
                 {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}

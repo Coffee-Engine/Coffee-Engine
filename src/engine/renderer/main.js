@@ -12,6 +12,13 @@
                 Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
+                
+                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                    if (!shader) return;
+                    if (!shader.uniforms) return;
+                    
+                    if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
+                });
                 coffeeEngine.renderer.cameraData.storedTransform = value;
             },
             get transform() {
@@ -19,6 +26,13 @@
             },
             set projection(value) {
                 Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                    if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
+                });
+                
+                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                    if (!shader) return;
+                    if (!shader.uniforms) return;
+                    
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedProjection = value;
@@ -30,6 +44,13 @@
                 Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
                 });
+                
+                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                    if (!shader) return;
+                    if (!shader.uniforms) return;
+                    
+                    if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
+                });
                 coffeeEngine.renderer.cameraData.storedRes = value;
             },
             get res() {
@@ -37,6 +58,13 @@
             },
             set aspectRatio(value) {
                 Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                    if (shader.uniforms.u_aspectRatio) shader.uniforms.u_aspectRatio.value = value;
+                });
+
+                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                    if (!shader) return;
+                    if (!shader.uniforms) return;
+                    
                     if (shader.uniforms.u_aspectRatio) shader.uniforms.u_aspectRatio.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedAspect = value;
@@ -48,6 +76,13 @@
             //Because orthographic projection wouldn't like me
             set wFactor(value) {
                 Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                    if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
+                });
+
+                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                    if (!shader) return;
+                    if (!shader.uniforms) return;
+                    
                     if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
                 });
                 coffeeEngine.renderer.cameraData.storedWFactor = value;

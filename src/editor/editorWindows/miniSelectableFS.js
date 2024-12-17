@@ -37,7 +37,7 @@
                 path = path || "";
                 const keys = Object.keys(directory).sort();
 
-                const hasNamepspaceID = keys[project.namespaceIdentifier] !== undefined;
+                const hasNamepspaceID = directory[project.namespaceIdentifier] !== undefined;
 
                 keys.forEach((key) => {
                     //The coffee engine directory handle

@@ -33,15 +33,18 @@
             });
         };
 
-        coffeeEngine.renderer.fileToShader = (src) => {
+        coffeeEngine.renderer.fileToShader = (src, override) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
-                //Make sure we allocate this in storage first
-                if (coffeeEngine.renderer.shaderStorage[src]) {
-                    resolve(coffeeEngine.renderer.shaderStorage[src]);
-                    return;
+                //If we want to override the shader override.
+                if (!override) {
+                    //Make sure we allocate this in storage first
+                    if (coffeeEngine.renderer.shaderStorage[src]) {
+                        resolve(coffeeEngine.renderer.shaderStorage[src]);
+                        return;
+                    }
+                    coffeeEngine.renderer.shaderStorage[src] = {};
                 }
-                coffeeEngine.renderer.shaderStorage[src] = {};
 
                 if (src.startsWith("coffee:/")) {
                     coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.mainShaders[src.replace("coffee:/","").replace(".glsl","")];
@@ -53,12 +56,15 @@
 
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
-                    resolve(fileReader.result);
                     const vertex = DaveShade.findFunctionInGLSL(fileReader.result,"vertex");
                     const frag = DaveShade.findFunctionInGLSL(fileReader.result,"fragment");
 
-                    console.log(vertex);
-                    console.log(frag);
+                    const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("void vertex() {}",vertex || "void vertex() {}");
+                    const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("void fragment() {}",frag || "void fragment() {}");
+
+                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.daveshade.createShader(compiledVert,compiledFrag);
+                    
+                    resolve(coffeeEngine.renderer.shaderStorage[src]);
                 };
 
                 project
@@ -81,16 +87,30 @@
                     resolve(coffeeEngine.renderer.materialStorage[src]);
                     return;
                 }
-                coffeeEngine.renderer.shaderStorage[src] = {};
+                coffeeEngine.renderer.materialStorage[src] = {};
 
                 //Hardcoding this for funsies
                 if (src == "coffee:/default.material") {
                     coffeeEngine.renderer.materialStorage[src] = coffeeEngine.renderer.defaultMaterial;
                     resolve(coffeeEngine.renderer.defaultMaterial);
                 } else {
+                    
+                    const fileReader = new FileReader();
+
+                    //When our file loads we get our shader to compile
+                    fileReader.onload = () => {
+                        const materialData = JSON.parse(fileReader.result) || {shader:"coffee:/basis.glsl", params:{}};
+
+                        coffeeEngine.renderer.materialStorage[src] = new coffeeEngine.renderer.material(materialData.shader || "coffee:/basis", materialData.params || {});
+                        
+                        resolve(coffeeEngine.renderer.materialStorage[src]);
+                    };
+
                     project
                         .getFile(src)
-                        .then((file) => {})
+                        .then((file) => {
+                            fileReader.readAsText(file)
+                        })
                         .catch(() => {
                             reject("File doesn't exist");
                         });

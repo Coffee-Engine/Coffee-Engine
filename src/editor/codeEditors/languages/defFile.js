@@ -93,6 +93,7 @@ coffeeEngine.registerBehavior("behavior",behavior)`;
     {
         id: "glslShader",
         hasTranslation: true,
+        stopCompileFileCreation: true,
         fileExtension: "glsl",
         //We do a function so that our translations work
         defaultBehavior: () => {
@@ -105,5 +106,10 @@ void fragment() {
     //${editor.language["editor.window.typed.fragmentMessage"]}
 }`;
         },
+
+        compileFunction: (code, path) => {
+            coffeeEngine.renderer.fileToShader(path, true);
+            return code;
+        }
     },
 ];

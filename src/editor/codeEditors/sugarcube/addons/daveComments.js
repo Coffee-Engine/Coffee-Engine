@@ -65,7 +65,7 @@
             this.#width = value;
         }
         set height(value) {
-            if (value < 16) value = 16;
+            if (value < 20) value = 20;
             this.rect.setAttribute("height", value);
             this.foreignObject.setAttribute("height", value - 20);
             this.#height = value;
@@ -120,7 +120,7 @@
             browserEvents.bind(this.dragger, "pointerdown", this, (event) => {
                 event.stopImmediatePropagation();
                 let desiredWidth = this.width;
-                let desiredHeight = this.width;
+                let desiredHeight = this.height;
 
                 this.dragging = browserEvents.bind(document, "pointermove", this, (subEvent) => {
                     desiredWidth += (subEvent.movementX) / sugarcube.workspace.scale;

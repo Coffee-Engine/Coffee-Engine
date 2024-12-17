@@ -178,6 +178,24 @@ window.DaveShade = {};
                 };
             }
 
+            compileStatus = GL.getShaderInfoLog(shader.vertex.shader);
+            if (compileStatus.length > 0) {
+                console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${compileStatus}\n***`);
+                daveShadeInstance.clearMemory(shader);
+                return {
+                    status: DaveShade.COMPILE_STATUS.FAILURE,
+                };
+            }
+
+            compileStatus = GL.getShaderInfoLog(shader.fragment.shader);
+            if (compileStatus.length > 0) {
+                console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${compileStatus}\n***`);
+                daveShadeInstance.clearMemory(shader);
+                return {
+                    status: DaveShade.COMPILE_STATUS.FAILURE,
+                };
+            }
+
             //* Get in the oven frank
             shader.program = GL.createProgram();
 
