@@ -22,7 +22,7 @@
         </svg>`,
     };
 
-    editor.colorPicker.create = (x, y, { color, hasExtensions, hasTranslucency, callback }) => {
+    editor.colorPicker.create = (x, y, { color, hasExtensions, extensionsReturnAll, hasTranslucency, callback }) => {
         //Channel 3 and Channel 15
         color = color || "#0000ff";
         let split = coffeeEngine.ColorMath.HexToRGB(color);
@@ -245,7 +245,7 @@
         const doneButton = document.getElementById("doneButton");
 
         //An update function we can call
-        const updateColors = () => {
+        const updateColors = (multiColor) => {
             const HSV = coffeeEngine.ColorMath.RGBToHSV(split);
 
             //Adjust the backgrounds
@@ -274,7 +274,8 @@
             hexInput.value = coffeeEngine.ColorMath.RGBtoHex(split);
 
             if (callback) {
-                callback(hexInput.value);
+                if (multiColor) callback(multiColor[0], multiColor[1], multiColor[2]);
+                else callback(hexInput.value);
             }
         };
 
@@ -288,11 +289,17 @@
                 button.style.setProperty("--extColor", sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
 
                 button.onclick = () => {
-                    const result = coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
+                    const result = (extensionsReturnAll) ? [
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary,
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourSecondary,
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourTertiary
+
+                    ] : coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
                     if (!result) return;
 
-                    split = result;
-                    updateColors();
+                    //Split it
+                    split = (extensionsReturnAll) ? result[0] : result;
+                    updateColors((extensionsReturnAll) ? result : null);
                 };
 
                 extensionHolder.appendChild(button);

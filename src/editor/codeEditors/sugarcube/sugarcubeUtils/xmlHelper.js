@@ -12,4 +12,12 @@
     sugarcube.addElementToWorkspace = (child) => {
         sugarcube.workspace.svgBlockCanvas_.appendChild(child);
     };
+
+    sugarcube.moveWorkspaceElementToTop = (child) => {
+        if (child.parentElement) {
+            child.parentElement.removeChild(child);
+        }
+        
+        sugarcube.workspace.svgBlockCanvas_.appendChild(child);
+    }
 })();
