@@ -28,6 +28,7 @@
             cornerSize: "4", //CORNER_RADIUS
             padding: "2", //BETWEEN_STATEMENT_PADDING_Y
             flyOutOpacity: "50",
+            blockColoration: "Default",
         },
         Monaco: {
             fontSize: 12,
@@ -630,6 +631,13 @@
                 min: "0",
                 max: "100",
             },
+            blockColoration: {
+                type: "dropdown",
+                values: ["Default", "Pastel", "Dark"],
+                onChange: (value) => {
+                    sugarcube.blockColorFunction = sugarcube.blockColorFunctions[value] || sugarcube.blockColorFunctions.Default;
+                }
+            }
         },
         Monaco: {
             fontSize: {

@@ -71,6 +71,10 @@ editor.EnglishLang = {
     "engine.settings.category.SugarCube.cornerSize": "Corner Size",
     "engine.settings.category.SugarCube.padding": "Padding",
     "engine.settings.category.SugarCube.flyOutOpacity": "Flyout Opacity",
+    "engine.settings.category.SugarCube.blockColoration": "Font Family",
+    "engine.settings.category.SugarCube.blockColoration.Default": "Default",
+    "engine.settings.category.SugarCube.blockColoration.Pastel": "Pastel",
+    "engine.settings.category.SugarCube.blockColoration.Dark": "Neon",
 
     "engine.settings.category.Monaco": "Monaco",
     "engine.settings.category.Monaco.fontSize": "Font Size",

@@ -316,6 +316,7 @@
                     //Styling for the icon
                     icon.style.height = "20px";
                     icon.style.position = "relative";
+                    
                     //Special behavior for the markdown boys
                     icon.style.width = (iconData.markdownOnly) ? "calc(20px * var(--markdownMul))" : "20px";
                     icon.style.marginRight = (iconData.markdownOnly) ? "calc(2px * var(--markdownMul))" : "2px";
