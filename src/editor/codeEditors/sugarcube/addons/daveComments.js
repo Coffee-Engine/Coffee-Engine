@@ -55,6 +55,8 @@
                 const selection = window.getSelection();
                 const range = selection.getRangeAt(0);
 
+                console.log(window.getSelection().toString());
+
                 console.log(range.cloneContents());
 
                 const selectionStart = range.startOffset;
