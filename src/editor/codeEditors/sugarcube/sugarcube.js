@@ -12102,6 +12102,7 @@ ${b} to its parent, because: ${a}`);
         Svg$$module$build$src$core$utils$svg.TEXT,
         {
           class: "blocklyText",
+          style: `${sugarcube.blocklyTheme.blockStyles[this.sourceBlock_.styleName_] && sugarcube.blocklyTheme.blockStyles[this.sourceBlock_.styleName_].colourQuaternary ? `fill:${sugarcube.blocklyTheme.blockStyles[this.sourceBlock_.styleName_].colourQuaternary};` : ""}`,
         },
         this.fieldGroup_
       );
