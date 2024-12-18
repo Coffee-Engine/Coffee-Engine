@@ -12083,6 +12083,7 @@ ${b} to its parent, because: ${a}`);
       return !this.borderRect_;
     }
     createBorderRect_() {
+      const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
       this.borderRect_ = createSvgElement$$module$build$src$core$utils$dom(
         Svg$$module$build$src$core$utils$svg.RECT,
         {
@@ -12093,16 +12094,18 @@ ${b} to its parent, because: ${a}`);
           height: this.size_.height,
           width: this.size_.width,
           class: "blocklyFieldRect",
+          style: `${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary ? `fill:${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary};` : ""}`,
         },
         this.fieldGroup_
       );
     }
     createTextElement_() {
+      const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
       this.textElement_ = createSvgElement$$module$build$src$core$utils$dom(
         Svg$$module$build$src$core$utils$svg.TEXT,
         {
           class: "blocklyText",
-          style: `${sugarcube.blocklyTheme.blockStyles[this.sourceBlock_.styleName_] && sugarcube.blocklyTheme.blockStyles[this.sourceBlock_.styleName_].colourQuaternary ? `fill:${sugarcube.blocklyTheme.blockStyles[this.sourceBlock_.styleName_].colourQuaternary};` : ""}`,
+          style: `${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary ? `fill:${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary};` : ""}`,
         },
         this.fieldGroup_
       );
@@ -26312,7 +26315,7 @@ ${b} to its parent, because: ${a}`);
           "color: #575E75;",
           "}",
           `${a} .blocklyDropdownText {`,
-          "fill: #fff !important;",
+          "fill: #fff;",
           "}",
           `${a}.blocklyWidgetDiv .goog-menuitem,`,
           `${a}.blocklyDropDownDiv .goog-menuitem {`,
@@ -26701,6 +26704,7 @@ ${b} to its parent, because: ${a}`);
     }
     applyColour() {
       const a = this.getSourceBlock();
+      const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
       if (!a) throw new UnattachedFieldError$$module$build$src$core$field();
       this.getConstants().FULL_BLOCK_FIELDS &&
         this.fieldGroup_ &&
@@ -26710,7 +26714,7 @@ ${b} to its parent, because: ${a}`);
           : ((this.borderRect_.style.display = "none"),
             a.pathObject.svgPath.setAttribute(
               "fill",
-              this.getConstants().FIELD_BORDER_RECT_COLOUR
+              (sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary) ? sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary : this.getConstants().FIELD_BORDER_RECT_COLOUR
             )));
     }
     getSize() {

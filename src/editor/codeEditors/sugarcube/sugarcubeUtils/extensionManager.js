@@ -850,12 +850,20 @@
                 const id = myInfo.id + "_";
 
                 //Add the block styles for this category. Each block can have its own override.
-                const convertedColors = sugarcube.blockColorFunction(myInfo.color1 || "#0fbd8c", myInfo.color2 || myInfo.color1 || "#0b8e69", myInfo.color3 || myInfo.color1 || "#0b8e69");
+                const convertedColors = sugarcube.blockColorFunction(
+                    myInfo.color1 || "#0fbd8c", 
+                    myInfo.color2 || myInfo.color1 || "#0b8e69", 
+                    myInfo.color3 || myInfo.color1 || "#0b8e69",
+                    myInfo.color4,
+                    myInfo.color5
+                );
+
                 sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
                     colourPrimary: convertedColors[0],
                     colourSecondary: convertedColors[1],
                     colourTertiary: convertedColors[2],
                     colourQuaternary: convertedColors[3],
+                    colourQuinary: convertedColors[4],
                     hat: myInfo.hat || "cap",
                 };
 
