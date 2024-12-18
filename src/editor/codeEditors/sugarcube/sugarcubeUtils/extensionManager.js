@@ -855,6 +855,7 @@
                     colourPrimary: convertedColors[0],
                     colourSecondary: convertedColors[1],
                     colourTertiary: convertedColors[2],
+                    colourQuaternary: convertedColors[3],
                     hat: myInfo.hat || "cap",
                 };
 
