@@ -31,6 +31,8 @@
                 color1: "#ff0000",
                 color2: "#00ff00",
                 color3: "#0000ff",
+                color4: "#ff00ff",
+                color5: "#00ffff",
                 blocks: ["Block Types"]
                     .concat(blockTypesBlocks)
                     .concat(["Argument Types"])
@@ -191,6 +193,23 @@
                                 },
                             },
                         },
+                        {
+                            opcode: "colorAPITest",
+                            type: sugarcube.BlockType.COMMAND,
+                            text: "Color test block [Menu1] [Menu2] [Field1]",
+                            arguments: {
+                                Menu1: {
+                                    menu: "dynamicMenu",
+                                },
+                                Menu2: {
+                                    menu: "dynamicMenuNOREP",
+                                },
+                                Field1: {
+                                    type: sugarcube.ArgumentType.CUSTOM,
+                                    customType: "fieldTest",
+                                },
+                            }
+                        }
                     ]),
                 menus: {
                     staticNoREP: {

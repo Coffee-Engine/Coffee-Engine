@@ -736,6 +736,7 @@
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/myBlocks.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/debugger.js");
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
+        //sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
 
         const fileReader = new FileReader();
 
