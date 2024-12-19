@@ -13095,6 +13095,9 @@ ${b} to its parent, because: ${a}`);
       var a = this.getTextElement();
       addClass$$module$build$src$core$utils$dom(a, "blocklyDropdownText");
       a.setAttribute("text-anchor", "start");
+      const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
+      a.style.fill = sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary ? sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary : "#fff"
+
       var b = !!this.borderRect_;
       a = Math.max(
         b ? this.getConstants().FIELD_DROPDOWN_BORDER_RECT_HEIGHT : 0,
