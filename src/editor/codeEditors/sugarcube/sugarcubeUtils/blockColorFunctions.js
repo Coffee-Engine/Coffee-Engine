@@ -1,6 +1,6 @@
 sugarcube.blockColorFunctions = {
     Default: (color1, color2, color3, color4, color5) => {
-        return [color1, color2, color3, color4, color5];
+        return [color1, color2, color3, color4, color5, true];
     },
     
     Pastel: (color, a, b, color4, color5) => {
@@ -18,6 +18,7 @@ sugarcube.blockColorFunctions = {
             coffeeEngine.ColorMath.HSVToHex(color3).substring(0,7),
             color4 || "#0f0f0f",
             color5 || "#ffffff",
+            true
         ];
     },
 
@@ -36,6 +37,7 @@ sugarcube.blockColorFunctions = {
             color3,
             color4 || color3,
             color5 || coffeeEngine.ColorMath.HSVToHex(color5FB).substring(0,7),
+            false
         ];
     }
 }

@@ -70,4 +70,28 @@
             undefined
         );
     };
+
+    Blockly.Extensions.registerMutator(
+        "stupidLittleInputMutator",
+        {
+            saveExtraState: function (state) {
+                return {};
+            },
+
+            loadExtraState: function (state) {
+                this.state = state;
+            },
+
+            mutationToDom: function () {
+                const container = Blockly.utils.xml.createElement("mutationData");
+                return container;
+            },
+
+            domToMutation: function() {
+                this.style = this.parentBlock_.style;
+                this.applyColour();
+            }
+        },
+        undefined
+    )
 })();

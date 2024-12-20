@@ -3,6 +3,7 @@
         constructor() {
             this.addBlocklyBlock("__sugarcube_color_reporter", "reporter", {
                 message0: " %1 ",
+                mutator: "stupidLittleInputMutator",
                 args0: [
                     {
                         type: "looks_Color",
@@ -18,6 +19,7 @@
 
             this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
                 message0: " %1 ",
+                mutator: "stupidLittleInputMutator",
                 args0: [
                     {
                         type: "field_input",
@@ -34,6 +36,7 @@
 
             this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
                 message0: " %1 ",
+                mutator: "stupidLittleInputMutator",
                 args0: [
                     {
                         type: "field_number",
@@ -50,6 +53,7 @@
 
             this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
                 message0: " %1 ",
+                mutator: "stupidLittleInputMutator",
                 args0: [
                     {
                         type: "field_multilinetext",
@@ -864,6 +868,7 @@
                     colourTertiary: convertedColors[2],
                     colourQuaternary: convertedColors[3],
                     colourQuinary: convertedColors[4],
+                    useBlackWhiteFields: convertedColors[5],
                     hat: myInfo.hat || "cap",
                 };
 

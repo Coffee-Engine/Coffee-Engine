@@ -12094,7 +12094,7 @@ ${b} to its parent, because: ${a}`);
           height: this.size_.height,
           width: this.size_.width,
           class: "blocklyFieldRect",
-          style: `fill:${parentBlock.style.colourQuinary};`,
+          style: `fill:${parentBlock.style.colourQuinary || "#ffffff"};`,
         },
         this.fieldGroup_
       );
@@ -12268,10 +12268,9 @@ ${b} to its parent, because: ${a}`);
     }
     applyColour() {
       const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
-      console.log(parentBlock);
       if (parentBlock) {
-        if (this.borderRect_) this.borderRect_.style.fill = parentBlock.style.colourQuinary;
-        if (this.textElement_) this.textElement_.style.fill = parentBlock.style.colourQuaternary;
+        if (this.borderRect_) this.borderRect_.style.fill = (parentBlock.style.useBlackWhiteFields) ? "#fff" : (parentBlock.style.colourQuinary || "#ffffff");
+        if (this.textElement_) this.textElement_.style.fill = (this.sourceBlock_.isShadow_ && parentBlock.style.useBlackWhiteFields) ? "#000" : parentBlock.style.colourQuaternary;
       }
     }
     render_() {
@@ -15665,6 +15664,8 @@ ${b} to its parent, because: ${a}`);
               b.colourQuinary
             ).hex
           : a.hex;
+
+        b.useBlackWhiteFields = b.useBlackWhiteFields ? b.useBlackWhiteFields : false
 
         b.hat = b.hat || "";
         return b;
@@ -21511,8 +21512,6 @@ ${b} to its parent, because: ${a}`);
           ? a.childBlocks_.push(this)
           : this.workspace.addTopBlock(this);
       }
-
-      this.parentBlock_.applyColour();
     }
     getDescendants(a) {
       const b = [this],
@@ -26735,14 +26734,18 @@ ${b} to its parent, because: ${a}`);
     applyColour() {
       super.applyColour();
       const a = this.getSourceBlock();
+      const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
       if (!a) throw new UnattachedFieldError$$module$build$src$core$field();
       this.getConstants().FULL_BLOCK_FIELDS &&
         this.fieldGroup_ &&
         (!this.isFullBlockField() && this.borderRect_
           ? ((this.borderRect_.style.display = "block"),
             this.borderRect_.setAttribute("stroke", a.style.colourTertiary))
-          : ((this.borderRect_.style.display = "none")
-            ));
+          : ((this.borderRect_.style.display = "none"),
+            a.pathObject.svgPath.setAttribute(
+              "fill",
+              (parentBlock.style.colourQuinary && !parentBlock.style.useBlackWhiteFields) ? parentBlock.style.colourQuinary : this.getConstants().FIELD_BORDER_RECT_COLOUR
+            )));
     }
     getSize() {
       let a;
@@ -26988,11 +26991,6 @@ ${b} to its parent, because: ${a}`);
     }
     getValueFromEditorText_(a) {
       return a;
-    }
-    initModel() {
-      this.applyColour();
-      console.log(this.textContent_);
-      this.textContent_.style.fill = "#ff0000";
     }
   };
   FieldInput$$module$build$src$core$field_input.BORDERRADIUS = 4;
