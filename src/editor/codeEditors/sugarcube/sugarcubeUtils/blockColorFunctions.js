@@ -1,6 +1,6 @@
 sugarcube.blockColorFunctions = {
     Default: (color1, color2, color3, color4, color5) => {
-        return [color1, color2, color3, color4, color5, true];
+        return [color1, color2, color3, color4 || "#ffffff", color5, true];
     },
     
     Pastel: (color, a, b, color4, color5) => {
