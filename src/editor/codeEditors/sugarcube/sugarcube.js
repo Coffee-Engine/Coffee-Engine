@@ -12094,7 +12094,7 @@ ${b} to its parent, because: ${a}`);
           height: this.size_.height,
           width: this.size_.width,
           class: "blocklyFieldRect",
-          style: `${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary ? `fill:${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary};` : ""}`,
+          style: `fill:${parentBlock.style.colourQuinary};`,
         },
         this.fieldGroup_
       );
@@ -12105,7 +12105,7 @@ ${b} to its parent, because: ${a}`);
         Svg$$module$build$src$core$utils$svg.TEXT,
         {
           class: "blocklyText",
-          style: `${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary ? `fill:${sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary};` : ""}`,
+          style: `fill:${parentBlock.style.colourQuaternary};`,
         },
         this.fieldGroup_
       );
@@ -12266,7 +12266,13 @@ ${b} to its parent, because: ${a}`);
         throw Error(`The text content is ${this.textContent_}.`);
       return this.textContent_;
     }
-    applyColour() {}
+    applyColour() {
+      const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
+      if (parentBlock) {
+        if (this.borderRect_) this.borderRect_.style.fill = parentBlock.style.colourQuinary;
+        if (this.textElement_) this.textElement_.style.fill = parentBlock.style.colourQuaternary;
+      }
+    }
     render_() {
       this.textContent_ &&
         (this.textContent_.nodeValue = this.getDisplayText_());
@@ -13027,6 +13033,7 @@ ${b} to its parent, because: ${a}`);
         c[1] === this.value_ && (this.selectedOption = c);
     }
     applyColour() {
+      super.applyColour();
       const a = this.sourceBlock_.style;
       this.borderRect_ &&
         (this.borderRect_.setAttribute("stroke", a.colourTertiary),
@@ -13096,7 +13103,7 @@ ${b} to its parent, because: ${a}`);
       addClass$$module$build$src$core$utils$dom(a, "blocklyDropdownText");
       a.setAttribute("text-anchor", "start");
       const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
-      a.style.fill = sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary ? sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuaternary : "#fff"
+      a.style.fill = parentBlock.style.colourQuaternary;
 
       var b = !!this.borderRect_;
       a = Math.max(
@@ -15645,6 +15652,19 @@ ${b} to its parent, because: ${a}`);
               b.colourTertiary
             ).hex
           : this.generateTertiaryColour_(b.colourPrimary);
+
+        b.colourQuaternary = b.colourQuaternary
+          ? parseBlockColour$$module$build$src$core$utils$parsing(
+              b.colourQuaternary
+            ).hex
+          : "#fff";
+
+        b.colourQuinary = b.colourQuinary
+          ? parseBlockColour$$module$build$src$core$utils$parsing(
+              b.colourQuinary
+            ).hex
+          : a.hex;
+
         b.hat = b.hat || "";
         return b;
       }
@@ -21490,6 +21510,8 @@ ${b} to its parent, because: ${a}`);
           ? a.childBlocks_.push(this)
           : this.workspace.addTopBlock(this);
       }
+
+      this.parentBlock_.applyColour();
     }
     getDescendants(a) {
       const b = [this],
@@ -26676,6 +26698,10 @@ ${b} to its parent, because: ${a}`);
       super.initView();
       this.isFullBlockField() &&
         (this.clickTarget_ = this.sourceBlock_.getSvgRoot());
+
+      const a = this.getSourceBlock();
+      if (!a) throw new UnattachedFieldError$$module$build$src$core$field();
+      this.getConstants().FULL_BLOCK_FIELDS && a.applyColour();
     }
     isFullBlockField() {
       const a = this.getSourceBlock();
@@ -26706,6 +26732,7 @@ ${b} to its parent, because: ${a}`);
       this.value_ = a;
     }
     applyColour() {
+      super.applyColour();
       const a = this.getSourceBlock();
       const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
       if (!a) throw new UnattachedFieldError$$module$build$src$core$field();
@@ -26714,11 +26741,8 @@ ${b} to its parent, because: ${a}`);
         (!this.isFullBlockField() && this.borderRect_
           ? ((this.borderRect_.style.display = "block"),
             this.borderRect_.setAttribute("stroke", a.style.colourTertiary))
-          : ((this.borderRect_.style.display = "none"),
-            a.pathObject.svgPath.setAttribute(
-              "fill",
-              (sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_] && sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary) ? sugarcube.blocklyTheme.blockStyles[parentBlock.styleName_].colourQuinary : this.getConstants().FIELD_BORDER_RECT_COLOUR
-            )));
+          : ((this.borderRect_.style.display = "none")
+            ));
     }
     getSize() {
       let a;
@@ -28273,6 +28297,7 @@ ${b} to its parent, because: ${a}`);
       return a.isSimpleReporter() && !(null == b || !b.FIELD_COLOUR_FULL_BLOCK);
     }
     applyColour() {
+      super.applyColour();
       const a = this.getSourceBlock();
       if (!a) throw new UnattachedFieldError$$module$build$src$core$field();
       if (this.fieldGroup_) {

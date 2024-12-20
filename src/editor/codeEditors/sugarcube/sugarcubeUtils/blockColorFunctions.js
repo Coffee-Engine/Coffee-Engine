@@ -2,6 +2,7 @@ sugarcube.blockColorFunctions = {
     Default: (color1, color2, color3, color4, color5) => {
         return [color1, color2, color3, color4, color5];
     },
+    
     Pastel: (color, a, b, color4, color5) => {
         const color1 = coffeeEngine.ColorMath.HexToHSV(color);
         const color2 = coffeeEngine.ColorMath.HexToHSV(color);
