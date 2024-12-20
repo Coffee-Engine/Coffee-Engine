@@ -12268,6 +12268,7 @@ ${b} to its parent, because: ${a}`);
     }
     applyColour() {
       const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
+      console.log(parentBlock);
       if (parentBlock) {
         if (this.borderRect_) this.borderRect_.style.fill = parentBlock.style.colourQuinary;
         if (this.textElement_) this.textElement_.style.fill = parentBlock.style.colourQuaternary;
@@ -15652,7 +15653,7 @@ ${b} to its parent, because: ${a}`);
               b.colourTertiary
             ).hex
           : this.generateTertiaryColour_(b.colourPrimary);
-
+          
         b.colourQuaternary = b.colourQuaternary
           ? parseBlockColour$$module$build$src$core$utils$parsing(
               b.colourQuaternary
@@ -26734,7 +26735,6 @@ ${b} to its parent, because: ${a}`);
     applyColour() {
       super.applyColour();
       const a = this.getSourceBlock();
-      const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
       if (!a) throw new UnattachedFieldError$$module$build$src$core$field();
       this.getConstants().FULL_BLOCK_FIELDS &&
         this.fieldGroup_ &&
@@ -26988,6 +26988,11 @@ ${b} to its parent, because: ${a}`);
     }
     getValueFromEditorText_(a) {
       return a;
+    }
+    initModel() {
+      this.applyColour();
+      console.log(this.textContent_);
+      this.textContent_.style.fill = "#ff0000";
     }
   };
   FieldInput$$module$build$src$core$field_input.BORDERRADIUS = 4;
