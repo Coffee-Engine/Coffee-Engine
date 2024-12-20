@@ -6,7 +6,6 @@ input {
     color: var(--text-1);
 
     -moz-appearance: textfield;
-    min-width: 128px;
 }
 
 select {

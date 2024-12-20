@@ -41,7 +41,8 @@
             this.searchField = document.createElement("input");
             this.searchField.type = "search";
             this.searchField.placeholder = "🔍";
-            this.searchField.style.width = "48px";
+            this.searchField.style.textAlign = "center";
+            this.searchField.style.width = "calc(100% - 16px)";
             this.workspace_.RTL ? (this.searchField.style.marginRight = "8px") : (this.searchField.style.marginLeft = "8px");
             this.searchField.addEventListener("keyup", (event) => {
                 if (event.key === "Escape") {
@@ -149,9 +150,20 @@
             const query = ((_a = this.searchField) === null || _a === void 0 ? void 0 : _a.value) || "";
             this.flyoutItems_ = query
                 ? this.blockSearcher.blockTypesMatching(query).map((blockType) => {
+                      //Get block name and stuff :)
+                      const split = blockType.split("_");
+                      const category = split[0];
+                      //Remove the category;
+                      split.splice(0,1);
+                      const blockName = split.join("_");
+
+                      let inputs = {};
+                      if (sugarcube.extensionManager.blockDefs[category] && sugarcube.extensionManager.blockDefs[category][blockName]) inputs = sugarcube.extensionManager.blockDefs[category][blockName].inputs;
+
                       return {
                           kind: "block",
                           type: blockType,
+                          inputs: inputs
                       };
                   })
                 : [];

@@ -5,6 +5,7 @@
                 const input = document.createElement("input");
                 input.type = "number";
                 input.value = Number(editor.settings.values[category][setting]);
+                input.style.minWidth = "128px";
 
                 input.min = elementDefs.min;
                 input.max = elementDefs.max;
