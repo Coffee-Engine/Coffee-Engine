@@ -26866,6 +26866,13 @@ ${b} to its parent, because: ${a}`);
       c.setAttribute("data-untyped-default-value", String(this.value_));
       this.resizeEditor_();
       this.bindInputEvents_(c);
+
+      //Style it properly
+      const parentBlock = ((!this.sourceBlock_.parentBlock_) || this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
+      c.style.backgroundColor = (parentBlock.style.colourQuinary && !parentBlock.style.useBlackWhiteFields) ? parentBlock.style.colourQuinary : this.getConstants().FIELD_BORDER_RECT_COLOUR;
+      c.style.color = (parentBlock.style.colourQuaternary && !parentBlock.style.useBlackWhiteFields) ? parentBlock.style.colourQuaternary : "#000";
+      c.style.borderColor = parentBlock.style.colourTertiary;
+
       return c;
     }
     widgetDispose_() {
