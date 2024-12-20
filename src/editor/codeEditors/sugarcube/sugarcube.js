@@ -12273,6 +12273,13 @@ ${b} to its parent, because: ${a}`);
         if (this.textElement_) this.textElement_.style.fill = (this.sourceBlock_.isShadow_ && parentBlock.style.useBlackWhiteFields) ? "#000" : parentBlock.style.colourQuaternary;
       }
     }
+    forceApplyColour() {
+      const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
+      if (parentBlock) {
+        if (this.borderRect_) this.borderRect_.style.fill = parentBlock.style.colourQuinary || "#ffffff";
+        if (this.textElement_) this.textElement_.style.fill = parentBlock.style.colourQuaternary;
+      }
+    }
     render_() {
       this.textContent_ &&
         (this.textContent_.nodeValue = this.getDisplayText_());
@@ -13033,7 +13040,7 @@ ${b} to its parent, because: ${a}`);
         c[1] === this.value_ && (this.selectedOption = c);
     }
     applyColour() {
-      super.applyColour();
+      this.forceApplyColour();
       const a = this.sourceBlock_.style;
       this.borderRect_ &&
         (this.borderRect_.setAttribute("stroke", a.colourTertiary),
