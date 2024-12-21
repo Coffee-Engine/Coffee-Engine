@@ -112,7 +112,6 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
-                console.log(block);
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",

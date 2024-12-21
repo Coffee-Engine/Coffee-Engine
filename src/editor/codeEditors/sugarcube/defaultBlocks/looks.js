@@ -56,7 +56,7 @@
 
                         //Our custom editor
                         editor: "color_Editor",
-                        sizeOverride: [32, 32],
+                        //sizeOverride: [32, 32],
 
                         //Stuff
                         initilize: "color_Init",
@@ -78,11 +78,11 @@
         }
 
         color_Init(field) {
-            field.createBorderRect_();
+            //field.createBorderRect_();
         }
 
         color_Editor(field) {
-            const bounding = field.borderRect_.getBoundingClientRect();
+            const bounding = field.sourceBlock_.getSvgRoot().getBoundingClientRect();
             editor.colorPicker.create(bounding.x + bounding.width / 2, bounding.y + bounding.height / 2, {
                 color: field.value,
                 callback: (color) => {
@@ -92,14 +92,7 @@
         }
 
         color_Render(value, B, field) {
-            field.borderRect_.style.fill = "#00000000";
             field.sourceBlock_.svgGroup_.firstChild.style.fill = value || "#0000ff";
-            field.borderRect_.setAttribute("width", 52);
-            field.borderRect_.setAttribute("x", -10);
-            field.borderRect_.setAttribute("y", -4);
-            field.borderRect_.setAttribute("height", 40);
-            field.borderRect_.setAttribute("rx", 20);
-            field.borderRect_.setAttribute("ry", 20);
         }
 
         file_Init(field) {

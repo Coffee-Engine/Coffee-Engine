@@ -23,7 +23,18 @@
                     this.initView = () => {
                         sugarcube.extensionInstances[extensionID][fieldData.initilize](this);
                         this.updateSize_();
+
+                        if (fieldData.wholeBlockIsField) {
+                            this.fullBlockClickTarget_ = true;
+                            this.clickTarget_ = this.sourceBlock_.getSvgRoot();
+                        }
                     };
+                }
+                else if (fieldData.wholeBlockIsField) {
+                    this.initView = () => {
+                        this.fullBlockClickTarget_ = true;
+                        this.clickTarget_ = this.sourceBlock_.getSvgRoot();
+                    }
                 }
 
                 if (fieldData.render) {
