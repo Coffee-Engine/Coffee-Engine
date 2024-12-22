@@ -107,7 +107,7 @@
             container.appendChild(colorInput);
             colorInput.style.width = "32px";
             colorInput.style.height = "32px";
-            colorInput.value = "#FF6680";
+            colorInput.value = sugarcube.blocklyTheme.blockStyles["myblocks_blocks"].colourIdentifier;
 
             colorInput.style.position = "relative";
             colorInput.style.margin = "8px";

@@ -15672,7 +15672,13 @@ ${b} to its parent, because: ${a}`);
             ).hex
           : a.hex;
 
-        b.useBlackWhiteFields = b.useBlackWhiteFields ? b.useBlackWhiteFields : false
+        b.useBlackWhiteFields = b.useBlackWhiteFields ? b.useBlackWhiteFields : false;
+
+        b.colourIdentifier = b.colourIdentifier
+          ? parseBlockColour$$module$build$src$core$utils$parsing(
+              b.colourIdentifier
+            ).hex
+          : a.hex;
 
         b.hat = b.hat || "";
         return b;

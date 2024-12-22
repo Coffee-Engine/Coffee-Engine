@@ -95,21 +95,21 @@
                     this.variableButton.disabled = false;
                     this.listButton.disabled = true;
                     this.objectButton.disabled = false;
-                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.lists_blocks.colourPrimary;
+                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.lists_blocks.colourIdentifier;
                     break;
 
                 case "object":
                     this.variableButton.disabled = false;
                     this.listButton.disabled = false;
                     this.objectButton.disabled = true;
-                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.tables_blocks.colourPrimary;
+                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.tables_blocks.colourIdentifier;
                     break;
 
                 default:
                     this.variableButton.disabled = true;
                     this.listButton.disabled = false;
                     this.objectButton.disabled = false;
-                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.variables_blocks.colourPrimary;
+                    this.colorInput.value = sugarcube.blocklyTheme.blockStyles.variables_blocks.colourIdentifier;
                     break;
             }
         }

@@ -1,6 +1,14 @@
 sugarcube.blockColorFunctions = {
     Default: (color1, color2, color3, color4, color5) => {
-        return [color1, color2, color3, color4 || "#ffffff", color5, true];
+        return [
+            color1,                 //Primary Background
+            color2,                 //Menu Inner
+            color3,                 //Outline
+            color4 || "#ffffff",    //TEXT
+            color5,                 //Field Background 
+            true,                   //Use Black White Text
+            color1                  //Color picker Color
+        ];
     },
     
     Pastel: (color, a, b, color4, color5) => {
@@ -18,7 +26,8 @@ sugarcube.blockColorFunctions = {
             coffeeEngine.ColorMath.HSVToHex(color3).substring(0,7),
             color4 || "#0f0f0f",
             color5 || "#ffffff",
-            true
+            true,
+            coffeeEngine.ColorMath.HSVToHex(color1).substring(0,7)
         ];
     },
 
@@ -37,7 +46,8 @@ sugarcube.blockColorFunctions = {
             color3,
             color4 || color3,
             color5 || coffeeEngine.ColorMath.HSVToHex(color5FB).substring(0,7),
-            false
+            false,
+            color3
         ];
     }
 }

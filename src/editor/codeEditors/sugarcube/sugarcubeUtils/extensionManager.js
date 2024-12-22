@@ -869,6 +869,7 @@
                     colourQuaternary: convertedColors[3],
                     colourQuinary: convertedColors[4],
                     useBlackWhiteFields: convertedColors[5],
+                    colourIdentifier: convertedColors[6] || convertedColors[0],
                     hat: myInfo.hat || "cap",
                 };
 

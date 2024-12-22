@@ -63,10 +63,10 @@
                 let hexA = Math.floor(RGB.a).toString(16);
                 if (hexA.length == 1) hexA = "0" + hexA;
 
-                return `#${hexR}${hexG}${hexB}${hexA}`;
+                return `#${hexR}${hexG}${hexB}${(hexA.toLowerCase() == "ff") ? "" : hexA}`;
             }
 
-            return `#${hexR}${hexG}${hexB}ff`;
+            return `#${hexR}${hexG}${hexB}`;
         },
 
         BrightestChannel: (Color) => {

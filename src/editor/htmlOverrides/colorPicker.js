@@ -274,7 +274,7 @@
             hexInput.value = coffeeEngine.ColorMath.RGBtoHex(split);
 
             if (callback) {
-                if (multiColor) callback(multiColor[0], multiColor[1], multiColor[2]);
+                if (multiColor) callback(multiColor[0], multiColor[1], multiColor[2], multiColor[3], multiColor[4]);
                 else callback(hexInput.value);
             }
         };
@@ -286,15 +286,18 @@
 
                 button.className = "ce_extensionColorPreset";
 
-                button.style.setProperty("--extColor", sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
+                button.style.setProperty("--extColor", sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier);
 
                 button.onclick = () => {
                     const result = (extensionsReturnAll) ? [
                         sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary,
                         sugarcube.blocklyTheme.blockStyles[extensionID].colourSecondary,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourTertiary
-
-                    ] : coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary);
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourTertiary,
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourQuaternary,
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourQuinary,
+                        sugarcube.blocklyTheme.blockStyles[extensionID].useBlackWhiteFields,
+                        sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier
+                    ] : coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier);
                     if (!result) return;
 
                     //Split it
