@@ -113,6 +113,8 @@
                 <h1>${editor.language["engine.credits.madeBy"]}</h1>
                 <h2>${editor.language["engine.credits.programmers"]}</h2>
                 <div class="contributorContainerDiv" id="coffeeProgrammers"></div>
+                <h2>${editor.language["engine.credits.enginePorter"]}</h2>
+                <div class="contributorContainerDiv" id="coffeePorters"></div>
                 <h2>${editor.language["engine.credits.translators"]}</h2>
                 <div class="contributorContainerDiv" id="coffeeTranslators"></div>
                 <h2>${editor.language["engine.credits.assetMaker"]}</h2>
@@ -132,6 +134,7 @@
         document.body.appendChild(editor.currentPage.root);
 
         const programmers = document.getElementById("coffeeProgrammers");
+        const porters = document.getElementById("coffeePorters");
         const translators = document.getElementById("coffeeTranslators");
         const makers = document.getElementById("coffeeMakers");
 
@@ -150,6 +153,9 @@
 
         editor.credits.engineContributors.forEach((contributor) => {
             programmers.appendChild(makeElement(contributor));
+        });
+        editor.credits.enginePorters.forEach((contributor) => {
+            porters.appendChild(makeElement(contributor));
         });
         editor.credits.translators.forEach((contributor) => {
             translators.appendChild(makeElement(contributor));

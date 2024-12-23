@@ -7,7 +7,8 @@ sugarcube.blockColorFunctions = {
             color4 || "#ffffff",    //TEXT
             color5,                 //Field Background 
             true,                   //Use Black White Text
-            color1                  //Color picker Color
+            color1,                 //Color picker Color
+            false                    //Run on dynamic blocks (EG, variables, custom blocks)
         ];
     },
     
@@ -47,11 +48,10 @@ sugarcube.blockColorFunctions = {
             color4 || color3,
             color5 || coffeeEngine.ColorMath.HSVToHex(color5FB).substring(0,7),
             false,
-            color3
+            color3,
+            true
         ];
     }
 }
 
-sugarcube.blockColorFunction = (color1, color2, color3) => {
-    return [color1, color2, color3];
-}
+sugarcube.blockColorFunction = sugarcube.blockColorFunctions.Default;

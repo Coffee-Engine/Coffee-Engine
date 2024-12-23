@@ -206,7 +206,30 @@
                     if (sugarcube.customBlocks.fieldTypes[index].parseFunction) sugarcube.customBlocks.fieldTypes[index].parseFunction(block, item);
                 });
 
-                block.setColour(state.color);
+                //Define the colours
+                const convertedColors = sugarcube.blockColorFunction(
+                    state.color,
+                    state.color,
+                    state.color,
+                    null,
+                    null,
+                );
+
+                //Apply the colours
+                block.style = {
+                    colourPrimary: convertedColors[0],
+                    colourSecondary: convertedColors[1],
+                    colourTertiary: convertedColors[2],
+                    colourQuaternary: convertedColors[3],
+                    colourQuinary: convertedColors[4],
+                    useBlackWhiteFields: convertedColors[5],
+                    colourIdentifier: convertedColors[6] || convertedColors[0],
+                    useEverywhere: convertedColors[7],
+                    hat: "cap",
+                }
+
+                block.applyColour();
+                if (!convertedColors[7]) block.setColour(state.color);
             }
 
             return state;
@@ -260,7 +283,30 @@
                     }
                 });
 
-                block.setColour(state.color);
+                //Define the colours
+                const convertedColors = sugarcube.blockColorFunction(
+                    state.color,
+                    state.color,
+                    state.color,
+                    null,
+                    null,
+                );
+
+                //Apply the colours
+                block.style = {
+                    colourPrimary: convertedColors[0],
+                    colourSecondary: convertedColors[1],
+                    colourTertiary: convertedColors[2],
+                    colourQuaternary: convertedColors[3],
+                    colourQuinary: convertedColors[4],
+                    useBlackWhiteFields: convertedColors[5],
+                    colourIdentifier: convertedColors[6] || convertedColors[0],
+                    useEverywhere: convertedColors[7],
+                    hat: "cap",
+                }
+
+                block.applyColour();
+                if (!convertedColors[7]) block.setColour(state.color);
             }
             /* The old way BAD
             //Kept for historical preservation!
@@ -342,7 +388,30 @@
                 );
             }
 
-            block.setColour(state.color);
+            //Define the colours
+            const convertedColors = sugarcube.blockColorFunction(
+                state.color,
+                state.color,
+                state.color,
+                null,
+                null,
+            );
+
+            //Apply the colours
+            block.style = {
+                colourPrimary: convertedColors[0],
+                colourSecondary: convertedColors[1],
+                colourTertiary: convertedColors[2],
+                colourQuaternary: convertedColors[3],
+                colourQuinary: convertedColors[4],
+                useBlackWhiteFields: convertedColors[5],
+                colourIdentifier: convertedColors[6] || convertedColors[0],
+                useEverywhere: convertedColors[7],
+                hat: "cap",
+            }
+
+            block.applyColour();
+            if (!convertedColors[7]) block.setColour(state.color);
 
             //I forgot this. It broke the state
             return state;

@@ -12094,7 +12094,7 @@ ${b} to its parent, because: ${a}`);
           height: this.size_.height,
           width: this.size_.width,
           class: "blocklyFieldRect",
-          style: `fill:${parentBlock.style.colourQuinary || "#ffffff"};`,
+          style: `${(parentBlock) ? `fill:${parentBlock.style.colourQuinary || "#ffffff"}` : ""};`,
         },
         this.fieldGroup_
       );
@@ -12105,7 +12105,7 @@ ${b} to its parent, because: ${a}`);
         Svg$$module$build$src$core$utils$svg.TEXT,
         {
           class: "blocklyText",
-          style: `fill:${parentBlock.style.colourQuaternary};`,
+          style: `${(parentBlock) ? `fill:${parentBlock.style.colourQuaternary}` : ""};`,
         },
         this.fieldGroup_
       );
@@ -15671,8 +15671,9 @@ ${b} to its parent, because: ${a}`);
               b.colourQuinary
             ).hex
           : a.hex;
-
+          
         b.useBlackWhiteFields = b.useBlackWhiteFields ? b.useBlackWhiteFields : false;
+        b.useEverywhere = b.useEverywhere ? b.useEverywhere : false;
 
         b.colourIdentifier = b.colourIdentifier
           ? parseBlockColour$$module$build$src$core$utils$parsing(

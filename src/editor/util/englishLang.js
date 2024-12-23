@@ -22,6 +22,7 @@ editor.EnglishLang = {
     "engine.credits.welome": "Credits",
     "engine.credits.madeBy": "Coffee Engine is made by",
     "engine.credits.programmers": "Engine Programmers",
+    "engine.credits.enginePorter": "Engine Porting",
     "engine.credits.translators": "Translators",
     "engine.credits.assetMaker": "Asset Contributor",
     "engine.credits.resources": "Resources Used",
