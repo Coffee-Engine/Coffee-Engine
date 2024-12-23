@@ -19,11 +19,11 @@
                     },
                     {
                         opcode: "declaration",
+                        compileFunc: "declaration",
                         type: sugarcube.BlockType.PROCEDURE_DEFINITION,
                         text: editor.language["sugarcube.myblocks.block.define"],
                         mutator: "hatBlock_Mutator",
                         contextMenu: "removeCustomBlock",
-                        contextMenu: ["editCustomBlock", "removeCustomBlock"],
                         hideFromPalette: true,
                     },
                     {
@@ -68,14 +68,16 @@
                     },
                     {
                         opcode: "execute_command",
+                        compileFunc: "execute",
                         type: sugarcube.BlockType.COMMAND,
                         text: "",
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
-                        contextMenu: ["makeReference"],
+                        //contextMenu: ["makeReference"],
                     },
                     {
                         opcode: "execute_reporter",
+                        compileFunc: "execute",
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: "",
                         mutator: "commandBlock_Mutator",
@@ -145,26 +147,28 @@
                     },
                 },
                 contextMenus: {
-                    editCustomBlock: {
-                        text: editor.language["sugarcube.myblocks.contextMenu.editCustomBlock"],
-                        opcode: "editCustomBlock",
-                        weight: 3,
-                    },
+                    //Beta 2
+                    //editCustomBlock: {
+                    //    text: editor.language["sugarcube.myblocks.contextMenu.editCustomBlock"],
+                    //    opcode: "editCustomBlock",
+                    //    weight: 3,
+                    //},
                     removeCustomBlock: {
                         text: editor.language["sugarcube.myblocks.contextMenu.removeCustomBlock"],
                         opcode: "removeCustomBlock",
                         weight: 4,
                     },
-                    makeReference: {
-                        text: editor.language["sugarcube.myblocks.contextMenu.makeReference"],
-                        opcode: "makeReference",
-                        weight: 5,
-                    },
-                    makeOriginal: {
-                        text: editor.language["sugarcube.myblocks.contextMenu.makeOriginal"],
-                        opcode: "makeBlock",
-                        weight: 5,
-                    },
+                    //Beta 2
+                    //makeReference: {
+                    //    text: editor.language["sugarcube.myblocks.contextMenu.makeReference"],
+                    //    opcode: "makeReference",
+                    //    weight: 5,
+                    //},
+                    //makeOriginal: {
+                    //    text: editor.language["sugarcube.myblocks.contextMenu.makeOriginal"],
+                    //    opcode: "makeBlock",
+                    //    weight: 5,
+                    //},
                 },
             };
         }
@@ -423,6 +427,37 @@
 
             createdWindow.x = window.innerWidth / 2 - 200;
             createdWindow.y = window.innerHeight / 2 - 175;
+        }
+
+        declaration(block, generator, manager) {
+            const { parameters, returns } = block.editedState;
+            let functionName = returns;
+            let functionArgs = "";
+
+            parameters.forEach(param => {
+                functionName += `_${param.id}`;
+                
+                if (param.type != "label") {
+                    functionArgs += `${param.id}, `
+                }
+            });
+
+            return `this["${functionName}"] = (${functionArgs}) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
+        }
+
+        execute() {
+            const { parameters, returns } = block.editedState;
+            let functionName = returns;
+
+            parameters.forEach(param => {
+                functionName += `_${param.id}`;
+                
+                //if (param.type != "label") {
+                //    functionArgs += `${param.id}, `
+                //}
+            });
+
+            return `this["${functionName}"]()`;
         }
     }
 
