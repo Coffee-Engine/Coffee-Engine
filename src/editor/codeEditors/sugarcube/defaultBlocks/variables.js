@@ -123,32 +123,11 @@
                         text: state.varData.name,
                     })
                 );
-
-                //Define the colours
-                const convertedColors = sugarcube.blockColorFunction(
-                    state.varData.color,
-                    state.varData.color,
-                    state.varData.color,
-                    null,
-                    null,
-                );
-
-                //Apply the colours
-                block.style = {
-                    colourPrimary: convertedColors[0],
-                    colourSecondary: convertedColors[1],
-                    colourTertiary: convertedColors[2],
-                    colourQuaternary: convertedColors[3],
-                    colourQuinary: convertedColors[4],
-                    useBlackWhiteFields: convertedColors[5],
-                    colourIdentifier: convertedColors[6] || convertedColors[0],
-                    useEverywhere: convertedColors[7],
-                    hat: "cap",
-                }
-
-                block.applyColour();
-                if (!convertedColors[7]) block.setColour(state.varData.color);
             }
+            
+            //set block color
+            sugarcube.easyColourBlock(block, state.varData.color);
+            
             return state;
         }
 

@@ -209,32 +209,10 @@
                     //Parse that shit.
                     if (sugarcube.customBlocks.fieldTypes[index].parseFunction) sugarcube.customBlocks.fieldTypes[index].parseFunction(block, item);
                 });
-
-                //Define the colours
-                const convertedColors = sugarcube.blockColorFunction(
-                    state.color,
-                    state.color,
-                    state.color,
-                    null,
-                    null,
-                );
-
-                //Apply the colours
-                block.style = {
-                    colourPrimary: convertedColors[0],
-                    colourSecondary: convertedColors[1],
-                    colourTertiary: convertedColors[2],
-                    colourQuaternary: convertedColors[3],
-                    colourQuinary: convertedColors[4],
-                    useBlackWhiteFields: convertedColors[5],
-                    colourIdentifier: convertedColors[6] || convertedColors[0],
-                    useEverywhere: convertedColors[7],
-                    hat: "cap",
-                }
-
-                block.applyColour();
-                if (!convertedColors[7]) block.setColour(state.color);
             }
+
+            //set block color
+            sugarcube.easyColourBlock(block, state.color);
 
             return state;
         }
@@ -272,7 +250,6 @@
                                 blockIN.editedState = item;
                                 blockIN.editedState.color = state.color;
                                 blockIN.initSvg();
-                                blockIN.render();
                                 block.inputList[block.inputList.length - 1].connection.connect_(blockIN.outputConnection);
                                 blockIN.loadExtraState(item);
                                 break;
@@ -286,31 +263,6 @@
                         }
                     }
                 });
-
-                //Define the colours
-                const convertedColors = sugarcube.blockColorFunction(
-                    state.color,
-                    state.color,
-                    state.color,
-                    null,
-                    null,
-                );
-
-                //Apply the colours
-                block.style = {
-                    colourPrimary: convertedColors[0],
-                    colourSecondary: convertedColors[1],
-                    colourTertiary: convertedColors[2],
-                    colourQuaternary: convertedColors[3],
-                    colourQuinary: convertedColors[4],
-                    useBlackWhiteFields: convertedColors[5],
-                    colourIdentifier: convertedColors[6] || convertedColors[0],
-                    useEverywhere: convertedColors[7],
-                    hat: "cap",
-                }
-
-                block.applyColour();
-                if (!convertedColors[7]) block.setColour(state.color);
             }
             /* The old way BAD
             //Kept for historical preservation!
@@ -354,6 +306,9 @@
             }
             */
 
+            //set block color
+            sugarcube.easyColourBlock(block, state.color);
+            
             return state;
         }
 
@@ -432,32 +387,53 @@
         declaration(block, generator, manager) {
             const { parameters, returns } = block.editedState;
             let functionName = returns;
-            let functionArgs = "";
 
             parameters.forEach(param => {
                 functionName += `_${param.id}`;
-                
-                if (param.type != "label") {
-                    functionArgs += `${param.id}, `
+            });
+
+            return `this["${functionName}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
+        }
+
+        execute(block, generator, manager) {
+            const { returns } = block.editedState;
+            let functionName = returns;
+            
+            const args = {};
+            const recalls = {};
+
+            block.inputList.forEach((input) => {
+                functionName += `_${input.name}`;
+
+                if (!input.connection) return;
+                if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
+                    args[input.name] = Function(generator.statementToCode(block, input.name));
+                    recalls[input.name] = Function(generator.statementToCode(block, input.name));
+                    return;
+                }
+                args[input.name] = generator.valueToCode(block, input.name, 0);
+
+                //Our recall for the rest of the types.
+
+                const value = generator.valueToCode(block, input.name, 0);
+                //Functionals are easy
+                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
+                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
+                }
+                //Now we need to check the rest.
+                else {
+                    //Number
+                    if (!isNaN(Number(value))) {
+                        recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
+                        return;
+                    }
+
+                    //String
+                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
                 }
             });
 
-            return `this["${functionName}"] = (${functionArgs}) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
-        }
-
-        execute() {
-            const { parameters, returns } = block.editedState;
-            let functionName = returns;
-
-            parameters.forEach(param => {
-                functionName += `_${param.id}`;
-                
-                //if (param.type != "label") {
-                //    functionArgs += `${param.id}, `
-                //}
-            });
-
-            return `this["${functionName}"]()`;
+            return `this["${functionName}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
         }
     }
 
