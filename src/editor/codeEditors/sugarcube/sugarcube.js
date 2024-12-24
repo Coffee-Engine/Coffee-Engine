@@ -2570,7 +2570,7 @@
       saveIds: f = !0,
     } = {}
   ) {
-    if (a.isInsertionMarker()) return null;
+    if (a.isInsertionMarker() || (a._shouldDuplicate_ && !a._isClone_)) return null;
     const g = { type: a.type, id: f ? a.id : void 0 };
     b && saveCoords$$module$build$src$core$serialization$blocks(a, g);
     saveAttributes$$module$build$src$core$serialization$blocks(a, g);
