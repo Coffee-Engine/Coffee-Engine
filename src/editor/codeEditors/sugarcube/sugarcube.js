@@ -2568,9 +2568,10 @@
       addNextBlocks: d = !0,
       doFullSerialization: e = !0,
       saveIds: f = !0,
+      force: force = !1
     } = {}
   ) {
-    if (a.isInsertionMarker() || (a._shouldDuplicate_ && !a._isClone_)) return null;
+    if (a.isInsertionMarker() || ((a._shouldDuplicate_ && !a._isClone_) && !force)) return null;
     const g = { type: a.type, id: f ? a.id : void 0 };
     b && saveCoords$$module$build$src$core$serialization$blocks(a, g);
     saveAttributes$$module$build$src$core$serialization$blocks(a, g);
@@ -9859,6 +9860,7 @@ ${b} to its parent, because: ${a}`);
   var BlockPaster$$module$build$src$core$clipboard$block_paster = class {
     paste(a, b, c) {
       if (!b.isCapacityAvailable(a.typeCounts)) return null;
+      if (!a.blockState) return null;
       c && ((a.blockState.x = c.x), (a.blockState.y = c.y));
       $.disable$$module$build$src$core$events$utils();
       let d;
@@ -10926,30 +10928,34 @@ ${b} to its parent, because: ${a}`);
         //If we should duplicate the block. We do.
         if (this.targetBlock._shouldDuplicate_) {
             //Copy Data
-            let duplicated = this.targetBlock.toCopyData();
+            let duplicated = this.targetBlock.toCopyData(true);
 
             //If we have copy data duplicate it
             if (duplicated) {
+              console.log(this.targetBlock);
+              console.log(duplicated);
               duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
-              duplicated._shouldDuplicate_ = false;
-              duplicated._isClone_ = true;
-              duplicated.editedState = this.targetBlock.editedState;
+              if (duplicated) {
+                duplicated._shouldDuplicate_ = false;
+                duplicated._isClone_ = true;
+                duplicated.editedState = this.targetBlock.editedState;
 
-              if (
-                duplicated.outputConnection && 
-                duplicated.outputConnection.check &&
-                duplicated.outputConnection.check.includes("noClones")
-              ) {
-                duplicated.outputConnection.check.splice(duplicated.outputConnection.check.indexOf("noClones"),1);
-              }
+                if (
+                  duplicated.outputConnection && 
+                  duplicated.outputConnection.check &&
+                  duplicated.outputConnection.check.includes("noClones")
+                ) {
+                  duplicated.outputConnection.check.splice(duplicated.outputConnection.check.indexOf("noClones"),1);
+                }
 
-              //Set the block dragger to the duplicate
-              this.blockDragger =
-                new (getClassFromOptions$$module$build$src$core$registry(
-                  Type$$module$build$src$core$registry.BLOCK_DRAGGER,
+                //Set the block dragger to the duplicate
+                this.blockDragger =
+                  new (getClassFromOptions$$module$build$src$core$registry(
+                    Type$$module$build$src$core$registry.BLOCK_DRAGGER,
                   this.creatorWorkspace.options,
                   !0
                 ))(duplicated, this.startWorkspace_);
+              }
             }
         }
 
@@ -23122,7 +23128,7 @@ ${b} to its parent, because: ${a}`);
         this.outputConnection ? this.dispose(!1, !0) : this.dispose(!0, !0),
         $.setGroup$$module$build$src$core$events$utils(!1));
     }
-    toCopyData() {
+    toCopyData(force) {
       return this.isInsertionMarker_
         ? null
         : {
@@ -23131,6 +23137,7 @@ ${b} to its parent, because: ${a}`);
             blockState: save$$module$build$src$core$serialization$blocks(this, {
               addCoordinates: !0,
               addNextBlocks: !1,
+              force: force
             }),
             typeCounts: getBlockTypeCounts$$module$build$src$core$common(
               this,

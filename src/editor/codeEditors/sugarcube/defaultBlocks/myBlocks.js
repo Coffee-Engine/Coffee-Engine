@@ -250,8 +250,8 @@
                                 blockIN.editedState = item;
                                 blockIN.editedState.color = state.color;
                                 blockIN.initSvg();
-                                //blockIN.render();
-                                block.inputList[block.inputList.length - 1].connection.connect_(blockIN.outputConnection);
+                                blockIN.render();
+                                block.inputList[block.inputList.length - 1].connection.connect(blockIN.outputConnection);
                                 blockIN.loadExtraState(item);
                                 break;
 
