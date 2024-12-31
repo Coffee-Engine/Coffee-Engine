@@ -27,6 +27,8 @@
         const DOM = domParser.parseFromString(contents,"text/xml");
         //Get our geometry
         const geometryLib = DOM.getElementsByTagName("library_geometries")[0];
+        const sceneLib = DOM.getElementsByTagName("library_visual_scenes")[0];
+
         const geometries = Array.from(geometryLib.getElementsByTagName("geometry"));
         geometries.forEach(geometry => {
             //Get our meshes and start conversion
@@ -96,6 +98,15 @@
                     }
                 });
             });
+        });
+
+        const scenes = Array.from(sceneLib.getElementsByTagName("visual_scene"));
+        scenes.forEach(scene => {
+            const nodes = Array.from(scene.getElementsByTagName("node"));
+            nodes.forEach(node => {
+                const matrixEl = Array.from(node.getElementsByTagName("matrix"))[0];
+            })
+            console.log(scene);
         });
     }
 })();
