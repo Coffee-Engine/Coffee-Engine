@@ -153,9 +153,8 @@
                         currentData.a_normal = new Float32Array(currentData.a_normal.flat(4));
                         currentData.a_color = new Float32Array(currentData.a_color.flat(4));
                     }
-                })
-            })
-            console.log(scene);
+                });
+            });
         });
     }
 })();
