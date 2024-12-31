@@ -319,19 +319,29 @@
             //Get our info out of the block.
             state = state || {};
 
-            //Set block duplication
-            if (!block._isClone_) block._shouldDuplicate_ = true;
-
             state._isClone_ = block._isClone_;
             state._shouldDuplicate_ = block._shouldDuplicate_;
+
+            //Set block duplication
+            if (!block._isClone_) block._shouldDuplicate_ = true;
 
             return state;
         }
 
         arg_Deserialize(state, block) {
             //put our stuff on the block
-            //block._isClone_ = state._isClone_;
-            //block._shouldDuplicate_ = state._shouldDuplicate_;
+            block._isClone_ = state._isClone_;
+            block._shouldDuplicate_ = state._shouldDuplicate_;
+            if ((!block._isClone_) && block._shouldDuplicate_) {
+                console.log(block);
+            }
+
+            if (block._isClone_) {
+                block.setDeletable(true);
+            }
+            else {
+                block.setDeletable(false);
+            }
 
             if (state.name) {
                 //I'm gonna piss myself
@@ -347,31 +357,9 @@
                     })
                 );
             }
-
-            //Define the colours
-            const convertedColors = sugarcube.blockColorFunction(
-                state.color,
-                state.color,
-                state.color,
-                null,
-                null,
-            );
-
-            //Apply the colours
-            block.style = {
-                colourPrimary: convertedColors[0],
-                colourSecondary: convertedColors[1],
-                colourTertiary: convertedColors[2],
-                colourQuaternary: convertedColors[3],
-                colourQuinary: convertedColors[4],
-                useBlackWhiteFields: convertedColors[5],
-                colourIdentifier: convertedColors[6] || convertedColors[0],
-                useEverywhere: convertedColors[7],
-                hat: "cap",
-            }
-
-            block.applyColour();
-            if (!convertedColors[7]) block.setColour(state.color);
+            
+            //set block color
+            sugarcube.easyColourBlock(block, state.color);
 
             //I forgot this. It broke the state
             return state;

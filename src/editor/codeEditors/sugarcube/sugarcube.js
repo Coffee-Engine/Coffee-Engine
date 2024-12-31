@@ -10917,14 +10917,7 @@ ${b} to its parent, because: ${a}`);
           this.updateIsDraggingBlock() ||
           this.updateIsDraggingWorkspace();
       }
-      startDraggingBlock() {
-        this.blockDragger =
-          new (getClassFromOptions$$module$build$src$core$registry(
-            Type$$module$build$src$core$registry.BLOCK_DRAGGER,
-            this.creatorWorkspace.options,
-            !0
-          ))(this.targetBlock, this.startWorkspace_);
-        
+      startDraggingBlock() {        
         //If we should duplicate the block. We do.
         if (this.targetBlock._shouldDuplicate_) {
             //Copy Data
@@ -10932,8 +10925,6 @@ ${b} to its parent, because: ${a}`);
 
             //If we have copy data duplicate it
             if (duplicated) {
-              console.log(this.targetBlock);
-              console.log(duplicated);
               duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
               if (duplicated) {
                 duplicated._shouldDuplicate_ = false;
@@ -10957,6 +10948,14 @@ ${b} to its parent, because: ${a}`);
                 ))(duplicated, this.startWorkspace_);
               }
             }
+        }
+        else {
+          this.blockDragger =
+          new (getClassFromOptions$$module$build$src$core$registry(
+            Type$$module$build$src$core$registry.BLOCK_DRAGGER,
+            this.creatorWorkspace.options,
+            !0
+          ))(this.targetBlock, this.startWorkspace_);
         }
 
         this.blockDragger.startDrag(this.currentDragDeltaXY, this.healStack);

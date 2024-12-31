@@ -39,6 +39,7 @@
         },
 
         storage: {},
+        parsers: {},
     };
 
     //Add our preloading function
