@@ -244,6 +244,8 @@
 
                 vec4 COLOR;
                 vec3 EMISSION;
+                vec3 NORMAL;
+                vec2 UV;
                 float ROUGHNESS;
                 float SPECULAR;
                 float LIGHT_AFFECTION;
@@ -261,6 +263,8 @@
                     SPECULAR = 0.0;
                     LIGHT_AFFECTION = 1.0;
                     ALPHA_GLOW = 0.0;
+                    UV = v_texCoord;
+                    NORMAL = v_normal;
 
                     //Call our user function
                     fragment();

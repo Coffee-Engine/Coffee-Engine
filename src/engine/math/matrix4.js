@@ -100,13 +100,13 @@
         multiplyVector(vector) {
             const returned = new coffeeEngine.vector4(0, 0, 0, 0);
             // prettier-ignore
-            returned.x = vector.x * this.contents[0][0] + vector.y * this.contents[1][0] + vector.z * this.contents[2][0] + vector.w * this.contents[3][0];
+            returned.x = vector.x * this.contents[0][0] + vector.y * this.contents[0][1] + vector.z * this.contents[0][2] + vector.w * this.contents[0][3];
             // prettier-ignore
-            returned.y = vector.x * this.contents[0][1] + vector.y * this.contents[1][1] + vector.z * this.contents[2][1] + vector.w * this.contents[3][1];
+            returned.y = vector.x * this.contents[1][0] + vector.y * this.contents[1][1] + vector.z * this.contents[1][2] + vector.w * this.contents[1][3];
             // prettier-ignore
-            returned.z = vector.x * this.contents[0][2] + vector.y * this.contents[1][2] + vector.z * this.contents[2][2] + vector.w * this.contents[3][2];
+            returned.z = vector.x * this.contents[2][0] + vector.y * this.contents[2][1] + vector.z * this.contents[2][2] + vector.w * this.contents[2][3];
             // prettier-ignore
-            returned.w = vector.x * this.contents[0][3] + vector.y * this.contents[1][3] + vector.z * this.contents[2][3] + vector.w * this.contents[3][3];
+            returned.w = vector.x * this.contents[3][0] + vector.y * this.contents[3][1] + vector.z * this.contents[3][2] + vector.w * this.contents[3][3];
             return returned;
         }
 

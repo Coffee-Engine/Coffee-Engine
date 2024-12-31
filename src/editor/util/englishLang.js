@@ -185,8 +185,8 @@ editor.EnglishLang = {
     "editor.window.createBlock.referenceInput": "Function",
 
     "editor.window.properties": "Properties",
-    "editor.window.properties.noFile": "No File Selected",
-    "editor.window.properties.notFound": "No Editable Properties Found",
+    "editor.window.properties.noFile": "No file selected",
+    "editor.window.properties.notFound": "No editable properties found",
 
     "sugarcube.motion": "Motion",
     "sugarcube.motion.block.movesteps": "move [steps] steps",

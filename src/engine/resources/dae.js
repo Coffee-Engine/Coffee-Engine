@@ -1,7 +1,7 @@
 (function () {
-    //for DAE
+    //* for DAE
     const domParser = new DOMParser();
-    //Format [NAME, LENGTH, APPEND]
+    //? Format [NAME, LENGTH, APPEND]
     const daePrefectures = {
         "VERTEX":["a_position",3,1],
         "NORMAL":["a_normal",3,0],
@@ -9,7 +9,7 @@
         "COLOR":["a_color",4,0]
     };
 
-    //I can't think of a better name.
+    //! I can't think of a better name.
     const getFlArrFromSourceEl = (element) => {
         if (!element) return;
         const floatArray = Array.from(element.getElementsByTagName("float_array"))[0];
@@ -17,18 +17,20 @@
         return floatArray.innerHTML.split(" ");
     }
 
-    //The actual parser
+    //? The actual parser
     coffeeEngine.mesh.parsers.dae = (contents, meshData) => {
         meshData.data = [];
         meshData.pointCount = [];
         const data = meshData.data;
         const pointCount = meshData.pointCount;
 
+        const parsedSubMeshes = {data:{},pointCount:{}};
         const DOM = domParser.parseFromString(contents,"text/xml");
-        //Get our geometry
+        //* Get our geometry
         const geometryLib = DOM.getElementsByTagName("library_geometries")[0];
         const sceneLib = DOM.getElementsByTagName("library_visual_scenes")[0];
 
+        //* Loop through every geometries
         const geometries = Array.from(geometryLib.getElementsByTagName("geometry"));
         geometries.forEach(geometry => {
             //Get our meshes and start conversion
@@ -43,6 +45,12 @@
                     a_color:getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-color`))
                 }
 
+                parsedSubMeshes.data[`#${geometry.id}`] = [];
+                parsedSubMeshes.pointCount[`#${geometry.id}`] = [];
+
+                const currentData = parsedSubMeshes.data[`#${geometry.id}`];
+                const currentPointCount = parsedSubMeshes.pointCount[`#${geometry.id}`];
+
                 const triangles = Array.from(mesh.getElementsByTagName("triangles"));
                 triangles.forEach(triangleElement => {
                     //Expect a silly little error if possible
@@ -50,10 +58,10 @@
 
                     if (readPointCount > 2) {
                         //Just add the point count
-                        pointCount.push(readPointCount * 3);
+                        currentPointCount.push(readPointCount * 3);
 
                         //Add the new data stretch
-                        data.push({
+                        currentData.push({
                             a_position: (pullTable.a_position) ? [] : (new Array(readPointCount*12)).fill(0),
                             a_normal: (pullTable.a_normal) ? [] : (new Array(readPointCount*9)).fill(0),
                             a_texCoord: (pullTable.a_texCoord) ? [] : (new Array(readPointCount*6)).fill(0),
@@ -73,7 +81,7 @@
                         })
 
                         //!            VVV Below is peak lazyness VVV
-                        const dataIndex = data.length - 1;
+                        const dataIndex = currentData.length - 1;
                         const points = ((Array.from(triangleElement.getElementsByTagName("p"))[0] || {innerHTML:""}).innerHTML).split(" ");
                         for (let pid = 0; pid < points.length; pid++) {
                             const point = Number(points[pid]) || 0;
@@ -84,27 +92,68 @@
                             const append = prefecture[2];
                             
                             //Add the goods
-                            if (data[dataIndex][name] && pullTable[name]) {
-                                for (let X = (point*length); X < (point*length) + length; X++) { data[dataIndex][name].push(Number(pullTable[name][X]) || 0); }
-                                for (let X = 0; X < append; X++) { data[dataIndex][name].push(1); }
+                            if (currentData[dataIndex][name] && pullTable[name]) {
+                                for (let X = (point*length); X < (point*length) + length; X++) { currentData[dataIndex][name].push(Number(pullTable[name][X]) || 0); }
+                                for (let X = 0; X < append; X++) { currentData[dataIndex][name].push(1); }
                             }
                         }
-
-                        //Convert to float32 arrays
-                        data[dataIndex].a_position = new Float32Array(data[dataIndex].a_position.flat(4));
-                        data[dataIndex].a_texCoord = new Float32Array(data[dataIndex].a_texCoord.flat(4));
-                        data[dataIndex].a_normal = new Float32Array(data[dataIndex].a_normal.flat(4));
-                        data[dataIndex].a_color = new Float32Array(data[dataIndex].a_color.flat(4));
                     }
                 });
             });
         });
 
+        //* We are just going to add every scene :troll:
         const scenes = Array.from(sceneLib.getElementsByTagName("visual_scene"));
         scenes.forEach(scene => {
             const nodes = Array.from(scene.getElementsByTagName("node"));
             nodes.forEach(node => {
                 const matrixEl = Array.from(node.getElementsByTagName("matrix"))[0];
+                const mSp = matrixEl.innerHTML.split(" ");
+                const matrix = new coffeeEngine.matrix4([
+                    [(Number(mSp[0]) || 0), (Number(mSp[1]) || 0), (Number(mSp[2]) || 0), (Number(mSp[3]) || 0)],
+                    [(Number(mSp[4]) || 0), (Number(mSp[5]) || 0), (Number(mSp[6]) || 0), (Number(mSp[7]) || 0)],
+                    [(Number(mSp[8]) || 0), (Number(mSp[9]) || 0), (Number(mSp[10]) || 0), (Number(mSp[11]) || 0)],
+                    [(Number(mSp[12]) || 0), (Number(mSp[13]) || 0), (Number(mSp[14]) || 0), (Number(mSp[15]) || 0)]
+                ]);
+
+                //Instantiate our Geo
+                const instanceGeos = Array.from(node.getElementsByTagName("instance_geometry"));
+                instanceGeos.forEach(instanceGeo => {
+                    const meshID = instanceGeo.getAttribute("url");
+
+                    //Loop through sub meshes
+                    for (const subMesh in parsedSubMeshes.pointCount[meshID]) {
+                        const dataIndex = data.length;
+                        data.push(parsedSubMeshes.data[meshID][subMesh]);
+                        pointCount.push(parsedSubMeshes.pointCount[meshID][subMesh]);
+
+                        //Now we parse our data
+                        const currentData = data[dataIndex];
+                        const currentPositionData = currentData.a_position;
+                        for (let index = 0; index < currentPositionData.length; index+=4) {
+                            //Construct a "vector"
+                            const vector = {
+                                x:currentPositionData[index],
+                                y:currentPositionData[index + 1],
+                                z:currentPositionData[index + 2],
+                                w:currentPositionData[index + 3]
+                            };
+
+                            //Multiply it
+                            const constructed = matrix.multiplyVector(vector);
+                            currentPositionData[index] = constructed.x;
+                            currentPositionData[index + 1] = constructed.y;
+                            currentPositionData[index + 2] = constructed.z;
+                            currentPositionData[index + 3] = constructed.w;
+                        }
+                        
+                        //Convert to float32 arrays
+                        currentData.a_position = new Float32Array(currentData.a_position.flat(4));
+                        currentData.a_texCoord = new Float32Array(currentData.a_texCoord.flat(4));
+                        currentData.a_normal = new Float32Array(currentData.a_normal.flat(4));
+                        currentData.a_color = new Float32Array(currentData.a_color.flat(4));
+                    }
+                })
             })
             console.log(scene);
         });
