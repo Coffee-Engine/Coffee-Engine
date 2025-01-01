@@ -15,8 +15,14 @@
         //Make sure our first 4 bytes are glTF
         const magic = String.fromCharCode(contents[0],contents[1],contents[2],contents[3]);
         if (magic != "glTF") return;
+        //?JSON
+        const JSONChunkLength = coffeeEngine.byteReader.Read4Bytes(contents,12);
+        //?BIN
+        const BINChunkStart = JSONChunkLength + 12;
+        const BINChunkLength = coffeeEngine.byteReader.Read4Bytes(contents,BINChunkStart);
 
-        
+        const JSONString = coffeeEngine.byteReader.ReadString(contents,20,JSONChunkLength);
+        console.log(JSONString);
 
         //Flatten em
         const dataLength = data.length - 1;
