@@ -20,6 +20,7 @@
                     .then((file) => {
                         let split = src.split(".");
                         const extension = split[split.length - 1].toLowerCase();
+                        const settings = coffeeEngine.mesh.settings[extension] || coffeeEngine.mesh.defaultSettings;
 
                         fileReader.onload = () => {
                             const stored = new coffeeEngine.mesh.class();
@@ -29,8 +30,8 @@
 
                             resolve(stored);
                         };
-
-                        fileReader.readAsText(file);
+                        if (settings.useBytes) fileReader.readAsArrayBuffer(); 
+                        else fileReader.readAsText(file);
                     })
                     .catch(() => {
                         reject("File does not exist");
@@ -40,6 +41,10 @@
 
         storage: {},
         parsers: {},
+        settings: {},
+        defaultSettings: {
+            useBytes:false,
+        },
     };
 
     //Add our preloading function
