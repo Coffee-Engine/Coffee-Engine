@@ -30,7 +30,7 @@
 
                             resolve(stored);
                         };
-                        if (settings.useBytes) fileReader.readAsArrayBuffer(); 
+                        if (settings.useBytes) fileReader.readAsArrayBuffer(file); 
                         else fileReader.readAsText(file);
                     })
                     .catch(() => {

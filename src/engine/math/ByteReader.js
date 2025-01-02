@@ -50,5 +50,8 @@
             }
             return string;
         },
+        ReadFloat32:(byteArray,offset,length) => {
+            
+        }
     }
 })();

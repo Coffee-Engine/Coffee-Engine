@@ -66,7 +66,7 @@
                 { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 "---", 
-                { name: "meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,gltf" }, 
+                { name: "meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,glb" }, 
                 { name: "material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "/____NAMESPACE__IDENTIFIER____/":true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } }, 
                 { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 "---",
