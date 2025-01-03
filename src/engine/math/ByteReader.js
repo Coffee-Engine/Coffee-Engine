@@ -17,7 +17,7 @@
             return num;
         },
         Read2Bytes:(byteArray,offset,isSigned) => {
-            let num = coffeeEngine.byteReader.ReadBytes(byteArray,offset,2);
+            let num = coffeeEngine.byteReader.ReadBytes(byteArray,offset,2,true);
             if (isSigned) {
                 if (num > coffeeEngine.byteReader.int16_HLF) num -= coffeeEngine.byteReader.int16_LIM;
             }
@@ -30,16 +30,26 @@
             }
             return num;
         },
-        ReadBytes:(byteArray,offset,length) => {
+        ReadBytes:(byteArray,offset,length,debug) => {
             let string = "";
             
             for (let index = 0; index < length; index++) {
                 const stringifiedNum = byteArray[offset + index].toString(16);
                 string = (stringifiedNum.length > 1 ? stringifiedNum :`0${stringifiedNum}`) + string;
             }
+
+            console.log(string);
     
             return Number(`0x${string}`);
         },
+        //Gives back the byte array
+        ReadBytesRaw:(byteArray,offset,length) => {
+            const returned = [];
+            for (let index = 0; index < length; index++) { returned.splice(0,0,byteArray[offset + index]); }
+            return returned;
+        },
+
+        //Gives a string
         ReadString:(byteArray,offset,length) => {
             let string = "";
             for (let index = 0; index < length; index++) {
@@ -50,8 +60,17 @@
             }
             return string;
         },
-        ReadFloat32:(byteArray,offset,length) => {
-            
+
+        //Float function
+        ReadFloat32:(byteArray,offset) => { 
+            const buffer = new ArrayBuffer(4);
+            const dataView = new DataView(buffer);
+            const bytes = coffeeEngine.byteReader.ReadBytesRaw(byteArray,offset,4);
+            dataView.setInt8(0, bytes[0]);
+            dataView.setInt8(1, bytes[1]);
+            dataView.setInt8(2, bytes[2]);
+            dataView.setInt8(3, bytes[3]);
+            return dataView.getFloat32(0); 
         }
     }
 })();
