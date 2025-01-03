@@ -30,9 +30,9 @@
             }
             return num;
         },
-        ReadBytes:(byteArray,offset,length,debug) => {
+        ReadBytes:(byteArray,offset,length) => {
             let string = "";
-            
+
             for (let index = 0; index < length; index++) {
                 const stringifiedNum = byteArray[offset + index].toString(16);
                 string = (stringifiedNum.length > 1 ? stringifiedNum :`0${stringifiedNum}`) + string;
@@ -43,7 +43,7 @@
         //Gives back the byte array
         ReadBytesRaw:(byteArray,offset,length) => {
             const returned = [];
-            for (let index = 0; index < length; index++) { returned.splice(0,0,byteArray[offset + index]); }
+            for (let index = 0; index < length; index++) { returned.push(byteArray[offset + index]); }
             return new Uint8Array(returned);
         },
 
