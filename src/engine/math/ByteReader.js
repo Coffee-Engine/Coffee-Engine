@@ -17,7 +17,7 @@
             return num;
         },
         Read2Bytes:(byteArray,offset,isSigned) => {
-            let num = coffeeEngine.byteReader.ReadBytes(byteArray,offset,2,true);
+            let num = coffeeEngine.byteReader.ReadBytes(byteArray,offset,2);
             if (isSigned) {
                 if (num > coffeeEngine.byteReader.int16_HLF) num -= coffeeEngine.byteReader.int16_LIM;
             }
@@ -37,8 +37,6 @@
                 const stringifiedNum = byteArray[offset + index].toString(16);
                 string = (stringifiedNum.length > 1 ? stringifiedNum :`0${stringifiedNum}`) + string;
             }
-
-            console.log(string);
     
             return Number(`0x${string}`);
         },
@@ -46,7 +44,7 @@
         ReadBytesRaw:(byteArray,offset,length) => {
             const returned = [];
             for (let index = 0; index < length; index++) { returned.splice(0,0,byteArray[offset + index]); }
-            return returned;
+            return new Uint8Array(returned);
         },
 
         //Gives a string
@@ -63,14 +61,13 @@
 
         //Float function
         ReadFloat32:(byteArray,offset) => { 
-            const buffer = new ArrayBuffer(4);
-            const dataView = new DataView(buffer);
             const bytes = coffeeEngine.byteReader.ReadBytesRaw(byteArray,offset,4);
-            dataView.setInt8(0, bytes[0]);
-            dataView.setInt8(1, bytes[1]);
-            dataView.setInt8(2, bytes[2]);
-            dataView.setInt8(3, bytes[3]);
-            return dataView.getFloat32(0); 
+            const dataView = new DataView(bytes.buffer);
+            dataView.setUint8(0, bytes[3]);
+            dataView.setUint8(1, bytes[2]);
+            dataView.setUint8(2, bytes[1]);
+            dataView.setUint8(3, bytes[0]);
+            return dataView.getFloat32(0);
         }
     }
 })();

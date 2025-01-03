@@ -8,24 +8,28 @@
         5126:[coffeeEngine.byteReader.ReadFloat32,4],
     };
 
-    const getAttributeData = (name,attributes,accessors,bufferViews,standard,BINPartition,defaultSize,defaultIsStepSize) => {
+    //I'm doing this because I'm tortured
+    const getAttributeData = (name,attributes,accessors,bufferViews,standard,BINPartition,defaultSize) => {
         let returner = [];
         //We are going to get every standard item
         if (attributes[name] !== undefined) {
             const accessor = accessors[attributes[name]];
             const bufferView = bufferViews[accessor.bufferView];
             const type = GLTypes[accessor.componentType];
-            const stepSize = defaultIsStepSize ? defaultSize : (bufferView.byteLength / (defaultSize * type[1]));
+            const stepSize = (defaultSize * type[1]);
 
             //Loop through the bytes of the positions
             for (let byteID = bufferView.byteOffset; byteID < (bufferView.byteOffset + bufferView.byteLength); byteID+=stepSize) {
                 //Coordinites
-                for (let x = 0; x < defaultSize; x++) {
+                for (let x=0; x < defaultSize; x++) {
                     returner.push(type[0](BINPartition,byteID + (x*type[1]),false));
                 }
             }
         }
-        else returner = (new Array(standard.count*defaultSize)).fill(0);
+        else returner = (new Array(standard.count*defaultSize)).fill(1);
+
+        console.log(name);
+        console.log(returner);
 
         return returner;
     }
@@ -71,7 +75,7 @@
                 primitiveGeo.a_normal = getAttributeData("NORMAL",attributes,accessors,bufferViews,standard,BINPartition,3);
                 primitiveGeo.a_color = getAttributeData("COLOR_n",attributes,accessors,bufferViews,standard,BINPartition,4);
                 
-                const indicies = getAttributeData("indices",primitive,accessors,bufferViews,standard,BINPartition,1,true);
+                const indicies = getAttributeData("indices",primitive,accessors,bufferViews,standard,BINPartition,1);
                 console.log(indicies);
             })
         }
