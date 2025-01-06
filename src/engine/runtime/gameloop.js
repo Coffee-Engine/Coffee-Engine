@@ -18,10 +18,12 @@
         coffeeEngine.runtime.frameloop = setInterval(coffeeEngine.runtime.frameloopFunction, (1 / framerate) * 1000);
     };
 
-    coffeeEngine.runtime.frameStart = () => {
+    coffeeEngine.runtime.frameStart = (unupdatedMouse) => {
         coffeeEngine.runtime.updateDelta();
-        coffeeEngine.inputs.mouse.movementX = 0;
-        coffeeEngine.inputs.mouse.movementY = 0;
+        if (!unupdatedMouse) {
+            coffeeEngine.inputs.mouse.movementX = 0;
+            coffeeEngine.inputs.mouse.movementY = 0;
+        }
         coffeeEngine.renderer.nodesRendered = 0;
     };
 })();

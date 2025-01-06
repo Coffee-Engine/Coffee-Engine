@@ -200,8 +200,12 @@
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
                 Nodes:${coffeeEngine.renderer.nodesRendered}`;
 
+                //Make sure the mouse movement goes unupdated in this.
+                coffeeEngine.runtime.frameStart(true);
                 this.renderLoop();
-                coffeeEngine.runtime.frameStart();
+                //Now we update the mouse movement
+                coffeeEngine.inputs.mouse.movementX = 0;
+                coffeeEngine.inputs.mouse.movementY = 0;
             }, 16);
 
             this.buttonHolder = document.createElement("div");
