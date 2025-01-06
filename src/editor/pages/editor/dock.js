@@ -93,7 +93,6 @@
             window.docked = true;
             window.dockedColumn = column;
             if (rowOveride !== undefined && editor.dock.element.children[column].children[rowOveride]) {
-                console.log(adjancency);
                 editor.dock.element.children[column].children[rowOveride].insertAdjacentElement(adjancency, window.windowDiv);
             } else {
                 editor.dock.element.children[column].appendChild(window.windowDiv);
@@ -103,7 +102,20 @@
         dockWindow: (window, column, row, newColumn, columnBefore, useRows) => {
             let adjancency = "beforebegin";
 
-            if (newColumn) {
+            //Make sure our columns exist
+            if (editor.layout.layout.length == 0) {
+                //add our dock to the layout
+                editor.layout.layout.splice(column, 0, { size: 100, contents: [{ size: 100, content: window }] });
+
+                //Create our sub dock
+                const subDock = document.createElement("div");
+                subDock.style.display = "grid";
+                subDock.style.gridTemplateRows = "var(--dockGridVertical)";
+
+                editor.dock.element.appendChild(subDock);
+            }
+            //If they do do our little algorithm
+            else if (newColumn) {
                 //Differentiate between rows and columns
                 if (useRows) {
                     //Resize the columns
@@ -174,6 +186,16 @@
 
         dockWindowUI: (targetWindow, callback) => {
             let percentages = "";
+
+            //Make sure our editor layout exists even.
+            //If it doesnt just fullscreen
+            if (editor.layout.layout.length == 0) {
+                editor.dock.dockWindow(targetWindow, 0, 0, true, true);
+                editor.dock.closeDockWindowUI();
+                callback();
+
+                return;
+            }
 
             //Make our overlay visible
             editor.dock.overlayElement.style.opacity = "80%";
