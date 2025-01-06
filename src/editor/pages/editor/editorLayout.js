@@ -140,21 +140,38 @@
         let floating = editor.layout.floating;
         const serialized = {};
 
-        
+        //Loop through the layout grid fisrt
+        serialized.layout = [];
         for (let X = 0; X < layout.length; X++) {
             const column = layout[X];
+            //Of course we need to initilize this part
+            const serializedColumn = {size:column.size, contents:[]};
             for (let Y = 0; Y < column.contents.length; Y++) {
-                const row = column[Y];
+                const row = column.contents[Y];
 
-                console.log(editor.windows.__Serialization.find(row));
+                //Make sure our window is valid when serialized
+                const serializedName = editor.windows.__Serialization.find(row.content);
+                if (!serializedName) continue;
+
+                serializedColumn.contents.push({
+                    content: serializedName,
+                    size:row.size
+                });
             }
+            serialized.layout.push(serializedColumn);
         }
 
+        //Then grab the floating straglers
         serialized.floating = [];
         for (let I = 0; I < floating.length; I++) {
             const floatData = floating[I];
+            
+            //Make sure our window is valid when serialized
+            const serializedName = editor.windows.__Serialization.find(floatData.content);
+            if (!serializedName) continue;
+
             serialized.floating.push({
-                content: editor.windows.__Serialization.find(floatData.content),
+                content: serializedName,
                 x:(floatData.content.x/window.innerWidth) * 100,
                 y:(floatData.content.y/window.innerHeight) * 100,
                 width:(floatData.content.width/window.innerWidth) * 100,
