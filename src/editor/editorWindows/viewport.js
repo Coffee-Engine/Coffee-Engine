@@ -128,7 +128,7 @@
 
             coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.previewCamera.yaw;
             coffeeEngine.renderer.cameraData.cameraRotationEul.y = this.previewCamera.pitch;
-            coffeeEngine.renderer.cameraData.cameraRotationEul.z = this.previewCamera.roll;
+            coffeeEngine.renderer.cameraData.cameraRotationEul.z = 0;
 
             coffeeEngine.runtime.currentScene.draw();
         }
