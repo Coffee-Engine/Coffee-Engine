@@ -106,7 +106,7 @@
         __drawSky(renderer) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
-            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
+            renderer.mainShaders.skyplane.setBuffersRaw(coffeeEngine.shapes.plane);
 
             renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
@@ -187,8 +187,6 @@
                     keys[key] = Object.keys(preloadFunction.storage);
                 }
             });
-
-            console.log(keys);
 
             //Once we got all that juicy data we return our array
             return {

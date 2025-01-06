@@ -81,6 +81,7 @@
                 primitiveGeo.a_normal = getAttributeData("NORMAL",attributes,accessors,bufferViews,standard,BINPartition,3);
                 primitiveGeo.a_color = getAttributeData("COLOR_n",attributes,accessors,bufferViews,standard,BINPartition,4);
 
+                //GLB support is working
                 for (let id = 0; id < primitiveGeo.a_position.length; id++) {
                     const transformed = transform.multiplyVector({
                         x:primitiveGeo.a_position[id][0],

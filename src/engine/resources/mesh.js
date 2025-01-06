@@ -27,9 +27,14 @@
                             coffeeEngine.mesh.storage[src] = stored;
 
                             if (coffeeEngine.mesh.parsers[extension]) coffeeEngine.mesh.parsers[extension](fileReader.result, stored);
+                            for (const index in stored.data) {
+                                stored.data[index] = coffeeEngine.renderer.daveshade.buffersFromJSON(stored.data[index]);
+                            }
 
                             resolve(stored);
                         };
+
+                        //Load the file.
                         if (settings.useBytes) fileReader.readAsArrayBuffer(file); 
                         else fileReader.readAsText(file);
                     })

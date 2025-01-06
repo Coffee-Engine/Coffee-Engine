@@ -278,10 +278,16 @@ window.DaveShade = {};
                 GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                 GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(65536), GL.STATIC_DRAW);
 
-                //* The setter
-                shader.attributes[attributeDef.name].set = (newValue) => {
+                //* The setter legacy (DS2)
+                shader.attributes[attributeDef.name].setRaw = (newValue) => {
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
+                    GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
+                };
+                
+                //* The setter
+                shader.attributes[attributeDef.name].set = (newValue) => {
+                    GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
                 };
 
@@ -311,6 +317,26 @@ window.DaveShade = {};
                 GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
             });
 
+            //* The buffer setter! the Legacy ONE!
+            shader.setBuffersRaw = (attributeJSON) => {
+                //* Attribute keys. Whoopee
+                if (daveShadeInstance.currentBuffer == attributeJSON) return;
+
+                //Worst case scenario, we have 100 objects with different meshes in completely seperate draw orders
+                daveShadeInstance.currentBuffer = attributeJSON;
+                const attributeKeys = Object.keys(attributeJSON);
+
+                //? Loop through the keys
+                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
+                    const key = attributeKeys[keyID];
+
+                    //* if it exists set the attribute
+                    if (shader.attributes[key]) {
+                        shader.attributes[key].setRaw(attributeJSON[key]);
+                    }
+                }
+            };
+
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
                 //* Attribute keys. Whoopee
@@ -329,7 +355,7 @@ window.DaveShade = {};
                         shader.attributes[key].set(attributeJSON[key]);
                     }
                 }
-            };
+            }
 
             shader.drawFromBuffers = (triAmount) => {
                 GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
@@ -385,6 +411,21 @@ window.DaveShade = {};
             daveShadeInstance.triCount = 0;
             daveShadeInstance.GL.clear(bufferBits);
         };
+
+        daveShadeInstance.buffersFromJSON = (attributeJSON) => {
+            const returned = {};
+            for (const key in attributeJSON) {
+                const element = attributeJSON[key];
+                console.log(element);
+                const buffer = coffeeEngine.renderer.daveshade.GL.createBuffer();
+                GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
+                GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
+
+                returned[key] = buffer;
+            }
+
+            return returned;
+        }
 
         return daveShadeInstance;
     };
