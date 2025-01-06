@@ -39,7 +39,7 @@
                 this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
 
                 this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).webGLValue();
-                this.shader.uniforms.u_texture.value = this.texture;
+                if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
 
                 this.shader.drawFromBuffers(6);
