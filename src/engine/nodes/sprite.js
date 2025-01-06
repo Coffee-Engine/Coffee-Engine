@@ -45,7 +45,7 @@
                 this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
                 coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
 
-                coffeeEngine.renderer.mainShaders.unlit.setBuffers(coffeeEngine.shapes.plane);
+                coffeeEngine.renderer.mainShaders.unlit.setBuffersRaw(coffeeEngine.shapes.plane);
 
                 if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;

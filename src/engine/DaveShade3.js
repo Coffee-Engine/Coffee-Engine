@@ -416,7 +416,6 @@ window.DaveShade = {};
             const returned = {};
             for (const key in attributeJSON) {
                 const element = attributeJSON[key];
-                console.log(element);
                 const buffer = coffeeEngine.renderer.daveshade.GL.createBuffer();
                 GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
                 GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
