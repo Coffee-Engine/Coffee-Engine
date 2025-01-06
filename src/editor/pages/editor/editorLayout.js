@@ -96,6 +96,7 @@
                 newWindow.width = (floatData.width/100) * window.innerWidth;
                 newWindow.height = (floatData.height/100) * window.innerHeight;
                 newWindow.resized();
+                newWindow.__moveToTop();
 
                 floatData.content = newWindow;
             } else if (Array.isArray(content)) {
@@ -129,6 +130,7 @@
                 hostWindow.width = (floatData.width/100) * window.innerWidth;
                 hostWindow.height = (floatData.height/100) * window.innerHeight;
                 hostWindow.resized();
+                hostWindow.__moveToTop();
 
                 floatData.content = hostWindow;
             }
@@ -163,21 +165,26 @@
 
         //Then grab the floating straglers
         serialized.floating = [];
-        for (let I = 0; I < floating.length; I++) {
-            const floatData = floating[I];
-            
-            //Make sure our window is valid when serialized
-            const serializedName = editor.windows.__Serialization.find(floatData.content);
-            if (!serializedName) continue;
 
-            serialized.floating.push({
-                content: serializedName,
-                x:(floatData.content.x/window.innerWidth) * 100,
-                y:(floatData.content.y/window.innerHeight) * 100,
-                width:(floatData.content.width/window.innerWidth) * 100,
-                height:(floatData.content.height/window.innerHeight) * 100
+        //We don't directly access the layout due to stragglers
+        Object.keys(editor.windows.existing).forEach(windowKey => {
+            const windowType = editor.windows.existing[windowKey];
+            windowType.forEach(windowObj => {
+                if (windowObj.docked || windowObj.owner) return;
+                
+            //Make sure our window is valid when serialized
+                const serializedName = editor.windows.__Serialization.find(windowObj);
+                if (!serializedName) return;
+
+                serialized.floating.push({
+                    content: serializedName,
+                    x:(windowObj.x/window.innerWidth) * 100,
+                    y:(windowObj.y/window.innerHeight) * 100,
+                    width:(windowObj.width/window.innerWidth) * 100,
+                    height:(windowObj.height/window.innerHeight) * 100
+                })
             })
-        }
+        })
 
         return serialized;
     }

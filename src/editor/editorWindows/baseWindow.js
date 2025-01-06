@@ -337,6 +337,7 @@
                 //Clear mouse actions when done;
                 document.onmouseup = () => {
                     document.onmousemove = () => {};
+                    editor.Storage.setStorage("layout", editor.__serializeLayout());
                 };
 
                 //If we are on the edge use different behavior.
@@ -467,6 +468,7 @@
 
                     document.onmouseup = () => {
                         document.onmousemove = () => {};
+                        editor.Storage.setStorage("layout", editor.__serializeLayout());
                     };
 
                     document.onmousemove = (moveEvent) => {
@@ -508,6 +510,7 @@
                 //Clear mouse actions when done;
                 document.onmouseup = () => {
                     document.onmousemove = () => {};
+                    editor.Storage.setStorage("layout", editor.__serializeLayout());
                 };
 
                 //Normal window resize calculations
