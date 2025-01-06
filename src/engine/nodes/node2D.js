@@ -7,12 +7,40 @@
         set layer(value) {
             //Make layer 1 the minimum
             this.#layer = value >= 1 ? value : 1;
+            this.updateMatrix();
         }
         get layer() {
             return this.#layer;
         }
-        rotation = 0;
+        #rotation = 0;
+        set rotation(value) {
+            this.#rotation = value;
+            this.updateMatrix();
+        }
+        get rotation() {
+            return this.#rotation;
+        }
+
         matrix = coffeeEngine.matrix4.identity();
+
+        updateMatrix() {
+            this.matrix = coffeeEngine.matrix4.identity();
+            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
+            this.matrix = this.matrix.rotationZ(this.rotation);
+            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
+        }
+
+        constructor() {
+            super();
+            this.position.setter = () => {
+                this.updateMatrix();
+            };
+            this.scale.setter = () => {
+                this.updateMatrix();
+            };
+            
+            this.updateMatrix();
+        }
 
         update(deltaTime) {
             super.update(deltaTime);
@@ -20,11 +48,6 @@
 
         draw() {
             super.draw();
-
-            this.matrix = coffeeEngine.matrix4.identity();
-            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
-            this.matrix = this.matrix.rotationZ(this.rotation);
-            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
         }
 
         getProperties() {

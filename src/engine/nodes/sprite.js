@@ -8,6 +8,7 @@
                 this.texture = texture.texture;
                 this.textureWidth = texture.width;
                 this.textureHeight = texture.height;
+                this.updateMatrix();
             });
         }
 
@@ -31,18 +32,27 @@
 
         shader = coffeeEngine.renderer.mainShaders.unlit;
 
-        scaleMultiplier = 1.0;
+        $scaleMultiplier = 1.0;
+        set scaleMultiplier(value) {
+            this.$scaleMultiplier = value;
+            this.updateMatrix();
+        }
+        get scaleMultiplier() {
+            return this.$scaleMultiplier;
+        }
 
-        update(deltaTime) {
-            super.update(deltaTime);
+        updateMatrix() {
+            this.matrix = coffeeEngine.matrix4.identity();
+            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
+            this.matrix = this.matrix.rotationZ(this.rotation);
+            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
+            this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
         }
 
         draw() {
             super.draw();
 
             if (this.texture) {
-                //Sprite scaling
-                this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
                 coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
 
                 coffeeEngine.renderer.mainShaders.unlit.setBuffersRaw(coffeeEngine.shapes.plane);

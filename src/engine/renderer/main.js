@@ -96,6 +96,7 @@
             storedRes: [480, 360],
             storedAspect: 1,
             storedWFactor: [1, 1],
+            cameraRotationEul: new coffeeEngine.vector3(0, 0, 0)
         };
 
         coffeeEngine.renderer.mainShaders = {
