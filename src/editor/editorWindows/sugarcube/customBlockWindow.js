@@ -5,6 +5,7 @@
 
         init(container) {
             this.resizable = false;
+            this.dockable = false;
             this.title = editor.language["editor.window.createBlock"];
 
             container.style.display = "grid";
