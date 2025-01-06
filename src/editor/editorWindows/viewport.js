@@ -130,6 +130,7 @@
         }
 
         init(container) {
+            this.closable = false;
             this.title = editor.language["editor.window.viewport"];
 
             //The main canvas

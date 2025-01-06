@@ -432,10 +432,19 @@
             onSelect();
         };
 
+        //Give an empty layout with a single viewport. The viewport is essential.
         document.getElementById("empty").onclick = () => {
             editor.layout = {
                 layout: [],
-                floating: [],
+                floating: [
+                    {
+                        content: "viewport",
+                        x:37.5,
+                        y:37.5,
+                        width:25,
+                        height:25
+                    },
+                ],
             };
             editor.Storage.setStorage("layout", editor.layout);
             onSelect();

@@ -50,24 +50,6 @@
 </svg>
 <!--rotationCenter:42.263227662355774:42.263227662355774-->`;
 
-    //This will contain the editor's windows
-    editor.windowLayer = 0;
-    editor.windows = {};
-
-    editor.windows.existing = {};
-
-    //this is the base window class
-    editor.windows.__Serialization = {
-        register: (classOBJ, id, jsonData) => {
-            //Extra json can be used to add special data to windows like only allowing 1 to be open at a time.
-            editor.windows.__Serialization.all[id] = classOBJ; //{object: classOBJ, extraJson:jsonData};
-            editor.windows.__Serialization.data[id] = jsonData || {};
-        },
-
-        all: {},
-        data: {},
-    };
-
     editor.windows.base = class {
         //Manage our dock status
         dockedColumn = 0;
@@ -97,6 +79,36 @@
 
         //Determines if the window is resizable.
         resizable = true;
+        set closable(value) {
+            this.#closable = value;
+            if (value) {
+                this.closeButton.style.opacity = "100%";
+                this.closeButton.style.pointerEvents = "auto";
+            }
+            else {
+                this.closeButton.style.opacity = "50%";
+                this.closeButton.style.pointerEvents = "none";
+            }
+        }
+        get closable() {
+            return this.#closable
+        }
+        #closable = true;
+        set dockable(value) {
+            this.#dockable = value;
+            if (value) {
+                this.dockButton.style.opacity = "100%";
+                this.dockButton.style.pointerEvents = "auto";
+            }
+            else {
+                this.dockButton.style.opacity = "50%";
+                this.dockButton.style.pointerEvents = "none";
+            }
+        }
+        get dockable() {
+            return this.#dockable
+        }
+        #dockable = true;
 
         //Window width and height managers
         #width = 128;
@@ -215,21 +227,11 @@
 
             //Just doing this for ease
             this.titleDiv = document.createElement("div");
-            this.closeButton = document.createElement("button");
-            this.dockButton = document.createElement("button");
-
-            //The fine intricacies of the close button
-            this.closeButton.className = "closeButton";
-            this.closeButton.innerHTML = closeButtonSVG;
 
             //The horrible idiocracies of the dock button
+            this.dockButton = document.createElement("button");
             this.dockButton.className = "closeButton";
             this.dockButton.innerHTML = dockButtonSVG;
-
-            //Do this so the 'this' context doesn't overlap with the button
-            this.closeButton.onclick = () => {
-                this._dispose();
-            };
 
             this.dockButton.onclick = () => {
                 if (this.docked) {
@@ -249,14 +251,25 @@
                 }
             };
 
-            //Make the title have no interaction
-            this.titleDiv.style.pointerEvents = "none";
-            this.titleDiv.style.userSelect = "none";
-            this.titleDiv.style.display = "grid";
+            //The fine intricacies of the close button
+            this.closeButton = document.createElement("button");
+            this.closeButton.className = "closeButton";
+            this.closeButton.innerHTML = closeButtonSVG;
+
+            //Do this so the 'this' context doesn't overlap with the button
+            this.closeButton.onclick = () => {
+                this._dispose();
+            };
+
 
             this.TaskBar.appendChild(this.titleDiv);
             this.TaskBar.appendChild(this.dockButton);
             this.TaskBar.appendChild(this.closeButton);
+
+            //Make the title have no interaction
+            this.titleDiv.style.pointerEvents = "none";
+            this.titleDiv.style.userSelect = "none";
+            this.titleDiv.style.display = "grid";
 
             //Update title and apply to window
             this.__updateTitle();

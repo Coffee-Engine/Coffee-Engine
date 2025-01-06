@@ -93,3 +93,28 @@ window.editor = {
         filePermissions: window.showOpenFilePicker != undefined,
     },
 };
+
+//This will contain the editor's windows
+editor.windowLayer = 0;
+editor.windows = {};
+
+editor.windows.existing = {};
+
+//this is the base window class
+editor.windows.__Serialization = {
+    register: (classOBJ, id, jsonData) => {
+        //Extra json can be used to add special data to windows like only allowing 1 to be open at a time.
+        editor.windows.__Serialization.all[id] = classOBJ; //{object: classOBJ, extraJson:jsonData};
+        editor.windows.__Serialization.data[id] = jsonData || {};
+    },
+
+    find: (windowOBJ) => {
+        for (const key in editor.windows.__Serialization.all) {
+            const constructor = editor.windows.__Serialization.all[key];
+            if (constructor == windowOBJ.constructor) return key;
+        }
+    },
+
+    all: {},
+    data: {},
+};
