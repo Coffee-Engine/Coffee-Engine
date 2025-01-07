@@ -139,6 +139,20 @@
         }
 
         propertyDisplays = {
+            boolean: (node, property, onchange) => {
+                const input = document.createElement("input");
+                input.type = "checkbox",
+                input.checked = node[property.name || "name"] || false;
+
+                input.onchange = () => {
+                    node[property.name] = input.checked;
+                    input.checked = node[property.name || "name"];
+                    if (onchange) onchange(property, node[property.name], node);
+                }
+
+                return input;
+            },
+
             string: (node, property, onchange) => {
                 const input = document.createElement("input");
                 input.type = "text";

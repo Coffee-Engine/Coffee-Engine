@@ -20,4 +20,7 @@ coffeeEngine.PropertyTypes = {
 
     ARRAY: "array",
     OBJECT: "object",
+
+    //Silly fella
+    BOOLEAN: "boolean"
 };
