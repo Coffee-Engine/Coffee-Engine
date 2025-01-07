@@ -81,6 +81,31 @@
                 {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];
         }
+
+        sortValue() {
+            const cameraPos = coffeeEngine.renderer.cameraData.position;
+            const closest = new coffeeEngine.vector3(cameraPos.x, cameraPos.y, cameraPos.z);
+            const horizontalBound = (this.scale.x * this.textureWidth * this.scaleMultiplier);
+
+            if (closest.x < (this.position.x - horizontalBound)) closest.x = this.position.x - horizontalBound;
+            else if (closest.x > (this.position.x + horizontalBound)) closest.x = this.position.x + horizontalBound;
+            
+            if (closest.z < (this.position.z - horizontalBound)) closest.z = this.position.z - horizontalBound;
+            else if (closest.z > (this.position.z + horizontalBound)) closest.z = this.position.z + horizontalBound;
+
+            if (this.omnidirectional) {
+                if (closest.y < (this.position.y - horizontalBound)) closest.y = this.position.y - horizontalBound;
+                else if (closest.y > (this.position.y + horizontalBound)) closest.y = this.position.y + horizontalBound;
+            }
+            else {
+                const verticalBound = (this.scale.y * this.textureHeight * this.scaleMultiplier);
+
+                if (closest.y < (this.position.y - verticalBound)) closest.y = this.position.y - verticalBound;
+                else if (closest.y > (this.position.y + verticalBound)) closest.y = this.position.y + verticalBound;
+            }
+
+            return closest.sub(coffeeEngine.renderer.cameraData.position).length();
+        }
     }
 
     coffeeEngine.registerNode(billboard, "Billboard", "Node3D");
