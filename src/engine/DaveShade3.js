@@ -140,7 +140,7 @@ window.DaveShade = {};
             let compileStatus = true;
             if (vertex && !fragment) return daveShadeInstance.decomposeShader(vertex);
 
-            const shader = {};
+            const shader = {currentBuffer:{}};
 
             //* Compile the vertex shader
             shader.vertex = {
@@ -320,10 +320,10 @@ window.DaveShade = {};
             //* The buffer setter! the Legacy ONE!
             shader.setBuffersRaw = (attributeJSON) => {
                 //* Attribute keys. Whoopee
-                if (daveShadeInstance.currentBuffer == attributeJSON) return;
+                //if (shader.currentBuffer == attributeJSON) return;
 
                 //Worst case scenario, we have 100 objects with different meshes in completely seperate draw orders
-                daveShadeInstance.currentBuffer = attributeJSON;
+                shader.currentBuffer = attributeJSON;
                 const attributeKeys = Object.keys(attributeJSON);
 
                 //? Loop through the keys
@@ -340,10 +340,10 @@ window.DaveShade = {};
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
                 //* Attribute keys. Whoopee
-                if (daveShadeInstance.currentBuffer == attributeJSON) return;
+                if (shader.currentBuffer == attributeJSON) return;
 
                 //Worst case scenario, we have 100 objects with different meshes in completely seperate draw orders
-                daveShadeInstance.currentBuffer = attributeJSON;
+                shader.currentBuffer = attributeJSON;
                 const attributeKeys = Object.keys(attributeJSON);
 
                 //? Loop through the keys

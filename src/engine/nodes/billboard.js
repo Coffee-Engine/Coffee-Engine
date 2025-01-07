@@ -33,6 +33,7 @@
         }
 
         omnidirectional = false;
+        scaleMultiplier = 1.0;
 
         updateMatrix() {
             this.matrix = coffeeEngine.matrix4.identity();
@@ -49,9 +50,11 @@
                 if (this.omnidirectional) this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                     .scale(this.scale.x, this.scale.y, this.scale.z)
+                    .scale(this.textureWidth * this.scaleMultiplier,this.textureHeight * this.scaleMultiplier,1)
                     .webGLValue();
                 else this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .scale(this.scale.x, this.scale.y, this.scale.z)
+                    .scale(this.textureWidth * this.scaleMultiplier,this.textureHeight * this.scaleMultiplier,1)
                     .webGLValue();
 
                 if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
@@ -70,8 +73,10 @@
                 { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 },
                 "---", 
                 { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" },
-                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 { name: "omnidirectional", type: coffeeEngine.PropertyTypes.BOOLEAN},
+                { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
+                "---",
+                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 "---",
                 {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];

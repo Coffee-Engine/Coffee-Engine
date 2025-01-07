@@ -8,6 +8,10 @@
                 this.texture = texture.texture;
                 this.textureWidth = texture.width;
                 this.textureHeight = texture.height;
+                console.log("sprite loaded")
+                console.log(this.textureWidth )
+                console.log(this.textureHeight)
+                console.log(this.texture)
                 this.updateMatrix();
             });
         }
@@ -53,14 +57,14 @@
             super.draw();
 
             if (this.texture) {
-                coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = this.matrix.webGLValue();
+                this.shader.uniforms.u_model.value = this.matrix.webGLValue();
 
-                coffeeEngine.renderer.mainShaders.unlit.setBuffersRaw(coffeeEngine.shapes.plane);
+                this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
 
-                if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
+                if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
 
-                coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
+                this.shader.drawFromBuffers(6);
             }
         }
 
