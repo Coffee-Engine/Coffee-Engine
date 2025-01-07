@@ -96,13 +96,13 @@
                         if (property == "---") {
                             element.innerHTML = "<br>";
                         } else {
-                            element.innerText = property;
+                            element.innerText = editor.language[`engine.nodePropertyLabels.${property}`] || property;
                         }
                         break;
 
                     case "object":
                         //Define the property type
-                        element.innerText = `${property.name || "unknown"} : `;
+                        element.innerText = `${editor.language[property.translationKey] || property.name || "unknown"} : `;
 
                         //Get the property editor of each item
                         if (myself.propertyDisplays[property.type]) element.appendChild(myself.propertyDisplays[property.type](read, property, onchange));

@@ -410,4 +410,18 @@ editor.EnglishLang = {
     "engine.nodeNames.Camera": "Camera",
     "engine.nodeNames.MeshDisplay": "Mesh Display",
     "engine.nodeNames.Billboard": "Billboard",
+
+    "engine.nodePropertyLabels.NothingHere": "Nothing here!",
+    "engine.nodeProperties.Node.name":"Name",
+    "engine.nodeProperties.Node.script":"Script",
+    "engine.nodeProperties.Node.modulatedColor":"Modulated Color",
+    "engine.nodeProperties.Node.position":"Position",
+    "engine.nodeProperties.Node.rotation":"Rotation",
+    "engine.nodeProperties.Node.scale":"Scale",
+    "engine.nodeProperties.Node2D.layer":"Layer",
+    "engine.nodeProperties.Sprite.spritePath": "Sprite Path",
+    "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
+    "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
+    "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
+    "engine.nodeProperties.MeshDisplay.material": "Material"
 };

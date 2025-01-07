@@ -38,13 +38,13 @@
 
         getProperties() {
             return [
-                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 },
+                { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 },
                 "---",
-                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];
         }
 

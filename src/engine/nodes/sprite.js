@@ -70,18 +70,19 @@
 
         getProperties() {
             return [
-                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, 
-                { name: "layer", type: coffeeEngine.PropertyTypes.INT }, 
-                { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, 
-                { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "layer", translationKey:"engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, 
+                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
                 "---", 
-                { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
-                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true }, 
-                { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
+                { name: "spritePath", translationKey:"engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
+                { name: "scaleMultiplier", translationKey:"engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
                 "---",
-                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+                { name: "modulatedColor", translationKey:"engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true }, 
+                "---",
+                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];
         }
     }

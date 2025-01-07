@@ -60,17 +60,17 @@
 
         getProperties() {
             return [
-                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 "---", 
-                { name: "meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,glb" }, 
-                { name: "material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "/____NAMESPACE__IDENTIFIER____/":true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } }, 
-                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
+                { name: "meshPath", translationKey:"engine.nodeProperties.MeshDisplay.meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,glb" }, 
+                { name: "material", translationKey:"engine.nodeProperties.MeshDisplay.material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "/____NAMESPACE__IDENTIFIER____/":true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } }, 
+                { name: "modulatedColor", translationKey:"engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 "---",
-                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];
         }
     }

@@ -66,22 +66,22 @@
 
         getProperties() {
             return [
-                { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
+                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 },
+                { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 },
                 "---", 
-                { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" },
-                { name: "omnidirectional", type: coffeeEngine.PropertyTypes.BOOLEAN},
-                { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
+                { name: "spritePath", translationKey:"engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" },
+                { name: "omnidirectional", translationKey:"engine.nodeProperties.Billboard.omnidirectional", type: coffeeEngine.PropertyTypes.BOOLEAN},
+                { name: "scaleMultiplier", translationKey:"engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
                 "---",
-                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
+                { name: "modulatedColor", translationKey:"engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 "---",
-                {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];
         }
     }
 
-    coffeeEngine.registerNode(billboard, "billboard", "Node3D");
+    coffeeEngine.registerNode(billboard, "Billboard", "Node3D");
 })();

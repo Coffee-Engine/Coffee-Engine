@@ -320,7 +320,6 @@ window.DaveShade = {};
             //* The buffer setter! the Legacy ONE!
             shader.setBuffersRaw = (attributeJSON) => {
                 //* Attribute keys. Whoopee
-                //if (shader.currentBuffer == attributeJSON) return;
 
                 //Worst case scenario, we have 100 objects with different meshes in completely seperate draw orders
                 shader.currentBuffer = attributeJSON;

@@ -97,7 +97,7 @@
             });
 
             //Now lets draw the objects
-            for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
+            for (let drawItem = 0; drawItem < this.drawList.length; drawItem++) {
                 const node = this.drawList[drawItem];
                 node.draw();
             }
@@ -287,7 +287,7 @@
         }
 
         getProperties() {
-            return ["Nothing Here"];
+            return ["NothingHere"];
 
             //Input Testing stuff
             /*

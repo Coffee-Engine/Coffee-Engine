@@ -10,22 +10,50 @@
                 }
 
                 coffeeEngine.renderer.textureStorage[src] = {};
+                let fileExtension = src.split(".");
+                fileExtension = fileExtension[fileExtension.length - 1];
 
                 project
                     .getFile(src)
                     .then((file) => {
-                        const trackedImage = new Image();
+                        //VVV SVG VVV
+                        if (fileExtension.toLowerCase() == "svg") {
+                            const fileReader = new FileReader();
 
-                        trackedImage.onload = () => {
-                            coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
-                            resolve(coffeeEngine.renderer.textureStorage[src]);
-                        };
+                            fileReader.onload = () => {
+                                console.log(fileReader.result.replace("data:application/octet-stream","data:image/svg+xml;charset=utf-8"));
 
-                        trackedImage.onerror = () => {
-                            reject("error loading image");
-                        };
+                                const trackedImage = new Image();
+    
+                                trackedImage.onload = () => {
+                                    coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
+                                    resolve(coffeeEngine.renderer.textureStorage[src]);
+                                };
+    
+                                trackedImage.onerror = () => {
+                                    reject("error loading image");
+                                };
+    
+                                trackedImage.src = fileReader.result.replace("data:application/octet-stream","data:image/svg+xml;charset=utf-8");
+                            }
 
-                        trackedImage.src = window.URL.createObjectURL(file);
+                            fileReader.readAsDataURL(file);
+                        }
+                        //VVV Bitmap VVV
+                        else {
+                            const trackedImage = new Image();
+
+                            trackedImage.onload = () => {
+                                coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
+                                resolve(coffeeEngine.renderer.textureStorage[src]);
+                            };
+
+                            trackedImage.onerror = () => {
+                                reject("error loading image");
+                            };
+
+                            trackedImage.src = window.URL.createObjectURL(file);
+                        }
                     })
                     .catch((exception) => {
                         reject("file doesn't exist");
