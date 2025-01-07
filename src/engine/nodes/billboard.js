@@ -34,14 +34,25 @@
 
         omnidirectional = false;
 
+        updateMatrix() {
+            this.matrix = coffeeEngine.matrix4.identity();
+            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.position.z);
+        }
+
         draw() {
             super.draw();
 
             if (this.texture) {
                 this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
 
-                if (this.omnidirectional) this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y).webGLValue();
-                else this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).webGLValue();
+                //Rotate and scale our billboard depending on MULTIPLE variables
+                if (this.omnidirectional) this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
+                    .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
+                    .scale(this.scale.x, this.scale.y, this.scale.z)
+                    .webGLValue();
+                else this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
+                    .scale(this.scale.x, this.scale.y, this.scale.z)
+                    .webGLValue();
 
                 if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
