@@ -16,6 +16,8 @@
             return this.#spritePath;
         }
 
+        shader = coffeeEngine.renderer.mainShaders.unlit;
+
         #modulatedColorArr = [1, 1, 1, 1];
         #modulatedColor = "#ffffffff";
 
@@ -30,37 +32,17 @@
             return this.#modulatedColor;
         }
 
-        shader = coffeeEngine.renderer.mainShaders.unlit;
-
-        $scaleMultiplier = 1.0;
-        set scaleMultiplier(value) {
-            this.$scaleMultiplier = value;
-            this.updateMatrix();
-        }
-        get scaleMultiplier() {
-            return this.$scaleMultiplier;
-        }
-
-        updateMatrix() {
-            this.matrix = coffeeEngine.matrix4.identity();
-            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
-            //this.matrix = this.matrix.rotationZ(this.rotation);
-            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, this.scale.z);
-            this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
-        }
-
         draw() {
             super.draw();
 
             if (this.texture) {
-                coffeeEngine.renderer.mainShaders.unlit.uniforms.u_model.value = (this.matrix.rotationZ(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)).webGLValue();
+                this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
 
-                coffeeEngine.renderer.mainShaders.unlit.setBuffersRaw(coffeeEngine.shapes.plane);
-
-                if (this.texture && this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
+                this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).webGLValue();
+                if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
 
-                coffeeEngine.renderer.mainShaders.unlit.drawFromBuffers(6);
+                this.shader.drawFromBuffers(6);
             }
         }
 
@@ -68,14 +50,12 @@
             return [
                 { name: "name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "position", type: coffeeEngine.PropertyTypes.VEC2 }, 
-                { name: "layer", type: coffeeEngine.PropertyTypes.INT }, 
-                { name: "rotation", type: coffeeEngine.PropertyTypes.FLOAT }, 
-                { name: "scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 "---", 
-                { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
-                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true }, 
-                { name: "scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
+                { name: "spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" },
+                { name: "modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4, smallRange: true },
                 "---",
                 {name: "script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];

@@ -1,6 +1,7 @@
 (function () {
     editor.windows.nodeMaker = class extends editor.windows.base {
         init(container) {
+            this.dockable = false;
             this.elements = {};
             this.title = editor.language["editor.window.nodeMaker"];
             const myself = this;
@@ -38,7 +39,7 @@
 
         onNodeClicked = (nodeName) => {
             const NewNode = new (coffeeEngine.getNode(nodeName))();
-            NewNode.name = editor.language[`engine.nodeNames.${nodeName}`] || key;
+            NewNode.name = editor.language[`engine.nodeNames.${nodeName}`] || nodeName;
             coffeeEngine.runtime.currentScene.addChild(NewNode);
             this._dispose();
         };
