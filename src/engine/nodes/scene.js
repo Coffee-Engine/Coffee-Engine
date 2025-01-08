@@ -14,6 +14,7 @@
             this.events = {
                 update: [],
                 childAdded: [],
+                childMoved: [],
             };
             this.drawList = [];
 

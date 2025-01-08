@@ -46,6 +46,9 @@
             } else {
                 console.error(`cannot set parent to ${String(value)}`);
             }
+
+            //Refresh stuff
+            coffeeEngine.runtime.currentScene.castEvent("childMoved", child);
         }
         get parent() {
             return this.#parent;

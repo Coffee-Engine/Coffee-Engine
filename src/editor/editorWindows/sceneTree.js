@@ -37,17 +37,41 @@
                 //Remove 'em
                 myself.sceneContainer.innerHTML = "";
 
-                myself.createNodeElement(coffeeEngine.runtime.currentScene, myself.sceneContainer, false);
+                myself.createNodeElement(coffeeEngine.runtime.currentScene, myself.sceneContainer, false, true);
             };
 
             this.refreshContents();
             coffeeEngine.runtime.currentScene.addEventListener("childAdded", this.refreshContents);
+            coffeeEngine.runtime.currentScene.addEventListener("childMoved", this.refreshContents);
         }
 
-        createNodeElement(Node, parentElement, even) {
+        createNodeElement(Node, parentElement, even, root) {
             const element = document.createElement("div");
             element.setAttribute("even", even.toString());
             element.className = "fileButton";
+
+            if (!root) {
+                element.contextFunction = () => {
+                    return [
+                        { text: editor.language["editor.window.sceneTree.duplicate"], value: "duplicate" },
+                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" }
+                    ];
+                };
+
+                element.contentAnswer = (value) => {
+                    switch (value) {
+                        case "delete":
+                            //Die
+                            console.log(Node);
+                            Node.parent = null;
+                            Node.dispose();
+                            break;
+
+                        default:
+                            break;
+                    }
+                };
+            }
 
             element.onclick = (event) => {
                 event.stopPropagation();
@@ -68,7 +92,7 @@
             parentElement.appendChild(element);
 
             Node.children.forEach((childNode) => {
-                this.createNodeElement(childNode, lowerDiv, !even);
+                this.createNodeElement(childNode, lowerDiv, !even, false);
             });
 
             return element;
@@ -76,6 +100,7 @@
 
         dispose() {
             coffeeEngine.runtime.currentScene.removeEventListener("childAdded", this.refreshContents);
+            coffeeEngine.runtime.currentScene.removeEventListener("childMoved", this.refreshContents);
         }
     };
 
