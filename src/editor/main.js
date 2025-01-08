@@ -86,6 +86,15 @@ window.editor = {
         });
     },
 
+    controls: {
+        forward:"w",
+        left:"a",
+        back:"s",
+        right:"d",
+        up:"e",
+        down:"q",
+    },
+
     safeties: {
         secureContext: window.isSecureContext,
         folderPerimissions: window.showDirectoryPicker != undefined,

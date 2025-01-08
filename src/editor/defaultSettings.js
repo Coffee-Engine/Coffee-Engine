@@ -12,7 +12,13 @@
             barStyle: "Flat",
         },
         Viewport: {
-            mouseSensitivity:1
+            mouseSensitivity:1,
+            forward:"w",
+            left:"a",
+            back:"s",
+            right:"d",
+            up:"e",
+            down:"q",
         },
         Theme: {
             themeColor: "Mocha",
@@ -64,8 +70,10 @@
 
     const quickSettingCSSThemeColor = (cssName) => {
         return {
+            //Make our color type
             type: "color",
             onChange: (value, fromBoot) => {
+                //Make sure the theme isn't custom
                 if (editor.settings.values.Theme.themeColor == "Custom") {
                     document.body.style.setProperty(cssName, value);
                 } else if (editor.settings.values.Monaco.themeOverride) {
@@ -192,6 +200,42 @@
                 onChange: (value) => {
                     editor.mouseSensitivity = Number(value) || 1;
                 },
+            },
+            forward: {
+                type: "key",
+                onChange: (value) => {
+                    editor.controls.forward = value;
+                }
+            },
+            left: {
+                type: "key",
+                onChange: (value) => {
+                    editor.controls.left = value;
+                }
+            },
+            back: {
+                type: "key",
+                onChange: (value) => {
+                    editor.controls.back = value;
+                }
+            },
+            right: {
+                type: "key",
+                onChange: (value) => {
+                    editor.controls.right = value;
+                }
+            },
+            up: {
+                type: "key",
+                onChange: (value) => {
+                    editor.controls.up = value;
+                }
+            },
+            down: {
+                type: "key",
+                onChange: (value) => {
+                    editor.controls.down = value;
+                }
             },
         },
         Theme: {

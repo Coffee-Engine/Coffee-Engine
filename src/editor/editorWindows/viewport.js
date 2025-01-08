@@ -49,23 +49,23 @@
 
                 this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch, -1.5707), 1.5707);
 
-                if (coffeeEngine.inputs.keys["e"]) this.previewCamera.y -= 0.05 * this.previewCamera.speed;
-                if (coffeeEngine.inputs.keys["q"]) this.previewCamera.y += 0.05 * this.previewCamera.speed;
+                if (coffeeEngine.inputs.keys[editor.controls.up]) this.previewCamera.y -= 0.05 * this.previewCamera.speed;
+                if (coffeeEngine.inputs.keys[editor.controls.down]) this.previewCamera.y += 0.05 * this.previewCamera.speed;
 
-                if (coffeeEngine.inputs.keys["d"]) {
+                if (coffeeEngine.inputs.keys[editor.controls.right]) {
                     this.previewCamera.x -= Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                     this.previewCamera.z -= Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
-                if (coffeeEngine.inputs.keys["a"]) {
+                if (coffeeEngine.inputs.keys[editor.controls.left]) {
                     this.previewCamera.x += Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                     this.previewCamera.z += Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
 
-                if (coffeeEngine.inputs.keys["w"]) {
+                if (coffeeEngine.inputs.keys[editor.controls.forward]) {
                     this.previewCamera.x += Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                     this.previewCamera.z -= Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
-                if (coffeeEngine.inputs.keys["s"]) {
+                if (coffeeEngine.inputs.keys[editor.controls.back]) {
                     this.previewCamera.x -= Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                     this.previewCamera.z += Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
                 }
@@ -133,6 +133,51 @@
             coffeeEngine.runtime.currentScene.draw();
         }
 
+        setupInput() {
+            //Our controls and render time
+            this.canvas.addEventListener("mousedown", (event) => {
+                if (event.button == 2) {
+                    this.canvas.requestPointerLock();
+                    
+                    this.controlling = true;
+                }
+            });
+
+            //Removal of control
+            document.addEventListener("pointerlockerror", () => {
+                this.controlling = false;
+            });
+            this.canvas.addEventListener("mouseup", (event) => {
+                if (event.button == 2) {
+                    document.exitPointerLock();
+                    this.controlling = false;
+                }
+            });
+
+            //Wheel stuff
+            this.canvas.addEventListener("wheel", (event) => {
+                event.preventDefault();
+                if (this.orthographicMode) {
+                    this.previewCamera.zoom += event.deltaY * 0.0125;
+
+                    if (this.previewCamera.zoom > 25) {
+                        this.previewCamera.zoom = 25;
+                    } else if (this.previewCamera.zoom < 1) {
+                        this.previewCamera.zoom = 1;
+                    }
+                } else {
+                    if (this.controlling) {
+                        this.previewCamera.speed -= event.deltaY * 0.0125;
+                        if (this.previewCamera.speed < 0.25) {
+                            this.previewCamera.speed = 0.25;
+                        } else if (this.previewCamera.speed > 10) {
+                            this.previewCamera.speed = 10;
+                        }
+                    }
+                }
+            });
+        }
+
         init(container) {
             this.closable = false;
             this.title = editor.language["editor.window.viewport"];
@@ -177,47 +222,7 @@
                 speed: 1,
             };
 
-            //Our controls and render time
-            this.canvas.addEventListener("mousedown", (event) => {
-                if (event.button == 2) {
-                    this.canvas.requestPointerLock();
-                    
-                    this.controlling = true;
-                }
-            });
-
-            //Removal of control
-            document.addEventListener("pointerlockerror", () => {
-                this.controlling = false;
-            });
-            this.canvas.addEventListener("mouseup", (event) => {
-                if (event.button == 2) {
-                    document.exitPointerLock();
-                    this.controlling = false;
-                }
-            });
-
-            //Wheel stuff
-            this.canvas.addEventListener("wheel", (event) => {
-                if (this.orthographicMode) {
-                    this.previewCamera.zoom += event.deltaY * 0.0125;
-
-                    if (this.previewCamera.zoom > 25) {
-                        this.previewCamera.zoom = 25;
-                    } else if (this.previewCamera.zoom < 1) {
-                        this.previewCamera.zoom = 1;
-                    }
-                } else {
-                    if (this.controlling) {
-                        this.previewCamera.speed -= event.deltaY * 0.0125;
-                        if (this.previewCamera.speed < 0.25) {
-                            this.previewCamera.speed = 0.25;
-                        } else if (this.previewCamera.speed > 10) {
-                            this.previewCamera.speed = 10;
-                        }
-                    }
-                }
-            });
+            this.setupInput()
 
             setInterval(() => {
                 this.profiler.innerHTML = `

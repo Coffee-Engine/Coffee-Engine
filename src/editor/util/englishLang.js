@@ -28,6 +28,8 @@ editor.EnglishLang = {
     "engine.credits.resources": "Resources Used",
 
     "engine.settings.welcome": "Engine Settings",
+    "engine.settings.pressAnyKey": "Press any key",
+    "engine.settings.space": "space",
 
     "engine.settings.category.Editor": "Editor",
     "engine.settings.category.Editor.customLanguage": "Custom Language File",
@@ -45,8 +47,14 @@ editor.EnglishLang = {
     "engine.settings.category.Window.barStyle.Aero": "Shaded",
 
     "engine.settings.category.Viewport": "Viewport",
-
+    
     "engine.settings.category.Viewport.mouseSensitivity": "Mouse Sensitivity",
+    "engine.settings.category.Viewport.forward": "Move Forward",
+    "engine.settings.category.Viewport.left": "Move Left",
+    "engine.settings.category.Viewport.back": "Move Back",
+    "engine.settings.category.Viewport.right": "Move Right",
+    "engine.settings.category.Viewport.up": "Move Up",
+    "engine.settings.category.Viewport.down": "Move Down",
 
     "engine.settings.category.Theme": "Theme",
     "engine.settings.category.Theme.themeColor": "Editor Color",

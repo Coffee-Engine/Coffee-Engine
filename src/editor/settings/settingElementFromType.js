@@ -130,6 +130,47 @@
                 return [input, true];
             }
 
+            case "key": {
+                //Setup our input
+                const input = document.createElement("button");
+                input.innerText = editor.settings.values[category][setting] || "unknown";
+                input.style.minWidth = "128px";
+
+                //Hardcoded exception for space. The button dissapears if we don't
+                if (editor.settings.values[category][setting] == " ") {
+                    input.innerText = editor.language["engine.settings.space"];
+                }
+
+                //Then when we click it wait for a key input
+                input.onclick = () => {
+                    input.innerText = editor.language["engine.settings.pressAnyKey"];
+                    
+                    //Honestly really silly
+                    const keyDownFunction = (event) => {
+                        //Stop propogation and prevent the default action
+                        event.stopPropagation();
+                        event.preventDefault();
+
+                        let value = event.key.toLowerCase();
+                        input.innerText = value;
+                        //Hardcoded exception for space The button dissapears if we don't
+                        if (value == " ") {
+                            input.innerText = editor.language["engine.settings.space"];
+                        }
+
+                        //Send out the signal
+                        editor.settings.values[category][setting] = value;
+                        if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(value);
+                        editor.Storage.setStorage("settingsValues", editor.settings.values);
+                
+                        document.removeEventListener("keydown", keyDownFunction);
+                    };
+                    document.addEventListener("keydown", keyDownFunction)
+                };
+
+                return input;
+            }
+
             default:
                 break;
         }
