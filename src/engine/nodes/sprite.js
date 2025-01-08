@@ -74,7 +74,7 @@
                 "---", 
                 { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
                 { name: "layer", translationKey:"engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, 
-                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, 
                 { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
                 "---", 
                 { name: "spritePath", translationKey:"engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 

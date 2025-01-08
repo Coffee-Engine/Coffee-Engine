@@ -171,8 +171,6 @@
                     if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
                         discard;
                     }
-
-                    //gl_FragColor.xyz *= gl_FragColor.w;
                 }
                 `
             ),
