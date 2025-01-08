@@ -119,12 +119,13 @@
 
             //Set our matrices
             coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
+            coffeeEngine.renderer.cameraData.unflattenedTransform = this.matrix;
             coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
             coffeeEngine.renderer.cameraData.wFactor = this.wFactor;
             coffeeEngine.renderer.cameraData.aspectRatio = this.aspectRatio;
-            coffeeEngine.renderer.cameraData.position.x = this.previewCamera.x;
-            coffeeEngine.renderer.cameraData.position.y = this.previewCamera.y;
-            coffeeEngine.renderer.cameraData.position.z = this.previewCamera.z;
+            coffeeEngine.renderer.cameraData.position.x = -this.previewCamera.x;
+            coffeeEngine.renderer.cameraData.position.y = -this.previewCamera.y;
+            coffeeEngine.renderer.cameraData.position.z = -this.previewCamera.z;
 
             coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.previewCamera.yaw;
             coffeeEngine.renderer.cameraData.cameraRotationEul.y = this.previewCamera.pitch;

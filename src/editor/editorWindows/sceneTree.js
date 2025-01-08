@@ -61,21 +61,20 @@
                 element.contentAnswer = (value) => {
                     switch (value) {
                         case "duplicate": { 
-                            const nodeKeys = Object.keys(Node);
+                            const nodeKeys = Node.getProperties();
                             const duplicated = new Node.constructor();
 
                             for (let keyID in nodeKeys) {
                                 const key = nodeKeys[keyID];
 
-                                console.log(key);
-
+                                if (typeof key != "object") continue;
                                 if (key == "parent" || key == "children") continue;
 
-                                if (Node[key].__duplicate) {
-                                    duplicated[key] = Node[key].__duplicate(duplicated[key]);
+                                if (Node[key.name] && Node[key.name].__duplicate) {
+                                    Node[key.name].__duplicate(duplicated[key.name]);
                                 }
                                 else {
-                                    duplicated[key] = Node[key];
+                                    duplicated[key.name] = Node[key.name];
                                 }
                             }
 

@@ -103,7 +103,7 @@
             });
 
             //Now lets draw the objects
-            for (let drawItem = 0; drawItem < this.drawList.length; drawItem++) {
+            for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
                 const node = this.drawList[drawItem];
                 node.draw();
             }

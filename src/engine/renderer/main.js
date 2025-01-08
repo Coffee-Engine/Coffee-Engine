@@ -92,6 +92,7 @@
             },
 
             storedTransform: coffeeEngine.matrix4.identity(),
+            unflattenedTransform: coffeeEngine.matrix4.identity(),
             storedProjection: coffeeEngine.matrix4.identity(),
             storedRes: [480, 360],
             storedAspect: 1,
