@@ -71,6 +71,10 @@
             return this.contents.flat(2);
         }
 
+        __duplicate(to) {
+            to.contents = (new coffeeEngine.matrix4(this.contents)).contents;
+        }
+
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "matrix2", value: this.contents };
         }

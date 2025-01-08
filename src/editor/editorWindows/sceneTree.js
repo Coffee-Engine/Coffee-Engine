@@ -60,11 +60,31 @@
 
                 element.contentAnswer = (value) => {
                     switch (value) {
+                        case "duplicate": { 
+                            const nodeKeys = Object.keys(Node);
+                            const duplicated = new Node.constructor();
+
+                            for (let keyID in nodeKeys) {
+                                const key = nodeKeys[keyID];
+
+                                console.log(key);
+
+                                if (key == "parent" || key == "children") continue;
+
+                                if (Node[key].__duplicate) {
+                                    duplicated[key] = Node[key].__duplicate(duplicated[key]);
+                                }
+                                else {
+                                    duplicated[key] = Node[key];
+                                }
+                            }
+
+                            Node.parent.addChild(duplicated);
+                            break;
+                        }
+
                         case "delete":
-                            //Die
-                            console.log(Node);
-                            Node.parent = null;
-                            Node.dispose();
+                            Node._dispose();
                             break;
 
                         default:

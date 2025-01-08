@@ -69,6 +69,11 @@
             return [this.x, this.y];
         }
 
+        __duplicate(to) {
+            to.x = this.x;
+            to.y = this.y;
+        }
+
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "vector2", value: this.webGLValue() };
         }

@@ -86,6 +86,12 @@
             return [this.x, this.y, this.z];
         }
 
+        __duplicate(to) {
+            to.x = this.x;
+            to.y = this.y;
+            to.z = this.z;
+        }
+
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "vector3", value: this.webGLValue() };
         }

@@ -48,7 +48,7 @@
             }
 
             //Refresh stuff
-            coffeeEngine.runtime.currentScene.castEvent("childMoved", child);
+            coffeeEngine.runtime.currentScene.castEvent("childMoved", this);
         }
         get parent() {
             return this.#parent;
@@ -95,6 +95,15 @@
 
         //Nothing to really dispose here
         dispose() {}
+
+        //The main disposal unit
+        _dispose() {
+            if (this.parent) {
+                this.parent.removeChild(this);
+                this.dispose();
+                delete this;
+            }
+        }
 
         //Children addition
         addChild(child) {
