@@ -302,6 +302,11 @@
                 uniform mat4 u_camera;
                 uniform mat4 u_projection;
                 uniform vec2 u_res;
+
+                uniform vec3 horizonColor;
+                uniform vec3 skyColor;
+                uniform vec3 groundColor;
+                uniform vec3 centerColor;
                 
                 void main()
                 {
@@ -315,14 +320,15 @@
 
                     //Our position on the sky sphere
                     //We also need to make sure our sky sphere adjusts properly
-                    vec3 SkySphere = normalize(forward + ((right * screenUV.x) * 2.0 * (u_res.x/u_res.y)) + ((up * screenUV.y) * 2.0));
+                    vec2 projectionMult = vec2(u_projection[0][0] * (u_res.x/u_res.y) * 2.0, u_projection[1][1] * 2.0);
+                    vec3 SkySphere = normalize(forward + ((right * screenUV.x) * projectionMult.x) + ((up * screenUV.y) * projectionMult.y));
                     if (SkySphere.y < 0.0) {
                         //Inverse the Y
                         SkySphere.y = -SkySphere.y;
-                        gl_FragColor = vec4(mix(vec3(0.290196078, 0.22745098, 0.192156863),vec3(0.2, 0.105882353, 0.0549019608),SkySphere.y),1);
+                        gl_FragColor = vec4(mix(groundColor,centerColor,SkySphere.y),1);
                     }
                     else {
-                        gl_FragColor = vec4(mix(vec3(0.77254902, 0.792156863, 0.909803922),vec3(0.403921569, 0.639215686, 0.941176471),SkySphere.y),1);
+                        gl_FragColor = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
                     }
                 }
                 `

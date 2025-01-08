@@ -4,6 +4,11 @@
         scenePath = coffeeEngine.defaultScenePath || "scenes/default.scene";
         fileReader = new FileReader();
 
+        horizonColor = [0.77254902, 0.792156863, 0.909803922];
+        skyColor = [0.403921569, 0.639215686, 0.941176471];
+        groundColor = [0.290196078, 0.22745098, 0.192156863];
+        centerColor = [0.2, 0.105882353, 0.0549019608];
+
         constructor() {
             this.children = [];
             this.events = {
@@ -107,6 +112,10 @@
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
             renderer.mainShaders.skyplane.setBuffersRaw(coffeeEngine.shapes.plane);
+            renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
+            renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
+            renderer.mainShaders.skyplane.uniforms.groundColor.value = this.groundColor;
+            renderer.mainShaders.skyplane.uniforms.centerColor.value = this.centerColor;
 
             renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
@@ -198,6 +207,12 @@
         }
 
         deserialize(data) {
+            //Set our colors from the file
+            this.skyColor = data.skyColor || [0,0,0];
+            this.horizonColor = data.horizonColor || [1,1,1];
+            this.groundColor = data.groundColor || [1,1,1];
+            this.centerColor = data.centerColor || [0,0,0];
+
             //Our function for actually loading the scene
             const loadNodes = () => {
                 //Clear out children from memory and registry
