@@ -306,7 +306,7 @@
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    mat4 mixed = u_camera * u_projection;
+                    mat4 mixed = u_camera; //* u_projection;
                     vec3 right = vec3(mixed[0][0],mixed[0][1],mixed[0][2]);
                     vec3 up = vec3(mixed[1][0],mixed[1][1],mixed[1][2]);
                     vec3 forward = vec3(mixed[2][0],mixed[2][1],mixed[2][2]);
@@ -314,7 +314,8 @@
                     screenUV -= vec2(0.5);
 
                     //Our position on the sky sphere
-                    vec3 SkySphere = normalize(forward + (right * screenUV.x) + (up * screenUV.y));
+                    //We also need to make sure our sky sphere adjusts properly
+                    vec3 SkySphere = normalize(forward + ((right * screenUV.x) * 2.0 * (u_res.x/u_res.y)) + ((up * screenUV.y) * 2.0));
                     if (SkySphere.y < 0.0) {
                         //Inverse the Y
                         SkySphere.y = -SkySphere.y;
