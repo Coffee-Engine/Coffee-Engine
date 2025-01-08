@@ -202,7 +202,13 @@
                 name: this.name,
                 nodeType: "scene",
                 children: goDown(coffeeEngine.runtime.currentScene.children),
-                preload: keys
+                preload: keys,
+
+                //Serialize the sky
+                skyColor:this.skyColor,
+                horizonColor:this.horizonColor,
+                groundColor:this.groundColor,
+                centerColor:this.centerColor,
             };
         }
 
@@ -302,7 +308,12 @@
         }
 
         getProperties() {
-            return ["NothingHere"];
+            return [
+                {name: "skyColor", translationKey:"engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+                {name: "horizonColor", translationKey:"engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+                {name: "groundColor", translationKey:"engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+                {name: "centerColor", translationKey:"engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+            ];
 
             //Input Testing stuff
             /*

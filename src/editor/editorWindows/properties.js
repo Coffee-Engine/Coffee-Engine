@@ -301,10 +301,21 @@
                 const input = document.createElement("color-picker");
                 input.style.transform = "translate(0%,50%)";
 
-                input.color = node[property.name || "name"] || "#0000ff";
+                //Check for small range and properly convert
+                if (property.smallRange) input.color = coffeeEngine.ColorMath.RGBtoHex({r:node[property.name || "name"][0] * 255, g:node[property.name || "name"][1] * 255, b:node[property.name || "name"][2] * 255} || {r:0,g:0, b:255});
+                else input.color = node[property.name || "name"] || "#0000ff";
 
                 input.onchange = () => {
-                    node[property.name] = input.color;
+                    //Same for the small range check down here
+                    if (property.smallRange) {
+                        const split = coffeeEngine.ColorMath.HexToRGB(input.color);
+                        node[property.name] = [split.r / 255, split.g / 255, split.b / 255];
+                    }
+                    else {
+                        node[property.name] = input.color;
+                    }
+
+                    //Send the color up
                     input.color = node[property.name || "name"];
                     if (onchange) onchange(property, node[property.name], node);
                 };
@@ -317,10 +328,21 @@
                 input.style.transform = "translate(0%,50%)";
                 input.translucency = true;
 
-                input.color = node[property.name || "name"] || "#0000ff";
+                //Check for small range and properly convert
+                if (property.smallRange) input.color = coffeeEngine.ColorMath.RGBtoHex({r:node[property.name || "name"][0] * 255, g:node[property.name || "name"][1] * 255, b:node[property.name || "name"][2] * 255, b:node[property.name || "name"][3] * 255} || {r:0,g:0, b:255, a:255});
+                else input.color = node[property.name || "name"] || "#0000ff";
 
                 input.onchange = () => {
-                    node[property.name] = input.color;
+                    //Same for the small range check down here
+                    if (property.smallRange) {
+                        const split = coffeeEngine.ColorMath.HexToRGB(input.color);
+                        node[property.name] = [split.r / 255, split.g / 255, split.b / 255, split.a / 255];
+                    }
+                    else {
+                        node[property.name] = input.color;
+                    }
+
+                    //Send the color up
                     input.color = node[property.name || "name"];
                     if (onchange) onchange(property, node[property.name], node);
                 };

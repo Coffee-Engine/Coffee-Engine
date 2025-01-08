@@ -429,5 +429,10 @@ editor.EnglishLang = {
     "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
     "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
-    "engine.nodeProperties.MeshDisplay.material": "Material"
+    "engine.nodeProperties.MeshDisplay.material": "Material",
+
+    "engine.nodeProperties.scene.skyColor":"Sky Color",
+    "engine.nodeProperties.scene.horizonColor":"Horizon Color",
+    "engine.nodeProperties.scene.groundColor":"Ground Color",
+    "engine.nodeProperties.scene.centerColor":"Core Color",
 };
