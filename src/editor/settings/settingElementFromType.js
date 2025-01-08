@@ -2,19 +2,67 @@
     editor.settings.elementFromType = (type, elementDefs, category, setting) => {
         switch (type) {
             case "number": {
-                const input = document.createElement("input");
-                input.type = "number";
-                input.value = Number(editor.settings.values[category][setting]);
-                input.style.minWidth = "128px";
+                const input = (elementDefs.hasSlider) ? document.createElement("div") : document.createElement("input");
 
-                input.min = elementDefs.min;
-                input.max = elementDefs.max;
+                //Slider stuff
+                if (elementDefs.hasSlider) {
+                    //Make the div inline
+                    input.style.display = "inline-block";
 
-                input.onchange = () => {
-                    editor.settings.values[category][setting] = input.value;
-                    if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.value);
-                    editor.Storage.setStorage("settingsValues", editor.settings.values);
-                };
+                    //Create our 2 inputs
+                    const numberInput = document.createElement("input");
+                    const sliderInput = document.createElement("input");
+
+                    numberInput.type = "number";
+                    numberInput.value = Number(editor.settings.values[category][setting]);
+                    numberInput.style.minWidth = "64px";
+    
+                    numberInput.min = elementDefs.min;
+                    numberInput.max = elementDefs.max;
+                    numberInput.step = elementDefs.step[0] || elementDefs.step;
+    
+                    numberInput.onchange = () => {
+                        sliderInput.value = numberInput.value;
+                        editor.settings.values[category][setting] = numberInput.value;
+                        if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(numberInput.value);
+                        editor.Storage.setStorage("settingsValues", editor.settings.values);
+                    };
+
+                    sliderInput.type = "range";
+                    sliderInput.value = Number(editor.settings.values[category][setting]);
+                    sliderInput.style.minWidth = "64px";
+                    sliderInput.style.transform = "translate(0%,50%)";
+    
+                    sliderInput.min = elementDefs.min;
+                    sliderInput.max = elementDefs.max;
+                    sliderInput.step = elementDefs.step[1] || elementDefs.step || 0.01;
+    
+                    sliderInput.onchange = () => {
+                        numberInput.value = sliderInput.value;
+                        editor.settings.values[category][setting] = sliderInput.value;
+                        if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(numberInput.value);
+                        editor.Storage.setStorage("settingsValues", editor.settings.values);
+                    };
+
+                    input.appendChild(numberInput);
+                    input.appendChild(sliderInput);
+                }
+                //Just your good ol number input
+                else {
+                    input.type = "number";
+                    input.value = Number(editor.settings.values[category][setting]);
+                    input.style.minWidth = "128px";
+    
+                    input.min = elementDefs.min;
+                    input.max = elementDefs.max;
+                    input.step = elementDefs.step;
+    
+                    input.onchange = () => {
+                        editor.settings.values[category][setting] = input.value;
+                        if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.value);
+                        editor.Storage.setStorage("settingsValues", editor.settings.values);
+                    };
+                }
 
                 return input;
             }

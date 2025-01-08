@@ -10,7 +10,9 @@
             grabSize: 8,
             barHeight: 24,
             barStyle: "Flat",
-            tabMode: "ifNeeded",
+        },
+        Viewport: {
+            mouseSensitivity:1
         },
         Theme: {
             themeColor: "Mocha",
@@ -179,11 +181,16 @@
                     editor.taskbarStyle = value;
                 },
             },
-            tabMode: {
-                type: "dropdown",
-                values: ["arrows", "ifNeeded", "always"],
+        },
+        Viewport: {
+            mouseSensitivity: {
+                type: "number",
+                min: "0.2",
+                max: "3.0",
+                step: [0.1, 0.01],
+                hasSlider: true,
                 onChange: (value) => {
-                    editor.tabStyle = value;
+                    editor.mouseSensitivity = Number(value) || 1;
                 },
             },
         },

@@ -44,8 +44,8 @@
         viewportControlsProjection() {
             //Dragging on the screen!
             if (this.controlling) {
-                this.previewCamera.yaw -= coffeeEngine.inputs.mouse.movementX / 360;
-                this.previewCamera.pitch += coffeeEngine.inputs.mouse.movementY / 360;
+                this.previewCamera.yaw -= (coffeeEngine.inputs.mouse.movementX / 360) * editor.mouseSensitivity;
+                this.previewCamera.pitch += (coffeeEngine.inputs.mouse.movementY / 360) * editor.mouseSensitivity;
 
                 this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch, -1.5707), 1.5707);
 
@@ -88,8 +88,8 @@
 
         viewportControlsOrtho() {
             if (this.controlling) {
-                this.previewCamera.x += (coffeeEngine.inputs.mouse.movementX / 180) * this.previewCamera.zoom;
-                this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom;
+                this.previewCamera.x += (coffeeEngine.inputs.mouse.movementX / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
+                this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
             }
 
             this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;

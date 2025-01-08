@@ -42,13 +42,11 @@ editor.EnglishLang = {
     "engine.settings.category.Window.barStyle": "Taskbar Style",
 
     "engine.settings.category.Window.barStyle.Flat": "Flat",
-    "engine.settings.category.Window.barStyle.Aero": "Aero",
+    "engine.settings.category.Window.barStyle.Aero": "Shaded",
 
-    "engine.settings.category.Window.tabMode": "Taskbar Tabs",
+    "engine.settings.category.Viewport": "Viewport",
 
-    "engine.settings.category.Window.tabMode.arrows": "Use Arrows",
-    "engine.settings.category.Window.tabMode.ifNeeded": "If Needed",
-    "engine.settings.category.Window.tabMode.always": "Always",
+    "engine.settings.category.Viewport.mouseSensitivity": "Mouse Sensitivity",
 
     "engine.settings.category.Theme": "Theme",
     "engine.settings.category.Theme.themeColor": "Editor Color",
@@ -72,7 +70,7 @@ editor.EnglishLang = {
     "engine.settings.category.SugarCube.cornerSize": "Corner Size",
     "engine.settings.category.SugarCube.padding": "Padding",
     "engine.settings.category.SugarCube.flyOutOpacity": "Flyout Opacity",
-    "engine.settings.category.SugarCube.blockColoration": "Font Family",
+    "engine.settings.category.SugarCube.blockColoration": "Block Style",
     "engine.settings.category.SugarCube.blockColoration.Default": "Default",
     "engine.settings.category.SugarCube.blockColoration.Pastel": "Pastel",
     "engine.settings.category.SugarCube.blockColoration.Dark": "Neon",
