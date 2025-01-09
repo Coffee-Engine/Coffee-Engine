@@ -31,6 +31,10 @@ window.DaveShade = {};
         FAILURE: 0,
     };
 
+    DaveShade.RENDERBUFFER_TYPES = {
+
+    }
+
     DaveShade.REGEX = {
         ATTRIBUTE: /attribute.*;/g,
     };
@@ -85,6 +89,7 @@ window.DaveShade = {};
         const daveShadeInstance = {
             CANVAS: CANVAS,
             SHADERS: [],
+            FRAMEBUFFERS: [],
         };
 
         if (SETTINGS.blendFunc) {
@@ -117,7 +122,7 @@ window.DaveShade = {};
         };
 
         //?Could potentially be better? Maybe less if statement hell.
-        daveShadeInstance.clearMemory = (shader) => {
+        daveShadeInstance.clearShaderFromMemory = (shader) => {
             //*Remove the shader from the list
             if (daveShadeInstance.SHADERS.includes(shader)) {
                 daveShadeInstance.SHADERS.splice(daveShadeInstance.SHADERS.indexOf(shader), 1);
@@ -154,7 +159,7 @@ window.DaveShade = {};
             compileStatus = GL.getShaderParameter(shader.vertex.shader, GL.COMPILE_STATUS);
             if (!compileStatus) {
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
-                daveShadeInstance.clearMemory(shader);
+                daveShadeInstance.clearShaderFromMemory(shader);
                 return {
                     status: DaveShade.COMPILE_STATUS.FAILURE,
                 };
@@ -172,7 +177,7 @@ window.DaveShade = {};
             compileStatus = GL.getShaderParameter(shader.vertex.shader, GL.COMPILE_STATUS);
             if (!compileStatus) {
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
-                daveShadeInstance.clearMemory(shader);
+                daveShadeInstance.clearShaderFromMemory(shader);
                 return {
                     status: DaveShade.COMPILE_STATUS.FAILURE,
                 };
@@ -181,7 +186,7 @@ window.DaveShade = {};
             compileStatus = GL.getShaderInfoLog(shader.vertex.shader);
             if (compileStatus.length > 0) {
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${compileStatus}\n***`);
-                daveShadeInstance.clearMemory(shader);
+                daveShadeInstance.clearShaderFromMemory(shader);
                 return {
                     status: DaveShade.COMPILE_STATUS.FAILURE,
                 };
@@ -190,7 +195,7 @@ window.DaveShade = {};
             compileStatus = GL.getShaderInfoLog(shader.fragment.shader);
             if (compileStatus.length > 0) {
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${compileStatus}\n***`);
-                daveShadeInstance.clearMemory(shader);
+                daveShadeInstance.clearShaderFromMemory(shader);
                 return {
                     status: DaveShade.COMPILE_STATUS.FAILURE,
                 };
@@ -208,7 +213,7 @@ window.DaveShade = {};
             compileStatus = GL.getShaderParameter(shader.vertex.shader, GL.COMPILE_STATUS);
             if (!compileStatus) {
                 console.error(`shader not compiled!\nerror in program creation!\nclearing memory\nCompile Log\n***\n${GL.getShaderInfoLog(shader.vertex.shader)}\n***`);
-                daveShadeInstance.clearMemory(shader);
+                daveShadeInstance.clearShaderFromMemory(shader);
                 return {
                     status: DaveShade.COMPILE_STATUS.FAILURE,
                 };
@@ -387,9 +392,27 @@ window.DaveShade = {};
             return { texture: texture, width: width, height: height };
         };
 
+        //Framebuffer stuff
+        daveShadeInstance.createFramebuffer = (width,height,attachments) => {
+            const framebuffer = {
+                buffer:GL.createFramebuffer
+            };
+
+            //Our frame buffer binding stuff
+            GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
+            framebuffer.use = () => {
+                GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
+            }
+            framebuffer.dispose = () => {
+                GL.deleteFramebuffer(framebuffer.buffer);
+            }
+
+            
+        }
+
         daveShadeInstance.dispose = () => {
             daveShadeInstance.SHADERS.forEach((shader) => {
-                daveShadeInstance.clearMemory(shader);
+                daveShadeInstance.clearShaderFromMemory(shader);
             });
 
             delete daveShadeInstance.GL;
