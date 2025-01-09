@@ -2,7 +2,10 @@
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas) => {
         coffeeEngine.renderer.canvas = canvas;
-        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: true, blendFunc: ["FUNC_ADD", "ONE_MINUS_CONSTANT_ALPHA", "ONE_MINUS_SRC_ALPHA"] });
+        
+        //Firefox's blending is wierd
+        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: true, blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"] });
+        
         coffeeEngine.renderer.daveshade.useZBuffer(true);
 
         coffeeEngine.renderer.cameraData = {
@@ -341,6 +344,7 @@
 
         coffeeEngine.renderer.initilizeFileConversions();
         coffeeEngine.renderer.initilizeMaterials();
+        coffeeEngine.renderer.initilizeShapes();
 
         return coffeeEngine.renderer;
     };

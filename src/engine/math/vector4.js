@@ -75,6 +75,10 @@
             return this.mul(b).normalize();
         }
 
+        flip() {
+            return new coffeeEngine.vector4(-this.x, -this.y, -this.z, -this.w);
+        }
+
         rotate(matrix) {
             return matrix.mulVector(this);
         }

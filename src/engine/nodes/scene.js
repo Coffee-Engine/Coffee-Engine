@@ -112,7 +112,7 @@
         __drawSky(renderer) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
-            renderer.mainShaders.skyplane.setBuffersRaw(coffeeEngine.shapes.plane);
+            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
             renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
             renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
             renderer.mainShaders.skyplane.uniforms.groundColor.value = this.groundColor;

@@ -44,7 +44,7 @@
             super.draw();
 
             if (this.texture) {
-                this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
+                this.shader.setBuffers(coffeeEngine.shapes.plane);
 
                 //Rotate and scale our billboard depending on MULTIPLE variables
                 if (this.omnidirectional) this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)

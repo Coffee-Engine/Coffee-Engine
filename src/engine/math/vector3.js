@@ -70,6 +70,10 @@
             return new coffeeEngine.vector3(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
         }
 
+        flip() {
+            return new coffeeEngine.vector3(-this.x, -this.y, -this.z);
+        }
+
         rotate(yaw, pitch, roll) {
             const returned = new coffeeEngine.vector3(this.z * Math.sin(yaw) + this.x * Math.cos(yaw), this.y, this.z * Math.cos(yaw) - this.x * Math.sin(yaw));
 

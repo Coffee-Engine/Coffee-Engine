@@ -89,7 +89,6 @@ window.DaveShade = {};
 
         if (SETTINGS.blendFunc) {
             daveShadeInstance.blendFunc = SETTINGS.blendFunc;
-            delete SETTINGS.blendFunc;
         }
 
         daveShadeInstance.GL = CANVAS.getContext("webgl2", SETTINGS);
@@ -107,6 +106,7 @@ window.DaveShade = {};
             GL.enable(GL.BLEND);
             GL.blendEquation(GL[daveShadeInstance.blendFunc[0]]);
             GL.blendFunc(GL[daveShadeInstance.blendFunc[1]], GL[daveShadeInstance.blendFunc[2]]);
+            GL.pixelStorei(GL.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
         }
 
         //*When we need to split the shader into 2 parts due to it being in a single file. good for keeping storage sizes down

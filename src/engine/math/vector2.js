@@ -61,6 +61,10 @@
             return new coffeeEngine.vector2(this.y, -this.x);
         }
 
+        flip() {
+            return new coffeeEngine.vector2(-this.x, -this.y);
+        }
+
         rotate(rad) {
             return new coffeeEngine.vector2(this.y * Math.sin(rad) + this.x * Math.cos(rad), this.y * Math.cos(rad) - this.x * Math.sin(rad));
         }

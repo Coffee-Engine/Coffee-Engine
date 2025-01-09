@@ -142,7 +142,7 @@
         }
 
         webGLValue() {
-            return this.contents.flat(2);
+            return [...this.contents[0],...this.contents[1],...this.contents[2],...this.contents[3]];;
         }
 
         __duplicate(to) {
