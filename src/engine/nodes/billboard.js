@@ -82,15 +82,19 @@
             ];
         }
 
-        sortValue() {
-            const ZDistance = coffeeEngine.renderer.cameraData.unflattenedTransform.multiplyVector({
+        sortValue(secondPass) {
+            if (secondPass) {
+                return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
+            }
+
+            const transformed = coffeeEngine.renderer.cameraData.unflattenedTransform.multiplyVector({
                 x:this.position.x,
                 y:this.position.y,
                 z:this.position.z,
                 w:1
-            }).z;
+            });
 
-            return ZDistance;//coffeeEngine.renderer.cameraData.position.sub(closest).length();
+            return transformed.z;//;
         }
     }
 

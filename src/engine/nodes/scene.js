@@ -91,12 +91,23 @@
             //Sort em
             this.drawList.sort((node1, node2) => {
                 //Don't spend the extra time recomputing the value
-                const node1Sort = node1.sortValue();
-                const node2Sort = node2.sortValue();
+                let node1Sort = node1.sortValue(false);
+                let node2Sort = node2.sortValue(false);
                 if (node1Sort < node2Sort) {
                     return -1;
                 } else if (node1Sort > node2Sort) {
                     return 1;
+                }
+                //Dual pass sorting, just in case two are the same value
+                else {
+                    node1Sort = node1.sortValue(true);
+                    node2Sort = node2.sortValue(true);
+
+                    if (node1Sort < node2Sort) {
+                        return -1;
+                    } else if (node1Sort > node2Sort) {
+                        return 1;
+                    }
                 }
 
                 return 0;
