@@ -31,58 +31,196 @@ window.DaveShade = {};
         FAILURE: 0,
     };
 
-    DaveShade.RENDERBUFFER_TYPES = {
-
-    }
-
     DaveShade.REGEX = {
         ATTRIBUTE: /attribute.*;/g,
     };
 
     DaveShade.setters = {
+        //?Boolean
+        35670: (GL, location, value) => {
+            GL.uniform1ui(location, Math.floor(value));
+        },
+
+        //?Int
+        5124: (GL, location, value) => {
+            GL.uniform1i(location, Math.floor(value));
+        },
+
+        //?Unsigned Int
+        5125: (GL, location, value) => {
+            GL.uniform1ui(location, Math.floor(value));
+        },
+
         //?Float
-        5126: (gl, location, value) => {
-            gl.uniform1f(location, value);
+        5126: (GL, location, value) => {
+            GL.uniform1f(location, value);
         },
         //?Vec2
-        35664: (gl, location, value) => {
-            gl.uniform2fv(location, value);
+        35664: (GL, location, value) => {
+            GL.uniform2fv(location, value);
         },
         //?Vec3
-        35665: (gl, location, value) => {
-            gl.uniform3fv(location, value);
+        35665: (GL, location, value) => {
+            GL.uniform3fv(location, value);
         },
         //?Vec4
-        35666: (gl, location, value) => {
-            gl.uniform4fv(location, value);
+        35666: (GL, location, value) => {
+            GL.uniform4fv(location, value);
         },
 
         //?Mat2
-        35674: (gl, location, value) => {
-            gl.uniformMatrix2fv(location, false, value);
+        35674: (GL, location, value) => {
+            GL.uniformMatrix2fv(location, false, value);
         },
 
         //?Mat3
-        35675: (gl, location, value) => {
-            gl.uniformMatrix3fv(location, false, value);
+        35675: (GL, location, value) => {
+            GL.uniformMatrix3fv(location, false, value);
         },
 
         //?Mat4
-        35676: (gl, location, value) => {
-            gl.uniformMatrix4fv(location, false, value);
+        35676: (GL, location, value) => {
+            GL.uniformMatrix4fv(location, false, value);
         },
 
         //?Sampler2D
-        35678: (gl, location, value, uniformInfo) => {
-            gl.activeTexture(gl[`TEXTURE${uniformInfo.samplerID}`]);
-            gl.bindTexture(gl.TEXTURE_2D, value);
-            gl.uniform1i(location, uniformInfo.samplerID);
+        35678: (GL, location, value, uniformInfo) => {
+            GL.activeTexture(GL[`TEXTURE${uniformInfo.samplerID}`]);
+            GL.bindTexture(GL.TEXTURE_2D, value);
+            GL.uniform1i(location, uniformInfo.samplerID);
         },
 
         //?SamplerCube
-        35679: (gl, location, value) => {
-            gl.uniform1iv(location, value);
+        35680: (GL, location, value) => {
+            GL.activeTexture(GL[`TEXTURE${uniformInfo.samplerID}`]);
+            GL.bindTexture(GL.TEXTURE_CUBE_MAP, value);
+            GL.uniform1i(location, uniformInfo.samplerID);
         },
+
+        //?Sampler3D
+        35679: (GL, location, value) => {
+            GL.activeTexture(GL[`TEXTURE${uniformInfo.samplerID}`]);
+            GL.bindTexture(GL.TEXTURE_3D, value);
+            GL.uniform1i(location, uniformInfo.samplerID);
+        }
+        
+    };
+
+    DaveShade.EZAttachBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
+        //Size up the render buffer's texture
+        renderBufferInfo.resize(dsInfo.canvas.width, dsInfo.canvas.height);
+        
+        //Get our color attachment
+        const attachedBuffer = (dsInfo.DRAWBUFFER_MANAGER) ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
+        GL.framebufferTexture2D(GL.FRAMEBUFFER, attachedBuffer,GL.TEXTURE_2D, renderBufferInfo.texture, 0);
+        framebufferInfo.colorAttachments += 1;  
+    }
+
+    DaveShade.RENDERBUFFER_TYPES = {
+        TEXTURE_RGB: (GL,framebufferInfo,dsInfo) => {
+            //Make sure our next buffer is even possible!
+            if (dsInfo.GL_TYPE != "webgl2" && (!dsInfo.DRAWBUFFER_MANAGER) && framebufferInfo.colorAttachments > 0) {
+                console.error("Cannot have multiple draw buffers! There will be graphical glitches!");
+                return {resize:() => {}};
+            }
+            //define our info
+            const renderBufferInfo = {
+                texture:GL.createTexture(),
+                resize: (width, height) => {
+                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGB, width, height, 0, GL.RGB, GL.UNSIGNED_BYTE);
+                },
+                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+            };
+
+            //Attach the buffer
+            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
+
+            return renderBufferInfo;
+        },
+
+        TEXTURE_RGBA: (GL,framebufferInfo,dsInfo) => {
+            //Make sure our next buffer is even possible!
+            if (dsInfo.GL_TYPE != "webgl2" && (!dsInfo.DRAWBUFFER_MANAGER) && framebufferInfo.colorAttachments > 0) {
+                console.error("Cannot have multiple draw buffers! There will be graphical glitches!");
+                return {resize:() => {}};
+            }
+
+            //define our info
+            const renderBufferInfo = {
+                texture:GL.createTexture(),
+                resize: (width, height) => {
+                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE);
+                },
+                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+            };
+
+            //Attach the buffer
+            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
+
+            return renderBufferInfo;
+        },
+
+        TEXTURE_RGBA_FLOAT: (GL,framebufferInfo,dsInfo) => {
+            //Make sure we are in webGL2
+            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA(GL,framebufferInfo,dsInfo);
+
+            //define our info
+            const renderBufferInfo = {
+                texture:GL.createTexture(),
+                resize: (width, height) => {
+                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE);
+                },
+                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+            };
+
+            //Attach the buffer
+            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
+
+            return renderBufferInfo;
+        },
+        
+        TEXTURE_R: (GL,framebufferInfo,dsInfo) => {
+            //Make sure we are in webGL2
+            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGB(GL,framebufferInfo,dsInfo);
+
+            //define our info
+            const renderBufferInfo = {
+                texture:GL.createTexture(),
+                resize: (width, height) => {
+                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R8, width, height, 0, GL.RED, GL.UNSIGNED_BYTE);
+                },
+                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+            };
+
+            //Attach the buffer
+            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+
+            return renderBufferInfo;
+        },
+        
+        TEXTURE_R_FLOAT: (GL,framebufferInfo,dsInfo) => {
+            //Make sure we are in webGL2
+            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGB(GL,framebufferInfo,dsInfo);
+
+            //define our info
+            const renderBufferInfo = {
+                texture:GL.createTexture(),
+                resize: (width, height) => {
+                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R32F, width, height, 0, GL.RED, GL.FLOAT);
+                },
+                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+            };
+
+            //Attach the buffer
+            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+
+            return renderBufferInfo;
+        }
     };
 
     DaveShade.createInstance = (CANVAS, SETTINGS) => {
@@ -102,8 +240,9 @@ window.DaveShade = {};
         if (!daveShadeInstance.GL) {
             daveShadeInstance.GL = CANVAS.getContext("webgl", SETTINGS);
             daveShadeInstance.GL_TYPE = "webgl";
-            //Webgl doesn't have native support for VOAs so we add the addon for VOAs
+            //Webgl doesn't have native support for VOAs or Multipass Rendering so we add the addon for VOAs, and extra Draw Buffers
             daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL.getExtension("OES_vertex_array_object");
+            daveShadeInstance.DRAWBUFFER_MANAGER = daveShadeInstance.GL.getExtension("WEBGL_draw_buffers");
         }
         const GL = daveShadeInstance.GL;
 
@@ -395,7 +534,9 @@ window.DaveShade = {};
         //Framebuffer stuff
         daveShadeInstance.createFramebuffer = (width,height,attachments) => {
             const framebuffer = {
-                buffer:GL.createFramebuffer
+                buffer:GL.createFramebuffer(),
+                attachments: [],
+                colorAttachments:0
             };
 
             //Our frame buffer binding stuff
@@ -407,7 +548,11 @@ window.DaveShade = {};
                 GL.deleteFramebuffer(framebuffer.buffer);
             }
 
-            
+            for (let attID in attachments) {
+                framebuffer.attachments.push(attachments[attID]);
+            }
+
+            return framebuffer;
         }
 
         daveShadeInstance.dispose = () => {
