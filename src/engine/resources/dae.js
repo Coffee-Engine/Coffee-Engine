@@ -130,6 +130,7 @@
                         //Now we parse our data
                         const currentData = data[dataIndex];
                         const currentPositionData = currentData.a_position;
+                        const currentNormalData = currentData.a_normal;
                         for (let index = 0; index < currentPositionData.length; index+=4) {
                             //Construct a "vector"
                             const vector = {
@@ -145,6 +146,22 @@
                             currentPositionData[index + 1] = constructed.y;
                             currentPositionData[index + 2] = constructed.z;
                             currentPositionData[index + 3] = constructed.w;
+                        }
+
+                        for (let index = 0; index < currentNormalData.length; index+=3) {
+                            //Construct a "vector"
+                            const vector = {
+                                x:currentNormalData[index],
+                                y:currentNormalData[index + 1],
+                                z:currentNormalData[index + 2],
+                                w:0
+                            };
+
+                            //Multiply it
+                            const constructed = matrix.multiplyVector(vector);
+                            currentNormalData[index] = constructed.x;
+                            currentNormalData[index + 1] = constructed.y;
+                            currentNormalData[index + 2] = constructed.z;
                         }
                         
                         //Convert to float32 arrays

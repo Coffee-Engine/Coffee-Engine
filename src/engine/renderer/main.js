@@ -197,6 +197,7 @@
                 uniform mat4 u_camera;
                 uniform vec2 u_wFactor;
                 uniform float u_aspectRatio;
+                uniform float u_time;
 
                 vec3 POSITION;
                 vec4 COLOR;
@@ -220,7 +221,7 @@
 
                     //Then we pass them to the fragment shader
                     v_color = COLOR;
-                    v_normal = NORMAL;
+                    v_normal = (vec4(NORMAL,0) * u_model).xyz;
                     v_texCoord = UV;
     
                     //Transform my stuff!
@@ -243,7 +244,14 @@
                 varying vec3 v_position;
                 varying vec3 v_normal;
                 varying vec2 v_texCoord;
+
                 uniform vec4 u_colorMod;
+                uniform mat4 u_model;
+                uniform mat4 u_projection;
+                uniform mat4 u_camera;
+                uniform vec2 u_wFactor;
+                uniform float u_aspectRatio;
+                uniform float u_time;
 
                 vec4 COLOR;
                 vec3 EMISSION;

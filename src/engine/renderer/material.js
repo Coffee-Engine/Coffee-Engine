@@ -25,6 +25,8 @@
                         if (this.shader.uniforms[key]) this.shader.uniforms[key].value = this.params[key];
                     }
                 }
+
+                if (this.shader.uniforms.u_time) this.shader.uniforms.u_time.value = coffeeEngine.timer;
             }
         };
 

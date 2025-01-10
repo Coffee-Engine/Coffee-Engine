@@ -231,6 +231,8 @@
                 Delta:${coffeeEngine.runtime.deltaTime}<br>
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
                 Nodes:${coffeeEngine.renderer.nodesRendered}`;
+            
+                coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
 
                 //Make sure the mouse movement goes unupdated in this.
                 coffeeEngine.runtime.frameStart(true);

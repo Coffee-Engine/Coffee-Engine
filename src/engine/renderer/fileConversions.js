@@ -20,9 +20,8 @@
                         if (fileExtension.toLowerCase() == "svg") {
                             const fileReader = new FileReader();
 
+                            //Load the SVG
                             fileReader.onload = () => {
-                                console.log(fileReader.result.replace("data:application/octet-stream","data:image/svg+xml;charset=utf-8"));
-
                                 const trackedImage = new Image();
     
                                 trackedImage.onload = () => {
