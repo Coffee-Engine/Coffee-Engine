@@ -106,9 +106,10 @@ window.DaveShade = {};
         
     };
 
-    DaveShade.EZAttachBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
+    DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
+        console.log((dsInfo.DRAWBUFFER_MANAGER) ? `COLOR_ATTACHMENT${framebufferInfo.colorAttachments}` : `COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`)
         //Size up the render buffer's texture
-        renderBufferInfo.resize(dsInfo.canvas.width, dsInfo.canvas.height);
+        renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
         
         //Get our color attachment
         const attachedBuffer = (dsInfo.DRAWBUFFER_MANAGER) ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
@@ -127,14 +128,14 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture:GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGB, width, height, 0, GL.RGB, GL.UNSIGNED_BYTE);
+                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGB, width, height, 0, GL.RGB, GL.UNSIGNED_BYTE, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
 
             //Attach the buffer
-            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
 
             return renderBufferInfo;
         },
@@ -150,14 +151,14 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture:GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE);
+                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
 
             //Attach the buffer
-            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
 
             return renderBufferInfo;
         },
@@ -170,14 +171,14 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture:GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE);
+                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
 
             //Attach the buffer
-            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
 
             return renderBufferInfo;
         },
@@ -190,14 +191,14 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture:GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R8, width, height, 0, GL.RED, GL.UNSIGNED_BYTE);
+                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R8, width, height, 0, GL.RED, GL.UNSIGNED_BYTE, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
 
             //Attach the buffer
-            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
 
             return renderBufferInfo;
         },
@@ -210,14 +211,36 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture:GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.texImage2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R32F, width, height, 0, GL.RED, GL.FLOAT);
+                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R32F, width, height, 0, GL.RED, GL.FLOAT, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
 
             //Attach the buffer
-            DaveShade.EZAttachBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+
+            return renderBufferInfo;
+        },
+
+        DEPTH: (GL,framebufferInfo,dsInfo) => {
+            //Make sure we are in webGL2
+            let attachedData = [GL.R32F, GL.RED, GL.FLOAT];
+            if (dsInfo.GL_TYPE != "webgl2") attachedData = [GL.RGB, GL.RGB, GL.UNSIGNED_BYTE];
+
+            //define our info
+            const renderBufferInfo = {
+                texture:GL.createTexture(),
+                resize: (width, height) => {
+                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, attachedData[0], width, height, 0, attachedData[1], attachedData[2], null);
+                },
+                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+            };
+
+            //Resize and attach our buffer
+            renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
+            GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, renderBufferInfo.texture, 0);
 
             return renderBufferInfo;
         }
@@ -511,6 +534,10 @@ window.DaveShade = {};
             daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
         };
 
+        daveShadeInstance.renderToCanvas = () => {
+            GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+        }
+
         daveShadeInstance.createTexture = (data, width, height) => {
             const texture = daveShadeInstance.GL.createTexture();
             daveShadeInstance.GL.bindTexture(daveShadeInstance.GL.TEXTURE_2D, texture);
@@ -536,6 +563,8 @@ window.DaveShade = {};
             const framebuffer = {
                 buffer:GL.createFramebuffer(),
                 attachments: [],
+                width:width,
+                height:height,
                 colorAttachments:0
             };
 
@@ -543,15 +572,38 @@ window.DaveShade = {};
             GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
             framebuffer.use = () => {
                 GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
-            }
+            };
+
+            //Easy removal
             framebuffer.dispose = () => {
+                framebuffer.attachments.forEach(attachement => {
+                    attachement.dispose();
+                });
                 GL.deleteFramebuffer(framebuffer.buffer);
+                
+                if (daveShadeInstance.FRAMEBUFFERS.includes(shader)) {
+                    daveShadeInstance.FRAMEBUFFERS.splice(daveShadeInstance.FRAMEBUFFERS.indexOf(framebuffer), 1);
+                }
+            };
+
+            //Easy resizing
+            framebuffer.resize = (width,height) => {
+                framebuffer.attachments.forEach(attachement => {
+                    attachement.resize(width,height);
+                });
+
+                framebuffer.width = width;
+                framebuffer.height = height;
             }
 
+            //Add the attachements
             for (let attID in attachments) {
-                framebuffer.attachments.push(attachments[attID]);
+                framebuffer.attachments.push(attachments[attID](GL,framebuffer,daveShadeInstance));
             }
 
+            //Then add and finalize the creation
+            daveShadeInstance.FRAMEBUFFERS.push(framebuffer);
+            GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
             return framebuffer;
         }
 
