@@ -82,24 +82,25 @@
         }
 
         draw() {
-            const GL = coffeeEngine.renderer.daveshade.GL;
-            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            coffeeEngine.renderer.drawBuffer.use();
-            this.__drawSky(coffeeEngine.renderer);
-            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            this.__drawScene(coffeeEngine.renderer);
-            coffeeEngine.renderer.daveshade.renderToCanvas();
-            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            const renderer = coffeeEngine.renderer
+            const GL = renderer.daveshade.GL;
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            renderer.drawBuffer.use();
+            this.__drawSky(renderer);
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            this.__drawScene(renderer);
+            renderer.daveshade.renderToCanvas();
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
 
-            coffeeEngine.renderer.cameraData.res = [coffeeEngine.renderer.canvas.width, coffeeEngine.renderer.canvas.height];
-            coffeeEngine.renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
-            coffeeEngine.renderer.mainShaders.mainPass.uniforms.u_color.value = coffeeEngine.renderer.drawBuffer.attachments[0].texture;
-            coffeeEngine.renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = coffeeEngine.renderer.drawBuffer.attachments[1].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_emission.value = coffeeEngine.renderer.drawBuffer.attachments[2].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_position.value = coffeeEngine.renderer.drawBuffer.attachments[3].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_normal.value = coffeeEngine.renderer.drawBuffer.attachments[4].texture;
+            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
+            renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            //renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
+            //renderer.mainShaders.mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
+            //renderer.mainShaders.mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
+            renderer.mainShaders.mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
 
-            coffeeEngine.renderer.mainShaders.mainPass.drawFromBuffers(6);
+            renderer.mainShaders.mainPass.drawFromBuffers(6);
         }
 
         __drawSky(renderer) {

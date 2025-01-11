@@ -124,6 +124,8 @@
                 //Vertex
                 `#version 300 es
                 precision highp float;
+
+                //SHADER DEFINED UNIFORMS
     
                 in vec4 a_position;
                 in vec4 a_color;
@@ -182,6 +184,8 @@
                 //Fragment
                 `#version 300 es
                 precision highp float;
+
+                //SHADER DEFINED UNIFORMS
     
                 in vec4 v_color;
                 in vec3 v_position;
@@ -221,7 +225,6 @@
                     EMISSION = vec3(0);
                     ROUGHNESS = 0.0;
                     SPECULAR = 0.0;
-                    LIGHT_AFFECTION = 1.0;
                     ALPHA_GLOW = 0.0;
                     UV = v_texCoord;
                     NORMAL = v_normal;
@@ -237,6 +240,10 @@
 
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
                     o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
+                    o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,1);
+                    o_emission = vec4(EMISSION,1);
+                    o_position = vec4(v_position,1);
+                    o_normal = vec4(NORMAL,1);
                 }
                 `
             ),
@@ -319,7 +326,7 @@
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_materialAttributes,screenUV);
+                    gl_FragColor = texture2D(u_color,screenUV) * texture2D(u_normal,screenUV);
                 }
                 `
             ),
@@ -328,9 +335,10 @@
         renderer.compilePBRshader = (shaderCode) => {
             const vertex = DaveShade.findFunctionInGLSL(shaderCode,"vertex");
             const frag = DaveShade.findFunctionInGLSL(shaderCode,"fragment");
+            const uniforms = shaderCode.replace(vertex,"").replace(frag,"");
 
-            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("void vertex() {}",vertex || "void vertex() {}");
-            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("void fragment() {}",frag || "void fragment() {}");
+            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS",uniforms).replace("void vertex() {}",vertex || "void vertex() {}");
+            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS",uniforms).replace("void fragment() {}",frag || "void fragment() {}");
 
             return daveshadeInstance.createShader(compiledVert,compiledFrag);
         }

@@ -1,8 +1,9 @@
 (function() {
     coffeeEngine.renderer.initilizeBaseShaders = (renderer) => {
         renderer.mainShaders.unlit = renderer.compilePBRshader(`
+        uniform sampler2D u_texture;
         void fragment() {
-            COLOR = vec4(1);
+            COLOR = texture(u_texture,UV);
         }
         `);
     }
