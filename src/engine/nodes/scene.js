@@ -82,12 +82,39 @@
         }
 
         draw() {
-            coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
+            const GL = coffeeEngine.renderer.daveshade.GL;
+            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            coffeeEngine.renderer.drawBuffer.use();
             this.__drawSky(coffeeEngine.renderer);
+            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            this.__drawScene(coffeeEngine.renderer);
+            coffeeEngine.renderer.daveshade.renderToCanvas();
+            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
 
-            //Clear the depth here, just so the sky doesn't ever overlap the world.
-            coffeeEngine.renderer.daveshade.clear(coffeeEngine.renderer.daveshade.GL.DEPTH_BUFFER_BIT);
+            coffeeEngine.renderer.cameraData.res = [coffeeEngine.renderer.canvas.width, coffeeEngine.renderer.canvas.height];
+            coffeeEngine.renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
+            coffeeEngine.renderer.mainShaders.mainPass.uniforms.u_color.value = coffeeEngine.renderer.drawBuffer.attachments[0].texture;
+            coffeeEngine.renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = coffeeEngine.renderer.drawBuffer.attachments[1].texture;
+            //renderer.mainShaders.mainPass.uniforms.u_emission.value = coffeeEngine.renderer.drawBuffer.attachments[2].texture;
+            //renderer.mainShaders.mainPass.uniforms.u_position.value = coffeeEngine.renderer.drawBuffer.attachments[3].texture;
+            //renderer.mainShaders.mainPass.uniforms.u_normal.value = coffeeEngine.renderer.drawBuffer.attachments[4].texture;
 
+            coffeeEngine.renderer.mainShaders.mainPass.drawFromBuffers(6);
+        }
+
+        __drawSky(renderer) {
+            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
+            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
+            renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
+            renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
+            renderer.mainShaders.skyplane.uniforms.groundColor.value = this.groundColor;
+            renderer.mainShaders.skyplane.uniforms.centerColor.value = this.centerColor;
+
+            renderer.mainShaders.skyplane.drawFromBuffers(6);
+        }
+
+        __drawScene(renderer) {
             //Sort em
             this.drawList.sort((node1, node2) => {
                 //Don't spend the extra time recomputing the value
@@ -118,18 +145,6 @@
                 const node = this.drawList[drawItem];
                 node.draw();
             }
-        }
-
-        __drawSky(renderer) {
-            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
-            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
-            renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
-            renderer.mainShaders.skyplane.uniforms.groundColor.value = this.groundColor;
-            renderer.mainShaders.skyplane.uniforms.centerColor.value = this.centerColor;
-
-            renderer.mainShaders.skyplane.drawFromBuffers(6);
         }
 
         //Child management

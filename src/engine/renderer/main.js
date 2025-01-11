@@ -1,97 +1,113 @@
 (function () {
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas) => {
-        coffeeEngine.renderer.canvas = canvas;
+        const renderer = coffeeEngine.renderer;
+        renderer.canvas = canvas;
         
         //Firefox's blending is wierd
-        coffeeEngine.renderer.daveshade = DaveShade.createInstance(coffeeEngine.renderer.canvas, { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: true, blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"] });
-        
-        coffeeEngine.renderer.daveshade.useZBuffer(true);
+        renderer.daveshade = DaveShade.createInstance(renderer.canvas, { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: true, blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"] });
+        const daveshadeInstance = renderer.daveshade;
 
-        coffeeEngine.renderer.cameraData = {
+        renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
+            //Colors
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            //Material Attributes
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            //Emission
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            //Position
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            //Normal
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            DaveShade.RENDERBUFFER_TYPES.DEPTH,
+        ]);
+
+        daveshadeInstance.useZBuffer(true);
+
+        renderer.cameraData = {
             position: new coffeeEngine.vector3(0, 0, 0),
 
             set transform(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
                 
-                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
                     
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
-                coffeeEngine.renderer.cameraData.storedTransform = value;
+                renderer.cameraData.storedTransform = value;
             },
             get transform() {
-                return coffeeEngine.renderer.cameraData.storedTransform;
+                return renderer.cameraData.storedTransform;
             },
             set projection(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
                 
-                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
                     
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
-                coffeeEngine.renderer.cameraData.storedProjection = value;
+                renderer.cameraData.storedProjection = value;
             },
             get projection() {
-                return coffeeEngine.renderer.cameraData.storedProjection;
+                return renderer.cameraData.storedProjection;
             },
             set res(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
                 });
                 
-                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
                     
                     if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
                 });
-                coffeeEngine.renderer.cameraData.storedRes = value;
+                renderer.cameraData.storedRes = value;
             },
             get res() {
-                return coffeeEngine.renderer.cameraData.storedRes;
+                return renderer.cameraData.storedRes;
             },
             set aspectRatio(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_aspectRatio) shader.uniforms.u_aspectRatio.value = value;
                 });
 
-                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
                     
                     if (shader.uniforms.u_aspectRatio) shader.uniforms.u_aspectRatio.value = value;
                 });
-                coffeeEngine.renderer.cameraData.storedAspect = value;
+                renderer.cameraData.storedAspect = value;
             },
             get aspectRatio() {
-                return coffeeEngine.renderer.cameraData.storedAspect;
+                return renderer.cameraData.storedAspect;
             },
 
             //Because orthographic projection wouldn't like me
             set wFactor(value) {
-                Object.values(coffeeEngine.renderer.mainShaders).forEach((shader) => {
+                Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
                 });
 
-                Object.values(coffeeEngine.renderer.shaderStorage).forEach((shader) => {
+                Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
                     
                     if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
                 });
-                coffeeEngine.renderer.cameraData.storedWFactor = value;
+                renderer.cameraData.storedWFactor = value;
             },
             get wFactor() {
-                return coffeeEngine.renderer.cameraData.storedWFactor;
+                return renderer.cameraData.storedWFactor;
             },
 
             storedTransform: coffeeEngine.matrix4.identity(),
@@ -103,94 +119,21 @@
             cameraRotationEul: new coffeeEngine.vector3(0, 0, 0)
         };
 
-        coffeeEngine.renderer.mainShaders = {
-            unlit: coffeeEngine.renderer.daveshade.createShader(
+        renderer.mainShaders = {
+            basis:daveshadeInstance.createShader(
                 //Vertex
-                `
+                `#version 300 es
                 precision highp float;
     
-                attribute vec4 a_position;
-                attribute vec4 a_color;
-                
-                attribute vec3 a_normal;
+                in vec4 a_position;
+                in vec4 a_color;
+                in vec3 a_normal;
+                in vec2 a_texCoord;
     
-                attribute vec2 a_texCoord;
-    
-                varying vec4 v_color;
-                varying vec3 v_normal;
-                varying vec2 v_texCoord;
-                varying vec3 v_position;
-                varying float v_warp;
-    
-                uniform mat4 u_model;
-                uniform mat4 u_projection;
-                uniform mat4 u_camera;
-                uniform vec2 u_wFactor;
-                uniform float u_aspectRatio;
-    
-                uniform sampler2D u_texture;
-    
-                void main()
-                {
-                    //Our passed in attriubtes
-                    v_color = a_color;
-                    v_normal = a_normal;
-                    v_texCoord = a_texCoord;
-    
-                    //Transform my stuff!
-                    gl_Position = (a_position * u_model * u_camera) * u_projection;
-                    v_position = a_position.xyz;
-
-                    //W manipulation... wait not in that way
-                    gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor.x);
-                    gl_Position.xy /= u_wFactor.y;
-                    gl_Position.w = gl_Position.z;
-                    gl_Position -= vec4(0,0,1,0);
-                    gl_Position.x /= u_aspectRatio;
-
-                    v_warp = gl_Position.w;
-                }
-                `,
-                //Fragment
-                `
-                precision highp float;
-    
-                varying vec4 v_color;
-                varying vec3 v_normal;
-                varying vec2 v_texCoord;
-                varying vec3 v_position;
-                varying float v_warp;
-    
-                uniform sampler2D u_texture;
-                uniform vec2 u_wFactor;
-                uniform vec4 u_colorMod;
-                
-                void main()
-                {
-                    vec2 secondaryTexCoord = mix(v_texCoord / v_warp, v_texCoord, u_wFactor.x);
-                    //gl_FragColor = vec4(1) * u_colorMod;
-                    gl_FragColor = texture2D(u_texture, v_texCoord) * v_color * u_colorMod;
-
-                    if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
-                        discard;
-                    }
-                }
-                `
-            ),
-            basis: coffeeEngine.renderer.daveshade.createShader(
-                //Vertex
-                `
-                precision highp float;
-    
-                attribute vec4 a_position;
-                attribute vec4 a_color;
-                attribute vec3 a_normal;
-                attribute vec2 a_texCoord;
-    
-                varying vec4 v_color;
-                varying vec3 v_position;
-                varying vec3 v_normal;
-                varying vec2 v_texCoord;
+                out vec4 v_color;
+                out vec3 v_position;
+                out vec3 v_normal;
+                out vec2 v_texCoord;
     
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
@@ -237,13 +180,19 @@
                 }
                 `,
                 //Fragment
-                `
+                `#version 300 es
                 precision highp float;
     
-                varying vec4 v_color;
-                varying vec3 v_position;
-                varying vec3 v_normal;
-                varying vec2 v_texCoord;
+                in vec4 v_color;
+                in vec3 v_position;
+                in vec3 v_normal;
+                in vec2 v_texCoord;
+
+                layout (location = 0) out vec4 o_color;
+                layout (location = 1) out vec4 o_matAtr;
+                layout (location = 2) out vec4 o_emission;
+                layout (location = 3) out vec4 o_position;
+                layout (location = 4) out vec4 o_normal;
 
                 uniform vec4 u_colorMod;
                 uniform mat4 u_model;
@@ -281,17 +230,17 @@
                     fragment();
 
                     //Then the rest of our calculations
-                    gl_FragColor = COLOR * u_colorMod;
-                    if (gl_FragColor.w == 0.0 || u_colorMod.w == 0.0) {
+                    o_color = COLOR * u_colorMod;
+                    if (o_color.w == 0.0 || u_colorMod.w == 0.0) {
                         discard;
                     }
 
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
-                    gl_FragColor.xyz *= mix(gl_FragColor.w,1.0,ALPHA_GLOW);
+                    o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
                 }
                 `
             ),
-            skyplane: coffeeEngine.renderer.daveshade.createShader(
+            skyplane:daveshadeInstance.createShader(
                 //Vertex
                 `
                 precision highp float;
@@ -307,8 +256,7 @@
                 //Fragment
                 `
                 precision highp float;
-    
-                uniform sampler2D u_texture;
+
                 uniform mat4 u_camera;
                 uniform mat4 u_projection;
                 uniform vec2 u_res;
@@ -343,26 +291,65 @@
                 }
                 `
             ),
-            //lit:coffeeEngine.renderer.daveshade.createShader()
+            mainPass:daveshadeInstance.createShader(
+                //Vertex
+                `
+                precision highp float;
+    
+                attribute vec4 a_position;
+    
+                void main()
+                {    
+                    //Transform my stuff!
+                    gl_Position = a_position;
+                }
+                `,
+                //Fragment
+                `
+                precision highp float;
+    
+                uniform sampler2D u_color;
+                uniform sampler2D u_materialAttributes;
+                uniform sampler2D u_emission;
+                uniform sampler2D u_position;
+                uniform sampler2D u_normal;
+
+                uniform vec2 u_res;
+                
+                void main()
+                {
+                    vec2 screenUV = gl_FragCoord.xy / u_res;
+                    gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_materialAttributes,screenUV);
+                }
+                `
+            ),
         };
 
-        coffeeEngine.renderer.textureStorage = {};
-        coffeeEngine.renderer.shaderStorage = {};
-        coffeeEngine.renderer.materialStorage = {};
+        renderer.compilePBRshader = (shaderCode) => {
+            const vertex = DaveShade.findFunctionInGLSL(shaderCode,"vertex");
+            const frag = DaveShade.findFunctionInGLSL(shaderCode,"fragment");
 
-        coffeeEngine.renderer.initilizeFileConversions();
-        coffeeEngine.renderer.initilizeMaterials();
-        coffeeEngine.renderer.initilizeShapes();
+            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("void vertex() {}",vertex || "void vertex() {}");
+            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("void fragment() {}",frag || "void fragment() {}");
 
-        return coffeeEngine.renderer;
+            return daveshadeInstance.createShader(compiledVert,compiledFrag);
+        }
+
+        renderer.textureStorage = {};
+        renderer.shaderStorage = {};
+        renderer.materialStorage = {};
+
+        renderer.initilizeBaseShaders(renderer);
+        renderer.initilizeFileConversions();
+        renderer.initilizeMaterials();
+        renderer.initilizeShapes();
+
+        return renderer;
     };
 
     coffeeEngine.renderer.dispose = () => {
         if (!coffeeEngine.renderer.canvas) return;
         coffeeEngine.renderer.canvas.parentElement.removeChild(coffeeEngine.renderer.canvas);
-        coffeeEngine.renderer.daveshade.dispose();
-        delete coffeeEngine.renderer.mainShaders;
-        delete coffeeEngine.renderer.daveshade;
-        delete coffeeEngine.renderer.canvas;
+        coffeeEngine.renderer.daveshadeInstance.dispose();
     };
 })();

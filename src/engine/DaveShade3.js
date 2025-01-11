@@ -107,7 +107,6 @@ window.DaveShade = {};
     };
 
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
-        console.log((dsInfo.DRAWBUFFER_MANAGER) ? `COLOR_ATTACHMENT${framebufferInfo.colorAttachments}` : `COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`)
         //Size up the render buffer's texture
         renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
         
@@ -172,7 +171,9 @@ window.DaveShade = {};
                 texture:GL.createTexture(),
                 resize: (width, height) => {
                     GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
+                    GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MIN_FILTER,GL.NEAREST);
+                    GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MAG_FILTER,GL.NEAREST);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA32F, width, height, 0, GL.RGBA, GL.FLOAT, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
@@ -230,12 +231,12 @@ window.DaveShade = {};
 
             //define our info
             const renderBufferInfo = {
-                texture:GL.createTexture(),
+                renderBuffer:GL.createRenderbuffer(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, attachedData[0], width, height, 0, attachedData[1], attachedData[2], null);
+                    GL.bindRenderbuffer(GL.RENDERBUFFER,renderBufferInfo.renderBuffer);
+                    GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, width, height);
                 },
-                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+                dispose: () => { GL.deleteRenderbuffer(renderBufferInfo.renderBuffer); }
             };
 
             //Resize and attach our buffer
@@ -266,6 +267,10 @@ window.DaveShade = {};
             //Webgl doesn't have native support for VOAs or Multipass Rendering so we add the addon for VOAs, and extra Draw Buffers
             daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL.getExtension("OES_vertex_array_object");
             daveShadeInstance.DRAWBUFFER_MANAGER = daveShadeInstance.GL.getExtension("WEBGL_draw_buffers");
+        }
+        else {
+            daveShadeInstance.COLORBUFFER_FLOAT = daveShadeInstance.GL.getExtension("EXT_color_buffer_float");
+            daveShadeInstance.FLOAT_BLEND = daveShadeInstance.GL.getExtension("EXT_float_blend");
         }
         const GL = daveShadeInstance.GL;
 
@@ -517,7 +522,6 @@ window.DaveShade = {};
             }
 
             shader.drawFromBuffers = (triAmount) => {
-                GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
                 GL.useProgram(shader.program);
                 GL.drawArrays(GL.TRIANGLES, 0, triAmount);
                 daveShadeInstance.triCount += triAmount;
@@ -536,6 +540,8 @@ window.DaveShade = {};
 
         daveShadeInstance.renderToCanvas = () => {
             GL.bindFramebuffer(GL.FRAMEBUFFER, null);
+            
+            GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         }
 
         daveShadeInstance.createTexture = (data, width, height) => {
@@ -572,6 +578,7 @@ window.DaveShade = {};
             GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
             framebuffer.use = () => {
                 GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
+                GL.viewport(0, 0, framebuffer.width, framebuffer.height);
             };
 
             //Easy removal

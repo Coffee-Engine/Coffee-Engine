@@ -171,7 +171,49 @@ coffeeEngine.defaultThemes = {
         "--comment-doc-keyword": "#302fed",
         "--comment-doc-type": "#5a59ff",
     },
+    Astro: {
+        "--background-1": "#202020",
+        "--background-2": "#1e1e1e",
+        "--background-3": "#1a1a1a",
+        "--background-4": "#131112",
 
+        "--text-1": "#ffffff",
+        "--text-2": "#e6e6e6",
+        "--text-3": "#c6c6c6",
+
+        "--link-1": "#bc76a9",
+        "--link-2": "#a76996",
+        "--link-3": "#87557a",
+
+        "--warn": "#ffd078",
+        "--error": "#ff7878",
+        "--warn-text": "#deb780",
+        "--error-text": "#de8880",
+
+        "--keyword": "#d76f2b",
+        "--class-name": "#e5823f",
+
+        "--code-text": "#e6e6e6",
+
+        "--number-color": "#bce579",
+        "--number-color-unusual": "#5bb498",
+
+        "--string": "#d698b6",
+        "--string-escape": "#e7a8b5",
+        "--string-error": "#ff7878",
+
+        "--regexp": "#a0ceeb",
+        "--regexp-escape": "#b7c1e7",
+        "--regexp-invalid": "#ab8fff",
+
+        "--delimiter": "#e38d55",
+        "--delimiter-bracket": "#e7b252",
+
+        "--comment": "#8fbb7c",
+        "--comment-doc": "#6f9577",
+        "--comment-doc-keyword": "#62ff89",
+        "--comment-doc-type": "#b2ff60",
+    },
     "Davey Special": {
         "--background-1": "#17171c",
         "--background-2": "#121216",

@@ -241,7 +241,7 @@
         Theme: {
             themeColor: {
                 type: "dropdown",
-                values: ["Mocha", "Cocoa", "Creme", "blueBerry", "Custom"],
+                values: ["Mocha", "Cocoa", "Creme", "blueBerry", "Astro", "Custom"],
                 onChange: (value, fromBoot) => {
                     //Check if we are using a custom theme
                     if (value != "Custom") {
