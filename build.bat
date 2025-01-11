@@ -1,1 +1,2 @@
-node build.js
+npm i
+py build.py
