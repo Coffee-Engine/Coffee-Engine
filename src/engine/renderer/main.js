@@ -326,7 +326,7 @@
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    gl_FragColor = texture2D(u_color,screenUV) * texture2D(u_normal,screenUV);
+                    gl_FragColor = texture2D(u_color,screenUV);
                 }
                 `
             ),

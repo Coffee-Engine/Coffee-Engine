@@ -173,7 +173,7 @@ window.DaveShade = {};
                     GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
                     GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MIN_FILTER,GL.NEAREST);
                     GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MAG_FILTER,GL.NEAREST);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA32F, width, height, 0, GL.RGBA, GL.FLOAT, null);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA16F, width, height, 0, GL.RGBA, GL.FLOAT, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
@@ -213,7 +213,7 @@ window.DaveShade = {};
                 texture:GL.createTexture(),
                 resize: (width, height) => {
                     GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
-                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R32F, width, height, 0, GL.RED, GL.FLOAT, null);
+                    GL.texImage2D(GL.TEXTURE_2D, 0, GL.R16F, width, height, 0, GL.RED, GL.FLOAT, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
             };
@@ -538,9 +538,10 @@ window.DaveShade = {};
             daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
         };
 
+        //For going back to canvas rendering
         daveShadeInstance.renderToCanvas = () => {
             GL.bindFramebuffer(GL.FRAMEBUFFER, null);
-            
+            if (daveShadeInstance.GL_TYPE == "webgl2") GL.drawBuffers([GL.BACK]);
             GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         }
 
@@ -569,6 +570,7 @@ window.DaveShade = {};
             const framebuffer = {
                 buffer:GL.createFramebuffer(),
                 attachments: [],
+                drawBuffers: [],
                 width:width,
                 height:height,
                 colorAttachments:0
@@ -578,6 +580,8 @@ window.DaveShade = {};
             GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
             framebuffer.use = () => {
                 GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
+                //Make sure to use our attachments
+                if (daveShadeInstance.GL_TYPE == "webgl2") GL.drawBuffers(framebuffer.drawBuffers);
                 GL.viewport(0, 0, framebuffer.width, framebuffer.height);
             };
 
@@ -606,6 +610,13 @@ window.DaveShade = {};
             //Add the attachements
             for (let attID in attachments) {
                 framebuffer.attachments.push(attachments[attID](GL,framebuffer,daveShadeInstance));
+            }
+            
+            //framebuffer.drawBuffers.push(GL.BACK);
+            for (let drawBufferID = 0; drawBufferID < framebuffer.colorAttachments; drawBufferID++) {
+                console.log(`COLOR_ATTACHMENT${drawBufferID}`);
+                console.log((daveShadeInstance.DRAWBUFFER_MANAGER) ? daveShadeInstance.DRAWBUFFER_MANAGER : GL);
+                framebuffer.drawBuffers.push((daveShadeInstance.DRAWBUFFER_MANAGER) ? daveShadeInstance.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${drawBufferID}`] : GL[`COLOR_ATTACHMENT${drawBufferID}`])
             }
 
             //Then add and finalize the creation
