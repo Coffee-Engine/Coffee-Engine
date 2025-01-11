@@ -103,20 +103,23 @@
         const settingsPanel = document.getElementById("settingsPanel");
 
         //Loop through categories
-        Object.keys(editor.defaultSettings).forEach((key) => {
+        Object.keys(editor.settingDefs).forEach((key) => {
+            //Add category buttons make sure each one has an onclick to go to that category as well
             const button = document.createElement("button");
             button.style.width = "100%";
-            button.innerHTML = editor.language[`engine.settings.category.${key}`];
-
+            button.innerHTML = editor.language[`engine.settings.category.${key}`] || key;
             sidebar.appendChild(button);
 
+            const category = editor.settingDefs[key];
+
+            //When the sidebar button is clicked open that category
             button.onclick = () => {
                 //Clear elements and html
                 editor.settings.elements = {};
                 settingsPanel.innerHTML = "";
 
                 //Loop through settings in that category
-                Object.keys(editor.defaultSettings[key]).forEach((settingKey) => {
+                Object.keys(category).forEach((settingKey) => {
                     //Create our text for the editor element
                     const settingSpan = document.createElement("p");
                     settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
@@ -124,7 +127,7 @@
                     settingSpan.style.margin = "2px";
 
                     //This is where we get inputs for the setting
-                    let elementEditor = editor.settings.elementFromType(editor.settingDefs[key][settingKey].type, editor.settingDefs[key][settingKey], key, settingKey);
+                    let elementEditor = editor.settings.elementFromType(category[settingKey].type, category[settingKey], key, settingKey);
                     editor.settings.elements[settingKey] = {
                         span: settingSpan,
                         input: elementEditor,
@@ -145,7 +148,7 @@
 
                     settingsPanel.appendChild(settingSpan);
 
-                    if (editor.settingDefs[key][settingKey].menuInit) editor.settingDefs[key][settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
+                    if (category[settingKey].menuInit) category[settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
                 });
             };
         });

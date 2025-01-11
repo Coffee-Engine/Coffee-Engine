@@ -1,4 +1,4 @@
-coffeeEngine.defaultThemes = {
+editor.defaultThemes = {
     Mocha: {
         "--background-1": "#46352a",
         "--background-2": "#3d2c21",
@@ -258,7 +258,7 @@ coffeeEngine.defaultThemes = {
     },
 };
 
-coffeeEngine.taskbarStyles = {
+editor.taskbarStyles = {
     Flat: "var(--background-1)",
     Aero: "linear-gradient(0deg, var(--background-4) 0%, var(--background-2) 25%, var(--background-1) 100%);",
 };

@@ -70,14 +70,43 @@
             case "dropdown": {
                 const input = document.createElement("select");
 
-                elementDefs.values.forEach((value) => {
-                    const option = document.createElement("option");
+                //Check to see if the values are valid for the dropdown
+                if (Array.isArray(elementDefs.values)) {
+                    elementDefs.values.forEach((value) => {
+                        const option = document.createElement("option");
+    
+                        option.value = value;
+                        option.innerText = editor.language[`engine.settings.category.${category}.${setting}.${value}`];
+    
+                        input.appendChild(option);
+                    });
+                }
+                else if (typeof elementDefs.values == "function") {
+                    const returned = elementDefs.values();
 
-                    option.value = value;
-                    option.innerText = editor.language[`engine.settings.category.${category}.${setting}.${value}`];
+                    //Make sure the output is an array if not return something saying the output was invalid
+                    if (Array.isArray(returned)) {
+                        returned.forEach((value) => {
+                            const option = document.createElement("option");
+        
+                            option.value = value;
+                            option.innerText = editor.language[`engine.settings.category.${category}.${setting}.${value}`] || value;
+        
+                            input.appendChild(option);
+                        });
+                    }
+                    else {
+                        const option = document.createElement("option");
+                        option.value = "???";
+                        option.innerText = "invalid";
 
-                    input.appendChild(option);
-                });
+                        input.append(option);
+                    }
+                }
+                //If the option itself is completely invalid return
+                else {
+                    console.error(`dropdown ${setting} in ${category} has invalid values`);
+                }
 
                 input.value = editor.settings.values[category][setting];
 

@@ -59,7 +59,7 @@
 
                 margin:0px;
 
-                background:${coffeeEngine.taskbarStyles[editor.taskbarStyle]};
+                background:${editor.taskbarStyles[editor.taskbarStyle]};
 
                 display:grid;
                 grid-template-columns: auto ${editor.taskbarHeight}px ${editor.taskbarHeight}px;

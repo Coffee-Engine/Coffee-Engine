@@ -11,7 +11,7 @@
                 } else if (editor.settings.values.Monaco.themeOverride) {
                     document.body.style.setProperty(cssName, value);
                 } else {
-                    document.body.style.setProperty(cssName, coffeeEngine.defaultThemes[editor.settings.values.Theme.themeColor][cssName]);
+                    document.body.style.setProperty(cssName, editor.defaultThemes[editor.settings.values.Theme.themeColor][cssName]);
                 }
             },
             menuInit: (previousSettings, elements) => {
@@ -119,7 +119,9 @@
             barStyle: {
                 defaultValue:"Flat",
                 type: "dropdown",
-                values: ["Flat", "Aero"],
+                values: () => {                    
+                    return Object.keys(editor.taskbarStyles);
+                },
                 onChange: (value) => {
                     editor.taskbarStyle = value;
                 },
@@ -184,59 +186,65 @@
             themeColor: {
                 defaultValue:"Mocha",
                 type: "dropdown",
-                values: ["Mocha", "Cocoa", "Creme", "blueBerry", "Astro", "Custom"],
+                values: () => {
+                    const settings = Object.keys(editor.defaultThemes);
+                    if (settings.includes("Davey Special")) settings.splice(settings.indexOf("Davey Special"), 1);
+                    settings.push("Custom");
+
+                    return settings;
+                },
                 onChange: (value, fromBoot) => {
                     //Check if we are using a custom theme
                     if (value != "Custom") {
                         //If we aren't check if our theme is valid
-                        if (coffeeEngine.defaultThemes[value]) {
+                        if (editor.defaultThemes[value]) {
                             //Loop through keys and determine the right amount
-                            Object.keys(coffeeEngine.defaultThemes[value]).forEach((key) => {
-                                document.body.style.setProperty(key, coffeeEngine.defaultThemes[value][key]);
+                            Object.keys(editor.defaultThemes[value]).forEach((key) => {
+                                document.body.style.setProperty(key, editor.defaultThemes[value][key]);
                             });
 
                             //Disable Custom Color if possible
                             if (!fromBoot) {
                                 editor.settings.elements["backgroundColor"].span.style.opacity = "50%";
                                 editor.settings.elements["backgroundColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["backgroundColor"].input.value = coffeeEngine.defaultThemes[value]["--background-1"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["backgroundColor"].input.value = editor.defaultThemes[value]["--background-1"];
                                 }
 
                                 editor.settings.elements["textColor"].span.style.opacity = "50%";
                                 editor.settings.elements["textColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["textColor"].input.value = coffeeEngine.defaultThemes[value]["--text-1"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["textColor"].input.value = editor.defaultThemes[value]["--text-1"];
                                 }
 
                                 editor.settings.elements["warnColor"].span.style.opacity = "50%";
                                 editor.settings.elements["warnColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["warnColor"].input.value = coffeeEngine.defaultThemes[value]["--warn"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["warnColor"].input.value = editor.defaultThemes[value]["--warn"];
                                 }
 
                                 editor.settings.elements["errorColor"].span.style.opacity = "50%";
                                 editor.settings.elements["errorColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["errorColor"].input.value = coffeeEngine.defaultThemes[value]["--error"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["errorColor"].input.value = editor.defaultThemes[value]["--error"];
                                 }
 
                                 editor.settings.elements["warnTextColor"].span.style.opacity = "50%";
                                 editor.settings.elements["warnTextColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["warnTextColor"].input.value = coffeeEngine.defaultThemes[value]["--warn-text"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["warnTextColor"].input.value = editor.defaultThemes[value]["--warn-text"];
                                 }
 
                                 editor.settings.elements["errorTextColor"].span.style.opacity = "50%";
                                 editor.settings.elements["errorTextColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["errorTextColor"].input.value = coffeeEngine.defaultThemes[value]["--error-text"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["errorTextColor"].input.value = editor.defaultThemes[value]["--error-text"];
                                 }
 
                                 editor.settings.elements["linkColor"].span.style.opacity = "50%";
                                 editor.settings.elements["linkColor"].input.disabled = true;
-                                if (coffeeEngine.defaultThemes[value]) {
-                                    editor.settings.elements["linkColor"].input.value = coffeeEngine.defaultThemes[value]["--link-1"];
+                                if (editor.defaultThemes[value]) {
+                                    editor.settings.elements["linkColor"].input.value = editor.defaultThemes[value]["--link-1"];
                                 }
                             }
                         }
@@ -383,8 +391,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--background-1"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--background-1"];
                         }
                     }
                 },
@@ -445,8 +453,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--text-1"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--text-1"];
                         }
                     }
                 },
@@ -465,8 +473,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--warn"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--warn"];
                         }
                     }
                 },
@@ -485,8 +493,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--error"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--error"];
                         }
                     }
                 },
@@ -505,8 +513,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--warn-text"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--warn-text"];
                         }
                     }
                 },
@@ -525,8 +533,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--error-text"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--error-text"];
                         }
                     }
                 },
@@ -584,8 +592,8 @@
                         //If not disable it and make sure the value is the one we want.
                         elements.span.style.opacity = "50%";
                         elements.input.disabled = true;
-                        if (coffeeEngine.defaultThemes[previousSettings.themeColor]) {
-                            elements.input.value = coffeeEngine.defaultThemes[previousSettings.themeColor]["--link-1"];
+                        if (editor.defaultThemes[previousSettings.themeColor]) {
+                            elements.input.value = editor.defaultThemes[previousSettings.themeColor]["--link-1"];
                         }
                     }
                 },
@@ -640,7 +648,9 @@
             blockColoration: {
                 defaultValue: "Default",
                 type: "dropdown",
-                values: ["Default", "Pastel", "Dark"],
+                values: () => {                    
+                    return Object.keys(sugarcube.blockColorFunctions);
+                },
                 onChange: (value) => {
                     sugarcube.blockColorFunction = sugarcube.blockColorFunctions[value] || sugarcube.blockColorFunctions.Default;
                 }
