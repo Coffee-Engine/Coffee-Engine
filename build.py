@@ -93,11 +93,15 @@ def execute(option):
         os.system(f"{pyCommand} -m http.server")  
     if option == 2:
         os.system("npm run start")
+    if option == 3:
+        os.system("npm i electron-forge")
+        os.system("npm run package")
     exit(0)
 
 buildOptions = [
     "Web Server",
     "Dev Window",
+    "Electron (Host OS)"
 ]
 
 main()
