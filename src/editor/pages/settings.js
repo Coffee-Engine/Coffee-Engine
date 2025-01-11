@@ -1,7 +1,6 @@
 (function () {
     editor.settings = {};
-
-    editor.settings.values = Object.assign({}, editor.defaultSettings, editor.Storage.getStorage("settingsValues", {}));
+    editor.settings.values = {};
     editor.settings.elements = {};
 
     editor.settings.initilize = () => {
@@ -154,10 +153,5 @@
         if (sidebar.children[0]) sidebar.children[0].onclick();
     };
 
-    //For when the editor first boots up.
-    Object.keys(editor.defaultSettings).forEach((key) => {
-        Object.keys(editor.defaultSettings[key]).forEach((settingKey) => {
-            if (editor.settingDefs[key][settingKey].onChange) editor.settingDefs[key][settingKey].onChange(editor.settings.values[key][settingKey], true);
-        });
-    });
+    editor.initilizeSettings();
 })();

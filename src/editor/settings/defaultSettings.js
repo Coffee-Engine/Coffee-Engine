@@ -1,76 +1,8 @@
 (function () {
-    editor.defaultSettings = {
-        Editor: {
-            customLanguage: "",
-            changeLanguage: "",
-            changeLayout: "",
-            clearLocalStorage: "",
-        },
-        Window: {
-            grabSize: 8,
-            barHeight: 24,
-            barStyle: "Flat",
-        },
-        Viewport: {
-            mouseSensitivity:1,
-            forward:"w",
-            left:"a",
-            back:"s",
-            right:"d",
-            up:"e",
-            down:"q",
-        },
-        Theme: {
-            themeColor: "Mocha",
-            backgroundColor: "#46352a",
-            textColor: "#e7cab7",
-            warnColor: "#ffd078",
-            warnTextColor: "#46352a",
-            errorColor: "#323546",
-            errorTextColor: "#323546",
-            linkColor: "#ffb400",
-        },
-        SugarCube: {
-            notchWidth: "36", //NOTCH_HEIGHT
-            notchHeight: "8", //NOTCH_WIDTH
-            cornerSize: "4", //CORNER_RADIUS
-            padding: "2", //BETWEEN_STATEMENT_PADDING_Y
-            flyOutOpacity: "50",
-            blockColoration: "Default",
-        },
-        Monaco: {
-            fontSize: 12,
-            fontStyle: "Monospace",
-            themeOverride: false,
-
-            defaultText: "#e7cab7",
-
-            colorKeyword: "#d76f2b",
-            colorClassname: "#e5823f",
-
-            colorDelimiter: "#e38d55",
-            colorDelimiterBracket: "#e7b252",
-
-            colorString: "#d6ae93",
-            colorStringError: "#ff7878",
-            colorStringEscape: "#e7cab7",
-
-            colorNumber: "#bce579",
-            colorNumberUnusual: "#5bb498",
-            colorRegexp: "#eba2ce",
-            colorRegexpInvalid: "#ff7878",
-            colorRegexpEscape: "#e7cab7",
-
-            colorComment: "#bb8d6e",
-            colorCommentDoc: "#958072",
-            colorCommentDocKeyword: "#bce579",
-            colorCommentDocType: "#5bb498",
-        },
-    };
-
-    const quickSettingCSSThemeColor = (cssName) => {
+    const quickSettingCSSThemeColor = (cssName, defaultValue) => {
         return {
             //Make our color type
+            defaultValue: defaultValue,
             type: "color",
             onChange: (value, fromBoot) => {
                 //Make sure the theme isn't custom
@@ -167,6 +99,7 @@
         },
         Window: {
             grabSize: {
+                defaultValue:8,
                 type: "number",
                 min: "2",
                 max: "16",
@@ -175,6 +108,7 @@
                 },
             },
             barHeight: {
+                defaultValue:24,
                 type: "number",
                 min: "16",
                 max: "64",
@@ -183,6 +117,7 @@
                 },
             },
             barStyle: {
+                defaultValue:"Flat",
                 type: "dropdown",
                 values: ["Flat", "Aero"],
                 onChange: (value) => {
@@ -192,6 +127,7 @@
         },
         Viewport: {
             mouseSensitivity: {
+                defaultValue: 1,
                 type: "number",
                 min: "0.2",
                 max: "3.0",
@@ -202,36 +138,42 @@
                 },
             },
             forward: {
+                defaultValue: "w",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.forward = value;
                 }
             },
             left: {
+                defaultValue: "a",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.left = value;
                 }
             },
             back: {
+                defaultValue: "s",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.back = value;
                 }
             },
             right: {
+                defaultValue: "d",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.right = value;
                 }
             },
             up: {
+                defaultValue: "e",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.up = value;
                 }
             },
             down: {
+                defaultValue: "q",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.down = value;
@@ -240,6 +182,7 @@
         },
         Theme: {
             themeColor: {
+                defaultValue:"Mocha",
                 type: "dropdown",
                 values: ["Mocha", "Cocoa", "Creme", "blueBerry", "Astro", "Custom"],
                 onChange: (value, fromBoot) => {
@@ -366,6 +309,7 @@
                 },
             },
             backgroundColor: {
+                defaultValue:"#46352a",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -446,6 +390,7 @@
                 },
             },
             textColor: {
+                defaultValue:"#e7cab7",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -507,6 +452,7 @@
                 },
             },
             warnColor: {
+                defaultValue:"#ffd078",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -526,6 +472,7 @@
                 },
             },
             errorColor: {
+                defaultValue:"#323546",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -545,6 +492,7 @@
                 },
             },
             warnTextColor: {
+                defaultValue:"#46352a",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -564,6 +512,7 @@
                 },
             },
             errorTextColor: {
+                defaultValue:"#323546",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -583,6 +532,7 @@
                 },
             },
             linkColor: {
+                defaultValue:"#ffb400",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -643,6 +593,7 @@
         },
         SugarCube: {
             notchWidth: {
+                defaultValue: "36",
                 onChange: (value) => {
                     sugarcube.constantOverrides.NOTCH_WIDTH = Number(value);
                 },
@@ -651,6 +602,7 @@
                 max: "48",
             },
             notchHeight: {
+                defaultValue: "8",
                 onChange: (value) => {
                     sugarcube.constantOverrides.NOTCH_HEIGHT = Number(value);
                 },
@@ -659,6 +611,7 @@
                 max: "32",
             },
             cornerSize: {
+                defaultValue: "4",
                 onChange: (value) => {
                     sugarcube.constantOverrides.CORNER_RADIUS = Number(value);
                 },
@@ -667,6 +620,7 @@
                 max: "8",
             },
             padding: {
+                defaultValue: "2",
                 onChange: (value) => {
                     sugarcube.constantOverrides.BETWEEN_STATEMENT_PADDING_Y = Number(value);
                 },
@@ -675,6 +629,7 @@
                 max: "4",
             },
             flyOutOpacity: {
+                defaultValue: "50",
                 onChange: (value) => {
                     sugarcube.blocklyTheme.componentStyles.flyoutOpacity = value / 100;
                 },
@@ -683,6 +638,7 @@
                 max: "100",
             },
             blockColoration: {
+                defaultValue: "Default",
                 type: "dropdown",
                 values: ["Default", "Pastel", "Dark"],
                 onChange: (value) => {
@@ -692,6 +648,7 @@
         },
         Monaco: {
             fontSize: {
+                defaultValue:12,
                 onChange: (value) => {
                     monacoManager.fontSize = Number(value);
                 },
@@ -700,6 +657,7 @@
                 max: "32",
             },
             fontStyle: {
+                defaultValue:"Monospace",
                 type: "dropdown",
                 values: ["Serif", "Sans-serif", "Monospace", "Cursive", "Fantasy"],
                 onChange: (value) => {
@@ -707,6 +665,7 @@
                 },
             },
             themeOverride: {
+                defaultValue: false,
                 type: "checkbox",
                 onChange: (value, fromBoot) => {
                     if (!fromBoot) {
@@ -748,23 +707,23 @@
                     editor.settingDefs.Monaco.colorCommentDocType.onChange(editor.settings.values.Monaco.colorCommentDocType);
                 },
             },
-            defaultText: quickSettingCSSThemeColor("--code-text"),
-            colorKeyword: quickSettingCSSThemeColor("--keyword"),
-            colorClassname: quickSettingCSSThemeColor("--class-name"),
-            colorDelimiter: quickSettingCSSThemeColor("--delimiter"),
-            colorDelimiterBracket: quickSettingCSSThemeColor("--delimiter-bracket"),
-            colorNumber: quickSettingCSSThemeColor("--number-color"),
-            colorNumberUnusual: quickSettingCSSThemeColor("--number-color-unusual"),
-            colorString: quickSettingCSSThemeColor("--string"),
-            colorStringEscape: quickSettingCSSThemeColor("--string-escape"),
-            colorStringError: quickSettingCSSThemeColor("--string-error"),
-            colorRegexp: quickSettingCSSThemeColor("--regexp"),
-            colorRegexpInvalid: quickSettingCSSThemeColor("--regexp-invalid"),
-            colorRegexpEscape: quickSettingCSSThemeColor("--regexp-escape"),
-            colorComment: quickSettingCSSThemeColor("--comment"),
-            colorCommentDoc: quickSettingCSSThemeColor("--comment-doc"),
-            colorCommentDocKeyword: quickSettingCSSThemeColor("--comment-doc-keyword"),
-            colorCommentDocType: quickSettingCSSThemeColor("--comment-doc-type"),
+            defaultText: quickSettingCSSThemeColor("--code-text", "#e7cab7"),
+            colorKeyword: quickSettingCSSThemeColor("--keyword", "#d76f2b"),
+            colorClassname: quickSettingCSSThemeColor("--class-name", "#e5823f"),
+            colorDelimiter: quickSettingCSSThemeColor("--delimiter", "#e38d55"),
+            colorDelimiterBracket: quickSettingCSSThemeColor("--delimiter-bracket", "#e7b252"),
+            colorNumber: quickSettingCSSThemeColor("--number-color", "#bce579"),
+            colorNumberUnusual: quickSettingCSSThemeColor("--number-color-unusual", "#5bb498"),
+            colorString: quickSettingCSSThemeColor("--string", "#d6ae93"),
+            colorStringEscape: quickSettingCSSThemeColor("--string-escape", "#ff7878"),
+            colorStringError: quickSettingCSSThemeColor("--string-error", "#e7cab7"),
+            colorRegexp: quickSettingCSSThemeColor("--regexp", "#eba2ce"),
+            colorRegexpInvalid: quickSettingCSSThemeColor("--regexp-invalid", "#ff7878"),
+            colorRegexpEscape: quickSettingCSSThemeColor("--regexp-escape", "#e7cab7"),
+            colorComment: quickSettingCSSThemeColor("--comment", "#bb8d6e"),
+            colorCommentDoc: quickSettingCSSThemeColor("--comment-doc", "#958072"),
+            colorCommentDocKeyword: quickSettingCSSThemeColor("--comment-doc-keyword", "#bce579"),
+            colorCommentDocType: quickSettingCSSThemeColor("--comment-doc-type", "#5bb498"),
         },
     };
 })();
