@@ -94,7 +94,7 @@
 
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[4].texture;
             //renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
             //renderer.mainShaders.mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
             //renderer.mainShaders.mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;

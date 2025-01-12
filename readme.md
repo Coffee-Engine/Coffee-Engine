@@ -13,6 +13,7 @@ I reccomend staying with what we have which are :
 - Blockly
 - Monaco
 - Marked (v15.0.0)
+- JSZip (v3.10.1)
 
 ### Node-based before everything
 
@@ -25,7 +26,7 @@ Coffee Engine should be very customizable with almost everything being able to b
 ## Contributing
 
 you can use `node build.mjs` to build a non-Browser version of the engine, when building it should show a little command line tool for you to mess around with.
-if you just want to test on a browser, use a local server or just open the `index.html` file.
+if you just want to test on a browser, use a local server
 
 ### And about IOS Safari?
 

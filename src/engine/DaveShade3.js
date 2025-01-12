@@ -109,6 +109,9 @@ window.DaveShade = {};
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
         //Size up the render buffer's texture
         renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
+        GL.colorMask(true, true, true, true);
+        GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MIN_FILTER,GL.NEAREST);
+        GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MAG_FILTER,GL.NEAREST);
         
         //Get our color attachment
         const attachedBuffer = (dsInfo.DRAWBUFFER_MANAGER) ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
@@ -171,8 +174,6 @@ window.DaveShade = {};
                 texture:GL.createTexture(),
                 resize: (width, height) => {
                     GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
-                    GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MIN_FILTER,GL.NEAREST);
-                    GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MAG_FILTER,GL.NEAREST);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA16F, width, height, 0, GL.RGBA, GL.FLOAT, null);
                 },
                 dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
@@ -615,7 +616,6 @@ window.DaveShade = {};
             //framebuffer.drawBuffers.push(GL.BACK);
             for (let drawBufferID = 0; drawBufferID < framebuffer.colorAttachments; drawBufferID++) {
                 console.log(`COLOR_ATTACHMENT${drawBufferID}`);
-                console.log((daveShadeInstance.DRAWBUFFER_MANAGER) ? daveShadeInstance.DRAWBUFFER_MANAGER : GL);
                 framebuffer.drawBuffers.push((daveShadeInstance.DRAWBUFFER_MANAGER) ? daveShadeInstance.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${drawBufferID}`] : GL[`COLOR_ATTACHMENT${drawBufferID}`])
             }
 
