@@ -262,3 +262,8 @@ editor.taskbarStyles = {
     Flat: "var(--background-1)",
     Aero: "linear-gradient(0deg, var(--background-4) 0%, var(--background-2) 25%, var(--background-1) 100%);",
 };
+
+editor.buttonStyles = {
+    Modern: "solid",
+    Retro: "none",
+}

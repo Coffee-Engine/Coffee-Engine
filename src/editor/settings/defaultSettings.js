@@ -126,6 +126,16 @@
                     editor.taskbarStyle = value;
                 },
             },
+            buttonStyle: {
+                defaultValue: "Modern",
+                type: "dropdown",
+                values: () => {
+                    return Object.keys(editor.buttonStyles);
+                },
+                onChange: (value) => {
+                    editor.buttonStyle = value;
+                }
+            }
         },
         Viewport: {
             mouseSensitivity: {

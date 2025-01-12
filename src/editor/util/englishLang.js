@@ -42,6 +42,7 @@ editor.EnglishLang = {
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
     "engine.settings.category.Window.barHeight": "Taskbar Height",
     "engine.settings.category.Window.barStyle": "Taskbar Style",
+    "engine.settings.category.Window.buttonStyle": "Button Style",
 
     "engine.settings.category.Window.barStyle.Flat": "Flat",
     "engine.settings.category.Window.barStyle.Aero": "Shaded",
