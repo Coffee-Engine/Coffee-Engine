@@ -134,11 +134,11 @@
                 },
                 onChange: (value, fromBoot) => {
                     if (fromBoot) {
-                        editor.buttonStyler = document.createElement("style");
-                        document.appendChild(editor.buttonStyler);
+                        editor.styleHelpers.buttonStyler = document.createElement("style");
+                        document.body.appendChild(editor.styleHelpers.buttonStyler);
                     }
 
-                    editor.buttonStyler.innerHTML = value;
+                    editor.styleHelpers.buttonStyler.innerHTML = value;
                     editor.buttonStyle = value;
                 }
             }

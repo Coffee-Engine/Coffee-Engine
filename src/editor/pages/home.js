@@ -77,10 +77,6 @@
             .disabledButton {
                 color: var(--text-2);
                 background-color: var(--background-3);
-
-                border-style: solid;
-                border-radius: 2px;
-                border-width: 2px;
                 border-color: var(--background-3);
                 
                 font-size: large;
