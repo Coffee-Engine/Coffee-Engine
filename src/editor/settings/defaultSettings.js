@@ -132,7 +132,13 @@
                 values: () => {
                     return Object.keys(editor.buttonStyles);
                 },
-                onChange: (value) => {
+                onChange: (value, fromBoot) => {
+                    if (fromBoot) {
+                        editor.buttonStyler = document.createElement("style");
+                        document.appendChild(editor.buttonStyler);
+                    }
+
+                    editor.buttonStyler.innerHTML = value;
                     editor.buttonStyle = value;
                 }
             }
