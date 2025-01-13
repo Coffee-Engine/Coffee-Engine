@@ -339,6 +339,8 @@
                 uniform sampler2D u_position;
                 uniform sampler2D u_normal;
 
+                uniform mat4 u_lights[64];
+
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
 
@@ -356,6 +358,10 @@
 
                     if (matAttributes.z > 0.0) {
                         gl_FragColor.xyz *= mix(vec3(1.0),u_sunColor * dot(texture2D(u_normal,screenUV).xyz, u_sunDir),matAttributes.z);
+
+                        for (int i=0;i<64;i++) {
+                            gl_FragColor.xyz += vec3(u_lights[i][0][0],u_lights[i][0][1],u_lights[i][0][2]);
+                        }
                     }
                 }
                 `

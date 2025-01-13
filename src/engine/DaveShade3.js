@@ -407,24 +407,53 @@ window.DaveShade = {};
             for (let id = 0; id < shader.activeUniformIDs.length; id++) {
                 const uniformInfo = GL.getActiveUniform(shader.program, id);
                 const uniformName = uniformInfo.name.split("[")[0];
+                const isArray = uniformInfo.name.includes("[");
 
-                const location = GL.getUniformLocation(shader.program, uniformName);
+                //differentiate arrays and 
+                if (isArray) {
+                    const arrayLength = uniformInfo.size;
+                    shader.uniforms[uniformName] = [];
 
-                shader.uniforms[uniformName] = {
-                    location: location,
-                    type: uniformInfo.type,
-                    isArray: uniformInfo.name.includes("["),
-                    "#value": null,
+                    for (let index = 0; index < arrayLength; index++) {
+                        const location = GL.getUniformLocation(shader.program, `${uniformName}[${index}]`);
+    
+                        shader.uniforms[uniformName].push({
+                            location: location,
+                            type: uniformInfo.type,
+                            isArray: isArray,
+                            "#value": null,
+        
+                            set value(value) {
+                                GL.useProgram(shader.program);
+                                shader.uniforms[uniformName]["#value"] = value;
+                                DaveShade.setters[uniformInfo.type](GL, location, value, uniformInfo);
+                            },
+                            get value() {
+                                return shader.uniforms[uniformName]["#value"];
+                            },
+                        });
+                    }
+                }
+                else {
+                    const location = GL.getUniformLocation(shader.program, uniformName);
 
-                    set value(value) {
-                        GL.useProgram(shader.program);
-                        shader.uniforms[uniformName]["#value"] = value;
-                        DaveShade.setters[uniformInfo.type](GL, location, value, uniformInfo);
-                    },
-                    get value() {
-                        return shader.uniforms[uniformName]["#value"];
-                    },
-                };
+                    shader.uniforms[uniformName] = {
+                        location: location,
+                        type: uniformInfo.type,
+                        isArray: isArray,
+                        "#value": null,
+    
+                        set value(value) {
+                            GL.useProgram(shader.program);
+                            shader.uniforms[uniformName]["#value"] = value;
+                            DaveShade.setters[uniformInfo.type](GL, location, value, uniformInfo);
+                        },
+                        get value() {
+                            return shader.uniforms[uniformName]["#value"];
+                        },
+                    };
+                }
+                
 
                 if (uniformInfo.type == 35678) {
                     uniformInfo.samplerID = shader.textureCount;
