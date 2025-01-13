@@ -84,8 +84,8 @@
         draw() {
             const renderer = coffeeEngine.renderer
             const GL = renderer.daveshade.GL;
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             renderer.drawBuffer.use();
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
             this.__drawSky(renderer);
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.__drawScene(renderer);
@@ -94,11 +94,11 @@
 
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[4].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
+            renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
+            renderer.mainShaders.mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
             //renderer.mainShaders.mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
+            renderer.mainShaders.mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
 
             renderer.mainShaders.mainPass.drawFromBuffers(6);
         }

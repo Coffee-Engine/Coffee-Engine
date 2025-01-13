@@ -199,13 +199,14 @@
 
             container.style.overflow = "hidden";
 
+            //Setup our renderer
+            this.renderer = coffeeEngine.renderer.create(this.canvas);
+
+            //Size it to be practical
             this.resized();
             window.addEventListener("resize", () => {
                 this.resized();
             });
-
-            //Setup our renderer
-            this.renderer = coffeeEngine.renderer.create(this.canvas);
 
             //Our camera
             this.controlling = false;
@@ -285,6 +286,7 @@
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
+            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width,this.canvas.height);
         }
     };
 

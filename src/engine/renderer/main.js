@@ -239,9 +239,9 @@
                     }
 
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
-                    o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
+                    //o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
                     o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,1);
-                    o_emission = vec4(EMISSION,1);
+                    o_emission = vec4(EMISSION,0);
                     o_position = vec4(v_position,1);
                     o_normal = vec4(NORMAL,1);
                 }
@@ -249,10 +249,10 @@
             ),
             skyplane:daveshadeInstance.createShader(
                 //Vertex
-                `
+                `#version 300 es
                 precision highp float;
     
-                attribute vec4 a_position;
+                in vec4 a_position;
     
                 void main()
                 {    
@@ -261,7 +261,7 @@
                 }
                 `,
                 //Fragment
-                `
+                `#version 300 es
                 precision highp float;
 
                 uniform mat4 u_camera;
@@ -272,6 +272,12 @@
                 uniform vec3 skyColor;
                 uniform vec3 groundColor;
                 uniform vec3 centerColor;
+
+                layout (location = 0) out vec4 o_color;
+                layout (location = 1) out vec4 o_matAtr;
+                layout (location = 2) out vec4 o_emission;
+                layout (location = 3) out vec4 o_position;
+                layout (location = 4) out vec4 o_normal;
                 
                 void main()
                 {
@@ -290,11 +296,17 @@
                     if (SkySphere.y < 0.0) {
                         //Inverse the Y
                         SkySphere.y = -SkySphere.y;
-                        gl_FragColor = vec4(mix(groundColor,centerColor,SkySphere.y),1);
+                        o_color = vec4(mix(groundColor,centerColor,SkySphere.y),1);
                     }
                     else {
-                        gl_FragColor = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
+                        o_color = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
                     }
+
+                    o_color.w = 1.0;
+                    o_emission = vec4(0);
+                    o_matAtr = vec4(0);
+                    o_position = vec4(1);
+                    o_normal = vec4(0);
                 }
                 `
             ),
@@ -326,7 +338,16 @@
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    gl_FragColor = texture2D(u_color,screenUV);
+                    vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
+
+                    gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_emission,screenUV);
+                    if (gl_FragColor.w > 1.0) {
+                        gl_FragColor.w = 1.0;
+                    }
+
+                    if (matAttributes.z > 0.0) {
+                        gl_FragColor.xyz *= mix(1.0,dot(texture2D(u_normal,screenUV).xyz, vec3(0,0.5,0.5)),matAttributes.z);
+                    }
                 }
                 `
             ),
@@ -351,6 +372,10 @@
         renderer.initilizeFileConversions();
         renderer.initilizeMaterials();
         renderer.initilizeShapes();
+
+        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
+        renderer.canvas.addEventListener("resize", () => {
+        })
 
         return renderer;
     };

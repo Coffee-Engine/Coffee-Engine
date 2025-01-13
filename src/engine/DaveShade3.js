@@ -109,13 +109,12 @@ window.DaveShade = {};
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
         //Size up the render buffer's texture
         renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
-        GL.colorMask(true, true, true, true);
         GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MIN_FILTER,GL.NEAREST);
         GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MAG_FILTER,GL.NEAREST);
         
         //Get our color attachment
         const attachedBuffer = (dsInfo.DRAWBUFFER_MANAGER) ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
-        GL.framebufferTexture2D(GL.FRAMEBUFFER, attachedBuffer,GL.TEXTURE_2D, renderBufferInfo.texture, 0);
+        GL.framebufferTexture2D(GL.FRAMEBUFFER, attachedBuffer, GL.TEXTURE_2D, renderBufferInfo.texture, 0);
         framebufferInfo.colorAttachments += 1;  
     }
 
@@ -242,7 +241,7 @@ window.DaveShade = {};
 
             //Resize and attach our buffer
             renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
-            GL.framebufferTexture2D(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.TEXTURE_2D, renderBufferInfo.texture, 0);
+            GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBufferInfo.renderBuffer);
 
             return renderBufferInfo;
         }
@@ -613,9 +612,8 @@ window.DaveShade = {};
                 framebuffer.attachments.push(attachments[attID](GL,framebuffer,daveShadeInstance));
             }
             
-            //framebuffer.drawBuffers.push(GL.BACK);
             for (let drawBufferID = 0; drawBufferID < framebuffer.colorAttachments; drawBufferID++) {
-                console.log(`COLOR_ATTACHMENT${drawBufferID}`);
+                //framebuffer.drawBuffers.push(GL.NONE);
                 framebuffer.drawBuffers.push((daveShadeInstance.DRAWBUFFER_MANAGER) ? daveShadeInstance.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${drawBufferID}`] : GL[`COLOR_ATTACHMENT${drawBufferID}`])
             }
 
