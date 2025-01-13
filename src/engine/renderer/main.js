@@ -339,6 +339,9 @@
                 uniform sampler2D u_position;
                 uniform sampler2D u_normal;
 
+                uniform vec3 u_sunDir;
+                uniform vec3 u_sunColor;
+
                 uniform vec2 u_res;
                 
                 void main()
@@ -352,7 +355,7 @@
                     }
 
                     if (matAttributes.z > 0.0) {
-                        gl_FragColor.xyz *= mix(1.0,dot(texture2D(u_normal,screenUV).xyz, vec3(0,0.5,0.5)),matAttributes.z);
+                        gl_FragColor.xyz *= mix(vec3(1.0),u_sunColor * dot(texture2D(u_normal,screenUV).xyz, u_sunDir),matAttributes.z);
                     }
                 }
                 `
@@ -378,6 +381,7 @@
         renderer.initilizeFileConversions();
         renderer.initilizeMaterials();
         renderer.initilizeShapes();
+        renderer.initilizeDebugSprites(renderer);
 
         renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
         renderer.canvas.addEventListener("resize", () => {
