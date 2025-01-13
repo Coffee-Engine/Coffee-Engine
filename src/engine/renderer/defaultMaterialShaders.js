@@ -7,5 +7,13 @@
             LIGHT_AFFECTION = 0.0;
         }
         `);
+
+        renderer.mainShaders.unlitSolid = renderer.compilePBRshader(`
+        uniform sampler2D u_texture;
+        void fragment() {
+            COLOR = vec4(1);
+            LIGHT_AFFECTION = 0.0;
+        }
+        `);
     }
 })();

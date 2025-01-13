@@ -2,6 +2,7 @@
     //Its the sun controller. Allows you to control. The sun
     class sun extends coffeeEngine.getNode("Node3D") {
         shader = coffeeEngine.renderer.mainShaders.unlit;
+        shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
 
         constructor() {
             super()
@@ -34,13 +35,18 @@
 
                 const renderMatrix = coffeeEngine.matrix4.identity().translate(this.position.x, this.position.y, this.position.z).rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                 .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
-                .scale(0.25,0.25,0.25)
                 .webGLValue();
 
                 this.shader.uniforms.u_texture.value = coffeeEngine.renderer.sprites.sun.texture;
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = this.#lightColorArray;
                 this.shader.drawFromBuffers(6);
+
+                this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
+
+                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0,0,-1).webGLValue();
+                this.shaderArrow.uniforms.u_colorMod.value = this.#lightColorArray;
+                this.shaderArrow.drawFromBuffers(48);
             }
         }
 
