@@ -106,6 +106,11 @@ window.DaveShade = {};
         
     };
 
+    DaveShade.renderTypes = {
+        LINES:1,
+        TRIANGLES:4
+    }
+
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
         //Size up the render buffer's texture
         renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
@@ -521,9 +526,9 @@ window.DaveShade = {};
                 }
             }
 
-            shader.drawFromBuffers = (triAmount) => {
+            shader.drawFromBuffers = (triAmount,renderMode) => {
                 GL.useProgram(shader.program);
-                GL.drawArrays(GL.TRIANGLES, 0, triAmount);
+                GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
                 daveShadeInstance.triCount += triAmount;
             };
 
