@@ -84,13 +84,21 @@
         draw() {
             const renderer = coffeeEngine.renderer
             const GL = renderer.daveshade.GL;
+
+            //Clear the main renderers depth
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+
+            //Use our draw buffer
             renderer.drawBuffer.use();
+
+            //Clear the depth each time and draw the sky/scene
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
             this.__drawSky(renderer);
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.__drawScene(renderer);
+
+            //Render it back to the main draw pass.
             renderer.daveshade.renderToCanvas();
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
 
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);

@@ -232,6 +232,8 @@
                     //Call our user function
                     fragment();
 
+                    NORMAL = normalize(NORMAL);
+
                     //Then the rest of our calculations
                     o_color = COLOR * u_colorMod;
                     if (o_color.w == 0.0 || u_colorMod.w == 0.0) {
@@ -240,10 +242,14 @@
 
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
                     //o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
-                    o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,1);
-                    o_emission = vec4(EMISSION,0);
+                    o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,o_color.w);
+                    o_emission = vec4(EMISSION,o_color.w);
                     o_position = vec4(v_position,1);
-                    o_normal = vec4(NORMAL,1);
+                    o_normal = vec4(NORMAL,o_color.w);
+
+                    o_matAtr *= o_color.w;
+                    o_emission *= o_color.w;
+                    o_normal *= o_color.w;
                 }
                 `
             ),
