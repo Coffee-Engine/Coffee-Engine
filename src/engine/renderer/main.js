@@ -343,6 +343,7 @@
 
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
+                uniform vec3 u_ambientColor;
 
                 uniform vec2 u_res;
                 
@@ -356,12 +357,16 @@
                         gl_FragColor.w = 1.0;
                     }
 
+                    vec3 lightColor = u_ambientColor;
+
                     if (matAttributes.z > 0.0) {
-                        gl_FragColor.xyz *= mix(vec3(1.0),u_sunColor * dot(texture2D(u_normal,screenUV).xyz, u_sunDir),matAttributes.z);
+                        lightColor += u_sunColor * dot(texture2D(u_normal,screenUV).xyz, u_sunDir);
 
                         for (int i=0;i<64;i++) {
-                            gl_FragColor.xyz += vec3(u_lights[i][0][0],u_lights[i][0][1],u_lights[i][0][2]);
+                            lightColor.xyz += vec3(u_lights[i][0][0],u_lights[i][0][1],u_lights[i][0][2]);
                         }
+
+                        gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
                     }
                 }
                 `

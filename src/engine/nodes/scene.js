@@ -10,6 +10,7 @@
         centerColor = [0.2, 0.105882353, 0.0549019608];
         sunDirection = [0,0,0];
         sunColor = [0,0,0];
+        ambientColor = [0,0,0];
 
         constructor() {
             this.children = [];
@@ -160,6 +161,7 @@
             renderer.mainShaders.mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
             renderer.mainShaders.mainPass.uniforms.u_sunDir.value = this.sunDirection;
             renderer.mainShaders.mainPass.uniforms.u_sunColor.value = this.sunColor;
+            renderer.mainShaders.mainPass.uniforms.u_ambientColor.value = this.ambientColor;
 
             renderer.mainShaders.mainPass.drawFromBuffers(6);
         }
@@ -253,6 +255,7 @@
                 horizonColor:this.horizonColor,
                 groundColor:this.groundColor,
                 centerColor:this.centerColor,
+                ambientColor:this.ambientColor,
             };
         }
 
@@ -262,6 +265,7 @@
             this.horizonColor = data.horizonColor || [1,1,1];
             this.groundColor = data.groundColor || [1,1,1];
             this.centerColor = data.centerColor || [0,0,0];
+            this.ambientColor = data.ambientColor || [0.05,0.05,0.05];
 
             //Our function for actually loading the scene
             const loadNodes = () => {
@@ -357,6 +361,8 @@
                 {name: "horizonColor", translationKey:"engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
                 {name: "groundColor", translationKey:"engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
                 {name: "centerColor", translationKey:"engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+                "---",
+                {name: "ambientColor", translationKey:"engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
             ];
 
             //Input Testing stuff
