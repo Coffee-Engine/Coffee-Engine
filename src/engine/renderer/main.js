@@ -382,17 +382,21 @@
                             //General application calculations. Distance^Intensity so that the light gets funkier
                             vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
                             float distance = pow(length(relative),2.0);
-
-                            //Now we calculate the final output
                             vec3 calculated = color * (light[0][3] / distance);
                             calculated *= lightDot(normal,-normalize(relative));
 
-                            float spottedDir = pow(lightDot(normalize(relative),facingDirection), 2.0 * light[2][3]);
-                            if (spottedDir < 0.0) {
-                                spottedDir = 0.0;
-                            }
+                            //Now we calculate the final output
+                            if (facingDirection != vec3(1)) {
 
-                            calculated *= spottedDir;
+                                float spottedDir = lightDot(normalize(relative),facingDirection);
+                                if (spottedDir < 0.0) {
+                                    spottedDir = 0.0;
+                                }
+                            
+                                spottedDir = pow(spottedDir, 2.0 * light[2][3]);
+
+                                calculated *= spottedDir;
+                            }
 
                             lightColor.xyz += calculated;
                         }
