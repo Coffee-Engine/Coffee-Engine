@@ -124,6 +124,8 @@
                 //Vertex
                 `#version 300 es
                 precision highp float;
+
+                //SHADER DEFINED UNIFORMS
     
                 in vec4 a_position;
                 in vec4 a_color;
@@ -169,7 +171,7 @@
     
                     //Transform my stuff!
                     gl_Position = (vec4(POSITION,1) * u_model * u_camera) * u_projection;
-                    v_position = POSITION;
+                    v_position = (vec4(POSITION,1) * u_model).xyz;
 
                     //W manipulation... wait not in that way
                     gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor.x);
@@ -182,6 +184,8 @@
                 //Fragment
                 `#version 300 es
                 precision highp float;
+
+                //SHADER DEFINED UNIFORMS
     
                 in vec4 v_color;
                 in vec3 v_position;
@@ -221,7 +225,6 @@
                     EMISSION = vec3(0);
                     ROUGHNESS = 0.0;
                     SPECULAR = 0.0;
-                    LIGHT_AFFECTION = 1.0;
                     ALPHA_GLOW = 0.0;
                     UV = v_texCoord;
                     NORMAL = v_normal;
@@ -229,23 +232,33 @@
                     //Call our user function
                     fragment();
 
+                    NORMAL = normalize(NORMAL);
+
                     //Then the rest of our calculations
                     o_color = COLOR * u_colorMod;
-                    if (o_color.w == 0.0 || u_colorMod.w == 0.0) {
+                    if (o_color.w <= 0.0125) {
                         discard;
                     }
 
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
+                    o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,o_color.w);
+                    o_emission = vec4(EMISSION,o_color.w);
+                    o_position = vec4(v_position,o_color.w);
+                    o_normal = vec4(NORMAL,o_color.w);
+
                     o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
+                    o_matAtr *= o_color.w;
+                    o_emission *= o_color.w;
+                    o_normal *= o_color.w;
                 }
                 `
             ),
             skyplane:daveshadeInstance.createShader(
                 //Vertex
-                `
+                `#version 300 es
                 precision highp float;
     
-                attribute vec4 a_position;
+                in vec4 a_position;
     
                 void main()
                 {    
@@ -254,7 +267,7 @@
                 }
                 `,
                 //Fragment
-                `
+                `#version 300 es
                 precision highp float;
 
                 uniform mat4 u_camera;
@@ -265,6 +278,12 @@
                 uniform vec3 skyColor;
                 uniform vec3 groundColor;
                 uniform vec3 centerColor;
+
+                layout (location = 0) out vec4 o_color;
+                layout (location = 1) out vec4 o_matAtr;
+                layout (location = 2) out vec4 o_emission;
+                layout (location = 3) out vec4 o_position;
+                layout (location = 4) out vec4 o_normal;
                 
                 void main()
                 {
@@ -283,11 +302,17 @@
                     if (SkySphere.y < 0.0) {
                         //Inverse the Y
                         SkySphere.y = -SkySphere.y;
-                        gl_FragColor = vec4(mix(groundColor,centerColor,SkySphere.y),1);
+                        o_color = vec4(mix(groundColor,centerColor,SkySphere.y),1);
                     }
                     else {
-                        gl_FragColor = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
+                        o_color = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
                     }
+
+                    o_color.w = 1.0;
+                    o_emission = vec4(0);
+                    o_matAtr = vec4(0);
+                    o_position = vec4(1);
+                    o_normal = vec4(0);
                 }
                 `
             ),
@@ -314,12 +339,70 @@
                 uniform sampler2D u_position;
                 uniform sampler2D u_normal;
 
+                uniform mat4 u_lights[64];
+                uniform float u_lightCount;
+
+                uniform vec3 u_sunDir;
+                uniform vec3 u_sunColor;
+                uniform vec3 u_ambientColor;
+
                 uniform vec2 u_res;
+
+                float lightDot(vec3 a,vec3 b) {
+                    return (dot(a,b) + 1.0) / 2.0;
+                }
                 
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_materialAttributes,screenUV);
+                    vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
+                    vec3 position = texture2D(u_position, screenUV).xyz;
+                    vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
+
+                    gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_emission,screenUV);
+                    if (gl_FragColor.w > 1.0) {
+                        gl_FragColor.w = 1.0;
+                    }
+
+                    vec3 lightColor = u_ambientColor;
+
+                    if (matAttributes.z > 0.0) {
+                        lightColor += u_sunColor * dot(normal, u_sunDir);
+
+                        for (int i=0;i<64;i++) {
+                            if (i >= int(u_lightCount)) {
+                                break;
+                            }
+
+                            //Stuff required to calculate the end result
+                            mat4 light = u_lights[i];
+                            vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
+                            vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
+
+                            //General application calculations. Distance^Intensity so that the light gets funkier
+                            vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
+                            float distance = pow(length(relative),2.0);
+                            vec3 calculated = color * (light[0][3] / distance);
+                            calculated *= lightDot(normal,-normalize(relative));
+
+                            //Now we calculate the final output
+                            if (facingDirection != vec3(1)) {
+
+                                float spottedDir = lightDot(normalize(relative),facingDirection);
+                                if (spottedDir < 0.0) {
+                                    spottedDir = 0.0;
+                                }
+                            
+                                spottedDir = pow(spottedDir, 2.0 * light[2][3]);
+
+                                calculated *= spottedDir;
+                            }
+
+                            lightColor.xyz += calculated;
+                        }
+
+                        gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
+                    }
                 }
                 `
             ),
@@ -328,9 +411,10 @@
         renderer.compilePBRshader = (shaderCode) => {
             const vertex = DaveShade.findFunctionInGLSL(shaderCode,"vertex");
             const frag = DaveShade.findFunctionInGLSL(shaderCode,"fragment");
+            const uniforms = shaderCode.replace(vertex,"").replace(frag,"");
 
-            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("void vertex() {}",vertex || "void vertex() {}");
-            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("void fragment() {}",frag || "void fragment() {}");
+            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS",uniforms).replace("void vertex() {}",vertex || "void vertex() {}");
+            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS",uniforms).replace("void fragment() {}",frag || "void fragment() {}");
 
             return daveshadeInstance.createShader(compiledVert,compiledFrag);
         }
@@ -343,6 +427,11 @@
         renderer.initilizeFileConversions();
         renderer.initilizeMaterials();
         renderer.initilizeShapes();
+        renderer.initilizeDebugSprites(renderer);
+
+        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
+        renderer.canvas.addEventListener("resize", () => {
+        })
 
         return renderer;
     };

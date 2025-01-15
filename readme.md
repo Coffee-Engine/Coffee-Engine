@@ -13,6 +13,7 @@ I reccomend staying with what we have which are :
 - Blockly
 - Monaco
 - Marked (v15.0.0)
+- JSZip (v3.10.1)
 
 ### Node-based before everything
 

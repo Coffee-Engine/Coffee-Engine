@@ -199,13 +199,14 @@
 
             container.style.overflow = "hidden";
 
+            //Setup our renderer
+            this.renderer = coffeeEngine.renderer.create(this.canvas);
+
+            //Size it to be practical
             this.resized();
             window.addEventListener("resize", () => {
                 this.resized();
             });
-
-            //Setup our renderer
-            this.renderer = coffeeEngine.renderer.create(this.canvas);
 
             //Our camera
             this.controlling = false;
@@ -230,7 +231,8 @@
                 FPS:${Math.floor(1 / coffeeEngine.runtime.deltaTime)}<br>
                 Delta:${coffeeEngine.runtime.deltaTime}<br>
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
-                Nodes:${coffeeEngine.renderer.nodesRendered}`;
+                Nodes:${coffeeEngine.renderer.nodesRendered}<br>
+                Lights:${coffeeEngine.runtime.currentScene.lightCount}`;
             
                 coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
 
@@ -285,6 +287,7 @@
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
+            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width,this.canvas.height);
         }
     };
 

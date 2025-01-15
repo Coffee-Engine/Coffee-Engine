@@ -147,3 +147,5 @@ editor.windows.__Serialization = {
     all: {},
     data: {},
 };
+
+coffeeEngine.isEditor = true;

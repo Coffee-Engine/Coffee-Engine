@@ -83,13 +83,7 @@
 
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
-                    const vertex = DaveShade.findFunctionInGLSL(fileReader.result,"vertex");
-                    const frag = DaveShade.findFunctionInGLSL(fileReader.result,"fragment");
-
-                    const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("void vertex() {}",vertex || "void vertex() {}");
-                    const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("void fragment() {}",frag || "void fragment() {}");
-
-                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.daveshade.createShader(compiledVert,compiledFrag);
+                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.compilePBRshader(fileReader.result);
                     
                     resolve(coffeeEngine.renderer.shaderStorage[src]);
                 };

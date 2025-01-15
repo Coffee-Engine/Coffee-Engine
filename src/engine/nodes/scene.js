@@ -8,6 +8,10 @@
         skyColor = [0.403921569, 0.639215686, 0.941176471];
         groundColor = [0.290196078, 0.22745098, 0.192156863];
         centerColor = [0.2, 0.105882353, 0.0549019608];
+        sunDirection = [0,0,0];
+        sunColor = [0,0,0];
+        ambientColor = [0,0,0];
+        lightCount = 0;
 
         constructor() {
             this.children = [];
@@ -82,29 +86,30 @@
         }
 
         draw() {
-            const GL = coffeeEngine.renderer.daveshade.GL;
-            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            coffeeEngine.renderer.drawBuffer.use();
-            this.__drawSky(coffeeEngine.renderer);
-            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            this.__drawScene(coffeeEngine.renderer);
-            coffeeEngine.renderer.daveshade.renderToCanvas();
-            coffeeEngine.renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            const renderer = coffeeEngine.renderer
+            const GL = renderer.daveshade.GL;
 
-            coffeeEngine.renderer.cameraData.res = [coffeeEngine.renderer.canvas.width, coffeeEngine.renderer.canvas.height];
-            coffeeEngine.renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
-            coffeeEngine.renderer.mainShaders.mainPass.uniforms.u_color.value = coffeeEngine.renderer.drawBuffer.attachments[0].texture;
-            coffeeEngine.renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = coffeeEngine.renderer.drawBuffer.attachments[1].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_emission.value = coffeeEngine.renderer.drawBuffer.attachments[2].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_position.value = coffeeEngine.renderer.drawBuffer.attachments[3].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_normal.value = coffeeEngine.renderer.drawBuffer.attachments[4].texture;
+            //Clear the main renderers depth, and reset the sun
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            this.sunDirection = [0,0,0];
+            this.lightCount = 0;
 
-            coffeeEngine.renderer.mainShaders.mainPass.drawFromBuffers(6);
+            //Use our draw buffer
+            renderer.drawBuffer.use();
+
+            //Clear the depth each time and draw the sky/scene
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
+            this.__drawSky(renderer);
+            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            this.__drawScene(renderer);
+
+            //Render it back to the main draw pass.
+            renderer.daveshade.renderToCanvas();
+            this.__drawFinal(renderer,renderer.mainShaders.mainPass);
         }
 
         __drawSky(renderer) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
             renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
             renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
             renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
@@ -145,6 +150,28 @@
                 const node = this.drawList[drawItem];
                 node.draw();
             }
+        }
+
+        __setLight(id,value) {
+            const mainPass = coffeeEngine.renderer.mainShaders.mainPass;
+            if (mainPass.uniforms.u_lights && mainPass.uniforms.u_lights[id]) {
+                mainPass.uniforms.u_lights[id].value = value;
+            }
+        }
+
+        __drawFinal(renderer, mainPass) {
+            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            mainPass.setBuffers(coffeeEngine.shapes.plane);
+            mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
+            mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
+            mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
+            mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
+            mainPass.uniforms.u_sunDir.value = this.sunDirection;
+            mainPass.uniforms.u_sunColor.value = this.sunColor;
+            mainPass.uniforms.u_ambientColor.value = this.ambientColor;
+            mainPass.uniforms.u_lightCount.value = this.lightCount;
+            mainPass.drawFromBuffers(6);
         }
 
         //Child management
@@ -236,6 +263,7 @@
                 horizonColor:this.horizonColor,
                 groundColor:this.groundColor,
                 centerColor:this.centerColor,
+                ambientColor:this.ambientColor,
             };
         }
 
@@ -245,6 +273,7 @@
             this.horizonColor = data.horizonColor || [1,1,1];
             this.groundColor = data.groundColor || [1,1,1];
             this.centerColor = data.centerColor || [0,0,0];
+            this.ambientColor = data.ambientColor || [0.05,0.05,0.05];
 
             //Our function for actually loading the scene
             const loadNodes = () => {
@@ -340,6 +369,8 @@
                 {name: "horizonColor", translationKey:"engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
                 {name: "groundColor", translationKey:"engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
                 {name: "centerColor", translationKey:"engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+                "---",
+                {name: "ambientColor", translationKey:"engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
             ];
 
             //Input Testing stuff
