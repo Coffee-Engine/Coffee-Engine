@@ -386,7 +386,13 @@
                             //Now we calculate the final output
                             vec3 calculated = color * (light[0][3] / distance);
                             calculated *= lightDot(normal,-normalize(relative));
-                            calculated *= lightDot(normal,facingDirection);
+
+                            float spottedDir = pow(lightDot(normalize(relative),facingDirection), 2.0 * light[2][3]);
+                            if (spottedDir < 0.0) {
+                                spottedDir = 0.0;
+                            }
+
+                            calculated *= spottedDir;
 
                             lightColor.xyz += calculated;
                         }

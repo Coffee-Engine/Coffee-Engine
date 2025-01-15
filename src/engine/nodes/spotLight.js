@@ -1,9 +1,11 @@
 (function () {
-    class pointLight extends coffeeEngine.getNode("Node3D") {
+    class spotLight extends coffeeEngine.getNode("Node3D") {
         color = [1,1,1];
         radius = 5.0;
+        falloff = 5.0;
 
         shader = coffeeEngine.renderer.mainShaders.unlit;
+        shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
         sprite = coffeeEngine.renderer.sprites.light;
 
         draw() {
@@ -12,7 +14,7 @@
                 [
                     this.position.x,this.position.y,this.position.z,this.radius,
                     this.color[0],this.color[1],this.color[2],0,
-                    1,1,1,1,
+                    this.matrix.contents[0][2],this.matrix.contents[1][2],this.matrix.contents[2][2], this.falloff,
                     0,0,0,0
                 ]
             );
@@ -31,6 +33,12 @@
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = [this.color[0], this.color[1], this.color[2], 1];
                 this.shader.drawFromBuffers(6);
+
+                this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
+
+                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0,0,-1).webGLValue();
+                this.shaderArrow.uniforms.u_colorMod.value = [this.color[0], this.color[1], this.color[2], 1];
+                this.shaderArrow.drawFromBuffers(48);
             }
         }
 
@@ -39,8 +47,10 @@
                 { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
                 { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 },
+                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3 },
                 "---",
                 { name: "radius", translationKey:"engine.nodeProperties.Light.radius", type: coffeeEngine.PropertyTypes.FLOAT },
+                { name: "falloff", translationKey:"engine.nodeProperties.SpotLight.falloff", type: coffeeEngine.PropertyTypes.FLOAT },
                 { name: "color", translationKey:"engine.nodeProperties.Light.color", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
                 "---",
                 {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
@@ -53,5 +63,5 @@
         }
     }
 
-    coffeeEngine.registerNode(pointLight, "PointLight", "Node3D");
+    coffeeEngine.registerNode(spotLight, "SpotLight", "Node3D");
 })();
