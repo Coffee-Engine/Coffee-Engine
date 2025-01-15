@@ -41,7 +41,6 @@
                 { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 },
                 "---",
                 { name: "radius", translationKey:"engine.nodeProperties.Light.radius", type: coffeeEngine.PropertyTypes.FLOAT },
-                { name: "intensity", translationKey:"engine.nodeProperties.Light.intensity", type: coffeeEngine.PropertyTypes.FLOAT},
                 { name: "color", translationKey:"engine.nodeProperties.Light.color", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
                 "---",
                 {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
