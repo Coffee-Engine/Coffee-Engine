@@ -6,7 +6,7 @@
 
         shader = coffeeEngine.renderer.mainShaders.unlit;
         shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
-        sprite = coffeeEngine.renderer.sprites.light;
+        sprite = coffeeEngine.renderer.sprites.spotlight;
 
         draw() {
             const scene = coffeeEngine.runtime.currentScene;
