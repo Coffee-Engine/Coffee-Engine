@@ -105,12 +105,11 @@
 
             //Render it back to the main draw pass.
             renderer.daveshade.renderToCanvas();
-            this.__drawFinal(renderer);
+            this.__drawFinal(renderer,renderer.mainShaders.mainPass);
         }
 
         __drawSky(renderer) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            //renderer.mainShaders.skyPlane.uniforms.u_camera.value = this.matrix.webGLValue();
             renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
             renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
             renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
@@ -160,21 +159,19 @@
             }
         }
 
-        __drawFinal(renderer) {
+        __drawFinal(renderer, mainPass) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
-            renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
-            renderer.mainShaders.mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
-            renderer.mainShaders.mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
-            renderer.mainShaders.mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            renderer.mainShaders.mainPass.uniforms.u_sunDir.value = this.sunDirection;
-            renderer.mainShaders.mainPass.uniforms.u_sunColor.value = this.sunColor;
-            renderer.mainShaders.mainPass.uniforms.u_ambientColor.value = this.ambientColor;
-            renderer.mainShaders.mainPass.uniforms.u_lightCount.value = this.lightCount;
-            console.log(this.lightCount);
-
-            renderer.mainShaders.mainPass.drawFromBuffers(6);
+            mainPass.setBuffers(coffeeEngine.shapes.plane);
+            mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
+            mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
+            mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
+            mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
+            mainPass.uniforms.u_sunDir.value = this.sunDirection;
+            mainPass.uniforms.u_sunColor.value = this.sunColor;
+            mainPass.uniforms.u_ambientColor.value = this.ambientColor;
+            mainPass.uniforms.u_lightCount.value = this.lightCount;
+            mainPass.drawFromBuffers(6);
         }
 
         //Child management
