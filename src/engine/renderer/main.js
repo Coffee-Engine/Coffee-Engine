@@ -171,7 +171,7 @@
     
                     //Transform my stuff!
                     gl_Position = (vec4(POSITION,1) * u_model * u_camera) * u_projection;
-                    v_position = POSITION;
+                    v_position = (vec4(POSITION,1) * u_model).xyz;
 
                     //W manipulation... wait not in that way
                     gl_Position.xy *= mix(gl_Position.z, 1.0, u_wFactor.x);
@@ -340,6 +340,7 @@
                 uniform sampler2D u_normal;
 
                 uniform mat4 u_lights[64];
+                uniform float u_lightCount;
 
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
@@ -351,6 +352,8 @@
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
                     vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
+                    vec3 position = texture2D(u_position, screenUV).xyz;
+                    vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
 
                     gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_emission,screenUV);
                     if (gl_FragColor.w > 1.0) {
@@ -360,10 +363,18 @@
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0) {
-                        lightColor += u_sunColor * dot(texture2D(u_normal,screenUV).xyz, u_sunDir);
+                        lightColor += u_sunColor * dot(normal, u_sunDir);
 
                         for (int i=0;i<64;i++) {
-                            lightColor.xyz += vec3(u_lights[i][0][0],u_lights[i][0][1],u_lights[i][0][2]);
+                            if (i >= int(u_lightCount)) {
+                                break;
+                            }
+
+                            mat4 light = u_lights[i];
+                            vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
+                            vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
+                            vec3 calculated = color * ((light[0][3] / 2.0) / sqrt(pow(relative.x,2.0) + pow(relative.y,2.0) + pow(relative.z, 2.0)));
+                            lightColor.xyz += calculated * ((dot(normal,-relative) * 0.5) + 0.5);
                         }
 
                         gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);

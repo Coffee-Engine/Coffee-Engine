@@ -11,6 +11,7 @@
         sunDirection = [0,0,0];
         sunColor = [0,0,0];
         ambientColor = [0,0,0];
+        lightCount = 0;
 
         constructor() {
             this.children = [];
@@ -91,6 +92,7 @@
             //Clear the main renderers depth, and reset the sun
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.sunDirection = [0,0,0];
+            this.lightCount = 0;
 
             //Use our draw buffer
             renderer.drawBuffer.use();
@@ -151,17 +153,26 @@
             }
         }
 
+        __setLight(id,value) {
+            const mainPass = coffeeEngine.renderer.mainShaders.mainPass;
+            if (mainPass.uniforms.u_lights && mainPass.uniforms.u_lights[id]) {
+                mainPass.uniforms.u_lights[id].value = value;
+            }
+        }
+
         __drawFinal(renderer) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             renderer.mainShaders.mainPass.setBuffers(coffeeEngine.shapes.plane);
             renderer.mainShaders.mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
             renderer.mainShaders.mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
             renderer.mainShaders.mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
-            //renderer.mainShaders.mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
+            renderer.mainShaders.mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
             renderer.mainShaders.mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
             renderer.mainShaders.mainPass.uniforms.u_sunDir.value = this.sunDirection;
             renderer.mainShaders.mainPass.uniforms.u_sunColor.value = this.sunColor;
             renderer.mainShaders.mainPass.uniforms.u_ambientColor.value = this.ambientColor;
+            renderer.mainShaders.mainPass.uniforms.u_lightCount.value = this.lightCount;
+            console.log(this.lightCount);
 
             renderer.mainShaders.mainPass.drawFromBuffers(6);
         }
