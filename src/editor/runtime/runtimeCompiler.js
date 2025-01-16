@@ -52,6 +52,7 @@ project.load("base64",
 "${base64}"
 ).then(() => {
     coffeeEngine.renderer.create(document.getElementById("coffeeEngine_MainCanvas"));
+    coffeeEngine.runtime.currentScene.openScene("scenes/default.scene");
 });
 </script>
                     `).split("\n")))
