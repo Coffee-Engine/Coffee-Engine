@@ -6,7 +6,7 @@
 
         //Add tiramisu :)
         project.addImageFromURL(coffeeEngine.defaultSprite, coffeeEngine.defaultSpriteName).then(() => {
-            editor.editorPage.initilize();
+            if (coffeeEngine.isEditor) editor.editorPage.initilize();
 
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });

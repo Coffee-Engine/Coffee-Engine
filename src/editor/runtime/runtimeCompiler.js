@@ -46,13 +46,15 @@
                 zipInstance.generateAsync({type:"base64"}).then((base64) => {
                     //base64 = "data:application/zip;base64," + base64;
 
-                    resolve(editor.runtime.compile(null, [
-                        "<script>",
-                        "project.load(\"base64\",",
-                        `"${base64}"`,
-                        ");",
-                        "</script>"
-                    ]))
+                    resolve(editor.runtime.compile(null, (`
+<script>
+project.load("base64",
+"${base64}"
+).then(() => {
+    coffeeEngine.renderer.create(document.getElementById("coffeeEngine_MainCanvas"));
+});
+</script>
+                    `).split("\n")))
                 })
             })
         })
