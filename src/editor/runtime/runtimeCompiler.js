@@ -17,6 +17,18 @@
             }
         }
 
-        console.log(scripts);
+        //Now we do the actual compiling
+        return new Promise(async (resolve, reject) => {
+            let returned = [editor.runtime.prefixes.join("\n")];
+
+            for (const scriptID in scripts) {
+                const scriptContents = await fetch(scripts[scriptID]).then(result => result.text());
+                returned.push("<script>",scriptContents,"</script>");
+            }
+
+            returned.push(editor.runtime.suffixes.join("\n"));
+
+            resolve(returned.join("\n"));
+        })
     }
 })();
