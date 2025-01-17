@@ -8,7 +8,7 @@
     <title>Coffee Engine (Testing)</title>
 </head>
 <body>
-    <canvas id="coffeeEngine_MainCanvas"></canvas>\n`,
+    <canvas id="coffeeEngine_MainCanvas" width="640" height="480"></canvas>\n`,
     ]
 
     editor.runtime.suffixes = [

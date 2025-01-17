@@ -42,13 +42,13 @@
             this.id = extensionID;
 
             //Read our extension.json
-            this.fileReader.onload = () => {
+            this.fileReader.onload = async () => {
                 project.extensions.storage[extensionID] = JSON.parse(this.fileReader.result);
 
                 //Go through needed script directories
                 const myStorage = project.extensions.storage[extensionID];
-                this.loadScripts(`extensions/${extensionID}/`, myStorage.scripts);
-                if (coffeeEngine.isEditor) this.loadScripts(`extensions/${extensionID}/`, myStorage.editorScripts);
+                await this.loadScripts(`extensions/${extensionID}/`, myStorage.scripts);
+                if (coffeeEngine.isEditor) await this.loadScripts(`extensions/${extensionID}/`, myStorage.editorScripts);
             };
 
             this.fileReader.readAsText(file);
