@@ -34,9 +34,10 @@
                 if (this.activeCamera) {
                     const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
+
                     cameraData.transform = this.matrix.webGLValue();
                     cameraData.unflattenedTransform = this.matrix;
-                    cameraData.projection = coffeeEngine.matrix4.projection(this.fov, canvas.width / canvas.height, 0.01, 1000).webGLValue();
+                    cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [1 - this.orthoganalism, this.zoom];
                     cameraData.aspectRatio = canvas.width / canvas.height;
                     cameraData.position.x = -this.position.x;

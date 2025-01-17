@@ -51,8 +51,20 @@
 project.load("base64",
 "${base64}"
 ).then(() => {
-    coffeeEngine.renderer.create(document.getElementById("coffeeEngine_MainCanvas"));
-    coffeeEngine.runtime.currentScene.openScene("scenes/default.scene");
+    //Initilize the renderer
+    const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
+    coffeeEngine.renderer.create(coffeeDrawCanvas);
+    
+    //Scene Stuff
+    const currentScene = coffeeEngine.runtime.currentScene;
+    currentScene.openScene("scenes/default.scene");
+    currentScene.addEventListener("update",() => {
+        coffeeDrawCanvas.width = window.innerWidth;
+        coffeeDrawCanvas.height = window.innerHeight;
+        coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
+    });
+
+    //Start the frameloop
     coffeeEngine.runtime.startFrameLoop(60);
 });
 </script>
