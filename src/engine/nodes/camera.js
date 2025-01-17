@@ -42,8 +42,6 @@
                     cameraData.position.x = -this.position.x;
                     cameraData.position.y = -this.position.y;
                     cameraData.position.z = -this.position.z;
-
-                    this.rotation.y += deltaTime * 0.5;
                 }
             }
         }
