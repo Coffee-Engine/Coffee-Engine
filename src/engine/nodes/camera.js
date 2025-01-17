@@ -7,7 +7,7 @@
 
         shader = coffeeEngine.renderer.mainShaders.unlit;
         shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
-        sprite = coffeeEngine.renderer.sprites.spotlight;
+        sprite = coffeeEngine.renderer.sprites.camera;
 
         //We have two ways to do this. The actual view matrix, and the "Fake" editor matrix
         updateMatrix() {
@@ -42,6 +42,10 @@
                     cameraData.position.x = -this.position.x;
                     cameraData.position.y = -this.position.y;
                     cameraData.position.z = -this.position.z;
+
+                    coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.rotation.y;
+                    coffeeEngine.renderer.cameraData.cameraRotationEul.y = this.rotation.x;
+                    coffeeEngine.renderer.cameraData.cameraRotationEul.z = this.rotation.z;
                 }
             }
         }
@@ -64,7 +68,7 @@
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
-                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0,0,-1).webGLValue();
+                this.shaderArrow.uniforms.u_model.value = this.matrix.translate(0,0,-1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = [1,1,1,1];
                 this.shaderArrow.drawFromBuffers(48);
             }
