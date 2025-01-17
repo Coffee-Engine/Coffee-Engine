@@ -17,7 +17,7 @@
                 this.matrix = this.matrix.translate(this.position.x, this.position.y, this.position.z);
                 this.matrix = this.matrix.rotationZ(this.rotation.z);
                 this.matrix = this.matrix.rotationX(this.rotation.x);
-                this.matrix = this.matrix.rotationY(this.rotation.y);
+                this.matrix = this.matrix.rotationY(-this.rotation.y);
             }
             else {
                 this.matrix = coffeeEngine.matrix4.identity();
@@ -68,7 +68,7 @@
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
-                this.shaderArrow.uniforms.u_model.value = this.matrix.translate(0,0,-1).webGLValue();
+                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0,0,-1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = [1,1,1,1];
                 this.shaderArrow.drawFromBuffers(48);
             }
