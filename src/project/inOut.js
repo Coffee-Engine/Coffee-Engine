@@ -6,7 +6,7 @@
 
         //Add tiramisu :)
         project.addImageFromURL(coffeeEngine.defaultSprite, coffeeEngine.defaultSpriteName).then(() => {
-            editor.editorPage.initilize();
+            if (coffeeEngine.isEditor) editor.editorPage.initilize();
 
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });
@@ -44,8 +44,7 @@
     //We use async to MAKE SURE we have consistancy when loading files
     project.load = async (type, handle) => {
         //filter out imposter objects
-        console.log(handle);
-        if (!project.isValidObject(handle)) return;
+        if (!project.isValidObject(handle) && type != "base64") return;
 
         //Then remove are original FS
         delete project.fileSystem;
@@ -55,8 +54,19 @@
         if (type == "folder") {
             project.isFolder = true;
             project.directoryHandle = handle;
-            project.scanFolder(project.directoryHandle, true, project.fileSystem);
-        } else {
+            await project.scanFolder(project.directoryHandle, true, project.fileSystem);
+        }
+        else if (type == "base64") {
+            project.zipObject = new JSZip();
+            project.zipObject = await project.zipObject.loadAsync(handle, {base64:true});
+
+            await project.scanZip(project.zipObject);
+            
+            coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });
+            if (coffeeEngine.isEditor) editor.editorPage.initilize();
+            coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
+        } 
+        else {
             project.isFolder = false;
 
             //Make sure we are getting the file handle and not some random garbage.
@@ -72,11 +82,11 @@
             project.zipObject = new JSZip();
             project.zipObject = await project.zipObject.loadAsync(project.fileObject);
 
-            project.scanZip(project.zipObject).then(() => {
-                coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });
-                editor.editorPage.initilize();
-                coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
-            });
+            await project.scanZip(project.zipObject);
+
+            coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });
+            if (coffeeEngine.isEditor) editor.editorPage.initilize();
+            coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
         }
     };
 

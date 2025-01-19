@@ -42,15 +42,22 @@
             this.id = extensionID;
 
             //Read our extension.json
-            this.fileReader.onload = () => {
+            this.fileReader.onload = async () => {
                 project.extensions.storage[extensionID] = JSON.parse(this.fileReader.result);
-                this.loadScripts(`extensions/${extensionID}/`, project.extensions.storage[extensionID].scripts);
+
+                //Go through needed script directories
+                const myStorage = project.extensions.storage[extensionID];
+                await this.loadScripts(`extensions/${extensionID}/`, myStorage.scripts);
+                if (coffeeEngine.isEditor) await this.loadScripts(`extensions/${extensionID}/`, myStorage.editorScripts);
             };
 
             this.fileReader.readAsText(file);
         }
 
         async loadScripts(path, scriptArray) {
+            //Just make sure its an array!
+            scriptArray = scriptArray || [];
+
             for (let index = 0; index < scriptArray.length; index++) {
                 await new Promise((resolve, reject) => {
                     //Load our script
@@ -66,6 +73,10 @@
 
                             resolve();
                         };
+
+                        this.fileReader.onerror = () => {
+                            reject(`Something happened with file "${path}${scriptArray[index]}"`);
+                        }
 
                         this.fileReader.readAsText(fileData);
                     });

@@ -15,7 +15,7 @@
 
         if (openEditor) {
             if (project.fileSystem["project.json"]) {
-                editor.editorPage.initilize();
+                if (coffeeEngine.isEditor) editor.editorPage.initilize();
 
                 //Send our event to refresh the file system
                 coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });

@@ -54,21 +54,30 @@
             return this.#parent;
         }
 
-        #script;
+        #scriptPath;
+        #scriptObject;
         set script(value) {
-            this.#script = null;
+            this.#scriptPath = null;
+            this.#scriptObject = null;
 
             if (!value) return;
 
-            this.#script = new value();
-
-            if (this.#script.ready) {
-                this.#script.ready();
+            this.#scriptPath = value;
+            console.log(!coffeeEngine.isEditor);
+            if (!coffeeEngine.isEditor) {
+                coffeeEngine.behaviorManager.behaviorFromFile(value).then(classObj => {
+                    this.#scriptObject = new (classObj)();
+                    this.#scriptObject.target = this;
+    
+                    if (this.#scriptObject.ready) {
+                        this.#scriptObject.ready();
+                    }
+                });
             }
         }
 
         get script() {
-            return this.#script;
+            return this.#scriptPath;
         }
 
         constructor() {
@@ -80,16 +89,16 @@
 
         update(deltaTime) {
             // prettier-ignore
-            if (this.#script && this.#script.update) {
-                this.#script.update(deltaTime);
+            if (this.#scriptObject && this.#scriptObject.update) {
+                this.#scriptObject.update(deltaTime);
             }
         }
 
         draw() {
             // prettier-ignore
             coffeeEngine.renderer.nodesRendered += 1;
-            if (this.#script && this.#script.draw) {
-                this.#script.draw();
+            if (this.#scriptObject && this.#scriptObject.draw) {
+                this.#scriptObject.draw();
             }
         }
 

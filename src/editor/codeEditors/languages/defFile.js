@@ -24,7 +24,7 @@ class behavior {
     //}
 }
     
-coffeeEngine.registerBehavior("behavior",behavior);`;
+coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
         },
     },
     {
@@ -50,8 +50,8 @@ class behavior contains
     //    //${editor.language["editor.window.typed.drawMessage"]}
     //end
 end
-
-coffeeEngine.registerBehavior("behavior",behavior)`;
+    
+coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
         },
 
         //So we know what to do with our code

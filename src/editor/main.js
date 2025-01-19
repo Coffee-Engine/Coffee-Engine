@@ -1,6 +1,8 @@
 window.editor = {
     currentPage: {},
     language: {},
+
+    runtime:{},
     selectedNode: null,
 
     events: {
