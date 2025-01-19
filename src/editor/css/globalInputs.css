@@ -105,3 +105,53 @@ a:hover {
 a:active {
     color: var(--link-2);
 }
+
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: inline-block;
+    background-color: var(--background-4);
+    border-color: var(--background-2);
+    border-width: 2px;
+    border-radius: 5px;
+    border-style: solid;
+    height: 16px;
+    overflow: hidden;
+}
+
+input[type="range"]:hover {
+    background-color: var(--background-3);
+    border-color: var(--background-1);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    background-color: var(--background-3);
+    border-color: var(--background-4);
+    border-width: 2px;
+    border-radius: 5px;
+    border-style: solid;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    box-shadow: -80px 0 0 70px var(--text-1);
+}
+
+input[type="range"]::-moz-range-thumb  {
+    background-color: var(--background-3);
+    border-color: var(--background-4);
+    border-width: 2px;
+    border-radius: 5px;
+    border-style: solid;
+    height: 16px;
+    width: 16px;
+}
+
+input[type="range"]::-moz-range-progress {
+    background-color: var(--text-1); 
+    height: 16px;
+}
+input[type="range"]::-moz-range-track {  
+    background-color: var(--background-4);
+    height: 16px;
+}

@@ -21,7 +21,7 @@
                     numberInput.max = elementDefs.max;
                     numberInput.step = elementDefs.step[0] || elementDefs.step;
     
-                    numberInput.onchange = () => {
+                    numberInput.oninput = () => {
                         sliderInput.value = numberInput.value;
                         editor.settings.values[category][setting] = numberInput.value;
                         if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(numberInput.value);
@@ -37,7 +37,7 @@
                     sliderInput.max = elementDefs.max;
                     sliderInput.step = elementDefs.step[1] || elementDefs.step || 0.01;
     
-                    sliderInput.onchange = () => {
+                    sliderInput.oninput = () => {
                         numberInput.value = sliderInput.value;
                         editor.settings.values[category][setting] = sliderInput.value;
                         if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(numberInput.value);
