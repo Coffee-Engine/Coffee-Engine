@@ -8,7 +8,7 @@ window.programmingLanguages = [
         //We do a function so that our translations work
         defaultBehavior: () => {
             return `//${editor.language["editor.window.typed.commentMessage"]}
-class behavior extends coffeeEngine.behavior {
+class behavior {
     ready() {
         //${editor.language["editor.window.typed.initMessage"]}
         console.log("Hello World!");
@@ -35,7 +35,7 @@ coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
         //We do a function so that our translations work
         defaultBehavior: () => {
             return `//${editor.language["editor.window.typed.commentMessage"]}
-class behavior from coffeeEngine.behavior contains
+class behavior contains
     function ready()
         //${editor.language["editor.window.typed.initMessage"]}
         print("Hello World!")

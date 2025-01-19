@@ -63,14 +63,16 @@
             if (!value) return;
 
             this.#scriptPath = value;
-
+            console.log(!coffeeEngine.isEditor);
             if (!coffeeEngine.isEditor) {
-                this.#scriptObject = new (coffeeEngine.behaviorManager.behaviorFromFile(value))();
-                this.#scriptObject.target = this;
-
-                if (this.#scriptObject.ready) {
-                    this.#scriptObject.ready();
-                }
+                coffeeEngine.behaviorManager.behaviorFromFile(value).then(classObj => {
+                    this.#scriptObject = new (classObj)();
+                    this.#scriptObject.target = this;
+    
+                    if (this.#scriptObject.ready) {
+                        this.#scriptObject.ready();
+                    }
+                });
             }
         }
 

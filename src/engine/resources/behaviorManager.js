@@ -17,6 +17,7 @@
                 if (coffeeEngine.behaviorManager.loadedFiles[filePath]) resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
                 
                 //if not load it
+                console.log(filePath);
                 project.getFile(filePath).then((file) => {
                     const fileReader = new FileReader();
 
@@ -25,14 +26,14 @@
 
                         //Make the script and check for it being loaded
                         const script = document.createElement("script");
-                        script.onload = () => {
-                            coffeeEngine.behaviorManager.loadedFiles[filePath] = coffeeEngine.behaviorManager.lastLoaded;
-                            resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
-                        }
-
+                        
                         //Set the inner text and add the element.
-                        script.innerText = fileReader.result;
+                        script.innerHTML = `(function() {\n${fileReader.result}\n})();`;
                         document.body.appendChild(script);
+
+                        //Save it
+                        coffeeEngine.behaviorManager.loadedFiles[filePath] = coffeeEngine.behaviorManager.lastLoaded;
+                        resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
                     }
 
                     fileReader.readAsText(file);
@@ -43,4 +44,4 @@
             });
         }
     }
-})
+})();
