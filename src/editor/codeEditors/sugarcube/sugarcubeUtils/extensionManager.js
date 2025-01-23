@@ -220,32 +220,7 @@
                 //Hat blocks will be event listeners. No exceptions lol.
                 case sugarcube.BlockType.HAT:
                     sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                        const args = {};
-
-                        if (block.inputList) {
-                            block.inputList.forEach((input) => {
-                                if (!input.connection) return;
-                                if (input.connection && input.connection.type == 3) {
-                                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                                    return;
-                                }
-                                args[input.name] = generator.valueToCode(block, input.name, 0);
-                            });
-                        }
-
-                        if (block.fieldRow) {
-                            block.fieldRow.forEach((field) => {
-                                args[input.name] = block.getFieldValue(input.name);
-                            });
-                        }
-
-                        //Just our block code builder... Should probably standardize this.
-                        const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
-              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},this,event)) {`
-                            .replaceAll(',this);"', ",this)")
-                            .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
-
-                        return `${baseBlockCode}\n${this.nextBlockToCode(block, generator)}}\n});\n`;
+                        return `(function(){})() // Hat ${blockID} needs custom compile code. please add this or the block will do NOTHING.\n`;
                     };
                     break;
 
