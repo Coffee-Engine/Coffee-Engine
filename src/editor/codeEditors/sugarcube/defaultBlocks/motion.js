@@ -301,13 +301,25 @@
         }
 
         movesteps(args, util) {
-            util.x += util.forward.x * args.steps;
-            util.y += util.forward.y * args.steps;
-            util.z += util.forward.z * args.steps;
+            console.log(util.target);
+            const matrix = util.target.matrix;
+            if (matrix) {
+                util.x += matrix[0][2] * args.steps;
+                util.y += matrix[1][2] * args.steps;
+                util.z += matrix[2][2] * args.steps;
+            }
         }
 
         changex(args, util) {
             util.target.position.x += args.x || 0;
+        }
+
+        changey(args, util) {
+            util.target.position.y += args.y || 0;
+        }
+
+        changez(args, util) {
+            util.target.position.z += args.z || 0;
         }
 
         //Custom Fields
