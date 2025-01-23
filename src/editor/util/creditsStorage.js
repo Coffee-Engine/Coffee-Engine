@@ -8,15 +8,15 @@
                 image: "https://avatars.githubusercontent.com/u/76855369?v=4",
                 comment: "Main Developer",
             },
-        ],
-
-        enginePorters: [
             {
                 name: "0hStormy",
                 link: "https://github.com/0hStormy",
                 image: "https://avatars.githubusercontent.com/u/80485413?v=4",
-                comment: "Linux Testing / Porting",
+                comment: "UI/UX Improvements / Linux Testing / Porting",
             },
+        ],
+
+        enginePorters: [
         ],
 
         translators: [],
