@@ -17,7 +17,6 @@
                 if (coffeeEngine.behaviorManager.loadedFiles[filePath]) resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
                 
                 //if not load it
-                console.log(filePath);
                 project.getFile(filePath).then((file) => {
                     const fileReader = new FileReader();
 
