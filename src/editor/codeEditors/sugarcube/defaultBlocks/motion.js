@@ -306,6 +306,10 @@
             util.z += util.forward.z * args.steps;
         }
 
+        changex(args, util) {
+            util.target.position.x += args.x || 0;
+        }
+
         //Custom Fields
         angle_Init(field) {
             field.createBorderRect_();

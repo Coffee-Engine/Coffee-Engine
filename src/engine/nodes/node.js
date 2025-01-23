@@ -48,6 +48,10 @@
             }
 
             //Refresh stuff
+            if (this.#scriptObject) {
+                this.#scriptObject.target = value;
+            }
+            
             coffeeEngine.runtime.currentScene.castEvent("childMoved", this);
         }
         get parent() {

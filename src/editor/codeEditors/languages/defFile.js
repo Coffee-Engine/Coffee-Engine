@@ -86,7 +86,7 @@ coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
             );
         },
         //So we know what to do with our code
-        compileFunction: (workspace) => {
+        compileFunction: (workspace, path) => {
             return `//This is not supposed to be edited manually!
 //Please refrain from editing this auto generated code!
 class behavior {
@@ -94,7 +94,7 @@ class behavior {
     __ReadyFuncs = [];
     __UpdateFuncs = [];
     constructor() {
-        ${sugarcube.generator.workspaceToCode(workspace)};
+        ${sugarcube.generator.workspaceToCode(workspace)}
     }
 
     ready() {
@@ -115,7 +115,7 @@ class behavior {
     //}
 }
     
-coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
+coffeeEngine.behaviorManager.register("${path}",behavior);`;
         },
     },
     {
