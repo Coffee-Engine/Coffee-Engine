@@ -19,6 +19,7 @@ sugarcube.deserialize = (serialized) => {
     else sugarcube.inheritence = "Node";
 
     //Fallbacks!
+    sugarcube.setToolboxBasedOnFilter(sugarcube.inheritence);
     Blockly.serialization.workspaces.load(serialized.code || { blocks: { languageVersion: 0, blocks: [] } }, sugarcube.workspace);
     sugarcube.extensionManager.updateExtensionBlocks();
 };

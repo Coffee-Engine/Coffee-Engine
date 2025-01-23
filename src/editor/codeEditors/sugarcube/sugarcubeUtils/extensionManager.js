@@ -936,6 +936,7 @@
 
             extension.defaultBlockInfo = createdContentData.contents;
 
+            sugarcube.toolboxDefault = JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
             sugarcube.toolbox.contents.push(createdContentData);
 
             if (myInfo.updateBlocks) {
@@ -992,6 +993,10 @@
                     sugarcube.workspace.updateToolbox(sugarcube.toolbox);
 
                     sugarcube.workspace.getToolbox().refreshSelection();
+                }
+
+                if (coffeeEngine.isEditor) {
+                    sugarcube.toolboxDefault = JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
                 }
             }
         }

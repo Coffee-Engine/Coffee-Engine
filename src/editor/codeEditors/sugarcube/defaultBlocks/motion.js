@@ -310,6 +310,18 @@
             }
         }
 
+        setx(args, util) {
+            util.target.position.x = args.x || 0;
+        }
+
+        sety(args, util) {
+            util.target.position.y = args.y || 0;
+        }
+
+        setz(args, util) {
+            util.target.position.z = args.z || 0;
+        }
+
         changex(args, util) {
             util.target.position.x += args.x || 0;
         }

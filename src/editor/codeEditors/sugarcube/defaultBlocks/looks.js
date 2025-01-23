@@ -28,7 +28,7 @@
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setSprite"],
-                        filter: ["Sprite"],
+                        filter: ["Sprite", "Billboard"],
                         arguments: {
                             image: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -40,7 +40,7 @@
                         opcode: "setTint",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setTint"],
-                        filter: ["Sprite"],
+                        filter: ["Sprite", "Billboard", "MeshDisplay"],
                         arguments: {
                             tint: {
                                 type: sugarcube.ArgumentType.COLOR,
