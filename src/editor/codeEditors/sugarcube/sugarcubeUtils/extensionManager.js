@@ -209,7 +209,7 @@
                     if (block.outputConnection) {
                         return [code, 0];
                     }
-                    return `${code}\n${this.nextBlockToCode(block, generator)}`;
+                    return `${code}\n`;
                 };
 
                 return;

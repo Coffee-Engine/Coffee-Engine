@@ -12,11 +12,13 @@
                 blocks: [
                     {
                         opcode: "onStart",
+                        compileFunc: "onStart",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.onStart"],
                     },
                     {
                         opcode: "onUpdate",
+                        compileFunc: "onUpdate",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.onUpdate"],
                     },
@@ -81,8 +83,16 @@
             return sugarcube.broadcasts;
         }
 
-        onStart() {
-            return true;
+        onStart(block, generator, manager) {
+            return `this.__ReadyFuncs.push(() => {
+    ${manager.nextBlockToCode(block, generator)}
+});`;
+        }
+
+        onUpdate(block, generator, manager) {
+            return `this.__UpdateFuncs.push(() => {
+    ${manager.nextBlockToCode(block, generator)}
+});`;
         }
     }
 
