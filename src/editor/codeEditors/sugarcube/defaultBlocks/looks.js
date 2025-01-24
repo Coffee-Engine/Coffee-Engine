@@ -37,6 +37,12 @@
                         },
                     },
                     {
+                        opcode: "getSprite",
+                        typeof: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getSprite"],
+                        filter: ["Sprite", "Billboard"],
+                    },
+                    {
                         opcode: "setTint",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setTint"],
@@ -75,6 +81,10 @@
         setSprite({ image }, util) {
             //Hope to god its an image
             util.target.spritePath = image;
+        }
+
+        getSprite(args, util) {
+            return util.target.spritePath;
         }
 
         color_Init(field) {

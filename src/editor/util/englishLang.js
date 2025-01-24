@@ -223,6 +223,7 @@ editor.EnglishLang = {
 
     "sugarcube.looks": "Looks",
     "sugarcube.looks.block.setSprite": "set sprite to [image]",
+    "sugarcube.looks.block.getSprite": "current sprite",
     "sugarcube.looks.block.setTint": "tint myself [tint]",
 
     "sugarcube.sounds": "Sounds",

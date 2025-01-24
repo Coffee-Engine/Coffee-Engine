@@ -124,11 +124,12 @@
                         text: editor.language["sugarcube.operators.block.notEqual"],
                         arguments: {
                             A: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "0",
                             },
                             B: {
-                                type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue: 50,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "50",
                             },
                         },
                     },
@@ -166,11 +167,12 @@
                         text: editor.language["sugarcube.operators.block.equalTo"],
                         arguments: {
                             A: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "0",
                             },
                             B: {
-                                type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue: 50,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "50",
                             },
                         },
                     },
@@ -294,7 +296,7 @@
         }
 
         notEqual({ A, B }) {
-            return sugarcube.cast.toNumber(A) != sugarcube.cast.toNumber(B);
+            return A != B;
         }
 
         lessThan({ A, B }) {
@@ -306,7 +308,7 @@
         }
 
         equalTo({ A, B }) {
-            return sugarcube.cast.toNumber(A) == sugarcube.cast.toNumber(B);
+            return A == B;
         }
 
         moreThan({ A, B }) {
