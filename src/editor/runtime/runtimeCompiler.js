@@ -73,11 +73,15 @@ project.load("base64",
     //Initilize the renderer
     const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
     coffeeEngine.renderer.create(coffeeDrawCanvas);
+
+    coffeeDrawCanvas.width = window.innerWidth;
+    coffeeDrawCanvas.height = window.innerHeight;
+    coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
     
     //Scene Stuff
     const currentScene = coffeeEngine.runtime.currentScene;
     currentScene.openScene("scenes/default.scene");
-    currentScene.addEventListener("update",() => {
+    window.addEventListener("resize",() => {
         coffeeDrawCanvas.width = window.innerWidth;
         coffeeDrawCanvas.height = window.innerHeight;
         coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
