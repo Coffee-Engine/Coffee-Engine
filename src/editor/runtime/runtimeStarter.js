@@ -5,7 +5,7 @@
         editor.runtime.compileWithDecaf().then(htmlData => {
             const blob = new Blob([htmlData], { type: 'text/html'});
             const url = URL.createObjectURL(blob);
-            window.open(url, "coffeeRuntime", "popup");
+            window.open(url, "coffeeEngineWindow", "popup");
             URL.revokeObjectURL(url);
         });
     }

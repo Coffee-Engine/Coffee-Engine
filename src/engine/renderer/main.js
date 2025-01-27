@@ -340,7 +340,7 @@
                 uniform sampler2D u_normal;
 
                 uniform mat4 u_lights[64];
-                uniform float u_lightCount;
+                uniform int u_lightCount;
 
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
@@ -370,7 +370,7 @@
                         lightColor += u_sunColor * dot(normal, u_sunDir);
 
                         for (int i=0;i<64;i++) {
-                            if (i >= int(u_lightCount)) {
+                            if (i >= u_lightCount) {
                                 break;
                             }
 
