@@ -5,7 +5,13 @@
         renderer.canvas = canvas;
         
         //Firefox's blending is wierd
-        renderer.daveshade = DaveShade.createInstance(renderer.canvas, { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: true, blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"] });
+        renderer.daveshade = DaveShade.createInstance(renderer.canvas, { 
+            preserveDrawingBuffer: true, 
+            alpha: true, 
+            premultipliedAlpha: true, 
+            blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
+            powerPreference: "high-performance"
+        });
         const daveshadeInstance = renderer.daveshade;
 
         renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
