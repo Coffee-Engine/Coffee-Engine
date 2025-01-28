@@ -233,6 +233,12 @@
                         const args = {};
                         const recalls = {};
 
+                        //Break down our block type real quick
+                        const split =  block.type.split("_")
+                        const extension = split.splice(0,1)[0];
+                        const opcode = split.join("_");
+                        const blockData = this.blockDefs[extension][opcode];
+
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
@@ -264,9 +270,9 @@
                             });
                         }
 
-                        if (block.fieldRow) {
-                            block.fieldRow.forEach((field) => {
-                                args[field.name] = block.getFieldValue(field.name);
+                        if (blockData && blockData.fieldData) {
+                            blockData.fieldData.forEach((field) => {
+                                args[field] = block.getFieldValue(field);
                             });
                         }
 
@@ -283,6 +289,8 @@
 
         addBlock(block, extension) {
             const id = extension.id + "_";
+            const menus = sugarcube.menus;
+            const fields = sugarcube.fields.storage;
 
             let blockData = {};
             //Seperator Shorthand
@@ -358,6 +366,7 @@
                             kind: "block",
                             type: id + opcode,
                             inputs: {},
+                            fieldData: [],
                         };
 
                         //For the funny scratch styled branches
@@ -423,9 +432,9 @@
                                     if (argument.menu) {
                                         //Menu id
                                         const menuID = `${id}${argument.menu}`;
-                                        if (sugarcube.menus[menuID]) {
+                                        if (menus[menuID]) {
                                             //Dynamic blocks are not a problem for reporter based menus.
-                                            if (sugarcube.menus[menuID].isBlock) {
+                                            if (menus[menuID].isBlock) {
                                                 argument.type = "input_value";
 
                                                 //Define the arguments
@@ -437,8 +446,11 @@
 
                                             //Not as easy in field menus
                                             else {
+                                                //Field stuff
+                                                defArgs.fieldData.push(argumentKey);
+
                                                 //Check to see if the menu is dynamic.
-                                                if (sugarcube.menus[menuID].isDynamic) {
+                                                if (menus[menuID].isDynamic) {
                                                     if (!blockDef.extensions.includes("dynamic_menu")) {
                                                         blockDef.extensions.push("dynamic_menu");
                                                     }
@@ -448,7 +460,7 @@
                                                 //Check to see if it is real.
                                                 else {
                                                     argument.type = "field_dropdown";
-                                                    argument.options = sugarcube.menus[menuID].parsed;
+                                                    argument.options = menus[menuID].parsed;
                                                 }
                                             }
                                         } else {
@@ -460,18 +472,18 @@
                                                 argument.type = "input_value";
                                                 if (argument.customType) {
                                                     //let it be global or local
-                                                    if (sugarcube.fields.storage[id + argument.customType]) {
+                                                    if (fields[id + argument.customType]) {
                                                         argument.type = id + argument.customType;
-                                                    } else if (sugarcube.fields.storage[argument.customType]) {
+                                                    } else if (fields[argument.customType]) {
                                                         argument.type = argument.customType;
                                                     }
 
                                                     //Accept reporters
-                                                    if (sugarcube.fields.storage[argument.type].acceptReporters) {
+                                                    if (fields[argument.type].acceptReporters) {
                                                         //Eww
                                                         if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
                                                         defArgs.inputs[argumentKey].shadow = {
-                                                            type: sugarcube.fields.storage[argument.type].blockName,
+                                                            type: fields[argument.type].blockName,
                                                         };
 
                                                         if (argument.defaultValue) {
@@ -480,6 +492,9 @@
 
                                                         //Ughhh
                                                         argument.type = "input_value";
+                                                    }
+                                                    else {                                                
+                                                        defArgs.fieldData.push(argumentKey);
                                                     }
                                                 }
 

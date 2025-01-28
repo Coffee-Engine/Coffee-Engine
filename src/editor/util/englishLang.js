@@ -261,6 +261,7 @@ editor.EnglishLang = {
     "sugarcube.sensing.block.controllerButtonValue": "value of [button] on controller [id]",
     "sugarcube.sensing.block.controllerButton": "is [button] down on controller [id]",
     "sugarcube.sensing.block.timer": "timer",
+    "sugarcube.sensing.block.deltaTime": "frame time",
     "sugarcube.sensing.block.dayMonthYear": "current [timespan]",
     "sugarcube.sensing.menu.mouseButtons.primary": "primary",
     "sugarcube.sensing.menu.mouseButtons.secondary": "secondary",

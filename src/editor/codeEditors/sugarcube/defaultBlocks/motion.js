@@ -5,6 +5,10 @@
     };
 
     class motion {
+        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose. 
+        deg2Rad = 0.0174533;
+        rad2Deg = 57.2958;
+
         getInfo() {
             return {
                 id: "motion",
@@ -276,9 +280,9 @@
                     direction: {
                         acceptReporters: true,
                         items: [
-                            { text: editor.language["sugarcube.motion.yaw"], value: "yaw" },
-                            { text: editor.language["sugarcube.motion.pitch"], value: "pitch" },
-                            { text: editor.language["sugarcube.motion.roll"], value: "roll" },
+                            { text: editor.language["sugarcube.motion.yaw"], value: "y" },
+                            { text: editor.language["sugarcube.motion.pitch"], value: "x" },
+                            { text: editor.language["sugarcube.motion.roll"], value: "z" },
                         ],
                     },
                 },
@@ -300,38 +304,71 @@
             };
         }
 
-        movesteps(args, util) {
-            console.log(util.target);
+        movesteps({ steps }, util) {
+            //Make sure we cast steps to a number and that the matrix for the object actually exists
             const matrix = util.target.matrix;
+            steps = sugarcube.cast.toNumber(steps);
             if (matrix) {
-                util.x += matrix[0][2] * args.steps;
-                util.y += matrix[1][2] * args.steps;
-                util.z += matrix[2][2] * args.steps;
+                util.x += matrix[0][2] * steps;
+                util.y += matrix[1][2] * steps;
+                util.z += matrix[2][2] * steps;
             }
         }
 
-        setx(args, util) {
-            util.target.position.x = args.x || 0;
+        setx({ x }, util) {
+            util.target.position.x = sugarcube.cast.toNumber(x) || 0;
         }
 
-        sety(args, util) {
-            util.target.position.y = args.y || 0;
+        sety({ y }, util) {
+            util.target.position.y = sugarcube.cast.toNumber(y) || 0;
         }
 
-        setz(args, util) {
-            util.target.position.z = args.z || 0;
+        setz({ z }, util) {
+            util.target.position.z = sugarcube.cast.toNumber(z) || 0;
         }
 
-        changex(args, util) {
-            util.target.position.x += args.x || 0;
+        changex({ x }, util) {
+            util.target.position.x += sugarcube.cast.toNumber(x) || 0;
         }
 
-        changey(args, util) {
-            util.target.position.y += args.y || 0;
+        changey({ y }, util) {
+            util.target.position.y += sugarcube.cast.toNumber(y) || 0;
         }
 
-        changez(args, util) {
-            util.target.position.z += args.z || 0;
+        changez({ z }, util) {
+            util.target.position.z += sugarcube.cast.toNumber(z) || 0;
+        }
+
+        turnAround3D(args, util) {
+            util.target.rotation[args.axis] = sugarcube.cast.toNumber(args.degrees) * this.deg2Rad;
+        }
+
+        setrotation3D(args, util) {
+            util.target.rotation[args.axis] = sugarcube.cast.toNumber(args.degrees) * this.deg2Rad;
+        }
+
+        //Why do it like this? Its so we don't have to do matrix to euler.
+        lookAtXYZ({ x, y, z }, util) {
+            const myPosition = util.target.position;
+            const distance = Math.sqrt(Math.pow(z - myPosition.z, 2) + Math.pow(x - myPosition.x, 2));
+            const yaw = -Math.atan2(x - myPosition.x, z - myPosition.z);
+            const pitch = -Math.atan2(y - myPosition.y, distance);
+
+            util.target.rotation.y = yaw;
+            util.target.rotation.x = pitch;
+        }
+
+        //Same principal. I'm too stubborn to do a conversion formula so we are using a constant
+        yaw(args, util) {
+            return sugarcube.cast.toNumber(util.target.rotation.y) * this.rad2Deg;
+        }
+
+        pitch(args, util) {
+            return sugarcube.cast.toNumber(util.target.rotation.x) * this.rad2Deg;
+        }
+
+        roll(args, util) {
+            return sugarcube.cast.toNumber(util.target.rotation.z) * this.rad2Deg;
         }
 
         //Custom Fields
