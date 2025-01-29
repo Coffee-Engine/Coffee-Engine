@@ -44,7 +44,12 @@
 
     //Keyboard stuff
     window.addEventListener("keydown", (event) => {
-        const lowercase = event.key.toLowerCase();
+        let lowercase = event.key.toLowerCase();
+        //Account for space
+        if (event.key == " ") {
+            lowercase = "space";
+        }
+
         coffeeEngine.inputs.keys[lowercase] = true;
         coffeeEngine.sendEvent("desktopInput", {type:"key", fullKey: event.key, key: lowercase});
     });

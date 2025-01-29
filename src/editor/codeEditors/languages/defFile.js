@@ -93,6 +93,7 @@ class behavior {
     //Our main code
     __ReadyFuncs = [];
     __UpdateFuncs = [];
+    __DisposeFuncs = [];
     constructor() {
         ${sugarcube.generator.workspaceToCode(workspace)}
     }
@@ -109,10 +110,17 @@ class behavior {
         }
     }
 
+    //Maybe someday later
     //${editor.language["editor.window.typed.drawUncommentMessage"]}
     //draw() {
     //    //${editor.language["editor.window.typed.drawMessage"]}
     //}
+
+    dispose() {
+        for (const func in this.__DisposeFuncs) {
+            this.__DisposeFuncs[func]();
+        }
+    }
 }
     
 coffeeEngine.behaviorManager.register("${path}",behavior);`;

@@ -24,8 +24,7 @@
                     },
                     {
                         opcode: "whenKeyPressed",
-                        eventListenerName: "keydown",
-                        eventListenerTarget: "window",
+                        compileFunc: "whenKeyPressed",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.whenKeyPressed"],
                         arguments: {
@@ -93,6 +92,25 @@
             return `this.__UpdateFuncs.push(() => {
     ${manager.nextBlockToCode(block, generator)}
 });`;
+        }
+
+        whenKeyPressed(block, generator, manager) {
+            //This one is a bit more complicated but I'll walk through it
+            //? First we isolate the context of the variables by wrapping them in a block using {};
+            //? After that we add our event and store the recieved function to use on the eventual disposal.
+            return `{
+    const sugarcubeInputEvent = coffeeEngine.addEventListener("desktopInput", (event) => {
+        if (event && event.type == "key") {
+            if (event.key == "${block.getFieldValue("key")}") {
+                ${manager.nextBlockToCode(block, generator)}
+            }
+        }
+    });
+
+    this.__DisposeFuncs.push(() => {
+        coffeeEngine.removeEventListener("desktopInput", sugarcubeInputEvent);
+    })
+}`;
         }
     }
 
