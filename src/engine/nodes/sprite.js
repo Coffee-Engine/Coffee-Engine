@@ -59,7 +59,7 @@
             if (this.texture) {
                 this.shader.uniforms.u_model.value = this.matrix.webGLValue();
 
-                this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
+                this.shader.setBuffers(coffeeEngine.shapes.plane);
 
                 if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
                 if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
