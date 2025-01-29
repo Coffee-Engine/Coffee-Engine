@@ -1,5 +1,6 @@
 (function () {
     class billboard extends coffeeEngine.getNode("Node3D") {
+        //Sprite stuff
         #spritePath = "";
 
         set spritePath(value) {
@@ -16,8 +17,23 @@
             return this.#spritePath;
         }
 
-        shader = coffeeEngine.renderer.mainShaders.unlit;
 
+        //Shader stuff
+        #shaderPath = "coffee:/unlit";
+        #shader = coffeeEngine.renderer.mainShaders.unlit;
+
+        set shader(value) {
+            this.#shaderPath = value;
+            coffeeEngine.renderer.fileToShader(value).then(shader => {
+                this.#shader = shader;
+            })
+        }
+        get shader() {
+            return this.#shaderPath;
+        }
+
+
+        //Color modulation
         #modulatedColorArr = [1, 1, 1, 1];
         #modulatedColor = "#ffffffff";
 
@@ -32,6 +48,7 @@
             return this.#modulatedColor;
         }
 
+        //Billboard settings
         omnidirectional = false;
         scaleMultiplier = 1.0;
 
@@ -44,27 +61,30 @@
             super.draw();
 
             if (this.texture) {
-                this.shader.setBuffers(coffeeEngine.shapes.plane);
+                this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
                 //Rotate and scale our billboard depending on MULTIPLE variables
-                if (this.omnidirectional) this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
+                if (this.omnidirectional) this.#shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
-                    .scale(this.scale.x, this.scale.y, this.scale.z)
+                    .scale(this.scale.x, this.scale.y, -1)
                     .scale(this.textureWidth * this.scaleMultiplier,this.textureHeight * this.scaleMultiplier,1)
                     .webGLValue();
-                else this.shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
-                    .scale(this.scale.x, this.scale.y, this.scale.z)
+                else this.#shader.uniforms.u_model.value = this.matrix.rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
+                    .scale(this.scale.x, this.scale.y, -1)
                     .scale(this.textureWidth * this.scaleMultiplier,this.textureHeight * this.scaleMultiplier,1)
                     .webGLValue();
 
-                if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
-                if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture;
+                if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
 
-                this.shader.drawFromBuffers(6);
+                this.#shader.drawFromBuffers(6);
             }
         }
 
         getProperties() {
+            let baseShaders = {};
+            Object.keys(coffeeEngine.renderer.mainShaders).map((key) => {baseShaders[`${key}.glsl`] = key; return key});
+
             return [
                 { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
@@ -77,6 +97,7 @@
                 { name: "scaleMultiplier", translationKey:"engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
                 "---",
                 { name: "modulatedColor", translationKey:"engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 },
+                {name:"shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/":true, "coffee:": baseShaders, "project:": project.fileSystem }},
                 "---",
                 {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
             ];
@@ -94,7 +115,7 @@
                 w:1
             });
 
-            return transformed.z;//;
+            return transformed.z;
         }
     }
 

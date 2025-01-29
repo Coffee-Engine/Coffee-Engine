@@ -1,5 +1,6 @@
 (function () {
     class sprite extends coffeeEngine.getNode("Node2D") {
+        //Sprite stuff
         #spritePath = "";
 
         set spritePath(value) {
@@ -20,6 +21,22 @@
             return this.#spritePath;
         }
 
+
+        //Shader stuff
+        #shaderPath = "coffee:/unlit";
+        #shader = coffeeEngine.renderer.mainShaders.unlit;
+
+        set shader(value) {
+            this.#shaderPath = value;
+            coffeeEngine.renderer.fileToShader(value).then(shader => {
+                this.#shader = shader;
+            })
+        }
+        get shader() {
+            return this.#shaderPath;
+        }
+
+        //Color modulation
         #modulatedColorArr = [1, 1, 1, 1];
         #modulatedColor = "#ffffffff";
 
@@ -33,8 +50,6 @@
         get modulatedColor() {
             return this.#modulatedColor;
         }
-
-        shader = coffeeEngine.renderer.mainShaders.unlit;
 
         $scaleMultiplier = 1.0;
         set scaleMultiplier(value) {
@@ -57,14 +72,14 @@
             super.draw();
 
             if (this.texture) {
-                this.shader.uniforms.u_model.value = this.matrix.webGLValue();
+                this.#shader.uniforms.u_model.value = this.matrix.webGLValue();
 
-                this.shader.setBuffers(coffeeEngine.shapes.plane);
+                this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
-                if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
-                if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture;
+                if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
 
-                this.shader.drawFromBuffers(6);
+                this.#shader.drawFromBuffers(6);
             }
         }
 

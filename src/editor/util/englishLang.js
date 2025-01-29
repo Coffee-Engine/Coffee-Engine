@@ -161,6 +161,7 @@ editor.EnglishLang = {
 
     "editor.window.createScript": "New Script",
     "editor.window.createScript.inherits": "inherits",
+    "editor.window.createScript.selectInheritence": "choose inheritor",
     "editor.window.sugarcube": "SugarCube",
     "editor.window.javascript": "Javascript",
     "editor.window.cappuccino": "Cappuccino",
@@ -418,6 +419,9 @@ editor.EnglishLang = {
     "engine.nodeNames.Node2D": "Node 2D",
     "engine.nodeNames.Sprite": "Sprite",
     "engine.nodeNames.Node3D": "Node 3D",
+    "engine.nodeNames.SpotLight": "Spot Light",
+    "engine.nodeNames.PointLight": "Point Light",
+    "engine.nodeNames.Sun": "Sun",
     "engine.nodeNames.Camera": "Camera",
     "engine.nodeNames.MeshDisplay": "Mesh Display",
     "engine.nodeNames.Billboard": "Billboard",
