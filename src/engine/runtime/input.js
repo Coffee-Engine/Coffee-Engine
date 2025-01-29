@@ -64,9 +64,15 @@
     });
 
     window.addEventListener("contextmenu", (event) => {
+        //Prevent our default input
         if (event.target.nodeName != "INPUT") event.preventDefault();
+
+        //if our node has a context function use it;
         if (event.target.contextFunction) {
+            //Make sure the default is prevented though
             if (!event.defaultPrevented) event.preventDefault();
+
+            //Then we face the consequences of our actions
             if (coffeeEngine.isEditor) {
                 if (editor && editor.dropdown && editor.dropdown.fromArray)
                 editor.dropdown.fromArray(event.clientX, event.clientY, event.target.contextFunction()).then((value) => {
