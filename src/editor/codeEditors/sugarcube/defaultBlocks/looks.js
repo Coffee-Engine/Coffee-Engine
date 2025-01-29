@@ -24,6 +24,7 @@
                         },
                         hideFromPalette: true,
                     },
+                    //These durn dere actually rendered objects 😠
                     {
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
@@ -42,6 +43,50 @@
                         text: editor.language["sugarcube.looks.block.getSprite"],
                         filter: ["Sprite", "Billboard"],
                     },
+                    {
+                        opcode: "setMesh",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setMesh"],
+                        filter: ["MeshDisplay"],
+                        arguments: {
+                            mesh: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Mesh",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getMesh",
+                        typeof: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getMesh"],
+                        filter: ["MeshDisplay"],
+                    },
+                    //Lights
+                    {
+                        opcode: "setRadius",
+                        typeof: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.setRadius"],
+                        filter: ["pointLight", "spotLight"],
+                        arguments: {
+                            radius: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 5
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setFalloff",
+                        typeof: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.setFalloff"],
+                        filter: ["spotLight"],
+                        arguments: {
+                            falloff: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 7.5
+                            },
+                        },
+                    },
+                    "---",
                     {
                         opcode: "setTint",
                         type: sugarcube.BlockType.COMMAND,
@@ -70,7 +115,13 @@
                     },
                     Image: {
                         acceptReporters: true,
-                        editor: "file_Editor",
+                        editor: "image_Editor",
+
+                        initilize: "file_Init",
+                    },
+                    Mesh: {
+                        acceptReporters: true,
+                        editor: "mesh_Editor",
 
                         initilize: "file_Init",
                     },
@@ -78,13 +129,32 @@
             };
         }
 
+        //Renderable objects
         setSprite({ image }, util) {
             //Hope to god its an image
-            util.target.spritePath = image;
+            util.target.spritePath = sugarcube.cast.toString(image);
         }
 
         getSprite(args, util) {
-            return util.target.spritePath;
+            return sugarcube.cast.toString(util.target.spritePath);
+        }
+
+        setMesh({ mesh }, util) {
+            //Hope to god its a mesh
+            util.target.meshPath = sugarcube.cast.toString(mesh);
+        }
+
+        getMesh(args, util) {
+            return sugarcube.cast.toString(util.target.meshPath);
+        }
+
+        //Lights
+        setRadius({ radius }, util) {
+            util.target.radius = sugarcube.cast.toNumber(radius);
+        }
+
+        setFalloff({ falloff }, util) {
+            util.target.radius = sugarcube.cast.toNumber(falloff);
         }
 
         color_Init(field) {
@@ -110,14 +180,11 @@
             field.createTextElement_();
         }
 
-        file_Editor(field) {
-            //Its like some sort of loading. :trol:
+        //Hmm its like some sort of loadal, heh loading model. get it?
+        callLoadal(field) {
             const newLoadal = new editor.windows.modalFileExplorer(400, 400);
 
             newLoadal.__moveToTop();
-
-            //Note that gifs will not be animated, they do come as non animated too. Like PNGs
-            newLoadal.acceptTypes = "png,jpeg,jpg,webp,bmp,gif,svg";
 
             const bounding = field.borderRect_.getBoundingClientRect();
             newLoadal.x = bounding.x + bounding.width / 2;
@@ -125,7 +192,24 @@
             newLoadal.onFileSelected = (path) => {
                 field.value = path;
             };
+
+            return newLoadal;
         }
+
+        image_Editor(field) {
+            const loadal = this.callLoadal(field);
+
+            //Note that gifs will not be animated, they do come as non animated too. Like PNGs
+            loadal.acceptTypes = "png,jpeg,jpg,webp,bmp,gif,svg";
+        }
+
+        mesh_Editor(field) {
+            const loadal = this.callLoadal(field);
+
+            //Silly guys
+            loadal.acceptTypes = "obj,dae,glb";
+        }
+        
     }
 
     sugarcube.extensionManager.registerExtension(new looks());
