@@ -44,7 +44,9 @@
 
     //Keyboard stuff
     window.addEventListener("keydown", (event) => {
-        coffeeEngine.inputs.keys[event.key.toLowerCase()] = true;
+        const lowercase = event.key.toLowerCase();
+        coffeeEngine.inputs.keys[lowercase] = true;
+        coffeeEngine.sendEvent("desktopInput", {type:"key", fullKey: event.key, key: lowercase});
     });
 
     window.addEventListener("keyup", (event) => {
@@ -54,6 +56,7 @@
     //Mouse stuff
     window.addEventListener("mousedown", (event) => {
         coffeeEngine.inputs.mouse[event.button] = true;
+        coffeeEngine.sendEvent("desktopInput", {type:"mouse", button: event.button});
     });
 
     window.addEventListener("mouseup", (event) => {

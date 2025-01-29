@@ -3,6 +3,7 @@ window.coffeeEngine = {
         consoleUpdate: [],
         fileSystemUpdate: [],
         extensionDispose: [],
+        desktopInput: [],
     },
     runtime: {},
     classes: {},
