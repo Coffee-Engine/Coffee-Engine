@@ -837,6 +837,7 @@
 
         registerExtension(extension) {
             const myInfo = extension.getInfo();
+            extension.__precompile = myInfo.precompile;
 
             if (sugarcube.extensionInstances[myInfo.id]) return;
 

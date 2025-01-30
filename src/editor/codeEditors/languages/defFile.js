@@ -95,7 +95,7 @@ class behavior {
     __UpdateFuncs = [];
     __DisposeFuncs = [];
     constructor() {
-        ${sugarcube.generator.workspaceToCode(workspace)}
+        ${sugarcube.buildCode(workspace)}
     }
 
     ready() {
