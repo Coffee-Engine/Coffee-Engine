@@ -227,8 +227,12 @@ editor.EnglishLang = {
     "sugarcube.looks.block.getSprite": "current sprite",
     "sugarcube.looks.block.setMesh": "set mesh to [mesh]",
     "sugarcube.looks.block.getMesh": "current mesh",
+    "sugarcube.looks.block.setLightColor": "set light color to [color]",
+    "sugarcube.looks.block.getLightColor": "light color",
     "sugarcube.looks.block.setRadius": "set light radius to [radius]",
+    "sugarcube.looks.block.getRadius": "light radius",
     "sugarcube.looks.block.setFalloff": "set light falloff to [falloff]",
+    "sugarcube.looks.block.getFalloff": "light falloff",
     "sugarcube.looks.block.setTint": "tint myself [tint]",
 
     "sugarcube.sounds": "Sounds",

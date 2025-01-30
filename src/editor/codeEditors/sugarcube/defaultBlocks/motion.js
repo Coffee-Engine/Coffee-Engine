@@ -392,7 +392,7 @@
         }
 
         turnAround3D(args, util) {
-            if (util.target.rotation) util.target.rotation[args.axis] = sugarcube.cast.toNumber(args.degrees) * this.deg2Rad;
+            if (util.target.rotation) util.target.rotation[args.axis] += sugarcube.cast.toNumber(args.degrees) * this.deg2Rad;
         }
 
         setrotation3D(args, util) {
