@@ -15,5 +15,7 @@
         
         //Our compiled code
         code += `\n${sugarcube.generator.workspaceToCode(workspace)}`;
+
+        return code;
     }
 })();
