@@ -10925,18 +10925,17 @@ ${b} to its parent, because: ${a}`);
 
             //If we have copy data duplicate it
             if (duplicated) {
-              duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
+              duplicated = paste$$module$build$src$core$clipboard(duplicated, this.startWorkspace_);
+              this.targetBlock = duplicated;
               if (duplicated) {
                 duplicated._shouldDuplicate_ = false;
                 duplicated._isClone_ = true;
-                duplicated.editedState = this.targetBlock.editedState;
-
-                if (
-                  duplicated.outputConnection && 
-                  duplicated.outputConnection.check &&
-                  duplicated.outputConnection.check.includes("noClones")
-                ) {
-                  duplicated.outputConnection.check.splice(duplicated.outputConnection.check.indexOf("noClones"),1);
+                duplicated.editedState = JSON.parse(JSON.stringify(this.targetBlock.editedState || {}));
+                duplicated.editedState._isClone_ = true;
+                duplicated.editedState._shouldDuplicate_ = false;
+                if (duplicated._isClone_) {
+                  duplicated.outputConnection.check = JSON.parse(JSON.stringify(duplicated.outputConnection.check));
+                  duplicated.outputConnection.check[duplicated.outputConnection.check.indexOf("noClones")] = "clones";
                 }
 
                 //Set the block dragger to the duplicate

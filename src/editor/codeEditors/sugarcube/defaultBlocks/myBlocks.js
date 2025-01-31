@@ -249,6 +249,8 @@
                                 const blockIN = sugarcube.workspace.newBlock(declaration);
                                 blockIN.editedState = item;
                                 blockIN.editedState.color = state.color;
+                                blockIN.editedState._shouldDuplicate_ = true;
+                                blockIN.editedState._isClone_ = false;
                                 blockIN.initSvg();
                                 blockIN.render();
                                 block.inputList[block.inputList.length - 1].connection.connect(blockIN.outputConnection);
@@ -265,6 +267,8 @@
                     }
                 });
             }
+
+            sugarcube.easyColourBlock(block, state.color);
             /* The old way BAD
             //Kept for historical preservation!
             if (state.customBlockData) {
@@ -332,8 +336,11 @@
             //put our stuff on the block
             block._isClone_ = state._isClone_;
             block._shouldDuplicate_ = state._shouldDuplicate_;
-            if ((!block._isClone_) && block._shouldDuplicate_) {
-                console.log(block);
+
+            //The solution to our dillema. For some reason duplicated blocks also duplicate the actual connection property objects
+            if (block._isClone_) {
+                block.outputConnection.check = JSON.parse(JSON.stringify(block.outputConnection.check));
+                block.outputConnection.check[block.outputConnection.check.indexOf("noClones")] = "clones";
             }
 
             if (block._isClone_) {
@@ -381,7 +388,7 @@
                 functionName += `_${param.id}`;
             });
 
-            return `this["${functionName.replace('"', '\\"')}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
+            return `this["${functionName.replaceAll('"', '\\"')}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
         }
 
         execute(block, generator, manager) {
@@ -422,7 +429,7 @@
                 }
             });
 
-            return `this["${functionName.replace('"', '\\"')}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
+            return `this["${functionName.replaceAll('"', '\\"')}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
         }
     }
 
