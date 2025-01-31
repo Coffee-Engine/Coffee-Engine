@@ -28,6 +28,7 @@
                     },
                     {
                         opcode: "input_string",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.REPORTER,
                         text: "",
                         output: ["noClones"],
@@ -36,6 +37,7 @@
                     },
                     {
                         opcode: "input_bool",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.BOOLEAN,
                         text: "",
                         output: ["noClones"],
@@ -44,6 +46,7 @@
                     },
                     {
                         opcode: "input_array",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.ARRAY,
                         text: "",
                         output: ["noClones"],
@@ -52,6 +55,7 @@
                     },
                     {
                         opcode: "input_object",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.OBJECT,
                         text: "",
                         output: ["noClones"],
@@ -60,6 +64,7 @@
                     },
                     {
                         opcode: "input_reference",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.REFERENCE,
                         text: "",
                         output: ["noClones"],
@@ -397,38 +402,53 @@
             const args = {};
             const recalls = {};
 
-            block.inputList.forEach((input) => {
-                functionName += `_${input.name}`;
+            
+            let baseBlockCode = `this["${functionName.replaceAll('"', '\\"')}"]({\n`;
 
-                if (!input.connection) return;
-                if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                    recalls[input.name] = Function(generator.statementToCode(block, input.name));
-                    return;
-                }
-                args[input.name] = generator.valueToCode(block, input.name, 0);
-
-                //Our recall for the rest of the types.
-
-                const value = generator.valueToCode(block, input.name, 0);
-                //Functionals are easy
-                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
-                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                }
-                //Now we need to check the rest.
-                else {
-                    //Number
-                    if (!isNaN(Number(value))) {
-                        recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
+            //Compile this like a block
+            if (block.inputList) {
+                block.inputList.forEach((input) => {
+                    if (!input.connection) return;
+                    if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
+                        args[input.name] = `() => {\n${generator.statementToCode(block, input.name)}\n}`;
+                        recalls[input.name] = args[input.name];
                         return;
                     }
 
-                    //String
-                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}"\n}`;
-                }
-            });
+                    const value = generator.valueToCode(block, input.name, 0);
+                    args[input.name] = value;
+                    recalls[input.name] = `() => {\nreturn ${value}\n}`;
+                });
+            }
 
-            return (`this["${functionName.replaceAll('"', '\\"')}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})\n${manager.nextBlockToCode(block, generator)}`).replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+            if (blockData && blockData.fieldData) {
+                blockData.fieldData.forEach((field) => {
+                    args[field] = block.getFieldValue(field);
+
+                    if (!Number(args[field])) args[field] = `"${args[field]}"`;
+                });
+            }
+
+            for (const arg in args) {
+                baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
+            }
+
+            //Then we do the recalls in util
+            baseBlockCode += "},{target:this.target,self:this,recalls:{\n";
+
+            for (const recall in recalls) {
+                baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
+            }
+            
+            baseBlockCode += "}})"
+
+            //Do this mess. (I might make a macro for this)
+            return baseBlockCode;
+        }
+
+        argument(block, generator, manager) {
+            //The humble argument
+            return `args["${block.editedState.id}"]`;
         }
     }
 

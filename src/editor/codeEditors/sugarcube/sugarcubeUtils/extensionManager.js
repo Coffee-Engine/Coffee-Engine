@@ -16,7 +16,7 @@
                 });
     
                 sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
-                    return [block.getFieldValue("VALUE"), 0];
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
     
                 this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
@@ -33,7 +33,7 @@
                 });
     
                 sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
-                    return [block.getFieldValue("VALUE"), 0];
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
     
                 this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
@@ -67,7 +67,7 @@
                 });
     
                 sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
-                    return [block.getFieldValue("VALUE"), 0];
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
             }
 
@@ -238,45 +238,46 @@
                         const extension = split.splice(0,1)[0];
                         const opcode = split.join("_");
                         const blockData = this.blockDefs[extension][opcode];
+                        let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
 
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
                                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                                    recalls[input.name] = Function(generator.statementToCode(block, input.name));
+                                    args[input.name] = `() => {\n${generator.statementToCode(block, input.name)}\n}`;
+                                    recalls[input.name] = args[input.name];
                                     return;
                                 }
-                                args[input.name] = generator.valueToCode(block, input.name, 0);
-
-                                //Our recall for the rest of the types.
 
                                 const value = generator.valueToCode(block, input.name, 0);
-                                //Functionals are easy
-                                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
-                                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                                }
-                                //Now we need to check the rest.
-                                else {
-                                    //Number
-                                    if (!isNaN(Number(value))) {
-                                        recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                                        return;
-                                    }
-
-                                    //String
-                                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
-                                }
+                                args[input.name] = value;
+                                recalls[input.name] = `() => {\nreturn ${value}\n}`;
                             });
                         }
 
                         if (blockData && blockData.fieldData) {
                             blockData.fieldData.forEach((field) => {
                                 args[field] = block.getFieldValue(field);
+
+                                if (!Number(args[field])) args[field] = `"${args[field]}"`;
                             });
                         }
 
-                        const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this.target,self:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+                        for (const arg in args) {
+                            baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
+                        }
+
+                        //Then we do the recalls in util
+                        baseBlockCode += "},{target:this.target,self:this,recalls:{\n";
+
+                        for (const recall in recalls) {
+                            baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
+                        }
+                        
+                        baseBlockCode += "}})"
+
+                        //let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this.target,self:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+                        
 
                         if (block.outputConnection) {
                             return [baseBlockCode, 0];
