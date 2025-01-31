@@ -1,6 +1,7 @@
 (function () {
     editor.windows.codeEditor = class extends editor.windows.base {
         init(container) {
+            //Declare some small variables
             this.title = editor.language["editor.window.codeEditor"];
             this.usingSugarCube = false;
             this.filePath = false;
@@ -16,6 +17,7 @@
             this.appendButtonAction();
 
             monacoManager.refreshTheme();
+
             //The two IDEs?
             this.workspace = {
                 monaco: monacoManager.inject(this.monacoArea),
@@ -25,15 +27,20 @@
 
         //The layout of the editor
         addScriptToSidebar(path) {
+            //Make sure we don't already have this path
             if (this.scriptShortcuts.includes(path)) return;
 
+            //Add and style the button appropriately
             const button = document.createElement("button");
             button.style.width = "116px";
             button.style.textAlign = "left";
+
+            //Split it up and get the correct file extension and pathing
             const splitPath = path.split("/");
             button.innerText = splitPath[splitPath.length - 1];
             button.setAttribute("path", path);
-
+            
+            //When we click open the file
             button.onclick = () => {
                 //Remove the button once it doesn't work
                 this.openFile(path, path.split(".")[1]).catch(() => {
@@ -43,6 +50,7 @@
                 });
             };
 
+            //And add our context functions
             button.contextFunction = () => {
                 return [
                     { text: editor.language["editor.window.codeEditor.openScript"], value: "open" },
@@ -177,6 +185,7 @@
                 console.log(editor.language["editor.notification.saveScript"].replace("[path]", this.filePath));
             });
 
+            //If our scripting language has a compile function compile it
             if (compileFunction) {
                 const compiled = compileFunction(useBlocklyEditor ? sugarcube.workspace : monacoManager.workspace.getValue(), this.filePath);
                 if (!stopCompileFileCreation) project.setFile(`${this.filePath.split(".")[0]}.cjs`, compiled, "text/javascript").then(() => {
@@ -184,12 +193,15 @@
                 });
             }
 
-            if (this.filePath.split(".")[1].toLowerCase() == "cescr") {
-            }
+            //If its our special little fella (sugarcube)  do nothing?
+            //! if (this.filePath.split(".")[1].toLowerCase() == "cescr") {
+            //! }
+            //! I'm keeping this as a word of warning
         }
 
         appendButtonAction() {
             this.newScriptButton.onclick = () => {
+                //Create and show the new script window
                 const createdWindow = new editor.windows.newScript(400, 200);
                 createdWindow.__moveToTop();
 
@@ -253,7 +265,16 @@
 
                     sugarcube.deserialize(JSON.parse(this.fileReader.result));
                 }
+
+                this.title = `${this.filePath} | ${editor.language["editor.window.codeEditor"]}`;
             };
+
+            //If we error hide both editors in punishment
+            this.fileReader.onerror = () => {
+                this.blocklyArea.style.visibility = "hidden";
+                this.monacoArea.style.visibility = "hidden";
+                this.title = editor.language["editor.window.codeEditor"];
+            }
         }
 
         openFile(path, extension) {

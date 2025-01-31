@@ -77,6 +77,9 @@ sugarcube.toolbox = {
         },
     ],
 };
+
+sugarcube.toolboxDefault = [];
+
 sugarcube.menus = {};
 
 sugarcube.constantOverrides = {};
@@ -171,7 +174,8 @@ sugarcube.refreshTheme = () => {
     //sugarcube.minimapWorkspace.injectionDiv.parentElement.style.transition = "opacity 500ms";
 };
 
-sugarcube.easyColourBlock = (block, color) => {
+sugarcube.easyColourBlock = (block, color, hat) => {
+    hat = hat || "cap"
     //Define the colours
     const convertedColors = sugarcube.blockColorFunction(
         color,
@@ -182,7 +186,7 @@ sugarcube.easyColourBlock = (block, color) => {
     );
 
     //Apply the colours
-    block.style = {
+    const style = {
         colourPrimary: convertedColors[0],
         colourSecondary: convertedColors[1],
         colourTertiary: convertedColors[2],
@@ -191,9 +195,41 @@ sugarcube.easyColourBlock = (block, color) => {
         useBlackWhiteFields: convertedColors[5],
         colourIdentifier: convertedColors[6] || convertedColors[0],
         useEverywhere: convertedColors[7],
-        hat: "cap",
+        hat: hat,
     }
 
-    block.applyColour();
+    block.setStyle(style);
+    block.pathObject.setStyle(style);
     if (!convertedColors[7]) block.setColour(color);
+}
+
+sugarcube.setToolboxBasedOnFilter = (filter) => {
+    //Loop through all categories filtering
+    sugarcube.toolbox.contents = [];
+    for (let index = 0; index < sugarcube.toolboxDefault.length; index++) {
+        const category = JSON.parse(JSON.stringify(sugarcube.toolboxDefault[index]));
+        let blocksInCategory = 0;
+        for (let blockID = 0; blockID < category.contents.length; blockID++) {
+            const block = category.contents[blockID];
+            
+            //Check our filter and up our block count if valid
+            if (block.filter) {
+                if (!block.filter.some((element) => filter.includes(element))) {
+                    category.contents.splice(blockID,1);
+                    blockID--;
+                }
+                else {
+                    if (block.kind != "label") blocksInCategory++;
+                }
+            }
+            //if we don't add the ticker up
+            else {
+                if (block.kind != "label") blocksInCategory++;
+            }
+        }
+        //If we don't have any blocks don't show the category
+        if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.toolbox.contents.push(category);
+    }
+    
+    sugarcube.workspace.getToolbox().refreshSelection();
 }

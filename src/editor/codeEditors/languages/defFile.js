@@ -86,8 +86,44 @@ coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
             );
         },
         //So we know what to do with our code
-        compileFunction: (workspace) => {
-            return sugarcube.generator.workspaceToCode(workspace);
+        compileFunction: (workspace, path) => {
+            return `//This is not supposed to be edited manually!
+//Please refrain from editing this auto generated code!
+class behavior {
+    //Our main code
+    __ReadyFuncs = [];
+    __UpdateFuncs = [];
+    __DisposeFuncs = [];
+    constructor() {
+        ${sugarcube.buildCode(workspace)}
+    }
+
+    ready() {
+        for (const func in this.__ReadyFuncs) {
+            this.__ReadyFuncs[func]();
+        }
+    }
+
+    update(delta) {
+        for (const func in this.__UpdateFuncs) {
+            this.__UpdateFuncs[func](delta);
+        }
+    }
+
+    //Maybe someday later
+    //${editor.language["editor.window.typed.drawUncommentMessage"]}
+    //draw() {
+    //    //${editor.language["editor.window.typed.drawMessage"]}
+    //}
+
+    dispose() {
+        for (const func in this.__DisposeFuncs) {
+            this.__DisposeFuncs[func]();
+        }
+    }
+}
+    
+coffeeEngine.behaviorManager.register("${path}",behavior);`;
         },
     },
     {

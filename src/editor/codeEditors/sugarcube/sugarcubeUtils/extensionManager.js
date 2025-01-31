@@ -1,72 +1,75 @@
 (function () {
     class extensionManager {
         constructor() {
-            this.addBlocklyBlock("__sugarcube_color_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "looks_Color",
-                        name: "VALUE",
-                        colour: "#0000ff",
-                    },
-                ],
-            });
-
-            sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
-
-            this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "field_input",
-                        name: "VALUE",
-                        value: "Text Here",
-                        spellcheck: false,
-                    },
-                ],
-            });
-
-            sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
-
-            this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "field_number",
-                        name: "VALUE",
-                        value: 0,
-                        spellcheck: false,
-                    },
-                ],
-            });
-
-            sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
-
-            this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "field_multilinetext",
-                        name: "VALUE",
-                        text: "Hello\nWorld!",
-                        spellcheck: false,
-                    },
-                ],
-            });
-
-            sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
+            //Don't load blockly stuff if we aren't available for blockly
+            if (coffeeEngine.isEditor) {
+                this.addBlocklyBlock("__sugarcube_color_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "looks_Color",
+                            name: "VALUE",
+                            colour: "#0000ff",
+                        },
+                    ],
+                });
+    
+                sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
+    
+                this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "field_input",
+                            name: "VALUE",
+                            value: "Text Here",
+                            spellcheck: false,
+                        },
+                    ],
+                });
+    
+                sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
+    
+                this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "field_number",
+                            name: "VALUE",
+                            value: 0,
+                            spellcheck: false,
+                        },
+                    ],
+                });
+    
+                sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
+                    return [block.getFieldValue("VALUE"), 0];
+                };
+    
+                this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "field_multilinetext",
+                            name: "VALUE",
+                            text: "Hello\nWorld!",
+                            spellcheck: false,
+                        },
+                    ],
+                });
+    
+                sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
+            }
 
             sugarcube.extensionInstances = {};
         }
@@ -209,7 +212,7 @@
                     if (block.outputConnection) {
                         return [code, 0];
                     }
-                    return `${code}\n${this.nextBlockToCode(block, generator)}`;
+                    return `${code}\n`;
                 };
 
                 return;
@@ -220,32 +223,7 @@
                 //Hat blocks will be event listeners. No exceptions lol.
                 case sugarcube.BlockType.HAT:
                     sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                        const args = {};
-
-                        if (block.inputList) {
-                            block.inputList.forEach((input) => {
-                                if (!input.connection) return;
-                                if (input.connection && input.connection.type == 3) {
-                                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                                    return;
-                                }
-                                args[input.name] = generator.valueToCode(block, input.name, 0);
-                            });
-                        }
-
-                        if (block.fieldRow) {
-                            block.fieldRow.forEach((field) => {
-                                args[input.name] = block.getFieldValue(input.name);
-                            });
-                        }
-
-                        //Just our block code builder... Should probably standardize this.
-                        const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
-              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},this,event)) {`
-                            .replaceAll(',this);"', ",this)")
-                            .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
-
-                        return `${baseBlockCode}\n${this.nextBlockToCode(block, generator)}}\n});\n`;
+                        return `(function(){})() // Hat ${blockID} needs custom compile code. please add this or the block will do NOTHING.\n`;
                     };
                     break;
 
@@ -255,44 +233,51 @@
                         const args = {};
                         const recalls = {};
 
+                        //Break down our block type real quick
+                        const split =  block.type.split("_")
+                        const extension = split.splice(0,1)[0];
+                        const opcode = split.join("_");
+                        const blockData = this.blockDefs[extension][opcode];
+                        let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
+
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
                                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                                    recalls[input.name] = Function(generator.statementToCode(block, input.name));
+                                    args[input.name] = `() => {\n${generator.statementToCode(block, input.name)}\n}`;
+                                    recalls[input.name] = args[input.name];
                                     return;
                                 }
-                                args[input.name] = generator.valueToCode(block, input.name, 0);
-
-                                //Our recall for the rest of the types.
 
                                 const value = generator.valueToCode(block, input.name, 0);
-                                //Functionals are easy
-                                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
-                                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                                }
-                                //Now we need to check the rest.
-                                else {
-                                    //Number
-                                    if (!isNaN(Number(value))) {
-                                        recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                                        return;
-                                    }
-
-                                    //String
-                                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
-                                }
+                                args[input.name] = value || "0";
+                                recalls[input.name] = `() => {\nreturn ${value}\n}`;
                             });
                         }
 
-                        if (block.fieldRow) {
-                            block.fieldRow.forEach((field) => {
-                                args[field.name] = block.getFieldValue(field.name);
+                        if (blockData && blockData.fieldData) {
+                            blockData.fieldData.forEach((field) => {
+                                args[field] = block.getFieldValue(field);
+
+                                if (isNaN(Number(args[field]))) args[field] = `"${args[field]}"`;
                             });
                         }
 
-                        const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+                        for (const arg in args) {
+                            baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
+                        }
+
+                        //Then we do the recalls in util
+                        baseBlockCode += "},{target:this.target,self:this,recalls:{\n";
+
+                        for (const recall in recalls) {
+                            baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
+                        }
+                        
+                        baseBlockCode += "}})"
+
+                        //let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this.target,self:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+                        
 
                         if (block.outputConnection) {
                             return [baseBlockCode, 0];
@@ -305,6 +290,8 @@
 
         addBlock(block, extension) {
             const id = extension.id + "_";
+            const menus = sugarcube.menus;
+            const fields = sugarcube.fields.storage;
 
             let blockData = {};
             //Seperator Shorthand
@@ -380,6 +367,7 @@
                             kind: "block",
                             type: id + opcode,
                             inputs: {},
+                            fieldData: [],
                         };
 
                         //For the funny scratch styled branches
@@ -445,9 +433,9 @@
                                     if (argument.menu) {
                                         //Menu id
                                         const menuID = `${id}${argument.menu}`;
-                                        if (sugarcube.menus[menuID]) {
+                                        if (menus[menuID]) {
                                             //Dynamic blocks are not a problem for reporter based menus.
-                                            if (sugarcube.menus[menuID].isBlock) {
+                                            if (menus[menuID].isBlock) {
                                                 argument.type = "input_value";
 
                                                 //Define the arguments
@@ -459,8 +447,11 @@
 
                                             //Not as easy in field menus
                                             else {
+                                                //Field stuff
+                                                defArgs.fieldData.push(argumentKey);
+
                                                 //Check to see if the menu is dynamic.
-                                                if (sugarcube.menus[menuID].isDynamic) {
+                                                if (menus[menuID].isDynamic) {
                                                     if (!blockDef.extensions.includes("dynamic_menu")) {
                                                         blockDef.extensions.push("dynamic_menu");
                                                     }
@@ -470,7 +461,7 @@
                                                 //Check to see if it is real.
                                                 else {
                                                     argument.type = "field_dropdown";
-                                                    argument.options = sugarcube.menus[menuID].parsed;
+                                                    argument.options = menus[menuID].parsed;
                                                 }
                                             }
                                         } else {
@@ -482,18 +473,18 @@
                                                 argument.type = "input_value";
                                                 if (argument.customType) {
                                                     //let it be global or local
-                                                    if (sugarcube.fields.storage[id + argument.customType]) {
+                                                    if (fields[id + argument.customType]) {
                                                         argument.type = id + argument.customType;
-                                                    } else if (sugarcube.fields.storage[argument.customType]) {
+                                                    } else if (fields[argument.customType]) {
                                                         argument.type = argument.customType;
                                                     }
 
                                                     //Accept reporters
-                                                    if (sugarcube.fields.storage[argument.type].acceptReporters) {
+                                                    if (fields[argument.type].acceptReporters) {
                                                         //Eww
                                                         if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
                                                         defArgs.inputs[argumentKey].shadow = {
-                                                            type: sugarcube.fields.storage[argument.type].blockName,
+                                                            type: fields[argument.type].blockName,
                                                         };
 
                                                         if (argument.defaultValue) {
@@ -502,6 +493,9 @@
 
                                                         //Ughhh
                                                         argument.type = "input_value";
+                                                    }
+                                                    else {                                                
+                                                        defArgs.fieldData.push(argumentKey);
                                                     }
                                                 }
 
@@ -703,7 +697,13 @@
                     });
 
                     sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                        return [`${block.getFieldValue(`${menuID}_____VALUE`)}`, 0];
+                        return [`${(() => {
+                            let value = block.getFieldValue("VALUE");
+                            if (isNaN(Number(value))) {
+                                value = `"${value.replaceAll('"','\\"')}"`;
+                            }
+                            return value;
+                    })()}`, 0];
                     };
                 } else {
                     //Add the data
@@ -749,7 +749,13 @@
                 });
 
                 sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                    return [`${block.getFieldValue("VALUE")}`, 0];
+                    return [`${(() => {
+                        let value = block.getFieldValue("VALUE");
+                        if (isNaN(Number(value))) {
+                            value = `"${value.replaceAll('"','\\"')}"`;
+                        }
+                        return value;
+                    })()}`, 0];
                 };
             }
             //Static menus with no reporters
@@ -843,147 +849,148 @@
         }
 
         registerExtension(extension) {
-            try {
-                const myInfo = extension.getInfo();
+            const myInfo = extension.getInfo();
+            extension.__precompile = myInfo.precompile;
 
-                if (sugarcube.extensionInstances[myInfo.id]) return;
+            if (sugarcube.extensionInstances[myInfo.id]) return;
 
-                sugarcube.extensionInstances[myInfo.id] = extension;
+            sugarcube.extensionInstances[myInfo.id] = extension;
 
-                //Snatch the extension's ID
-                const id = myInfo.id + "_";
+            //If we aren't in the editor stop here
+            if (!coffeeEngine.isEditor) return;
 
-                //Add the block styles for this category. Each block can have its own override.
-                const convertedColors = sugarcube.blockColorFunction(
-                    myInfo.color1 || "#0fbd8c", 
-                    myInfo.color2 || myInfo.color1 || "#0b8e69", 
-                    myInfo.color3 || myInfo.color1 || "#0b8e69",
-                    myInfo.color4,
-                    myInfo.color5
-                );
+            //Snatch the extension's ID
+            const id = myInfo.id + "_";
 
-                sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
-                    colourPrimary: convertedColors[0],
-                    colourSecondary: convertedColors[1],
-                    colourTertiary: convertedColors[2],
-                    colourQuaternary: convertedColors[3],
-                    colourQuinary: convertedColors[4],
-                    useBlackWhiteFields: convertedColors[5],
-                    colourIdentifier: convertedColors[6] || convertedColors[0],
-                    useEverywhere: convertedColors[7],
-                    hat: myInfo.hat || "cap",
-                };
+            //Add the block styles for this category. Each block can have its own override.
+            const convertedColors = sugarcube.blockColorFunction(
+                myInfo.color1 || "#0fbd8c", 
+                myInfo.color2 || myInfo.color1 || "#0b8e69", 
+                myInfo.color3 || myInfo.color1 || "#0b8e69",
+                myInfo.color4,
+                myInfo.color5
+            );
 
-                //Define the category definition here
-                let createdContentData = {
-                    kind: "category",
-                    name: myInfo.name,
-                    id: myInfo.id,
-                    colour: myInfo.color1 || "#0fbd8c",
-                    colour_secondary: myInfo.color3 || myInfo.color1 || "#0b8e69",
-                    menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
-                    showColor: myInfo.showColor,
-                    contents: [],
-                };
+            sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
+                colourPrimary: convertedColors[0],
+                colourSecondary: convertedColors[1],
+                colourTertiary: convertedColors[2],
+                colourQuaternary: convertedColors[3],
+                colourQuinary: convertedColors[4],
+                useBlackWhiteFields: convertedColors[5],
+                colourIdentifier: convertedColors[6] || convertedColors[0],
+                useEverywhere: convertedColors[7],
+                hat: myInfo.hat || "cap",
+            };
 
-                //Do the context menus
-                if (myInfo.contextMenus) {
-                    Object.keys(myInfo.contextMenus).forEach((contextMenu) => {
-                        this.addContextMenu(contextMenu, myInfo.contextMenus[contextMenu], myInfo, extension);
-                    });
-                }
+            //Define the category definition here
+            let createdContentData = {
+                kind: "category",
+                name: myInfo.name,
+                id: myInfo.id,
+                colour: myInfo.color1 || "#0fbd8c",
+                colour_secondary: myInfo.color3 || myInfo.color1 || "#0b8e69",
+                menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
+                showColor: myInfo.showColor,
+                contents: [],
+            };
 
-                //Create the fields
-                if (myInfo.fields) {
-                    Object.keys(myInfo.fields).forEach((field) => {
-                        //colours
-                        if (!myInfo.fields[field].color1) {
-                            myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
-                        }
-                        if (!myInfo.fields[field].color2) {
-                            (myInfo.fields[field].color2 = myInfo.color3), myInfo.color2 || myInfo.color1 || "#0b8e69";
-                        }
-
-                        sugarcube.fields.makeFromFunction(myInfo.id, myInfo.fields[field], id + field);
-                    });
-                }
-
-                //Create the mutators
-                if (myInfo.mutators) {
-                    Object.keys(myInfo.mutators).forEach((mutator) => {
-                        sugarcube.mutators.makeFromFunction(myInfo.id, myInfo.mutators[mutator].serialize, myInfo.mutators[mutator].deserialize, id + mutator);
-                    });
-                }
-
-                //Loop Through Menus
-                if (myInfo.menus) {
-                    Object.keys(myInfo.menus).forEach((menu) => {
-                        this.addMenu(menu, myInfo.menus[menu], myInfo, extension);
-                    });
-                }
-
-                //Loop through each block deciding its fate!
-                extension.defaultBlockInfo = [];
-                this.blockDefs[myInfo.id] = {};
-                myInfo.blocks.forEach((block) => {
-                    let blockDat = this.addBlock(block, myInfo);
-
-                    //Context menu stuff
-                    if (block.contextMenu) {
-                        //Switch the types
-                        switch (typeof block.contextMenu) {
-                            case "string":
-                                if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`].push(`${myInfo.id}_${block.opcode}`);
-                                break;
-
-                            case "object":
-                                if (Array.isArray(block.contextMenu)) {
-                                    block.contextMenu.forEach((menu) => {
-                                        if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`].push(`${myInfo.id}_${block.opcode}`);
-                                    });
-                                }
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-
-                    if (blockDat) {
-                        createdContentData.contents.push(blockDat);
-                    }
+            //Do the context menus
+            if (myInfo.contextMenus) {
+                Object.keys(myInfo.contextMenus).forEach((contextMenu) => {
+                    this.addContextMenu(contextMenu, myInfo.contextMenus[contextMenu], myInfo, extension);
                 });
+            }
 
-                extension.defaultBlockInfo = createdContentData.contents;
+            //Create the fields
+            if (myInfo.fields) {
+                Object.keys(myInfo.fields).forEach((field) => {
+                    //colours
+                    if (!myInfo.fields[field].color1) {
+                        myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
+                    }
+                    if (!myInfo.fields[field].color2) {
+                        (myInfo.fields[field].color2 = myInfo.color3), myInfo.color2 || myInfo.color1 || "#0b8e69";
+                    }
 
-                sugarcube.toolbox.contents.push(createdContentData);
+                    sugarcube.fields.makeFromFunction(myInfo.id, myInfo.fields[field], id + field);
+                });
+            }
 
-                if (myInfo.updateBlocks) {
-                    this.updateFunctions[myInfo.id] = () => {
-                        const generatedExtras = sugarcube.extensionInstances[myInfo.id][myInfo.updateBlocks]() || [];
+            //Create the mutators
+            if (myInfo.mutators) {
+                Object.keys(myInfo.mutators).forEach((mutator) => {
+                    sugarcube.mutators.makeFromFunction(myInfo.id, myInfo.mutators[mutator].serialize, myInfo.mutators[mutator].deserialize, id + mutator);
+                });
+            }
 
-                        //Make sure we are getting an array
-                        if (Array.isArray(generatedExtras)) {
-                            //If so parse each block.
-                            for (let genIndex = 0; genIndex < generatedExtras.length; genIndex++) {
-                                generatedExtras[genIndex] = this.addBlock(generatedExtras[genIndex], myInfo);
+            //Loop Through Menus
+            if (myInfo.menus) {
+                Object.keys(myInfo.menus).forEach((menu) => {
+                    this.addMenu(menu, myInfo.menus[menu], myInfo, extension);
+                });
+            }
+
+            //Loop through each block deciding its fate!
+            extension.defaultBlockInfo = [];
+            this.blockDefs[myInfo.id] = {};
+            myInfo.blocks.forEach((block) => {
+                let blockDat = this.addBlock(block, myInfo);
+
+                //Context menu stuff
+                if (block.contextMenu) {
+                    //Switch the types
+                    switch (typeof block.contextMenu) {
+                        case "string":
+                            if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`].push(`${myInfo.id}_${block.opcode}`);
+                            break;
+
+                        case "object":
+                            if (Array.isArray(block.contextMenu)) {
+                                block.contextMenu.forEach((menu) => {
+                                    if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`].push(`${myInfo.id}_${block.opcode}`);
+                                });
                             }
+                            break;
 
-                            //Then concat our two things into a freakish monstrosity, and update the toolbox.
-                            sugarcube.toolbox.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                        default:
+                            break;
+                    }
+                }
+
+                if (blockDat) {
+                    createdContentData.contents.push(blockDat);
+                }
+            });
+
+            extension.defaultBlockInfo = createdContentData.contents;
+
+            sugarcube.toolboxDefault = JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
+            sugarcube.toolbox.contents.push(createdContentData);
+
+            if (myInfo.updateBlocks) {
+                this.updateFunctions[myInfo.id] = () => {
+                    const generatedExtras = sugarcube.extensionInstances[myInfo.id][myInfo.updateBlocks]() || [];
+
+                    //Make sure we are getting an array
+                    if (Array.isArray(generatedExtras)) {
+                        //If so parse each block.
+                        for (let genIndex = 0; genIndex < generatedExtras.length; genIndex++) {
+                            generatedExtras[genIndex] = this.addBlock(generatedExtras[genIndex], myInfo);
                         }
-                    };
-                }
 
-                if (sugarcube.workspace) {
-                    sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+                        //Then concat our two things into a freakish monstrosity, and update the toolbox.
+                        sugarcube.toolbox.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                    }
+                };
+            }
 
-                    sugarcube.workspace.getToolbox().refreshSelection();
+            if (sugarcube.workspace) {
+                sugarcube.workspace.updateToolbox(sugarcube.toolbox);
 
-                    sugarcube.refreshTheme();
-                }
-            } catch (error) {
-                console.error("Error while importing sugarcube extension : " + error);
+                sugarcube.workspace.getToolbox().refreshSelection();
+
+                sugarcube.refreshTheme();
             }
         }
 
@@ -1015,6 +1022,10 @@
                     sugarcube.workspace.updateToolbox(sugarcube.toolbox);
 
                     sugarcube.workspace.getToolbox().refreshSelection();
+                }
+
+                if (coffeeEngine.isEditor) {
+                    sugarcube.toolboxDefault = JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
                 }
             }
         }

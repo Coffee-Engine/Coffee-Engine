@@ -238,7 +238,7 @@
 
                 //Make sure the mouse movement goes unupdated in this.
                 coffeeEngine.runtime.frameStart(true);
-                this.renderLoop();
+                if (window.getComputedStyle(this.canvas).visibility == "visible") this.renderLoop();
                 //Now we update the mouse movement
                 coffeeEngine.inputs.mouse.movementX = 0;
                 coffeeEngine.inputs.mouse.movementY = 0;

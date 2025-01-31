@@ -284,6 +284,11 @@
                         text: editor.language["sugarcube.sensing.block.timer"],
                     },
                     {
+                        opcode: "deltaTime",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sensing.block.deltaTime"],
+                    },
+                    {
                         opcode: "dayMonthYear",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.sensing.block.dayMonthYear"],
@@ -411,6 +416,10 @@
 
         timer() {
             return coffeeEngine.timer;
+        }
+
+        deltaTime() {
+            return coffeeEngine.runtime.deltaTime;
         }
 
         dayMonthYear({ timespan }) {

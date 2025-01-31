@@ -604,10 +604,10 @@
                         event.stopPropagation();
 
                         //Make sure the current tab exists;
-                        this.tabs[this.__CurrentTab].content.style.opacity = "0";
+                        this.tabs[this.__CurrentTab].content.style.visibility = "hidden";
                         this.tabs[this.__CurrentTab].content.style.zIndex = "0";
 
-                        this.tabs[tabIndex].content.style.opacity = "100";
+                        this.tabs[tabIndex].content.style.visibility = "visible";
                         this.tabs[tabIndex].content.style.zIndex = "1";
                         this.__CurrentTab = tabIndex;
                     };
@@ -669,7 +669,7 @@
             //Approved? Maybe?
             if (content.parentElement) content.parentElement.removeChild(content);
 
-            content.style.opacity = "0";
+            content.style.visibility = "hidden";
             content.style.zIndex = "0";
             this.tabs[this.__CurrentTab].content.style.zIndex = "1";
             this.contentHolder.appendChild(content);
