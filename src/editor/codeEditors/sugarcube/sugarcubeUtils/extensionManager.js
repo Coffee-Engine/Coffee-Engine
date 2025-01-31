@@ -250,7 +250,7 @@
                                 }
 
                                 const value = generator.valueToCode(block, input.name, 0);
-                                args[input.name] = value;
+                                args[input.name] = value || "0";
                                 recalls[input.name] = `() => {\nreturn ${value}\n}`;
                             });
                         }
@@ -259,7 +259,7 @@
                             blockData.fieldData.forEach((field) => {
                                 args[field] = block.getFieldValue(field);
 
-                                if (!Number(args[field])) args[field] = `"${args[field]}"`;
+                                if (isNaN(Number(args[field]))) args[field] = `"${args[field]}"`;
                             });
                         }
 
@@ -697,7 +697,13 @@
                     });
 
                     sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                        return [`${block.getFieldValue(`${menuID}_____VALUE`)}`, 0];
+                        return [`${(() => {
+                            let value = block.getFieldValue("VALUE");
+                            if (isNaN(Number(value))) {
+                                value = `"${value.replaceAll('"','\\"')}"`;
+                            }
+                            return value;
+                    })()}`, 0];
                     };
                 } else {
                     //Add the data
@@ -743,7 +749,13 @@
                 });
 
                 sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                    return [`${block.getFieldValue("VALUE")}`, 0];
+                    return [`${(() => {
+                        let value = block.getFieldValue("VALUE");
+                        if (isNaN(Number(value))) {
+                            value = `"${value.replaceAll('"','\\"')}"`;
+                        }
+                        return value;
+                    })()}`, 0];
                 };
             }
             //Static menus with no reporters

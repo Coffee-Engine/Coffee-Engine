@@ -421,14 +421,6 @@
                 });
             }
 
-            if (blockData && blockData.fieldData) {
-                blockData.fieldData.forEach((field) => {
-                    args[field] = block.getFieldValue(field);
-
-                    if (!Number(args[field])) args[field] = `"${args[field]}"`;
-                });
-            }
-
             for (const arg in args) {
                 baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
             }
