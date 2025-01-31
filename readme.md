@@ -7,7 +7,7 @@ The engine has some quirks while working on its source, which contributors might
 
 ### Modules and Packages
 
-Keep them to a minimum, no modules besides compilation, because this engine has to be portable, without a server.<br>
+Keep them to a minimum, no modules besides compilation, because this engine has to be portable.<br>
 I reccomend staying with what we have which are :
 
 - Blockly
