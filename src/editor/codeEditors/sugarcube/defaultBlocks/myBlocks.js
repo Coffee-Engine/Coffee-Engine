@@ -381,7 +381,7 @@
                 functionName += `_${param.id}`;
             });
 
-            return `this["${functionName}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
+            return `this["${functionName.replace('"', '\\"')}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
         }
 
         execute(block, generator, manager) {
@@ -422,7 +422,7 @@
                 }
             });
 
-            return `this["${functionName}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
+            return `this["${functionName.replace('"', '\\"')}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
         }
     }
 
