@@ -23298,8 +23298,8 @@ ${b} to its parent, because: ${a}`);
       this.applyColour();
     }
     setStyle(a) {
-      const b = this.workspace.getRenderer().getConstants().getBlockStyle(a);
-      this.styleName_ = a;
+      const b = (typeof a == "string") ? this.workspace.getRenderer().getConstants().getBlockStyle(a) : a;
+      this.styleName_ = (typeof a == "string") ? a : JSON.stringify(a);
       if (b)
         (this.hat = b.hat),
           this.pathObject.setStyle(b),

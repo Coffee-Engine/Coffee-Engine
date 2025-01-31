@@ -267,8 +267,6 @@
                     }
                 });
             }
-
-            sugarcube.easyColourBlock(block, state.color);
             /* The old way BAD
             //Kept for historical preservation!
             if (state.customBlockData) {
@@ -312,7 +310,7 @@
             */
 
             //set block color
-            sugarcube.easyColourBlock(block, state.color);
+            sugarcube.easyColourBlock(block, state.color, "none");
             
             return state;
         }
@@ -366,6 +364,7 @@
             }
             
             //set block color
+            console.log(state.color);
             sugarcube.easyColourBlock(block, state.color);
 
             //I forgot this. It broke the state
@@ -425,11 +424,11 @@
                     }
 
                     //String
-                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
+                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}"\n}`;
                 }
             });
 
-            return `this["${functionName.replaceAll('"', '\\"')}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
+            return (`this["${functionName.replaceAll('"', '\\"')}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})\n${manager.nextBlockToCode(block, generator)}`).replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
         }
     }
 
