@@ -19,6 +19,7 @@
                     },
                     {
                         opcode: "getVariable",
+                        compileFunc: "getVariable",
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: "",
                         hideFromPalette: true,
@@ -30,7 +31,7 @@
                         text: editor.language["sugarcube.variables.block.setVariable"],
                         hideFromPalette: true,
                         arguments: {
-                            var: {
+                            variable: {
                                 menu: "varMenu",
                             },
                             val: {
@@ -45,7 +46,7 @@
                         text: editor.language["sugarcube.variables.block.changeVariable"],
                         hideFromPalette: true,
                         arguments: {
-                            var: {
+                            variable: {
                                 menu: "varMenu",
                             },
                             val: {
@@ -60,7 +61,7 @@
                         text: editor.language["sugarcube.variables.block.multiplyVariable"],
                         hideFromPalette: true,
                         arguments: {
-                            var: {
+                            variable: {
                                 menu: "varMenu",
                             },
                             val: {
@@ -181,6 +182,23 @@
             })
 
             return generated;
+        }
+
+        getVariable(block, generator, manager) {
+            return `this["${block.editedState.varData.name.replaceAll('"','\\"')}"]`;
+        }
+
+        setVariable({ variable, val }, { self }) {
+            //We just set da variable
+            self[variable] = val;
+        }
+
+        changeVariable({ variable, val }, { self }) {
+            self[variable] = sugarcube.cast.toNumber(self[variable]) + sugarcube.cast.toNumber(val);
+        }
+
+        multiplyVariable({ variable, val }, { self }) {
+            self[variable] = sugarcube.cast.toNumber(self[variable]) * sugarcube.cast.toNumber(val);
         }
     }
 
