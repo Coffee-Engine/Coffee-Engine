@@ -130,8 +130,12 @@
             newLoadal.x = bounding.x + bounding.width / 2;
             newLoadal.y = bounding.y + bounding.height;
             newLoadal.onFileSelected = (path) => {
-                field.value = path;
+                field.value = `"${path.replaceAll('"', '\\"')}"`;
             };
+        }
+
+        loadScene({ scene }) {
+            coffeeEngine.runtime.currentScene.openScene(scene);
         }
     }
 
