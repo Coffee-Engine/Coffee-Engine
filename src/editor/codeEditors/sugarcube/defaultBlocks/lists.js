@@ -302,9 +302,71 @@
         }
 
         getList_compile(block, generator) {
-            //Wierd hack...
-            //I honestly don't know why my compiler wants to do this.
-            return `return this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
+            return `this["${block.editedState.varData.name.replaceAll('"','\\"')}"]`;
+        }
+        
+        addItem({ list, item }, { self }) {
+            //MAKE SURE its a list
+            if (!Array.isArray(self[list])) return;
+            self[list].push(item);
+        }
+        
+        removeItem({ list, item }, { self }) {
+            //MAKE SURE its a list
+            if (!Array.isArray(self[list])) return;
+
+            item = Math.floor(item - 1);
+
+            //Prevent OOB indeing
+            if (item < 0 || item >= self[list].length) return;
+            self[list].splice(item,1);
+        }
+
+        clearList({ list }, {self}) {
+            if (!Array.isArray(self[list])) return;
+            self[list] = [];
+        }
+
+        insertItem({ list, item, value }, { self }) {
+            if (!Array.isArray(self[list])) return;
+            item = Math.floor(item - 1);
+            //OOB indexing works with array.splice how nice
+            self[list].splice(item, 0, value);
+        }
+
+        replaceItem({ list, item, value }, { self }) {
+            if (!Array.isArray(self[list])) return;
+
+            item = Math.floor(item - 1);
+
+            //Prevent OOB indeing
+            if (item < 0 || item >= self[list].length) return;
+            self[list][item] = value;
+        }
+
+        getItem({ list, item }, { self }) {
+            if (!Array.isArray(self[list])) return;
+
+            item = Math.floor(item - 1);
+
+            //Prevent OOB indeing
+            if (item < 0 || item >= self[list].length) return;
+            return self[list][item];
+        }
+
+        getItemNumber({ list, value }, { self }) {
+            if (!Array.isArray(self[list])) return 0;
+            return self[list].indexOf(value) + 1;
+        }
+
+        length({ list }, { self }) {
+            if (!Array.isArray(self[list])) return 0;
+            return self[list].length;
+        }
+
+        getItemContainment({ list, value }, { self }) {
+            if (!Array.isArray(self[list])) return false;
+            return self[list].includes(value);
         }
     }
 
