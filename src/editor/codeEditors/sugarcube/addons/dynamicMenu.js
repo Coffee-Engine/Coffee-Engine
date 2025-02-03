@@ -1,8 +1,9 @@
 (function () {
     Blockly.Extensions.register("dynamic_menu", function () {
         this.inputList.forEach((input) => {
-            const splitName = input.name.split("_____")[0];
-            if (input.type == 5 && sugarcube.menus[splitName]) {
+            const dynamicMenu = input.name.split("_")[0] == "scDynamicMenu";
+            if (dynamicMenu) {
+                const splitName = `${input.name.split("_")[1]}_${input.name.split("_")[2]}`;
                 input.appendField(
                     new Blockly.FieldDropdown(() => {
                         return sugarcube.extensionManager.parseMenuItems({

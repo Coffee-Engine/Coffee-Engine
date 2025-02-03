@@ -50,7 +50,7 @@
                 });
     
                 sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
-                    return [block.getFieldValue("VALUE"), 0];
+                    return [block.getFieldValue("VALUE") || 0, 0];
                 };
     
                 this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
@@ -256,10 +256,16 @@
                         }
 
                         if (blockData && blockData.fieldData) {
+                            //Field stuff we need to serperate dynamic and non dynamic
                             blockData.fieldData.forEach((field) => {
-                                args[field] = block.getFieldValue(field);
-
-                                if (isNaN(Number(args[field]))) args[field] = `"${args[field]}"`;
+                                if (Array.isArray(field)) {
+                                    args[field[0]] = block.getFieldValue(field[1]);
+                                    if (isNaN(Number(args[field[0]]))) args[field[0]] = `"${args[field[0]]}"`;
+                                }
+                                else {
+                                    args[field] = block.getFieldValue(field);
+                                    if (isNaN(Number(args[field]))) args[field] = `"${args[field]}"`;
+                                }
                             });
                         }
 
@@ -448,20 +454,21 @@
                                             //Not as easy in field menus
                                             else {
                                                 //Field stuff
-                                                defArgs.fieldData.push(argumentKey);
 
                                                 //Check to see if the menu is dynamic.
                                                 if (menus[menuID].isDynamic) {
                                                     if (!blockDef.extensions.includes("dynamic_menu")) {
                                                         blockDef.extensions.push("dynamic_menu");
                                                     }
-                                                    argument.overrideName = `${menuID}_____${argumentKey}`;
+                                                    argument.overrideName = `scDynamicMenu_${menuID}_${argumentKey}`;
                                                     argument.type = "input_dummy";
+                                                    defArgs.fieldData.push([argumentKey, argument.overrideName]);
                                                 }
                                                 //Check to see if it is real.
                                                 else {
                                                     argument.type = "field_dropdown";
                                                     argument.options = menus[menuID].parsed;
+                                                    defArgs.fieldData.push(argumentKey);
                                                 }
                                             }
                                         } else {
@@ -658,6 +665,7 @@
         addMenu(menuName, menuDat, extension, extensionClass) {
             if (!menuDat.items) return;
 
+            const extensionManager = this;
             const menuID = `${extension.id}_${menuName}`;
 
             if (typeof menuDat.items == "string") {

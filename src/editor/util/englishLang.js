@@ -70,6 +70,7 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.themeColor.Cocoa": "Cocoa",
     "engine.settings.category.Theme.themeColor.Creme": "Creme",
     "engine.settings.category.Theme.themeColor.blueBerry": "Blue Berry",
+    "engine.settings.category.Theme.themeColor.Astro": "Astro",
     "engine.settings.category.Theme.themeColor.Custom": "Custom",
 
     "engine.settings.category.SugarCube": "SugarCube",
@@ -128,9 +129,9 @@ editor.EnglishLang = {
     "editor.dropdown.scene.save": "Save Scene",
     "editor.dropdown.scene.load": "Load Scene",
 
-    "editor.notification.saveScene": 'Scene saved to "[path]"',
-    "editor.notification.saveScript": 'Saved "[path]" sucessfully',
-    "editor.notification.compileScript": 'Compiled "[input]" as "[output]" sucessfully',
+    "editor.notification.saveScene": "Scene saved to \"[path]\"",
+    "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
+    "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
@@ -376,10 +377,10 @@ editor.EnglishLang = {
 
     "sugarcube.variables": "Variables",
     "sugarcube.variables.block.openVariableMenu": "New Variable",
-    "sugarcube.variables.block.setVariable": "set [var] to [val]",
+    "sugarcube.variables.block.setVariable": "set [variable] to [val]",
     "sugarcube.variables.block.setVariable.defaultValue": "cocoa",
-    "sugarcube.variables.block.changeVariable": "change [var] by [val]",
-    "sugarcube.variables.block.multiplyVariable": "multiply [var] by [val]",
+    "sugarcube.variables.block.changeVariable": "change [variable] by [val]",
+    "sugarcube.variables.block.multiplyVariable": "multiply [variable] by [val]",
 
     "sugarcube.lists": "Lists",
     "sugarcube.lists.value.item": "item",
@@ -451,5 +452,5 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.skyColor":"Sky Color",
     "engine.nodeProperties.scene.horizonColor":"Horizon Color",
     "engine.nodeProperties.scene.groundColor":"Ground Color",
-    "engine.nodeProperties.scene.centerColor":"Core Color",
+    "engine.nodeProperties.scene.centerColor":"Core Color"
 };
