@@ -280,7 +280,7 @@
                             baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
                         }
                         
-                        baseBlockCode += "}})"
+                        baseBlockCode += "}})";
 
                         //let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this.target,self:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
                         
