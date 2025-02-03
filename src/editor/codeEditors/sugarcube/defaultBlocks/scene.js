@@ -74,7 +74,7 @@
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.scene.block.setVariable"],
                         arguments: {
-                            var: {
+                            variable: {
                                 type: sugarcube.ArgumentType.STRING,
                                 defaultValue: "variable",
                             },
@@ -92,7 +92,7 @@
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.scene.block.getVariable"],
                         arguments: {
-                            var: {
+                            variable: {
                                 type: sugarcube.ArgumentType.STRING,
                                 defaultValue: "variable",
                             },

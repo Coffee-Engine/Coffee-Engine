@@ -22,6 +22,7 @@
                         type: sugarcube.BlockType.OBJECT,
                         text: "",
                         hideFromPalette: true,
+                        compileFunc: "getTable",
                         mutator: "variable_Mutator",
                     },
                     {
@@ -34,9 +35,9 @@
                                 type: sugarcube.ArgumentType.STRING,
                                 defaultValue: editor.language["sugarcube.tables.value.key"],
                             },
-                            var: {
+                            table: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "varMenu",
+                                menu: "tableMenu",
                             },
                             val: {
                                 type: sugarcube.ArgumentType.STRING,
@@ -54,15 +55,54 @@
                                 type: sugarcube.ArgumentType.STRING,
                                 defaultValue: editor.language["sugarcube.tables.value.key"],
                             },
-                            var: {
+                            table: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "varMenu",
+                                menu: "tableMenu",
                             },
                         },
                     },
+                    {
+                        opcode: "getKeys",
+                        type: sugarcube.BlockType.ARRAY,
+                        text: editor.language["sugarcube.tables.block.getKeys"],
+                        hideFromPalette: true,
+                        arguments: {
+                            table: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "tableMenu",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getValues",
+                        type: sugarcube.BlockType.ARRAY,
+                        text: editor.language["sugarcube.tables.block.getValues"],
+                        hideFromPalette: true,
+                        arguments: {
+                            table: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "tableMenu",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "substitute",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.variables.objectLike.substitute"],
+                        hideFromPalette: true,
+                        arguments: {
+                            objectLike: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "tableMenu",
+                            },
+                            value: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                        },
+                    }
                 ],
                 menus: {
-                    varMenu: {
+                    tableMenu: {
                         items: "getTables",
                     },
                 },
@@ -130,6 +170,20 @@
                 {
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "getKey",
+                },
+                "---",
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getKeys",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "getValues",
+                },
+                "---",
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "substitute",
                 }
             );
 
@@ -168,6 +222,37 @@
             sugarcube.easyColourBlock(block, state.varData.color);
             
             return state;
+        }
+
+        getTable(block, generator, manager) {
+            return `this["${block.editedState.varData.name.replaceAll('"','\\"')}"]`;
+        }
+
+        //Simplicity
+        setKey({ table, key, val }, { self }) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            self[table][key] = val;
+        }
+
+        getKey({ table, key }, { self }) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            return self[table][key];
+        }
+
+        getKeys({ table }, {self}) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            return Object.keys(self[table]);
+        }
+
+        getValues({ table }, {self}) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            return Object.values(self[table]);
+        }
+
+        substitute({ objectLike, value }, { self }) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+
+            return self[objectLike] = value;
         }
     }
 

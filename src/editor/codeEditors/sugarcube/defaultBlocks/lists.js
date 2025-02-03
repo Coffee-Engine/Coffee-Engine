@@ -160,6 +160,21 @@
                             },
                         },
                     },
+                    {
+                        opcode: "substitute",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.variables.objectLike.substitute"],
+                        hideFromPalette: true,
+                        arguments: {
+                            objectLike: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "listMenu",
+                            },
+                            value: {
+                                type: sugarcube.ArgumentType.ARRAY,
+                            },
+                        },
+                    }
                 ],
                 menus: {
                     listMenu: {
@@ -286,6 +301,11 @@
                 {
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "getItemContainment",
+                },
+                "---",
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "substitute",
                 }
             );
 
@@ -367,6 +387,12 @@
         getItemContainment({ list, value }, { self }) {
             if (!Array.isArray(self[list])) return false;
             return self[list].includes(value);
+        }
+
+        substitute({ objectLike, value }, { self }) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+
+            return self[objectLike] = value;
         }
     }
 

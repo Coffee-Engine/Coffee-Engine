@@ -317,8 +317,8 @@ editor.EnglishLang = {
     "sugarcube.scene.block.getName": "name of [object]",
     "sugarcube.scene.block.getChildren": "children of [object]",
     "sugarcube.scene.block.getParentOf": "parent of [object]",
-    "sugarcube.scene.block.setVariable": "set variable [var] of [object] to [value]",
-    "sugarcube.scene.block.getVariable": "variable [var] of [object]",
+    "sugarcube.scene.block.setVariable": "set variable [variable] of [object] to [value]",
+    "sugarcube.scene.block.getVariable": "variable [variable] of [object]",
 
     "sugarcube.operators": "Operators",
     "sugarcube.operators.block.add": "[A] + [B]",
@@ -376,11 +376,14 @@ editor.EnglishLang = {
     "sugarcube.strings.menu.caseTypes.title-case": "title-case",
 
     "sugarcube.variables": "Variables",
+    "sugarcube.variables.general": "General Blocks",
     "sugarcube.variables.block.openVariableMenu": "New Variable",
     "sugarcube.variables.block.setVariable": "set [variable] to [val]",
     "sugarcube.variables.block.setVariable.defaultValue": "cocoa",
     "sugarcube.variables.block.changeVariable": "change [variable] by [val]",
     "sugarcube.variables.block.multiplyVariable": "multiply [variable] by [val]",
+
+    "sugarcube.variables.objectLike.substitute": "substitute [objectLike] with [value]",
 
     "sugarcube.lists": "Lists",
     "sugarcube.lists.value.item": "item",
@@ -399,8 +402,10 @@ editor.EnglishLang = {
     "sugarcube.tables": "Tables",
     "sugarcube.tables.value.key": "key",
     "sugarcube.tables.block.openVariableMenu": "New Table",
-    "sugarcube.tables.block.setKey": "set [key] in [var] to [val]",
-    "sugarcube.tables.block.getKey": "get [key] in [var]",
+    "sugarcube.tables.block.setKey": "set [key] in [table] to [val]",
+    "sugarcube.tables.block.getKey": "get [key] in [table]",
+    "sugarcube.tables.block.getKeys": "keys of [table]",
+    "sugarcube.tables.block.getValues": "values of [table]",
 
     "sugarcube.myblocks": "My Blocks",
     "sugarcube.myblocks.block.openCustomBlockMenu": "New Block",
