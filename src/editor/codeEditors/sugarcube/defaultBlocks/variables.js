@@ -24,6 +24,7 @@
                         text: "",
                         hideFromPalette: true,
                         mutator: "variable_Mutator",
+                        contextMenu: "removeVariable"
                     },
                     {
                         opcode: "setVariable",
@@ -80,6 +81,13 @@
                     variable_Mutator: {
                         serialize: "variable_Serialize",
                         deserialize: "variable_Deserialize",
+                    },
+                },
+                contextMenus: {
+                    removeVariable: {
+                        text: editor.language["sugarcube.variables.contextMenu.removeVariable"],
+                        opcode: "removeVariable",
+                        weight: 4,
                     },
                 },
             };
@@ -199,6 +207,25 @@
 
         multiplyVariable({ variable, val }, { self }) {
             self[variable] = sugarcube.cast.toNumber(self[variable]) * sugarcube.cast.toNumber(val);
+        }
+
+        removeVariable(block) {
+            const varName = block.editedState.varData.name;
+            if (confirm(editor.language["sugarcube.variables.objectLike.deletionConfirmation"].replace("[variable]", varName))) {
+                //remove it
+                delete sugarcube.variables.storage[varName];
+
+                //Make sure to remove and workspace blocks referencing it.
+                Array.from(sugarcube.workspace.blockDB).forEach((blockData) => {
+                    if (blockData[1].editedState) {
+                        const editedState = blockData[1].editedState;
+                        if (editedState.varData && editedState.varData.name == varName) blockData[1].dispose(true);
+                    }
+                });
+
+                //Then update the extension category
+                sugarcube.extensionManager.updateExtensionBlocks("variables");
+            }
         }
     }
 

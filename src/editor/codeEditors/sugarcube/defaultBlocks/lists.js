@@ -24,6 +24,7 @@
                         hideFromPalette: true,
                         mutator: "variable_Mutator",
                         compileFunc: "getList_compile",
+                        contextMenu: "removeList"
                     },
                     {
                         opcode: "addItem",
@@ -185,6 +186,13 @@
                     variable_Mutator: {
                         serialize: "variable_Serialize",
                         deserialize: "variable_Deserialize",
+                    },
+                },
+                contextMenus: {
+                    removeList: {
+                        text: editor.language["sugarcube.lists.contextMenu.removeList"],
+                        opcode: "removeList",
+                        weight: 4,
                     },
                 },
             };
@@ -393,6 +401,25 @@
             if (typeof self[table] != "object" || Array.isArray(self[table])) return;
 
             return self[objectLike] = value;
+        }
+
+        removeList(block) {
+            const varName = block.editedState.varData.name;
+            if (confirm(editor.language["sugarcube.variables.objectLike.deletionConfirmation"].replace("[variable]", varName))) {
+                //remove it
+                delete sugarcube.variables.storage[varName];
+
+                //Make sure to remove and workspace blocks referencing it.
+                Array.from(sugarcube.workspace.blockDB).forEach((blockData) => {
+                    if (blockData[1].editedState) {
+                        const editedState = blockData[1].editedState;
+                        if (editedState.varData && editedState.varData.name == varName) blockData[1].dispose(true);
+                    }
+                });
+
+                //Then update the extension category
+                sugarcube.extensionManager.updateExtensionBlocks("lists");
+            }
         }
     }
 

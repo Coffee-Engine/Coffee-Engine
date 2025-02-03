@@ -376,14 +376,15 @@ editor.EnglishLang = {
     "sugarcube.strings.menu.caseTypes.title-case": "title-case",
 
     "sugarcube.variables": "Variables",
-    "sugarcube.variables.general": "General Blocks",
     "sugarcube.variables.block.openVariableMenu": "New Variable",
     "sugarcube.variables.block.setVariable": "set [variable] to [val]",
     "sugarcube.variables.block.setVariable.defaultValue": "cocoa",
     "sugarcube.variables.block.changeVariable": "change [variable] by [val]",
     "sugarcube.variables.block.multiplyVariable": "multiply [variable] by [val]",
+    "sugarcube.variables.contextMenu.removeVariable": "Remove Variable",
 
     "sugarcube.variables.objectLike.substitute": "substitute [objectLike] with [value]",
+    "sugarcube.variables.objectLike.deletionConfirmation": "Are you sure you want to delete \"[variable]\"?",
 
     "sugarcube.lists": "Lists",
     "sugarcube.lists.value.item": "item",
@@ -398,6 +399,7 @@ editor.EnglishLang = {
     "sugarcube.lists.block.getItemNumber": "item # of [value] in [list]",
     "sugarcube.lists.block.length": "length of [list]",
     "sugarcube.lists.block.getItemContainment": "[list] contains [value]",
+    "sugarcube.lists.contextMenu.removeList": "Remove List",
 
     "sugarcube.tables": "Tables",
     "sugarcube.tables.value.key": "key",
@@ -406,6 +408,7 @@ editor.EnglishLang = {
     "sugarcube.tables.block.getKey": "get [key] in [table]",
     "sugarcube.tables.block.getKeys": "keys of [table]",
     "sugarcube.tables.block.getValues": "values of [table]",
+    "sugarcube.tables.contextMenu.removeTable": "Remove Table",
 
     "sugarcube.myblocks": "My Blocks",
     "sugarcube.myblocks.block.openCustomBlockMenu": "New Block",
