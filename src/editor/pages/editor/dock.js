@@ -31,7 +31,9 @@
                     //Then update column size
                     rowPercentage += window.size + "% ";
                     if (!window.content.resized) return;
-                    window.content.resized();
+                    window.content.tabs.forEach(tab => {
+                        tab.owner.resized();
+                    })
                 });
 
                 //Set the grid property

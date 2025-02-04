@@ -363,7 +363,9 @@
                             this.height = this.#height - moveEvent.movementY;
                         }
 
-                        this.resized();
+                        this.tabs.forEach(tab => {
+                            tab.owner.resized();
+                        })
                     };
 
                     return;
@@ -534,8 +536,10 @@
                         this.y = moveEvent.clientY + mouseOffsetY;
                         this.height = this.height - moveEvent.movementY;
                     }
-
-                    this.resized();
+                    
+                    this.tabs.forEach(tab => {
+                        tab.owner.resized();
+                    })
                 };
             };
         }

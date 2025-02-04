@@ -244,11 +244,16 @@
                     if (declaration) {
                         switch (typeof declaration) {
                             case "string":
+                                console.log(block);
                                 block.inputFromJson_({
                                     type: "input_value",
                                     name: item.id,
                                     check: "noClones",
                                 });
+
+                                const input = new Blockly.inputs.ValueInput(item.id, block)
+
+                                console.log(input);
 
                                 //Block it up
                                 const blockIN = sugarcube.workspace.newBlock(declaration);
@@ -258,7 +263,8 @@
                                 blockIN.editedState._isClone_ = false;
                                 blockIN.initSvg();
                                 blockIN.render();
-                                block.inputList[block.inputList.length - 1].connection.connect(blockIN.outputConnection);
+                                console.log(item.id,block.inputList[block.inputList.length - 1].connection,blockIN.outputConnection)
+                                input.connection.connect(blockIN.outputConnection);
                                 blockIN.loadExtraState(item);
                                 break;
 
