@@ -142,6 +142,8 @@
                         //Stuff
                         initilize: "color_Init",
                         render: "color_Render",
+
+                        noQuoteString: true,
                     },
                     Image: {
                         acceptReporters: true,

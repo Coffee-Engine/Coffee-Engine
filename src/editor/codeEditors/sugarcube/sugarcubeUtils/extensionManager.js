@@ -918,7 +918,7 @@
                         myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
                     }
                     if (!myInfo.fields[field].color2) {
-                        (myInfo.fields[field].color2 = myInfo.color3), myInfo.color2 || myInfo.color1 || "#0b8e69";
+                        myInfo.fields[field].color2 = myInfo.color3 || myInfo.color2 || myInfo.color1 || "#0b8e69";
                     }
 
                     sugarcube.fields.makeFromFunction(myInfo.id, myInfo.fields[field], id + field);
