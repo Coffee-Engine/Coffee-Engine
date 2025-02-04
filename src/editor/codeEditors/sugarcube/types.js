@@ -46,7 +46,7 @@
 
         DUMMY: "dummy",
 
-        ANGLE: "__sugarcube_field_motion_Angle",
+        ANGLE: "angle",
 
         STATEMENT: "statement",
 
@@ -73,5 +73,7 @@
         number: "__sugarcube_number_reporter",
 
         color: "__sugarcube_color_reporter",
+
+        angle: "__sugarcube_angle_reporter"
     };
 })();

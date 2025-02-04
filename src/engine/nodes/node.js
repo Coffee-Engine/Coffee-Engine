@@ -67,7 +67,6 @@
             if (!value) return;
 
             this.#scriptPath = value;
-            console.log(!coffeeEngine.isEditor);
             if (!coffeeEngine.isEditor) {
                 coffeeEngine.behaviorManager.behaviorFromFile(value).then(classObj => {
                     this.#scriptObject = new (classObj)();

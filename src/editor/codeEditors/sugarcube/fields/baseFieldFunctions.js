@@ -14,7 +14,6 @@
                 //Make the validator
                 if (fieldData.validate) {
                     this.doClassValidation_ = (newValue) => {
-                        console.log(newValue);
                         return sugarcube.extensionInstances[extensionID][fieldData.validate](newValue);
                     };
                 }
@@ -22,8 +21,13 @@
                     //Base validation. Just turn it into a string or number.
                     this.doClassValidation_ = (newValue) => {
                         switch (typeof newValue) {
-                            case "string":
-                                return (fieldData.noQuoteString) ? newValue : `"${newValue.replaceAll('"', '\\"')}"`;
+                            case "string": {
+                                if (!fieldData.noQuoteString) {
+                                    if (newValue.startsWith('"') && newValue.endsWith('"')) return newValue;
+                                    else return `"${newValue.replaceAll('"', '\\"')}"`
+                                }
+                                return newValue;
+                            }
 
                             case "object":
                                 return JSON.stringify(newValue);

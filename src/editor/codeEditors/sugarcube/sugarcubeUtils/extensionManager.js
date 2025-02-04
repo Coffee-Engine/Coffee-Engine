@@ -18,6 +18,37 @@
                 sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
                     return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
+
+                this.addBlocklyBlock("__sugarcube_file_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "files_File",
+                            name: "VALUE",
+                            value: "hi"
+                        },
+                    ],
+                });
+    
+                sugarcube.generator.forBlock["__sugarcube_file_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
+
+                this.addBlocklyBlock("__sugarcube_angle_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "motion_Angle",
+                            name: "VALUE",
+                        },
+                    ],
+                });
+    
+                sugarcube.generator.forBlock["__sugarcube_angle_reporter"] = (block, generator) => {
+                    return [block.getFieldValue("VALUE"), 0];
+                };
     
                 this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
                     message0: " %1 ",
