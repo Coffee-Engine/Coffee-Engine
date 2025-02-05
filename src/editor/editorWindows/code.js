@@ -247,6 +247,7 @@
             editor.addFileOpenHook("json", this.openFile, this);
             editor.addFileOpenHook("cappu", this.openFile, this);
             editor.addFileOpenHook("cescr", this.openFile, this);
+            editor.addFileOpenHook("glsl", this.openFile, this);
 
             //Load stuff
             this.fileReader.onload = () => {

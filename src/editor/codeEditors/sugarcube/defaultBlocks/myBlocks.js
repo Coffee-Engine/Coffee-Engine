@@ -244,16 +244,10 @@
                     if (declaration) {
                         switch (typeof declaration) {
                             case "string":
-                                console.log(block);
-                                block.inputFromJson_({
-                                    type: "input_value",
-                                    name: item.id,
-                                    check: "noClones",
-                                });
-
-                                const input = new Blockly.inputs.ValueInput(item.id, block)
-
-                                console.log(input);
+                                //Obscure blockly google group question 🙏🙏
+                                //I pray to you
+                                //https://groups.google.com/g/blockly/c/hnhObVXLJw4
+                                const input = block.appendValueInput(item.id);
 
                                 //Block it up
                                 const blockIN = sugarcube.workspace.newBlock(declaration);
@@ -263,13 +257,12 @@
                                 blockIN.editedState._isClone_ = false;
                                 blockIN.initSvg();
                                 blockIN.render();
-                                console.log(item.id,block.inputList[block.inputList.length - 1].connection,blockIN.outputConnection)
                                 input.connection.connect(blockIN.outputConnection);
                                 blockIN.loadExtraState(item);
                                 break;
 
                             case "function":
-                                sugarcube.customBlocks.fieldTypes[index].declaration(block, item);
+                                declaration(block, item);
                                 break;
 
                             default:
@@ -375,7 +368,6 @@
             }
             
             //set block color
-            console.log(state.color);
             sugarcube.easyColourBlock(block, state.color);
 
             //I forgot this. It broke the state

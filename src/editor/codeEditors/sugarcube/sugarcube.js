@@ -12364,11 +12364,7 @@ ${b} to its parent, because: ${a}`);
         ? (this.render_(), (this.isDirty_ = !1))
         : this.visible_ &&
           0 === this.size_.width &&
-          (this.render_(),
-          0 !== this.size_.width &&
-            console.warn(
-              "Deprecated use of setting size_.width to 0 to rerender a field. Set field.isDirty_ to true instead."
-            ));
+          (this.render_());
       return this.size_;
     }
     getScaledBBox() {
@@ -16263,8 +16259,10 @@ ${b} to its parent, because: ${a}`);
                 this.layoutField_(d);
       }
       layoutField_(a) {
+        if (!a) return;
         const b = a.centerline - a.height / 2;
         let c = a.xPos;
+        let e;
         var d = "";
         this.info_.RTL &&
           ((c = -(c + a.width)),
@@ -16275,9 +16273,12 @@ ${b} to its parent, because: ${a}`);
               new Coordinate$$module$build$src$core$utils$coordinate(c, b)
             ),
             this.info_.isInsertionMarker && d.hideForInsertionMarker())
-          : ((a = a.field.getSvgRoot()),
-            a.setAttribute("transform", "translate(" + c + "," + b + ")" + d),
-            this.info_.isInsertionMarker && a.setAttribute("display", "none"));
+          : ((e = a.field.getSvgRoot()));
+
+        if (e) {
+          e.setAttribute("transform", "translate(" + c + "," + b + ")" + d),
+          this.info_.isInsertionMarker && e.setAttribute("display", "none")
+        }
       }
       drawInlineInput_(a) {
         const b = a.width,
