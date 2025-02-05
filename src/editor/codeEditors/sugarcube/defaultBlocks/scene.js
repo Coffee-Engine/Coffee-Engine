@@ -49,6 +49,16 @@
                         },
                     },
                     {
+                        opcode: "getScript",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: editor.language["sugarcube.scene.block.getScript"],
+                        arguments: {
+                            object: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                        },
+                    },
+                    {
                         opcode: "getChildren",
                         type: sugarcube.BlockType.ARRAY,
                         text: editor.language["sugarcube.scene.block.getChildren"],
@@ -136,6 +146,26 @@
 
         loadScene({ scene }) {
             coffeeEngine.runtime.currentScene.openScene(scene);
+        }
+
+        getParent(args, { target }) {
+            return target.parent;
+        }
+
+        getMyself(args, { target }) {
+            return target;
+        }
+
+        getRoot() {
+            return coffeeEngine.runtime.currentScene;
+        }
+
+        getName({ object }) {
+            return (object) ? object.name : "";
+        }
+
+        getScript({ object }) {
+            return (object) ? object.scriptObject : null;
         }
 
         getChildren({ object }) {

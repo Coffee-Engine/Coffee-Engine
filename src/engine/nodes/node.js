@@ -83,6 +83,10 @@
             return this.#scriptPath;
         }
 
+        get scriptObject() {
+            return this.#scriptObject;
+        }
+
         constructor() {
             this.children = [];
             this.name = "node";

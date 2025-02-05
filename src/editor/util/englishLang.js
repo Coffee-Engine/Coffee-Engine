@@ -315,6 +315,7 @@ editor.EnglishLang = {
     "sugarcube.scene.block.getMyself": "myself",
     "sugarcube.scene.block.getRoot": "scene root",
     "sugarcube.scene.block.getName": "name of [object]",
+    "sugarcube.scene.block.getScript": "script of [object]",
     "sugarcube.scene.block.getChildren": "children of [object]",
     "sugarcube.scene.block.getParentOf": "parent of [object]",
     "sugarcube.scene.block.setVariable": "set variable [variable] of [object] to [value]",
