@@ -111,7 +111,7 @@
         //The main disposal unit
         _dispose() {
             //Dispose key components
-            if (this.script && this.script.dispose) this.script.dispose();
+            if (this.#scriptObject && this.#scriptObject.dispose) this.#scriptObject.dispose();
             if (this.parent) this.parent.removeChild(this);
 
             this.dispose();

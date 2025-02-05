@@ -205,7 +205,7 @@
             if (node == this) return;
             //Remove them from events
             node.parent.removeChild(node);
-            node.dispose();
+            node._dispose();
             //Remove the child from memory, we have to rely on the garbage collector because this is 'strict' mode?
             node = null;
         }

@@ -56,7 +56,7 @@ window.coffeeEngine = {
         if (typeof coffeeEngine.events[event] != "object") return;
 
         if (coffeeEngine.events[event].includes(func)) {
-            coffeeEngine.events[event].slice(coffeeEngine.events[event].indexOf(func));
+            coffeeEngine.events[event].splice(coffeeEngine.events[event].indexOf(func), 1);
         }
     },
 
