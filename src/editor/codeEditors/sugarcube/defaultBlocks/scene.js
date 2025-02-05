@@ -1,5 +1,5 @@
 (function () {
-    class objects {
+    class scene {
         getInfo() {
             return {
                 id: "scene",
@@ -137,7 +137,25 @@
         loadScene({ scene }) {
             coffeeEngine.runtime.currentScene.openScene(scene);
         }
+
+        getChildren({ object }) {
+            return (object) ? object.children : [];
+        }
+
+        getParentOf({ object }) {
+            return (object) ? object.parent : null;
+        }
+
+        setVariable({ variable, object, value }) {
+            if (!object) return;
+            object[variable] = value;
+        }
+
+        getVariable({ variable, object }) {
+            if (!object) return;
+            return object[variable];
+        }
     }
 
-    sugarcube.extensionManager.registerExtension(new objects());
+    sugarcube.extensionManager.registerExtension(new scene());
 })();
