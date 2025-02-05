@@ -394,8 +394,12 @@
         }
 
         execute(block, generator, manager) {
-            const { returns } = block.editedState;
+            const { parameters, returns } = block.editedState;
             let functionName = returns;
+            
+            parameters.forEach(param => {
+                functionName += `_${param.id}`;
+            });
             
             const args = {};
             const recalls = {};
