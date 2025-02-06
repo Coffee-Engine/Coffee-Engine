@@ -720,7 +720,7 @@
                             {
                                 type: "input_dummy",
                                 //Add this seperator to properly get the menu.
-                                name: `${menuID}_____VALUE`,
+                                name: `scDynamicMenu_${menuID}_____VALUE`,
                                 //We want to make this a function that derives from the extension's object.
                                 //Or else we will explode.
                                 function: function () {
