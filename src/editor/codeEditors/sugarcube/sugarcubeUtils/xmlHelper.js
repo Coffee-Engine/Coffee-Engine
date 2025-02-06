@@ -17,7 +17,7 @@
         if (child.parentElement) {
             child.parentElement.removeChild(child);
         }
-        
+
         sugarcube.workspace.svgBlockCanvas_.appendChild(child);
-    }
+    };
 })();

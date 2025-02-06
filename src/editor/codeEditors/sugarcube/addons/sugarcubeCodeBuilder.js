@@ -12,10 +12,10 @@
                 code += `${instance[instance.__precompile]()}\n`;
             }
         }
-        
+
         //Our compiled code
         code += `\n${sugarcube.generator.workspaceToCode(workspace)}`;
 
         return code;
-    }
+    };
 })();

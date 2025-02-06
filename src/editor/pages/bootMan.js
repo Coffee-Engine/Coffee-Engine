@@ -5,5 +5,5 @@
         } else {
             editor.home.initilize();
         }
-    }
+    };
 })();

@@ -51,7 +51,7 @@
             if (this.#scriptObject) {
                 this.#scriptObject.target = value;
             }
-            
+
             coffeeEngine.runtime.currentScene.castEvent("childMoved", this);
         }
         get parent() {
@@ -68,10 +68,10 @@
 
             this.#scriptPath = value;
             if (!coffeeEngine.isEditor) {
-                coffeeEngine.behaviorManager.behaviorFromFile(value).then(classObj => {
-                    this.#scriptObject = new (classObj)();
+                coffeeEngine.behaviorManager.behaviorFromFile(value).then((classObj) => {
+                    this.#scriptObject = new classObj();
                     this.#scriptObject.target = this;
-    
+
                     if (this.#scriptObject.ready) {
                         this.#scriptObject.ready();
                     }
@@ -149,11 +149,7 @@
 
         //Determines what properties are serialized and added;
         getProperties() {
-            return [
-                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME },
-                "---",
-                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
-            ];
+            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
         }
     }
 

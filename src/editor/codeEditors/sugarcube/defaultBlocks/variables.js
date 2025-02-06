@@ -24,7 +24,7 @@
                         text: "",
                         hideFromPalette: true,
                         mutator: "variable_Mutator",
-                        contextMenu: "removeVariable"
+                        contextMenu: "removeVariable",
                     },
                     {
                         opcode: "setVariable",
@@ -134,10 +134,10 @@
                     })
                 );
             }
-            
+
             //set block color
             sugarcube.easyColourBlock(block, state.varData.color);
-            
+
             return state;
         }
 
@@ -185,15 +185,15 @@
 
         precompile_func() {
             let generated = "";
-            this.getVars().forEach(list => {
-                generated += `this["${list.replaceAll('"','\\"')}"] = "";\n`;
-            })
+            this.getVars().forEach((list) => {
+                generated += `this["${list.replaceAll('"', '\\"')}"] = "";\n`;
+            });
 
             return generated;
         }
 
         getVariable(block, generator, manager) {
-            return `this["${block.editedState.varData.name.replaceAll('"','\\"')}"]`;
+            return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         setVariable({ variable, val }, { self }) {

@@ -315,7 +315,7 @@
 
             //set block color
             sugarcube.easyColourBlock(block, state.color, "none");
-            
+
             return state;
         }
 
@@ -347,8 +347,7 @@
 
             if (block._isClone_) {
                 block.setDeletable(true);
-            }
-            else {
+            } else {
                 block.setDeletable(false);
             }
 
@@ -366,7 +365,7 @@
                     })
                 );
             }
-            
+
             //set block color
             sugarcube.easyColourBlock(block, state.color);
 
@@ -386,7 +385,7 @@
             const { parameters, returns } = block.editedState;
             let functionName = returns;
 
-            parameters.forEach(param => {
+            parameters.forEach((param) => {
                 functionName += `_${param.id}`;
             });
 
@@ -396,15 +395,14 @@
         execute(block, generator, manager) {
             const { parameters, returns } = block.editedState;
             let functionName = returns;
-            
-            parameters.forEach(param => {
+
+            parameters.forEach((param) => {
                 functionName += `_${param.id}`;
             });
-            
+
             const args = {};
             const recalls = {};
 
-            
             let baseBlockCode = `this["${functionName.replaceAll('"', '\\"')}"]({\n`;
 
             //Compile this like a block
@@ -433,8 +431,8 @@
             for (const recall in recalls) {
                 baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
             }
-            
-            baseBlockCode += "}})"
+
+            baseBlockCode += "}})";
 
             //Do this mess. (I might make a macro for this)
             return baseBlockCode;

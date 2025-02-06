@@ -5,7 +5,7 @@
     };
 
     class motion {
-        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose. 
+        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose.
         deg2Rad = 0.0174533;
         rad2Deg = 57.2958;
 

@@ -1,6 +1,6 @@
 (function () {
     class operators {
-        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose. 
+        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose.
         deg2Rad = 0.0174533;
         rad2Deg = 57.2958;
 
@@ -360,7 +360,6 @@
 
                 case "atan":
                     return Math.atan(sugarcube.cast.toNumber(B) * this.rad2Deg);
-
 
                 default:
                     return Math[A](sugarcube.cast.toNumber(B));

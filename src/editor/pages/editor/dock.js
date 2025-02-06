@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.dock = {
         refreshLayout: (initial, missingPercentageX, missingPercentageY) => {
             //Our percentages
@@ -32,9 +32,9 @@
                     //Then update column size
                     rowPercentage += window.size + "% ";
                     if (!window.content.resized) return;
-                    window.content.tabs.forEach(tab => {
+                    window.content.tabs.forEach((tab) => {
                         tab.owner.resized();
-                    })
+                    });
                 });
 
                 //Set the grid property

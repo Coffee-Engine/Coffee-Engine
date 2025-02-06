@@ -24,7 +24,7 @@
                         hideFromPalette: true,
                         compileFunc: "getTable",
                         mutator: "variable_Mutator",
-                        contextMenu: "removeTable"
+                        contextMenu: "removeTable",
                     },
                     {
                         opcode: "setKey",
@@ -100,7 +100,7 @@
                                 type: sugarcube.ArgumentType.OBJECT,
                             },
                         },
-                    }
+                    },
                 ],
                 menus: {
                     tableMenu: {
@@ -200,9 +200,9 @@
 
         precompile_func() {
             let generated = "";
-            this.getTables().forEach(list => {
-                generated += `this["${list.replaceAll('"','\\"')}"] = {};\n`;
-            })
+            this.getTables().forEach((list) => {
+                generated += `this["${list.replaceAll('"', '\\"')}"] = {};\n`;
+            });
 
             return generated;
         }
@@ -225,15 +225,15 @@
                     })
                 );
             }
-            
+
             //set block color
             sugarcube.easyColourBlock(block, state.varData.color);
-            
+
             return state;
         }
 
         getTable(block, generator, manager) {
-            return `this["${block.editedState.varData.name.replaceAll('"','\\"')}"]`;
+            return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         //Simplicity
@@ -247,12 +247,12 @@
             return self[table][key];
         }
 
-        getKeys({ table }, {self}) {
+        getKeys({ table }, { self }) {
             if (typeof self[table] != "object" || Array.isArray(self[table])) return;
             return Object.keys(self[table]);
         }
 
-        getValues({ table }, {self}) {
+        getValues({ table }, { self }) {
             if (typeof self[table] != "object" || Array.isArray(self[table])) return;
             return Object.values(self[table]);
         }
@@ -260,7 +260,7 @@
         substitute({ objectLike, value }, { self }) {
             if (typeof self[table] != "object" || Array.isArray(self[table])) return;
 
-            return self[objectLike] = value;
+            return (self[objectLike] = value);
         }
 
         removeTable(block) {

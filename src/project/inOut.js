@@ -55,18 +55,16 @@
             project.isFolder = true;
             project.directoryHandle = handle;
             await project.scanFolder(project.directoryHandle, true, project.fileSystem);
-        }
-        else if (type == "base64") {
+        } else if (type == "base64") {
             project.zipObject = new JSZip();
-            project.zipObject = await project.zipObject.loadAsync(handle, {base64:true});
+            project.zipObject = await project.zipObject.loadAsync(handle, { base64: true });
 
             await project.scanZip(project.zipObject);
-            
+
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });
             if (coffeeEngine.isEditor) editor.editorPage.initilize();
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
-        } 
-        else {
+        } else {
             project.isFolder = false;
 
             //Make sure we are getting the file handle and not some random garbage.

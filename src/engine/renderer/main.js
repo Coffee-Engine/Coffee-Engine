@@ -3,14 +3,14 @@
     coffeeEngine.renderer.create = (canvas) => {
         const renderer = coffeeEngine.renderer;
         renderer.canvas = canvas;
-        
+
         //Firefox's blending is wierd
-        renderer.daveshade = DaveShade.createInstance(renderer.canvas, { 
-            preserveDrawingBuffer: true, 
-            alpha: true, 
-            premultipliedAlpha: true, 
+        renderer.daveshade = DaveShade.createInstance(renderer.canvas, {
+            preserveDrawingBuffer: true,
+            alpha: true,
+            premultipliedAlpha: true,
             blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
-            powerPreference: "high-performance"
+            powerPreference: "high-performance",
         });
         const daveshadeInstance = renderer.daveshade;
 
@@ -37,11 +37,11 @@
                 Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
-                
+
                 Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
-                    
+
                     if (shader.uniforms.u_camera) shader.uniforms.u_camera.value = value;
                 });
                 renderer.cameraData.storedTransform = value;
@@ -53,11 +53,11 @@
                 Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
-                
+
                 Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
-                    
+
                     if (shader.uniforms.u_projection) shader.uniforms.u_projection.value = value;
                 });
                 renderer.cameraData.storedProjection = value;
@@ -69,11 +69,11 @@
                 Object.values(renderer.mainShaders).forEach((shader) => {
                     if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
                 });
-                
+
                 Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
-                    
+
                     if (shader.uniforms.u_res) shader.uniforms.u_res.value = value;
                 });
                 renderer.cameraData.storedRes = value;
@@ -89,7 +89,7 @@
                 Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
-                    
+
                     if (shader.uniforms.u_aspectRatio) shader.uniforms.u_aspectRatio.value = value;
                 });
                 renderer.cameraData.storedAspect = value;
@@ -107,7 +107,7 @@
                 Object.values(renderer.shaderStorage).forEach((shader) => {
                     if (!shader) return;
                     if (!shader.uniforms) return;
-                    
+
                     if (shader.uniforms.u_wFactor) shader.uniforms.u_wFactor.value = value;
                 });
                 renderer.cameraData.storedWFactor = value;
@@ -122,11 +122,11 @@
             storedRes: [480, 360],
             storedAspect: 1,
             storedWFactor: [1, 1],
-            cameraRotationEul: new coffeeEngine.vector3(0, 0, 0)
+            cameraRotationEul: new coffeeEngine.vector3(0, 0, 0),
         };
 
         renderer.mainShaders = {
-            basis:daveshadeInstance.createShader(
+            basis: daveshadeInstance.createShader(
                 //Vertex
                 `#version 300 es
                 precision highp float;
@@ -259,7 +259,7 @@
                 }
                 `
             ),
-            skyplane:daveshadeInstance.createShader(
+            skyplane: daveshadeInstance.createShader(
                 //Vertex
                 `#version 300 es
                 precision highp float;
@@ -322,7 +322,7 @@
                 }
                 `
             ),
-            mainPass:daveshadeInstance.createShader(
+            mainPass: daveshadeInstance.createShader(
                 //Vertex
                 `
                 precision highp float;
@@ -415,15 +415,15 @@
         };
 
         renderer.compilePBRshader = (shaderCode) => {
-            const vertex = DaveShade.findFunctionInGLSL(shaderCode,"vertex");
-            const frag = DaveShade.findFunctionInGLSL(shaderCode,"fragment");
-            const uniforms = shaderCode.replace(vertex,"").replace(frag,"");
+            const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
+            const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
+            const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
 
-            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS",uniforms).replace("void vertex() {}",vertex || "void vertex() {}");
-            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS",uniforms).replace("void fragment() {}",frag || "void fragment() {}");
+            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
+            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
 
-            return daveshadeInstance.createShader(compiledVert,compiledFrag);
-        }
+            return daveshadeInstance.createShader(compiledVert, compiledFrag);
+        };
 
         renderer.textureStorage = {};
         renderer.shaderStorage = {};
@@ -435,9 +435,8 @@
         renderer.initilizeShapes();
         renderer.initilizeDebugSprites(renderer);
 
-        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
-        renderer.canvas.addEventListener("resize", () => {
-        })
+        renderer.drawBuffer.resize(renderer.canvas.width, renderer.canvas.height);
+        renderer.canvas.addEventListener("resize", () => {});
 
         return renderer;
     };

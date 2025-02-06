@@ -47,7 +47,7 @@ editor.EnglishLang = {
     "engine.settings.category.Window.barStyle.Aero": "Shaded",
 
     "engine.settings.category.Viewport": "Viewport",
-    
+
     "engine.settings.category.Viewport.mouseSensitivity": "Mouse Sensitivity",
     "engine.settings.category.Viewport.forward": "Move Forward",
     "engine.settings.category.Viewport.left": "Move Left",
@@ -129,9 +129,9 @@ editor.EnglishLang = {
     "editor.dropdown.scene.save": "Save Scene",
     "editor.dropdown.scene.load": "Load Scene",
 
-    "editor.notification.saveScene": "Scene saved to \"[path]\"",
-    "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
-    "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
+    "editor.notification.saveScene": 'Scene saved to "[path]"',
+    "editor.notification.saveScript": 'Saved "[path]" sucessfully',
+    "editor.notification.compileScript": 'Compiled "[input]" as "[output]" sucessfully',
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
@@ -385,7 +385,7 @@ editor.EnglishLang = {
     "sugarcube.variables.contextMenu.removeVariable": "Remove Variable",
 
     "sugarcube.variables.objectLike.substitute": "substitute [objectLike] with [value]",
-    "sugarcube.variables.objectLike.deletionConfirmation": "Are you sure you want to delete \"[variable]\"?",
+    "sugarcube.variables.objectLike.deletionConfirmation": 'Are you sure you want to delete "[variable]"?',
 
     "sugarcube.lists": "Lists",
     "sugarcube.lists.value.item": "item",
@@ -445,21 +445,21 @@ editor.EnglishLang = {
     "engine.nodeNames.Billboard": "Billboard",
 
     "engine.nodePropertyLabels.NothingHere": "Nothing here!",
-    "engine.nodeProperties.Node.name":"Name",
-    "engine.nodeProperties.Node.script":"Script",
-    "engine.nodeProperties.Node.modulatedColor":"Modulated Color",
-    "engine.nodeProperties.Node.position":"Position",
-    "engine.nodeProperties.Node.rotation":"Rotation",
-    "engine.nodeProperties.Node.scale":"Scale",
-    "engine.nodeProperties.Node2D.layer":"Layer",
+    "engine.nodeProperties.Node.name": "Name",
+    "engine.nodeProperties.Node.script": "Script",
+    "engine.nodeProperties.Node.modulatedColor": "Modulated Color",
+    "engine.nodeProperties.Node.position": "Position",
+    "engine.nodeProperties.Node.rotation": "Rotation",
+    "engine.nodeProperties.Node.scale": "Scale",
+    "engine.nodeProperties.Node2D.layer": "Layer",
     "engine.nodeProperties.Sprite.spritePath": "Sprite Path",
     "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
     "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
     "engine.nodeProperties.MeshDisplay.material": "Material",
 
-    "engine.nodeProperties.scene.skyColor":"Sky Color",
-    "engine.nodeProperties.scene.horizonColor":"Horizon Color",
-    "engine.nodeProperties.scene.groundColor":"Ground Color",
-    "engine.nodeProperties.scene.centerColor":"Core Color"
+    "engine.nodeProperties.scene.skyColor": "Sky Color",
+    "engine.nodeProperties.scene.horizonColor": "Horizon Color",
+    "engine.nodeProperties.scene.groundColor": "Ground Color",
+    "engine.nodeProperties.scene.centerColor": "Core Color",
 };

@@ -14,7 +14,7 @@
                         },
                     ],
                 });
-    
+
                 sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
                     return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
@@ -26,11 +26,11 @@
                         {
                             type: "files_File",
                             name: "VALUE",
-                            value: "hi"
+                            value: "hi",
                         },
                     ],
                 });
-    
+
                 sugarcube.generator.forBlock["__sugarcube_file_reporter"] = (block, generator) => {
                     return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
@@ -45,11 +45,11 @@
                         },
                     ],
                 });
-    
+
                 sugarcube.generator.forBlock["__sugarcube_angle_reporter"] = (block, generator) => {
                     return [block.getFieldValue("VALUE"), 0];
                 };
-    
+
                 this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
                     message0: " %1 ",
                     mutator: "stupidLittleInputMutator",
@@ -62,11 +62,11 @@
                         },
                     ],
                 });
-    
+
                 sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
                     return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
-    
+
                 this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
                     message0: " %1 ",
                     mutator: "stupidLittleInputMutator",
@@ -79,11 +79,11 @@
                         },
                     ],
                 });
-    
+
                 sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
                     return [block.getFieldValue("VALUE") || 0, 0];
                 };
-    
+
                 this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
                     message0: " %1 ",
                     mutator: "stupidLittleInputMutator",
@@ -96,7 +96,7 @@
                         },
                     ],
                 });
-    
+
                 sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
                     return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
                 };
@@ -265,8 +265,8 @@
                         const recalls = {};
 
                         //Break down our block type real quick
-                        const split =  block.type.split("_")
-                        const extension = split.splice(0,1)[0];
+                        const split = block.type.split("_");
+                        const extension = split.splice(0, 1)[0];
                         const opcode = split.join("_");
                         const blockData = this.blockDefs[extension][opcode];
                         let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
@@ -292,8 +292,7 @@
                                 if (Array.isArray(field)) {
                                     args[field[0]] = block.getFieldValue(field[1]);
                                     if (isNaN(Number(args[field[0]]))) args[field[0]] = `"${args[field[0]]}"`;
-                                }
-                                else {
+                                } else {
                                     args[field] = block.getFieldValue(field);
                                     if (isNaN(Number(args[field]))) args[field] = `"${args[field]}"`;
                                 }
@@ -310,11 +309,10 @@
                         for (const recall in recalls) {
                             baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
                         }
-                        
+
                         baseBlockCode += "}})";
 
                         //let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this.target,self:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
-                        
 
                         if (block.outputConnection) {
                             return [baseBlockCode, 0];
@@ -531,8 +529,7 @@
 
                                                         //Ughhh
                                                         argument.type = "input_value";
-                                                    }
-                                                    else {                                                
+                                                    } else {
                                                         defArgs.fieldData.push(argumentKey);
                                                     }
                                                 }
@@ -736,13 +733,16 @@
                     });
 
                     sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                        return [`${(() => {
-                            let value = block.getFieldValue("VALUE");
-                            if (isNaN(Number(value))) {
-                                value = `"${value.replaceAll('"','\\"')}"`;
-                            }
-                            return value;
-                    })()}`, 0];
+                        return [
+                            `${(() => {
+                                let value = block.getFieldValue("VALUE");
+                                if (isNaN(Number(value))) {
+                                    value = `"${value.replaceAll('"', '\\"')}"`;
+                                }
+                                return value;
+                            })()}`,
+                            0,
+                        ];
                     };
                 } else {
                     //Add the data
@@ -788,13 +788,16 @@
                 });
 
                 sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                    return [`${(() => {
-                        let value = block.getFieldValue("VALUE");
-                        if (isNaN(Number(value))) {
-                            value = `"${value.replaceAll('"','\\"')}"`;
-                        }
-                        return value;
-                    })()}`, 0];
+                    return [
+                        `${(() => {
+                            let value = block.getFieldValue("VALUE");
+                            if (isNaN(Number(value))) {
+                                value = `"${value.replaceAll('"', '\\"')}"`;
+                            }
+                            return value;
+                        })()}`,
+                        0,
+                    ];
                 };
             }
             //Static menus with no reporters
@@ -902,13 +905,7 @@
             const id = myInfo.id + "_";
 
             //Add the block styles for this category. Each block can have its own override.
-            const convertedColors = sugarcube.blockColorFunction(
-                myInfo.color1 || "#0fbd8c", 
-                myInfo.color2 || myInfo.color1 || "#0b8e69", 
-                myInfo.color3 || myInfo.color1 || "#0b8e69",
-                myInfo.color4,
-                myInfo.color5
-            );
+            const convertedColors = sugarcube.blockColorFunction(myInfo.color1 || "#0fbd8c", myInfo.color2 || myInfo.color1 || "#0b8e69", myInfo.color3 || myInfo.color1 || "#0b8e69", myInfo.color4, myInfo.color5);
 
             sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
                 colourPrimary: convertedColors[0],

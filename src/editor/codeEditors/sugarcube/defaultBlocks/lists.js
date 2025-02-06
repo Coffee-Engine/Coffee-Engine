@@ -24,7 +24,7 @@
                         hideFromPalette: true,
                         mutator: "variable_Mutator",
                         compileFunc: "getList_compile",
-                        contextMenu: "removeList"
+                        contextMenu: "removeList",
                     },
                     {
                         opcode: "addItem",
@@ -175,7 +175,7 @@
                                 type: sugarcube.ArgumentType.ARRAY,
                             },
                         },
-                    }
+                    },
                 ],
                 menus: {
                     listMenu: {
@@ -239,7 +239,7 @@
                     })
                 );
             }
-            
+
             //set block color
             sugarcube.easyColourBlock(block, state.varData.color);
 
@@ -322,23 +322,23 @@
 
         precompile_func() {
             let generated = "";
-            this.getLists().forEach(list => {
-                generated += `this["${list.replaceAll('"','\\"')}"] = [];\n`;
-            })
+            this.getLists().forEach((list) => {
+                generated += `this["${list.replaceAll('"', '\\"')}"] = [];\n`;
+            });
 
             return generated;
         }
 
         getList_compile(block, generator) {
-            return `this["${block.editedState.varData.name.replaceAll('"','\\"')}"]`;
+            return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
-        
+
         addItem({ list, item }, { self }) {
             //MAKE SURE its a list
             if (!Array.isArray(self[list])) return;
             self[list].push(item);
         }
-        
+
         removeItem({ list, item }, { self }) {
             //MAKE SURE its a list
             if (!Array.isArray(self[list])) return;
@@ -347,10 +347,10 @@
 
             //Prevent OOB indeing
             if (item < 0 || item >= self[list].length) return;
-            self[list].splice(item,1);
+            self[list].splice(item, 1);
         }
 
-        clearList({ list }, {self}) {
+        clearList({ list }, { self }) {
             if (!Array.isArray(self[list])) return;
             self[list] = [];
         }
@@ -400,7 +400,7 @@
         substitute({ objectLike, value }, { self }) {
             if (typeof self[table] != "object" || Array.isArray(self[table])) return;
 
-            return self[objectLike] = value;
+            return (self[objectLike] = value);
         }
 
         removeList(block) {

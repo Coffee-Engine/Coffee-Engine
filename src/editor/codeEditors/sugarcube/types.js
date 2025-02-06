@@ -74,6 +74,6 @@
 
         color: "__sugarcube_color_reporter",
 
-        angle: "__sugarcube_angle_reporter"
+        angle: "__sugarcube_angle_reporter",
     };
 })();

@@ -35,7 +35,7 @@
                         };
 
                         //Load the file.
-                        if (settings.useBytes) fileReader.readAsArrayBuffer(file); 
+                        if (settings.useBytes) fileReader.readAsArrayBuffer(file);
                         else fileReader.readAsText(file);
                     })
                     .catch(() => {
@@ -48,10 +48,10 @@
         parsers: {},
         settings: {},
         defaultSettings: {
-            useBytes:false,
+            useBytes: false,
         },
     };
 
     //Add our preloading function
-    coffeeEngine.preloadFunctions["meshes"] = {function:coffeeEngine.mesh.fromProjectFile, storage:coffeeEngine.mesh.storage};
+    coffeeEngine.preloadFunctions["meshes"] = { function: coffeeEngine.mesh.fromProjectFile, storage: coffeeEngine.mesh.storage };
 })();

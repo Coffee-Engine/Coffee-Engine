@@ -139,7 +139,7 @@
             this.canvas.addEventListener("mousedown", (event) => {
                 if (event.button == 2) {
                     this.canvas.requestPointerLock();
-                    
+
                     this.controlling = true;
                 }
             });
@@ -224,7 +224,7 @@
                 speed: 1,
             };
 
-            this.setupInput()
+            this.setupInput();
 
             setInterval(() => {
                 this.profiler.innerHTML = `
@@ -233,7 +233,7 @@
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
                 Nodes:${coffeeEngine.renderer.nodesRendered}<br>
                 Lights:${coffeeEngine.runtime.currentScene.lightCount}`;
-            
+
                 coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
 
                 //Make sure the mouse movement goes unupdated in this.
@@ -287,7 +287,7 @@
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
-            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width,this.canvas.height);
+            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width, this.canvas.height);
         }
     };
 

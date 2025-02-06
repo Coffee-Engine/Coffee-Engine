@@ -99,7 +99,7 @@
         },
         Window: {
             grabSize: {
-                defaultValue:8,
+                defaultValue: 8,
                 type: "number",
                 min: "2",
                 max: "16",
@@ -108,7 +108,7 @@
                 },
             },
             barHeight: {
-                defaultValue:24,
+                defaultValue: 24,
                 type: "number",
                 min: "16",
                 max: "64",
@@ -117,9 +117,9 @@
                 },
             },
             barStyle: {
-                defaultValue:"Flat",
+                defaultValue: "Flat",
                 type: "dropdown",
-                values: () => {                    
+                values: () => {
                     return Object.keys(editor.taskbarStyles);
                 },
                 onChange: (value) => {
@@ -144,47 +144,47 @@
                 type: "key",
                 onChange: (value) => {
                     editor.controls.forward = value;
-                }
+                },
             },
             left: {
                 defaultValue: "a",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.left = value;
-                }
+                },
             },
             back: {
                 defaultValue: "s",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.back = value;
-                }
+                },
             },
             right: {
                 defaultValue: "d",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.right = value;
-                }
+                },
             },
             up: {
                 defaultValue: "e",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.up = value;
-                }
+                },
             },
             down: {
                 defaultValue: "q",
                 type: "key",
                 onChange: (value) => {
                     editor.controls.down = value;
-                }
+                },
             },
         },
         Theme: {
             themeColor: {
-                defaultValue:"Mocha",
+                defaultValue: "Mocha",
                 type: "dropdown",
                 values: () => {
                     const settings = Object.keys(editor.defaultThemes);
@@ -317,7 +317,7 @@
                 },
             },
             backgroundColor: {
-                defaultValue:"#46352a",
+                defaultValue: "#46352a",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -398,7 +398,7 @@
                 },
             },
             textColor: {
-                defaultValue:"#e7cab7",
+                defaultValue: "#e7cab7",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -460,7 +460,7 @@
                 },
             },
             warnColor: {
-                defaultValue:"#ffd078",
+                defaultValue: "#ffd078",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -480,7 +480,7 @@
                 },
             },
             errorColor: {
-                defaultValue:"#323546",
+                defaultValue: "#323546",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -500,7 +500,7 @@
                 },
             },
             warnTextColor: {
-                defaultValue:"#46352a",
+                defaultValue: "#46352a",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -520,7 +520,7 @@
                 },
             },
             errorTextColor: {
-                defaultValue:"#323546",
+                defaultValue: "#323546",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -540,7 +540,7 @@
                 },
             },
             linkColor: {
-                defaultValue:"#ffb400",
+                defaultValue: "#ffb400",
                 type: "color",
                 onChange: (value, fromBoot) => {
                     if (editor.settings.values.Theme.themeColor == "Custom") {
@@ -648,17 +648,17 @@
             blockColoration: {
                 defaultValue: "Default",
                 type: "dropdown",
-                values: () => {                    
+                values: () => {
                     return Object.keys(sugarcube.blockColorFunctions);
                 },
                 onChange: (value) => {
                     sugarcube.blockColorFunction = sugarcube.blockColorFunctions[value] || sugarcube.blockColorFunctions.Default;
-                }
-            }
+                },
+            },
         },
         Monaco: {
             fontSize: {
-                defaultValue:12,
+                defaultValue: 12,
                 onChange: (value) => {
                     monacoManager.fontSize = Number(value);
                 },
@@ -667,7 +667,7 @@
                 max: "32",
             },
             fontStyle: {
-                defaultValue:"Monospace",
+                defaultValue: "Monospace",
                 type: "dropdown",
                 values: ["Serif", "Sans-serif", "Monospace", "Cursive", "Fantasy"],
                 onChange: (value) => {

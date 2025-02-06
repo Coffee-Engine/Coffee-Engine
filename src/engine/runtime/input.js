@@ -51,7 +51,7 @@
         }
 
         coffeeEngine.inputs.keys[lowercase] = true;
-        coffeeEngine.sendEvent("desktopInput", {type:"key", fullKey: event.key, key: lowercase});
+        coffeeEngine.sendEvent("desktopInput", { type: "key", fullKey: event.key, key: lowercase });
     });
 
     window.addEventListener("keyup", (event) => {
@@ -61,7 +61,7 @@
     //Mouse stuff
     window.addEventListener("mousedown", (event) => {
         coffeeEngine.inputs.mouse[event.button] = true;
-        coffeeEngine.sendEvent("desktopInput", {type:"mouse", button: event.button});
+        coffeeEngine.sendEvent("desktopInput", { type: "mouse", button: event.button });
     });
 
     window.addEventListener("mouseup", (event) => {
@@ -80,9 +80,9 @@
             //Then we face the consequences of our actions
             if (coffeeEngine.isEditor) {
                 if (editor && editor.dropdown && editor.dropdown.fromArray)
-                editor.dropdown.fromArray(event.clientX, event.clientY, event.target.contextFunction()).then((value) => {
-                    if (event.target.contentAnswer) event.target.contentAnswer(value);
-                });
+                    editor.dropdown.fromArray(event.clientX, event.clientY, event.target.contextFunction()).then((value) => {
+                        if (event.target.contentAnswer) event.target.contentAnswer(value);
+                    });
             }
         }
     });

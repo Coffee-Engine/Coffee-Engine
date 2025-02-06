@@ -102,42 +102,43 @@ window.DaveShade = {};
             GL.activeTexture(GL[`TEXTURE${uniformInfo.samplerID}`]);
             GL.bindTexture(GL.TEXTURE_3D, value);
             GL.uniform1i(location, uniformInfo.samplerID);
-        }
-        
+        },
     };
 
     DaveShade.renderTypes = {
-        LINES:1,
-        TRIANGLES:4
-    }
+        LINES: 1,
+        TRIANGLES: 4,
+    };
 
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
         //Size up the render buffer's texture
         renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
-        GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MIN_FILTER,GL.NEAREST);
-        GL.texParameteri(GL.TEXTURE_2D,GL.TEXTURE_MAG_FILTER,GL.NEAREST);
-        
+        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.NEAREST);
+        GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, GL.NEAREST);
+
         //Get our color attachment
-        const attachedBuffer = (dsInfo.DRAWBUFFER_MANAGER) ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
+        const attachedBuffer = dsInfo.DRAWBUFFER_MANAGER ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
         GL.framebufferTexture2D(GL.FRAMEBUFFER, attachedBuffer, GL.TEXTURE_2D, renderBufferInfo.texture, 0);
-        framebufferInfo.colorAttachments += 1;  
-    }
+        framebufferInfo.colorAttachments += 1;
+    };
 
     DaveShade.RENDERBUFFER_TYPES = {
-        TEXTURE_RGB: (GL,framebufferInfo,dsInfo) => {
+        TEXTURE_RGB: (GL, framebufferInfo, dsInfo) => {
             //Make sure our next buffer is even possible!
-            if (dsInfo.GL_TYPE != "webgl2" && (!dsInfo.DRAWBUFFER_MANAGER) && framebufferInfo.colorAttachments > 0) {
+            if (dsInfo.GL_TYPE != "webgl2" && !dsInfo.DRAWBUFFER_MANAGER && framebufferInfo.colorAttachments > 0) {
                 console.error("Cannot have multiple draw buffers! There will be graphical glitches!");
-                return {resize:() => {}};
+                return { resize: () => {} };
             }
             //define our info
             const renderBufferInfo = {
-                texture:GL.createTexture(),
+                texture: GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGB, width, height, 0, GL.RGB, GL.UNSIGNED_BYTE, null);
                 },
-                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+                dispose: () => {
+                    GL.deleteTexture(renderBufferInfo.texture);
+                },
             };
 
             //Attach the buffer
@@ -146,21 +147,23 @@ window.DaveShade = {};
             return renderBufferInfo;
         },
 
-        TEXTURE_RGBA: (GL,framebufferInfo,dsInfo) => {
+        TEXTURE_RGBA: (GL, framebufferInfo, dsInfo) => {
             //Make sure our next buffer is even possible!
-            if (dsInfo.GL_TYPE != "webgl2" && (!dsInfo.DRAWBUFFER_MANAGER) && framebufferInfo.colorAttachments > 0) {
+            if (dsInfo.GL_TYPE != "webgl2" && !dsInfo.DRAWBUFFER_MANAGER && framebufferInfo.colorAttachments > 0) {
                 console.error("Cannot have multiple draw buffers! There will be graphical glitches!");
-                return {resize:() => {}};
+                return { resize: () => {} };
             }
 
             //define our info
             const renderBufferInfo = {
-                texture:GL.createTexture(),
+                texture: GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
                 },
-                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+                dispose: () => {
+                    GL.deleteTexture(renderBufferInfo.texture);
+                },
             };
 
             //Attach the buffer
@@ -169,18 +172,20 @@ window.DaveShade = {};
             return renderBufferInfo;
         },
 
-        TEXTURE_RGBA_FLOAT: (GL,framebufferInfo,dsInfo) => {
+        TEXTURE_RGBA_FLOAT: (GL, framebufferInfo, dsInfo) => {
             //Make sure we are in webGL2
-            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA(GL,framebufferInfo,dsInfo);
+            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA(GL, framebufferInfo, dsInfo);
 
             //define our info
             const renderBufferInfo = {
-                texture:GL.createTexture(),
+                texture: GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA16F, width, height, 0, GL.RGBA, GL.FLOAT, null);
                 },
-                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+                dispose: () => {
+                    GL.deleteTexture(renderBufferInfo.texture);
+                },
             };
 
             //Attach the buffer
@@ -188,60 +193,66 @@ window.DaveShade = {};
 
             return renderBufferInfo;
         },
-        
-        TEXTURE_R: (GL,framebufferInfo,dsInfo) => {
+
+        TEXTURE_R: (GL, framebufferInfo, dsInfo) => {
             //Make sure we are in webGL2
-            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGB(GL,framebufferInfo,dsInfo);
+            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGB(GL, framebufferInfo, dsInfo);
 
             //define our info
             const renderBufferInfo = {
-                texture:GL.createTexture(),
+                texture: GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.R8, width, height, 0, GL.RED, GL.UNSIGNED_BYTE, null);
                 },
-                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+                dispose: () => {
+                    GL.deleteTexture(renderBufferInfo.texture);
+                },
             };
 
             //Attach the buffer
-            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
 
             return renderBufferInfo;
         },
-        
-        TEXTURE_R_FLOAT: (GL,framebufferInfo,dsInfo) => {
+
+        TEXTURE_R_FLOAT: (GL, framebufferInfo, dsInfo) => {
             //Make sure we are in webGL2
-            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGB(GL,framebufferInfo,dsInfo);
+            if (dsInfo.GL_TYPE != "webgl2") return DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGB(GL, framebufferInfo, dsInfo);
 
             //define our info
             const renderBufferInfo = {
-                texture:GL.createTexture(),
+                texture: GL.createTexture(),
                 resize: (width, height) => {
-                    GL.bindTexture(GL.TEXTURE_2D,renderBufferInfo.texture);
+                    GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.R16F, width, height, 0, GL.RED, GL.FLOAT, null);
                 },
-                dispose: () => { GL.deleteTexture(renderBufferInfo.texture); }
+                dispose: () => {
+                    GL.deleteTexture(renderBufferInfo.texture);
+                },
             };
 
             //Attach the buffer
-            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo); 
+            DaveShade.EZAttachColorBuffer(GL, framebufferInfo, dsInfo, renderBufferInfo);
 
             return renderBufferInfo;
         },
 
-        DEPTH: (GL,framebufferInfo,dsInfo) => {
+        DEPTH: (GL, framebufferInfo, dsInfo) => {
             //Make sure we are in webGL2
             let attachedData = [GL.R32F, GL.RED, GL.FLOAT];
             if (dsInfo.GL_TYPE != "webgl2") attachedData = [GL.RGB, GL.RGB, GL.UNSIGNED_BYTE];
 
             //define our info
             const renderBufferInfo = {
-                renderBuffer:GL.createRenderbuffer(),
+                renderBuffer: GL.createRenderbuffer(),
                 resize: (width, height) => {
-                    GL.bindRenderbuffer(GL.RENDERBUFFER,renderBufferInfo.renderBuffer);
+                    GL.bindRenderbuffer(GL.RENDERBUFFER, renderBufferInfo.renderBuffer);
                     GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, width, height);
                 },
-                dispose: () => { GL.deleteRenderbuffer(renderBufferInfo.renderBuffer); }
+                dispose: () => {
+                    GL.deleteRenderbuffer(renderBufferInfo.renderBuffer);
+                },
             };
 
             //Resize and attach our buffer
@@ -249,7 +260,7 @@ window.DaveShade = {};
             GL.framebufferRenderbuffer(GL.FRAMEBUFFER, GL.DEPTH_ATTACHMENT, GL.RENDERBUFFER, renderBufferInfo.renderBuffer);
 
             return renderBufferInfo;
-        }
+        },
     };
 
     DaveShade.createInstance = (CANVAS, SETTINGS) => {
@@ -272,8 +283,7 @@ window.DaveShade = {};
             //Webgl doesn't have native support for VOAs or Multipass Rendering so we add the addon for VOAs, and extra Draw Buffers
             daveShadeInstance.VOA_MANAGER = daveShadeInstance.GL.getExtension("OES_vertex_array_object");
             daveShadeInstance.DRAWBUFFER_MANAGER = daveShadeInstance.GL.getExtension("WEBGL_draw_buffers");
-        }
-        else {
+        } else {
             daveShadeInstance.COLORBUFFER_FLOAT = daveShadeInstance.GL.getExtension("EXT_color_buffer_float");
             daveShadeInstance.FLOAT_BLEND = daveShadeInstance.GL.getExtension("EXT_float_blend");
         }
@@ -409,20 +419,20 @@ window.DaveShade = {};
                 const uniformName = uniformInfo.name.split("[")[0];
                 const isArray = uniformInfo.name.includes("[");
 
-                //differentiate arrays and 
+                //differentiate arrays and
                 if (isArray) {
                     const arrayLength = uniformInfo.size;
                     shader.uniforms[uniformName] = [];
 
                     for (let index = 0; index < arrayLength; index++) {
                         const location = GL.getUniformLocation(shader.program, `${uniformName}[${index}]`);
-    
+
                         shader.uniforms[uniformName].push({
                             location: location,
                             type: uniformInfo.type,
                             isArray: isArray,
                             "#value": null,
-        
+
                             set value(value) {
                                 GL.useProgram(shader.program);
                                 shader.uniforms[uniformName]["#value"] = value;
@@ -433,8 +443,7 @@ window.DaveShade = {};
                             },
                         });
                     }
-                }
-                else {
+                } else {
                     const location = GL.getUniformLocation(shader.program, uniformName);
 
                     shader.uniforms[uniformName] = {
@@ -442,7 +451,7 @@ window.DaveShade = {};
                         type: uniformInfo.type,
                         isArray: isArray,
                         "#value": null,
-    
+
                         set value(value) {
                             GL.useProgram(shader.program);
                             shader.uniforms[uniformName]["#value"] = value;
@@ -453,7 +462,6 @@ window.DaveShade = {};
                         },
                     };
                 }
-                
 
                 if (uniformInfo.type == 35678) {
                     uniformInfo.samplerID = shader.textureCount;
@@ -490,7 +498,7 @@ window.DaveShade = {};
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
                 };
-                
+
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
                     GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
@@ -553,9 +561,9 @@ window.DaveShade = {};
                         shader.attributes[key].set(attributeJSON[key]);
                     }
                 }
-            }
+            };
 
-            shader.drawFromBuffers = (triAmount,renderMode) => {
+            shader.drawFromBuffers = (triAmount, renderMode) => {
                 GL.useProgram(shader.program);
                 GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
                 daveShadeInstance.triCount += triAmount;
@@ -577,7 +585,7 @@ window.DaveShade = {};
             GL.bindFramebuffer(GL.FRAMEBUFFER, null);
             if (daveShadeInstance.GL_TYPE == "webgl2") GL.drawBuffers([GL.BACK]);
             GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
-        }
+        };
 
         daveShadeInstance.createTexture = (data, width, height) => {
             const texture = daveShadeInstance.GL.createTexture();
@@ -600,14 +608,14 @@ window.DaveShade = {};
         };
 
         //Framebuffer stuff
-        daveShadeInstance.createFramebuffer = (width,height,attachments) => {
+        daveShadeInstance.createFramebuffer = (width, height, attachments) => {
             const framebuffer = {
-                buffer:GL.createFramebuffer(),
+                buffer: GL.createFramebuffer(),
                 attachments: [],
                 drawBuffers: [],
-                width:width,
-                height:height,
-                colorAttachments:0
+                width: width,
+                height: height,
+                colorAttachments: 0,
             };
 
             //Our frame buffer binding stuff
@@ -621,41 +629,41 @@ window.DaveShade = {};
 
             //Easy removal
             framebuffer.dispose = () => {
-                framebuffer.attachments.forEach(attachement => {
+                framebuffer.attachments.forEach((attachement) => {
                     attachement.dispose();
                 });
                 GL.deleteFramebuffer(framebuffer.buffer);
-                
+
                 if (daveShadeInstance.FRAMEBUFFERS.includes(shader)) {
                     daveShadeInstance.FRAMEBUFFERS.splice(daveShadeInstance.FRAMEBUFFERS.indexOf(framebuffer), 1);
                 }
             };
 
             //Easy resizing
-            framebuffer.resize = (width,height) => {
-                framebuffer.attachments.forEach(attachement => {
-                    attachement.resize(width,height);
+            framebuffer.resize = (width, height) => {
+                framebuffer.attachments.forEach((attachement) => {
+                    attachement.resize(width, height);
                 });
 
                 framebuffer.width = width;
                 framebuffer.height = height;
-            }
+            };
 
             //Add the attachements
             for (let attID in attachments) {
-                framebuffer.attachments.push(attachments[attID](GL,framebuffer,daveShadeInstance));
+                framebuffer.attachments.push(attachments[attID](GL, framebuffer, daveShadeInstance));
             }
-            
+
             for (let drawBufferID = 0; drawBufferID < framebuffer.colorAttachments; drawBufferID++) {
                 //framebuffer.drawBuffers.push(GL.NONE);
-                framebuffer.drawBuffers.push((daveShadeInstance.DRAWBUFFER_MANAGER) ? daveShadeInstance.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${drawBufferID}`] : GL[`COLOR_ATTACHMENT${drawBufferID}`])
+                framebuffer.drawBuffers.push(daveShadeInstance.DRAWBUFFER_MANAGER ? daveShadeInstance.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${drawBufferID}`] : GL[`COLOR_ATTACHMENT${drawBufferID}`]);
             }
 
             //Then add and finalize the creation
             daveShadeInstance.FRAMEBUFFERS.push(framebuffer);
             GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
             return framebuffer;
-        }
+        };
 
         daveShadeInstance.dispose = () => {
             daveShadeInstance.SHADERS.forEach((shader) => {
@@ -686,7 +694,7 @@ window.DaveShade = {};
             }
 
             return returned;
-        }
+        };
 
         return daveShadeInstance;
     };
@@ -708,8 +716,9 @@ window.DaveShade = {};
                 let char = glsl.charAt(index);
                 funcCode += char;
 
-                if (char == "{") { inFunction++; }
-                else if (char == "}") {
+                if (char == "{") {
+                    inFunction++;
+                } else if (char == "}") {
                     inFunction--;
                     if (inFunction == 0) {
                         //Return our code if we get out of our function
@@ -721,5 +730,5 @@ window.DaveShade = {};
 
         //Return a blank if we don't have any function
         return "";
-    }
+    };
 })();

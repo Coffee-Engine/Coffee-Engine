@@ -146,6 +146,6 @@ void fragment() {
         compileFunction: (code, path) => {
             coffeeEngine.renderer.fileToShader(path, true);
             return code;
-        }
+        },
     },
 ];

@@ -154,7 +154,7 @@
                       const split = blockType.split("_");
                       const category = split[0];
                       //Remove the category;
-                      split.splice(0,1);
+                      split.splice(0, 1);
                       const blockName = split.join("_");
 
                       let inputs = {};
@@ -163,7 +163,7 @@
                       return {
                           kind: "block",
                           type: blockType,
-                          inputs: inputs
+                          inputs: inputs,
                       };
                   })
                 : [];

@@ -161,19 +161,19 @@
         }
 
         getName({ object }) {
-            return (object) ? object.name : "";
+            return object ? object.name : "";
         }
 
         getScript({ object }) {
-            return (object) ? object.scriptObject : null;
+            return object ? object.scriptObject : null;
         }
 
         getChildren({ object }) {
-            return (object) ? object.children : [];
+            return object ? object.children : [];
         }
 
         getParentOf({ object }) {
-            return (object) ? object.parent : null;
+            return object ? object.parent : null;
         }
 
         setVariable({ variable, object, value }) {

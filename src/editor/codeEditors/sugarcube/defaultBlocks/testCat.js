@@ -208,8 +208,8 @@
                                     type: sugarcube.ArgumentType.CUSTOM,
                                     customType: "fieldTest",
                                 },
-                            }
-                        }
+                            },
+                        },
                     ]),
                 menus: {
                     staticNoREP: {

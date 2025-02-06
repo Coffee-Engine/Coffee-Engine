@@ -175,15 +175,9 @@ sugarcube.refreshTheme = () => {
 };
 
 sugarcube.easyColourBlock = (block, color, hat) => {
-    hat = hat || "cap"
+    hat = hat || "cap";
     //Define the colours
-    const convertedColors = sugarcube.blockColorFunction(
-        color,
-        color,
-        color,
-        null,
-        null,
-    );
+    const convertedColors = sugarcube.blockColorFunction(color, color, color, null, null);
 
     //Apply the colours
     const style = {
@@ -196,12 +190,12 @@ sugarcube.easyColourBlock = (block, color, hat) => {
         colourIdentifier: convertedColors[6] || convertedColors[0],
         useEverywhere: convertedColors[7],
         hat: hat,
-    }
+    };
 
     block.setStyle(style);
     block.pathObject.setStyle(style);
     if (!convertedColors[7]) block.setColour(color);
-}
+};
 
 sugarcube.setToolboxBasedOnFilter = (filter) => {
     //Loop through all categories filtering
@@ -211,14 +205,13 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
         let blocksInCategory = 0;
         for (let blockID = 0; blockID < category.contents.length; blockID++) {
             const block = category.contents[blockID];
-            
+
             //Check our filter and up our block count if valid
             if (block.filter) {
                 if (!block.filter.some((element) => filter.includes(element))) {
-                    category.contents.splice(blockID,1);
+                    category.contents.splice(blockID, 1);
                     blockID--;
-                }
-                else {
+                } else {
                     if (block.kind != "label") blocksInCategory++;
                 }
             }
@@ -230,6 +223,6 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
         //If we don't have any blocks don't show the category
         if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.toolbox.contents.push(category);
     }
-    
+
     sugarcube.workspace.getToolbox().refreshSelection();
-}
+};

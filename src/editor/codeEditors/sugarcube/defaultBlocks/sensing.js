@@ -1,6 +1,5 @@
 (function () {
     class sensing {
-
         date = new Date(Date.now());
 
         controllerSVG = `<svg style="width:100%; height:100%; padding:0px; margin:0px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"

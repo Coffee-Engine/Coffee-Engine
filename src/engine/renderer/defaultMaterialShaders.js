@@ -1,4 +1,4 @@
-(function() {
+(function () {
     coffeeEngine.renderer.initilizeBaseShaders = (renderer) => {
         renderer.mainShaders.unlit = renderer.compilePBRshader(`
         uniform sampler2D u_texture;
@@ -21,5 +21,5 @@
             LIGHT_AFFECTION = 0.0;
         }
         `);
-    }
+    };
 })();

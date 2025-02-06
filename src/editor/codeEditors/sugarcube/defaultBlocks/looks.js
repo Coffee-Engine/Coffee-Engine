@@ -70,7 +70,7 @@
                         arguments: {
                             color: {
                                 type: sugarcube.ArgumentType.COLOR,
-                                defaultValue: "#0000ff"
+                                defaultValue: "#0000ff",
                             },
                         },
                     },
@@ -88,7 +88,7 @@
                         arguments: {
                             radius: {
                                 type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue: 5
+                                defaultValue: 5,
                             },
                         },
                     },
@@ -106,7 +106,7 @@
                         arguments: {
                             falloff: {
                                 type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue: 7.5
+                                defaultValue: 7.5,
                             },
                         },
                     },
@@ -188,11 +188,7 @@
 
             //then set it
             if (util.target.color) {
-                util.target.color = [
-                    convertedColor.r / 255,
-                    convertedColor.g / 255,
-                    convertedColor.b / 255
-                ]
+                util.target.color = [convertedColor.r / 255, convertedColor.g / 255, convertedColor.b / 255];
             }
         }
 
@@ -200,9 +196,9 @@
             //If we have the color convert and return, if not return black
             if (util.target.color) {
                 const convertedColor = coffeeEngine.ColorMath.RGBtoHex({
-                    r:util.target.color[0] * 255,
-                    g:util.target.color[1] * 255,
-                    b:util.target.color[2] * 255
+                    r: util.target.color[0] * 255,
+                    g: util.target.color[1] * 255,
+                    b: util.target.color[2] * 255,
                 });
 
                 return convertedColor;
@@ -226,7 +222,6 @@
         getFalloff(args, util) {
             return sugarcube.cast.toNumber(util.target.falloff);
         }
-
 
         color_Init(field) {
             //field.createBorderRect_();
@@ -280,7 +275,6 @@
             //Silly guys
             loadal.acceptTypes = "obj,dae,glb";
         }
-        
     }
 
     sugarcube.extensionManager.registerExtension(new looks());

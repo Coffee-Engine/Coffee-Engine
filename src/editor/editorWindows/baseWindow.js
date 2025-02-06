@@ -84,14 +84,13 @@
             if (value) {
                 this.closeButton.style.opacity = "100%";
                 this.closeButton.style.pointerEvents = "auto";
-            }
-            else {
+            } else {
                 this.closeButton.style.opacity = "50%";
                 this.closeButton.style.pointerEvents = "none";
             }
         }
         get closable() {
-            return this.#closable
+            return this.#closable;
         }
         #closable = true;
         set dockable(value) {
@@ -99,14 +98,13 @@
             if (value) {
                 this.dockButton.style.opacity = "100%";
                 this.dockButton.style.pointerEvents = "auto";
-            }
-            else {
+            } else {
                 this.dockButton.style.opacity = "50%";
                 this.dockButton.style.pointerEvents = "none";
             }
         }
         get dockable() {
-            return this.#dockable
+            return this.#dockable;
         }
         #dockable = true;
 
@@ -261,7 +259,6 @@
                 this._dispose();
             };
 
-
             this.TaskBar.appendChild(this.titleDiv);
             this.TaskBar.appendChild(this.dockButton);
             this.TaskBar.appendChild(this.closeButton);
@@ -363,9 +360,9 @@
                             this.height = this.#height - moveEvent.movementY;
                         }
 
-                        this.tabs.forEach(tab => {
+                        this.tabs.forEach((tab) => {
                             tab.owner.resized();
-                        })
+                        });
                     };
 
                     return;
@@ -536,10 +533,10 @@
                         this.y = moveEvent.clientY + mouseOffsetY;
                         this.height = this.height - moveEvent.movementY;
                     }
-                    
-                    this.tabs.forEach(tab => {
+
+                    this.tabs.forEach((tab) => {
                         tab.owner.resized();
-                    })
+                    });
                 };
             };
         }

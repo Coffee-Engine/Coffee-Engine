@@ -10,11 +10,11 @@ window.coffeeEngine = {
     resources: {},
     renderer: {
         nodesRendered: 0,
-        sprites:{}
+        sprites: {},
     },
     preloadFunctions: {},
     nodeRegister: {},
-    isEditor:false,
+    isEditor: false,
     //Just a simple node registrar thing
     registerNode: (node, name, parentNode) => {
         //Return if node already exists

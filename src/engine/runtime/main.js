@@ -11,7 +11,7 @@
 
     coffeeEngine.runtime.draw = () => {
         //Chromium does not like unfocused documents
-        
+
         if (coffeeEngine.runtime.currentScene) {
             coffeeEngine.runtime.currentScene.draw();
         }

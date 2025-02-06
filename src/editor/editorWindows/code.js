@@ -39,7 +39,7 @@
             const splitPath = path.split("/");
             button.innerText = splitPath[splitPath.length - 1];
             button.setAttribute("path", path);
-            
+
             //When we click open the file
             button.onclick = () => {
                 //Remove the button once it doesn't work
@@ -188,9 +188,10 @@
             //If our scripting language has a compile function compile it
             if (compileFunction) {
                 const compiled = compileFunction(useBlocklyEditor ? sugarcube.workspace : monacoManager.workspace.getValue(), this.filePath);
-                if (!stopCompileFileCreation) project.setFile(`${this.filePath.split(".")[0]}.cjs`, compiled, "text/javascript").then(() => {
-                    console.log(editor.language["editor.notification.compileScript"].replace("[input]", this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));
-                });
+                if (!stopCompileFileCreation)
+                    project.setFile(`${this.filePath.split(".")[0]}.cjs`, compiled, "text/javascript").then(() => {
+                        console.log(editor.language["editor.notification.compileScript"].replace("[input]", this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));
+                    });
             }
 
             //If its our special little fella (sugarcube)  do nothing?
@@ -275,7 +276,7 @@
                 this.blocklyArea.style.visibility = "hidden";
                 this.monacoArea.style.visibility = "hidden";
                 this.title = editor.language["editor.window.codeEditor"];
-            }
+            };
         }
 
         openFile(path, extension) {

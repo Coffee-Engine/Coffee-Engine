@@ -38,7 +38,7 @@
             this.scale.setter = () => {
                 this.updateMatrix();
             };
-            
+
             this.updateMatrix();
         }
 
@@ -51,16 +51,7 @@
         }
 
         getProperties() {
-            return [
-                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
-                "---", 
-                { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
-                { name: "layer", translationKey:"engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, 
-                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, 
-                { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 },
-                "---",
-                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
-            ];
+            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, { name: "layer", translationKey: "engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
         }
 
         sortValue() {

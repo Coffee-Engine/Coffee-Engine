@@ -22,5 +22,5 @@ coffeeEngine.PropertyTypes = {
     OBJECT: "object",
 
     //Silly fella
-    BOOLEAN: "boolean"
+    BOOLEAN: "boolean",
 };
