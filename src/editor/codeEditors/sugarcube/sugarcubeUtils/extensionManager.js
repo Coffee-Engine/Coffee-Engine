@@ -239,7 +239,8 @@
             //Custom compiler instructions.
             if (blockCompileFunc) {
                 sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator, this);
+                    const blockData = this.blockDefs[extensionID][blockOpcode];
+                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator, this, blockData);
                     if (block.outputConnection) {
                         return [code, 0];
                     }
@@ -735,7 +736,7 @@
                     sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
                         return [
                             `${(() => {
-                                let value = block.getFieldValue("VALUE");
+                                let value = block.getFieldValue(`scDynamicMenu_${menuID}_____VALUE`);
                                 if (isNaN(Number(value))) {
                                     value = `"${value.replaceAll('"', '\\"')}"`;
                                 }

@@ -5,6 +5,7 @@ window.coffeeEngine = {
         extensionDispose: [],
         desktopInput: [],
     },
+    broadcasts: {},
     runtime: {},
     classes: {},
     resources: {},
@@ -67,4 +68,28 @@ window.coffeeEngine = {
             coffeeEngine.events[event][eventFunc](data);
         }
     },
+
+    //Differences between broadcasts and events. Broadcasts are built specifically for sending signals between nodes. Broadcasts have NO arguments
+    addBroadcast: (broadcast, func) => {
+        if (!coffeeEngine.broadcasts[broadcast]) coffeeEngine.broadcasts[broadcast] = [];
+
+        coffeeEngine.broadcasts[broadcast].push(func);
+        return func;
+    },
+
+    removeBroadcast: (broadcast, func) => {
+        if (typeof coffeeEngine.broadcasts[broadcast] != "object") return;
+
+        if (coffeeEngine.broadcasts[broadcast].includes(func)) {
+            coffeeEngine.broadcasts[broadcast].splice(coffeeEngine.broadcasts[broadcast].indexOf(func), 1);
+        }
+    },
+
+    sendBroadcast: (broadcast) => {
+        if (typeof coffeeEngine.broadcasts[broadcast] != "object") return;
+
+        for (const broadcastFunc in coffeeEngine.broadcasts[broadcast]) {
+            coffeeEngine.broadcasts[broadcast][broadcastFunc]();
+        }
+    }
 };

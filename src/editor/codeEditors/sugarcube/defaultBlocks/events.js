@@ -42,8 +42,8 @@
                     "---",
                     {
                         opcode: "broadcastRecieve",
+                        compileFunc: "broadcastRecieve",
                         type: sugarcube.BlockType.HAT,
-                        eventListenerName: "onGlobalBroadcast",
                         text: editor.language["sugarcube.events.block.broadcastRecieve"],
                         arguments: {
                             message: {
@@ -57,7 +57,7 @@
                         text: editor.language["sugarcube.events.block.broadcastSend"],
                         arguments: {
                             message: {
-                                menu: "messages",
+                                menu: "messagesReporter",
                             },
                         },
                     },
@@ -69,7 +69,7 @@
                     messages: {
                         items: "__getMessages",
                     },
-                    messages: {
+                    messagesReporter: {
                         acceptReporters: true,
                         items: "__getMessages",
                     },
@@ -79,7 +79,7 @@
 
         //Just for a menu
         __getMessages() {
-            return sugarcube.broadcasts;
+            return Object.keys(coffeeEngine.broadcasts);
         }
 
         onStart(block, generator, manager) {
@@ -112,6 +112,24 @@
         coffeeEngine.removeEventListener("desktopInput", sugarcubeInputEvent);
     })
 }`;
+        }
+
+        broadcastRecieve(block, generator, manager, blockData) {
+            const message = blockData.fieldData[0][1];
+            return `{
+    const sugarcubeBroadcastEvent = () => {
+        ${manager.nextBlockToCode(block, generator)}
+    };
+    coffeeEngine.addBroadcast("${block.getFieldValue(message).replace('"','\\"')}", sugarcubeBroadcastEvent);
+
+    this.__DisposeFuncs.push(() => {
+        coffeeEngine.removeBroadcast("${block.getFieldValue(message).replace('"','\\"')}", sugarcubeBroadcastEvent);
+    })
+}`;
+        }
+
+        broadcastSend({ message }) {
+            coffeeEngine.sendBroadcast(message);
         }
     }
 
