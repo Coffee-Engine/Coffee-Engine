@@ -35,6 +35,19 @@ sugarcube.blockColorFunctions = {
 
         return [coffeeEngine.ColorMath.HSVToHex(color1).substring(0, 7), coffeeEngine.ColorMath.HSVToHex(color2).substring(0, 7), color3, color4 || color3, color5 || coffeeEngine.ColorMath.HSVToHex(color5FB).substring(0, 7), false, color3, true];
     },
+
+    Monotone: (color1) => {
+        return [
+            "#ffffff", //Primary Background
+            "#e0e0e0", //Menu Inner
+            "#f0f0f0", //Outline
+            "#0f0f0f", //TEXT
+            "#d0d0d0", //Field Background
+            false, //Use Black White Text
+            "#ffffff", //Color picker Color
+            false, //Run on dynamic blocks (EG, variables, custom blocks)
+        ];
+    }
 };
 
 sugarcube.blockColorFunction = sugarcube.blockColorFunctions.Default;
