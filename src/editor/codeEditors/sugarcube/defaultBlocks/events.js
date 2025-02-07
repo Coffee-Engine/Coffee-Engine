@@ -83,13 +83,13 @@
         }
 
         onStart(block, generator, manager) {
-            return `this.__ReadyFuncs.push(() => {
+            return `this.__ReadyFuncs.push(async () => {
     ${manager.nextBlockToCode(block, generator)}
 });`;
         }
 
         onUpdate(block, generator, manager) {
-            return `this.__UpdateFuncs.push(() => {
+            return `this.__UpdateFuncs.push(async () => {
     ${manager.nextBlockToCode(block, generator)}
 });`;
         }
@@ -99,7 +99,7 @@
             //? First we isolate the context of the variables by wrapping them in a block using {};
             //? After that we add our event and store the recieved function to use on the eventual disposal.
             return `{
-    const sugarcubeInputEvent = (event) => {
+    const sugarcubeInputEvent = async (event) => {
         if (event && event.type == "key") {
             if (event.key == "${block.getFieldValue("key")}") {
                 ${manager.nextBlockToCode(block, generator)}
@@ -117,7 +117,7 @@
         broadcastRecieve(block, generator, manager, blockData) {
             const message = blockData.fieldData[0][1];
             return `{
-    const sugarcubeBroadcastEvent = () => {
+    const sugarcubeBroadcastEvent = async () => {
         ${manager.nextBlockToCode(block, generator)}
     };
     coffeeEngine.addBroadcast("${block.getFieldValue(message).replace('"','\\"')}", sugarcubeBroadcastEvent);

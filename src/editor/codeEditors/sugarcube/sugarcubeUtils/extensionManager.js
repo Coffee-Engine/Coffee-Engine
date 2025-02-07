@@ -270,13 +270,14 @@
                         const extension = split.splice(0, 1)[0];
                         const opcode = split.join("_");
                         const blockData = this.blockDefs[extension][opcode];
-                        let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
+
+                        let baseBlockCode = `${blockData.await ? "await " : ""}sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
 
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
                                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                                    args[input.name] = `() => {\n${generator.statementToCode(block, input.name)}\n}`;
+                                    args[input.name] = `async () => {\n${generator.statementToCode(block, input.name)}\n}`;
                                     recalls[input.name] = args[input.name];
                                     return;
                                 }
@@ -399,7 +400,7 @@
                         //sugarcube.JS_GEN.forBlock[id + opcode] = `sugarcube.extensions.${extension.id}[${opcode}]({},this);`;
 
                         //Define the arguments used in block creation
-                        let defArgs = {
+                        blockData = {
                             kind: "block",
                             type: id + opcode,
                             inputs: {},
@@ -475,8 +476,8 @@
                                                 argument.type = "input_value";
 
                                                 //Define the arguments
-                                                if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
-                                                defArgs.inputs[argumentKey].shadow = {
+                                                if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
+                                                blockData.inputs[argumentKey].shadow = {
                                                     type: "__sugarcube_menu_" + menuID,
                                                 };
                                             }
@@ -492,13 +493,13 @@
                                                     }
                                                     argument.overrideName = `scDynamicMenu_${menuID}_${argumentKey}`;
                                                     argument.type = "input_dummy";
-                                                    defArgs.fieldData.push([argumentKey, argument.overrideName]);
+                                                    blockData.fieldData.push([argumentKey, argument.overrideName]);
                                                 }
                                                 //Check to see if it is real.
                                                 else {
                                                     argument.type = "field_dropdown";
                                                     argument.options = menus[menuID].parsed;
-                                                    defArgs.fieldData.push(argumentKey);
+                                                    blockData.fieldData.push(argumentKey);
                                                 }
                                             }
                                         } else {
@@ -519,19 +520,19 @@
                                                     //Accept reporters
                                                     if (fields[argument.type].acceptReporters) {
                                                         //Eww
-                                                        if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
-                                                        defArgs.inputs[argumentKey].shadow = {
+                                                        if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
+                                                        blockData.inputs[argumentKey].shadow = {
                                                             type: fields[argument.type].blockName,
                                                         };
 
                                                         if (argument.defaultValue) {
-                                                            defArgs.inputs[argumentKey].shadow.fields = { VALUE: argument.defaultValue };
+                                                            blockData.inputs[argumentKey].shadow.fields = { VALUE: argument.defaultValue };
                                                         }
 
                                                         //Ughhh
                                                         argument.type = "input_value";
                                                     } else {
-                                                        defArgs.fieldData.push(argumentKey);
+                                                        blockData.fieldData.push(argumentKey);
                                                     }
                                                 }
 
@@ -585,10 +586,10 @@
                                                 //Check for a shadow conversion
                                                 if (sugarcube.ArgumentShadowConversions[argument.type]) {
                                                     //If there is one add argument keys if they don't exist
-                                                    if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
+                                                    if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
 
                                                     //set the shadow values and stuff
-                                                    defArgs.inputs[argumentKey].shadow = {
+                                                    blockData.inputs[argumentKey].shadow = {
                                                         type: sugarcube.ArgumentShadowConversions[argument.type],
                                                         fields: {
                                                             VALUE: argument.defaultValue || sugarcube.ArgumentDefaultValues[argument.type] || "",
@@ -599,7 +600,7 @@
 
                                                     //If we have a default value set it
                                                     if (argument.defaultValue) {
-                                                        defArgs.inputs[argumentKey].shadow.value = argument.defaultValue;
+                                                        blockData.inputs[argumentKey].shadow.value = argument.defaultValue;
                                                     }
                                                 }
 
@@ -626,7 +627,7 @@
 
                         //For the funni!
                         if (block.filter) {
-                            defArgs.filter = block.filter;
+                            blockData.filter = block.filter;
                         }
 
                         //If there is an output or tooltip add them to the block definition
@@ -648,10 +649,11 @@
                             blockDef.output = block.output;
                         }
 
+                        
+
                         //Add the blockly block definition and register the block compiler
                         this.registerBlockCode(block, extension.id);
                         this.addBlocklyBlock(id + opcode, block.isTerminal && type == "command" ? "terminal" : type, blockDef);
-                        blockData = defArgs;
                         break;
                 }
             }
@@ -1002,7 +1004,6 @@
 
             extension.defaultBlockInfo = createdContentData.contents;
 
-            sugarcube.toolboxDefault = JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
             sugarcube.toolbox.contents.push(createdContentData);
 
             if (myInfo.updateBlocks) {

@@ -16,24 +16,67 @@
                         text: editor.language["sugarcube.files.block.setFile"],
                         arguments: {
                             file: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "File",
                             },
                             content: {
-                                type: sugarcube.ArgumentType.NUMBER,
-                            },
+                                type: sugarcube.ArgumentType.STRING,
+                            }
                         },
                     },
                     {
                         opcode: "getFile",
-                        type: sugarcube.BlockType.COMMAND,
+                        type: sugarcube.BlockType.REPORTER_ANY,
                         text: editor.language["sugarcube.files.block.getFile"],
+                        await: true,
                         arguments: {
                             file: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "File",
                             },
+                            type: {
+                                menu:"type"
+                            }
                         },
                     },
                 ],
+                menus: {
+                    type: {
+                        acceptReporters: true,
+                        items: [
+                            { value: "text", text:editor.language["sugarcube.files.menu.asMenu.text"] },
+                            { value: "JSON", text:editor.language["sugarcube.files.menu.asMenu.JSON"] },
+                            { value: "byte", text:editor.language["sugarcube.files.menu.asMenu.byte"] }
+                        ]
+                    }
+                },
+                fields: {
+                    File: {
+                        acceptReporters: true,
+                        editor: "file_Editor",
+
+                        initilize: "file_Init",
+                    },
+                },
+            };
+        }
+
+        file_Init(field) {
+            field.createBorderRect_();
+            field.createTextElement_();
+        }
+
+        file_Editor(field) {
+            //Its like some sort of loading. :trol:
+            const newLoadal = new editor.windows.modalFileExplorer(400, 400);
+
+            newLoadal.__moveToTop();
+
+            const bounding = field.borderRect_.getBoundingClientRect();
+            newLoadal.x = bounding.x + bounding.width / 2;
+            newLoadal.y = bounding.y + bounding.height;
+            newLoadal.onFileSelected = (path) => {
+                field.value = path;
             };
         }
     }

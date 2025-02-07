@@ -430,8 +430,11 @@ editor.EnglishLang = {
 
     "sugarcube.files": "Files",
     "sugarcube.files.block.setFile": "set file [file] to [content]",
-    "sugarcube.files.block.getFile": "contents of [file]",
+    "sugarcube.files.block.getFile": "contents of [file] as [type]",
     "sugarcube.files.block.getFileExistance": "does [file] exist",
+    "sugarcube.files.menu.asMenu.text": "Text",
+    "sugarcube.files.menu.asMenu.JSON": "JSON",
+    "sugarcube.files.menu.asMenu.byte": "Byte Array",
 
     "engine.nodeNames.scene": "Scene",
     "engine.nodeNames.Node": "Node",
