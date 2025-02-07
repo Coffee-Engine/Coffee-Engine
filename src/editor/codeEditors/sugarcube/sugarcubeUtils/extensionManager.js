@@ -287,15 +287,17 @@
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
+                                //We will go through and make sure we async anything asynced
                                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                                    args[input.name] = `async () => {\n${generator.statementToCode(block, input.name)}\n}`;
+                                    const value = generator.statementToCode(block, input.name);
+                                    args[input.name] = `${value.includes("await") ? "async " : ""}() => {\n${value}\n}`;
                                     recalls[input.name] = args[input.name];
                                     return;
                                 }
 
                                 const value = generator.valueToCode(block, input.name, 0);
                                 args[input.name] = value || "0";
-                                recalls[input.name] = `() => {\nreturn ${value}\n}`;
+                                recalls[input.name] = `${String(value).includes("await") ? "async " : ""}() => {\nreturn ${value}\n}`;
                             });
                         }
 
