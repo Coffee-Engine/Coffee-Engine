@@ -55,7 +55,12 @@
     });
 
     window.addEventListener("keyup", (event) => {
-        coffeeEngine.inputs.keys[event.key.toLowerCase()] = false;
+        let lowercase = event.key.toLowerCase();
+        if (event.key == " ") {
+            lowercase = "space";
+        }
+
+        coffeeEngine.inputs.keys[lowercase] = false;
     });
 
     //Mouse stuff
