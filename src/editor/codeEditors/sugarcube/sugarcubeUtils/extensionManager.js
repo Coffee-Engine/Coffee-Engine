@@ -1031,13 +1031,13 @@
                         }
 
                         //Then concat our two things into a freakish monstrosity, and update the toolbox.
-                        sugarcube.toolbox.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                        sugarcube.filtered.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
                     }
                 };
             }
 
             if (sugarcube.workspace) {
-                sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+                sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
                 sugarcube.workspace.getToolbox().refreshSelection();
 
@@ -1070,7 +1070,7 @@
                 delete this.updateFunctions[extensionID];
 
                 if (sugarcube.workspace) {
-                    sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+                    sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
                     sugarcube.workspace.getToolbox().refreshSelection();
                 }
@@ -1096,7 +1096,7 @@
                 this.updateFunctions[extensionID]();
             }
 
-            sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+            sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
             sugarcube.workspace.getToolbox().refreshSelection();
         }

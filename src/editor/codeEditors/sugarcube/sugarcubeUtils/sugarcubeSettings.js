@@ -219,9 +219,11 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
                 if (block.kind != "label") blocksInCategory++;
             }
         }
+        console.log(category.contents);
         //If we don't have any blocks don't show the category
         if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
     }
 
+    sugarcube.workspace.updateToolbox(sugarcube.filtered);
     sugarcube.workspace.getToolbox().refreshSelection();
 };
