@@ -433,8 +433,9 @@ editor.EnglishLang = {
     "sugarcube.files.block.getFile": "contents of [file] as [type]",
     "sugarcube.files.block.getFileExistance": "does [file] exist",
     "sugarcube.files.menu.asMenu.text": "Text",
-    "sugarcube.files.menu.asMenu.JSON": "JSON",
+    "sugarcube.files.menu.asMenu.JSON": "Table",
     "sugarcube.files.menu.asMenu.byte": "Byte Array",
+    "sugarcube.files.menu.asMenu.dataURL": "Data URL",
 
     "engine.nodeNames.scene": "Scene",
     "engine.nodeNames.Node": "Node",

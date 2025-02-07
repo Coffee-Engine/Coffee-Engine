@@ -1,4 +1,6 @@
 (function () {
+    const fileReader = new FileReader();
+
     class files {
         getInfo() {
             return {
@@ -28,7 +30,6 @@
                         opcode: "getFile",
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: editor.language["sugarcube.files.block.getFile"],
-                        await: true,
                         arguments: {
                             file: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -44,9 +45,10 @@
                     type: {
                         acceptReporters: true,
                         items: [
-                            { value: "text", text:editor.language["sugarcube.files.menu.asMenu.text"] },
+                            { value: "readAsText", text:editor.language["sugarcube.files.menu.asMenu.text"] },
                             { value: "JSON", text:editor.language["sugarcube.files.menu.asMenu.JSON"] },
-                            { value: "byte", text:editor.language["sugarcube.files.menu.asMenu.byte"] }
+                            { value: "readAsArrayBuffer", text:editor.language["sugarcube.files.menu.asMenu.byte"] },
+                            { value: "readAsDataURL", text:editor.language["sugarcube.files.menu.asMenu.dataURL"] }
                         ]
                     }
                 },
@@ -78,6 +80,37 @@
             newLoadal.onFileSelected = (path) => {
                 field.value = path;
             };
+        }
+
+        async getFile({ file, type }) {
+            return new Promise(async (resolve, reject) => {
+                //Configure our onloads
+                fileReader.onload = () => {
+                    //If we are looking for a json or table parse it
+                    if (type == "JSON") {
+                        try {
+                            resolve(JSON.parse(fileReader.result))
+                        } catch (error) {
+                            reject("File not valid JSON");
+                        }
+                    }
+                    else {
+                        resolve(fileReader.result);
+                    }
+                };
+                fileReader.onerror = () => {reject("File is not valid");};
+
+                //Read the file
+                const fileObj = await project.getFile(file).catch(() => {reject("File does not exist");});
+
+                //Then read it as our type
+                if (type == "JSON") {
+                    fileReader.readAsText(fileObj);
+                }
+                else {
+                    fileReader[type](fileObj);
+                }
+            });
         }
     }
 

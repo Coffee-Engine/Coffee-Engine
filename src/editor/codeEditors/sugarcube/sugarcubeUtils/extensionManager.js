@@ -250,6 +250,16 @@
                 return;
             }
 
+            //Check the block for async properties
+            let asynchronous = false;
+            const blockFunction = sugarcube.extensionInstances[extensionID][blockOpcode];
+            //Check for promises
+            if (blockFunction) {
+                const stringified = blockFunction.toString();
+                const matches = stringified.match(/new\s*Promise\s*\(/gm);
+                if (matches) asynchronous = matches.length > 0;
+            }
+
             //Certain blocks handle differently.
             switch (blockType) {
                 //Hat blocks will be event listeners. No exceptions lol.
@@ -271,8 +281,9 @@
                         const opcode = split.join("_");
                         const blockData = this.blockDefs[extension][opcode];
 
-                        let baseBlockCode = `${blockData.await ? "await " : ""}sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
+                        let baseBlockCode = `${asynchronous ? "await " : ""}sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
 
+                        //Loop through both sets of inputs AKA double check
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
@@ -301,6 +312,7 @@
                             });
                         }
 
+                        //Parse our inputs into code
                         for (const arg in args) {
                             baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
                         }
@@ -308,6 +320,7 @@
                         //Then we do the recalls in util
                         baseBlockCode += "},{target:this.target,self:this,recalls:{\n";
 
+                        //Add our recalls
                         for (const recall in recalls) {
                             baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
                         }
@@ -648,8 +661,6 @@
                         if (block.output) {
                             blockDef.output = block.output;
                         }
-
-                        
 
                         //Add the blockly block definition and register the block compiler
                         this.registerBlockCode(block, extension.id);
