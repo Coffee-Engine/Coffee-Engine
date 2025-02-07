@@ -386,7 +386,7 @@ editor.EnglishLang = {
     "sugarcube.variables.contextMenu.removeVariable": "Remove Variable",
 
     "sugarcube.variables.objectLike.substitute": "substitute [objectLike] with [value]",
-    "sugarcube.variables.objectLike.deletionConfirmation": 'Are you sure you want to delete "[variable]"?',
+    "sugarcube.variables.objectLike.deletionConfirmation": "Are you sure you want to delete \"[variable]\"?",
 
     "sugarcube.lists": "Lists",
     "sugarcube.lists.value.item": "item",
@@ -467,5 +467,4 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
     "engine.nodeProperties.scene.groundColor": "Ground Color",
     "engine.nodeProperties.scene.centerColor": "Core Color"
-}
-;
+};
