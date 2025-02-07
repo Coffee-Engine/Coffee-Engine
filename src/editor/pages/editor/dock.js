@@ -155,6 +155,11 @@
 
             editor.dock.dockWindowDiv(window, column, row, adjancency);
 
+            if (!window.resized) return;
+            window.tabs.forEach((tab) => {
+                tab.owner.resized();
+            });
+
             editor.dock.refreshLayout();
         },
 
@@ -284,6 +289,11 @@
                     //If we click the center box add the tab, and close the docking UI
                     row.onclick = () => {
                         window.content.__addTab(targetWindow);
+                        //Resize the tabs
+                        if (!targetWindow.resized) return;
+                        targetWindow.tabs.forEach((tab) => {
+                            tab.owner.resized();
+                        });
                         editor.dock.closeDockWindowUI();
                         callback();
                     };

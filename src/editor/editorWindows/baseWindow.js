@@ -585,10 +585,17 @@
                             if (tab.owner.width < 10) tab.owner.width = 400;
                             if (tab.owner.height < 10) tab.owner.height = 400;
 
-                            tab.content.style.opacity = "100";
+                            tab.content.style.visibility = "visible";
                             tab.content.style.zIndex = "1";
 
                             this.__refreshTaskbar();
+
+                            //Go to the first tab if we detab the current tab
+                            if (tabIndex == this.__CurrentTab) {
+                                this.tabs[0].content.style.visibility = "visible";
+                                this.tabs[0].content.style.zIndex = "1";
+                                this.__CurrentTab = 0;
+                            }
                         };
 
                         //add and configure the tab
