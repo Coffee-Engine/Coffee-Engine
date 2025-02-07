@@ -1,5 +1,6 @@
 (function () {
     const fileReader = new FileReader();
+    const base64Regex = /data:\w*\/\w*;base64,/g;
 
     class files {
         getInfo() {
@@ -26,6 +27,7 @@
                             }
                         },
                     },
+                    "---",
                     {
                         opcode: "getFile",
                         type: sugarcube.BlockType.REPORTER_ANY,
@@ -37,6 +39,17 @@
                             },
                             type: {
                                 menu:"type"
+                            }
+                        },
+                    },
+                    {
+                        opcode: "getFileExistance",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.files.block.getFileExistance"],
+                        arguments: {
+                            file: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "File",
                             }
                         },
                     },
@@ -82,7 +95,25 @@
             };
         }
 
-        async getFile({ file, type }) {
+        setFile({ file, content }) {
+            if (typeof content == "string") {
+                if (content.match(base64Regex)) {
+                    const byteData = atob(content.replace(base64Regex, ""));
+                    let bytes = new Array(byteData.length);
+                    for (let b=0; b<bytes.length; b++) {
+                        bytes[b] = byteData.charCodeAt(b);
+                    }
+
+                    //Turn it into an array to turn into a blob
+                    bytes = new Uint8Array(bytes);
+                    project.setFile(file, bytes, "text/plain");
+                    return;
+                }
+            }
+            project.setFile(file, content, "text/plain")
+        }
+
+        getFile({ file, type }) {
             return new Promise(async (resolve, reject) => {
                 //Configure our onloads
                 fileReader.onload = () => {
@@ -111,6 +142,10 @@
                     fileReader[type](fileObj);
                 }
             });
+        }
+
+        getFileExistance({ file }) {
+            return project.fileExists(file);
         }
     }
 

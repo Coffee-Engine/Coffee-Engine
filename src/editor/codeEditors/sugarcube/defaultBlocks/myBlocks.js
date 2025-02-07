@@ -389,7 +389,9 @@
                 functionName += `_${param.id}`;
             });
 
-            return `this["${functionName.replaceAll('"', '\\"')}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
+            const innerCode = manager.nextBlockToCode(block, generator);
+
+            return `this["${functionName.replaceAll('"', '\\"')}"] = ${innerCode.includes("await") ? "async " : ""}(args) => {\n${innerCode}\n}`;
         }
 
         execute(block, generator, manager) {

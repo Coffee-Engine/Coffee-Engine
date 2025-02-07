@@ -130,9 +130,9 @@ editor.EnglishLang = {
     "editor.dropdown.scene.save": "Save Scene",
     "editor.dropdown.scene.load": "Load Scene",
 
-    "editor.notification.saveScene": 'Scene saved to "[path]"',
-    "editor.notification.saveScript": 'Saved "[path]" sucessfully',
-    "editor.notification.compileScript": 'Compiled "[input]" as "[output]" sucessfully',
+    "editor.notification.saveScene": "Scene saved to \"[path]\"",
+    "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
+    "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
@@ -466,5 +466,6 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
     "engine.nodeProperties.scene.groundColor": "Ground Color",
-    "engine.nodeProperties.scene.centerColor": "Core Color",
-};
+    "engine.nodeProperties.scene.centerColor": "Core Color"
+}
+;
