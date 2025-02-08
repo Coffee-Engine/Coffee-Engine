@@ -585,6 +585,9 @@
 
                                             case sugarcube.ArgumentType.STATEMENT: {
                                                 argument.type = "input_statement";
+                                                if (argument.nextStatement) {
+                                                    argument.check = argument.nextStatement;
+                                                }
                                                 break;
                                             }
 
@@ -662,6 +665,14 @@
 
                         if (block.output) {
                             blockDef.output = block.output;
+                        }
+
+                        //Statements
+                        if (block.nextStatement) {
+                            blockDef.nextStatement = blockDef.nextStatement;
+                        }
+                        if (block.previousStatement) {
+                            blockDef.previousStatement = blockDef.previousStatement;
                         }
 
                         //Add the blockly block definition and register the block compiler

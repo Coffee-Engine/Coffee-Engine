@@ -63,6 +63,36 @@
                     },
                     "---",
                     {
+                        opcode: "switch_Statement",
+                        type: sugarcube.BlockType.CONDITIONAL,
+                        text: editor.language["sugarcube.controls.block.switch_Statement"],
+                        arguments: {
+                            condition: {
+                                type: sugarcube.ArgumentType.STRING,
+                            },
+                            statement: {
+                                type: sugarcube.ArgumentType.STATEMENT,
+                                nextStatement: "branch"
+                            },
+                        },
+                    },
+                    {
+                        opcode: "branch_Statement",
+                        type: sugarcube.BlockType.CONDITIONAL,
+                        text: editor.language["sugarcube.controls.block.branch_Statement"],
+                        previousStatement:"branch",
+                        nextStatement:"branch",
+                        arguments: {
+                            condition: {
+                                type: sugarcube.ArgumentType.STRING,
+                            },
+                            statement: {
+                                type: sugarcube.ArgumentType.STATEMENT,
+                            },
+                        },
+                    },
+                    "---",
+                    {
                         opcode: "repeat",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.repeat"],

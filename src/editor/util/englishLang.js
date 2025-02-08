@@ -255,6 +255,8 @@ editor.EnglishLang = {
     "sugarcube.controls.block.wait": "wait [seconds] seconds",
     "sugarcube.controls.block.ifStatement": "if [condition] then [dummy] [statement]",
     "sugarcube.controls.block.ifElse_Statement": "if [condition] then [dummy] [statement] else [dummy2] [statement2]",
+    "sugarcube.controls.block.switch_Statement": "switch [condition] [statement]",
+    "sugarcube.controls.block.branch_Statement": "case [condition] [statement]",
     "sugarcube.controls.block.repeat": "repeat [num] [dummy] [statement]",
     "sugarcube.controls.block.foreach": "for each item in [array] do [dummy] [statement]",
     "sugarcube.controls.block.repeatUNT": "repeat until [condition] [dummy] [statement]",
