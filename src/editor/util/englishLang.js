@@ -261,6 +261,8 @@ editor.EnglishLang = {
     "sugarcube.controls.block.foreach": "for each item in [array] do [dummy] [statement]",
     "sugarcube.controls.block.repeatUNT": "repeat until [condition] [dummy] [statement]",
     "sugarcube.controls.block.while": "while [condition] [dummy] [statement]",
+    "sugarcube.controls.block.continue": "continue [image]",
+    "sugarcube.controls.block.break": "break [image]",
     "sugarcube.controls.block.call": "call [reference]",
 
     "sugarcube.sensing": "Sensing",

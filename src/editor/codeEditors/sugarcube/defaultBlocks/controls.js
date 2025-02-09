@@ -166,6 +166,32 @@
                         },
                     },
                     "---",
+                    /* Hidden until further notice
+                    {
+                        opcode: "continue",
+                        compileFunc: "continue",
+                        type: sugarcube.BlockType.TERMINAL,
+                        text: editor.language["sugarcube.controls.block.continue"],
+                        arguments: {
+                            image: {
+                                type: sugarcube.ArgumentType.IMAGE,
+                                dataURI: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAAAXNSR0IArs4c6QAAAMxJREFUSEvtltENwyAMRGGbdIhml3SwZpd2iGabVEYyMZaBs/IRRYJv8+Q7Y+MYgPN7P/fH6xuB0NANIhiDEGgTKGEoFAJOyyds65yYvSxvDGT/SC4fRHZV8gAmG4eH5qxwPRvExwE8fLZa7zoPrcnMucppIzO03gwN39iC0SUPkOIzUF9EfjgZw32e3mGtAChUDo0CaEnsQfUEyp0ivUTlM0z+hkXreaAWLBVFS0KgNZgJlEXSnrZAnBj00WsVre3BtSydXkU4M8869wfziMuD3BVjeQAAAABJRU5ErkJggg=="
+                            }
+                        }
+                    },
+                    */
+                    {
+                        opcode: "break",
+                        compileFunc: "break",
+                        type: sugarcube.BlockType.TERMINAL,
+                        text: editor.language["sugarcube.controls.block.break"],
+                        arguments: {
+                            image: {
+                                type: sugarcube.ArgumentType.IMAGE,
+                                dataURI: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAAAXNSR0IArs4c6QAAAMxJREFUSEvtltENwyAMRGGbdIhml3SwZpd2iGabVEYyMZaBs/IRRYJv8+Q7Y+MYgPN7P/fH6xuB0NANIhiDEGgTKGEoFAJOyyds65yYvSxvDGT/SC4fRHZV8gAmG4eH5qxwPRvExwE8fLZa7zoPrcnMucppIzO03gwN39iC0SUPkOIzUF9EfjgZw32e3mGtAChUDo0CaEnsQfUEyp0ivUTlM0z+hkXreaAWLBVFS0KgNZgJlEXSnrZAnBj00WsVre3BtSydXkU4M8869wfziMuD3BVjeQAAAABJRU5ErkJggg=="
+                            }
+                        }
+                    },
                     {
                         opcode: "call",
                         type: sugarcube.BlockType.COMMAND,
@@ -243,6 +269,14 @@
             while (sugarcube.cast.toBoolean(util.recalls.condition())) {
                 args.statement();
             }
+        }
+
+        continue() {
+            return `\ncontinue;\n`;
+        }
+
+        break() {
+            return `\nbreak;\n`
         }
 
         call(args) {
