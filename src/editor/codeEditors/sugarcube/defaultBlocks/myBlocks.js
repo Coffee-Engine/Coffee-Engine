@@ -434,7 +434,7 @@
                 baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
             }
 
-            baseBlockCode += "}})";
+            baseBlockCode += `}})\n${manager.nextBlockToCode(block, generator)}`;
 
             //Do this mess. (I might make a macro for this)
             return baseBlockCode;

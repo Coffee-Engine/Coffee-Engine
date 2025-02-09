@@ -12,7 +12,6 @@
                 blocks: [
                     {
                         opcode: "wait",
-                        compileFunc: "wait",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.wait"],
                         arguments: {
@@ -64,6 +63,7 @@
                     "---",
                     {
                         opcode: "switch_Statement",
+                        compileFunc: "switch_Statement",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.switch_Statement"],
                         arguments: {
@@ -74,10 +74,18 @@
                                 type: sugarcube.ArgumentType.STATEMENT,
                                 nextStatement: "branch"
                             },
+                            dummy: {
+                                type: sugarcube.ArgumentType.DUMMY,
+                                nextStatement: "branch"
+                            },
+                            default: {
+                                type: sugarcube.ArgumentType.STATEMENT,
+                            },
                         },
                     },
                     {
                         opcode: "branch_Statement",
+                        compileFunc: "branch_Statement",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.branch_Statement"],
                         previousStatement:"branch",
@@ -172,10 +180,12 @@
             };
         }
 
-        wait(block, generator, manager) {
-            return `setTimeout(() => {
-    ${manager.nextBlockToCode(block, generator)}
-}, ${generator.valueToCode(block, "seconds", 0) * 1000});`;
+        wait({ seconds }) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, sugarcube.cast.toNumber(seconds) * 1000);
+            });
         }
 
         ifStatement(args) {
@@ -190,6 +200,23 @@
             } else {
                 args.statement2();
             }
+        }
+
+        switch_Statement(block, generator, manager) {
+            return `switch (${generator.valueToCode(block, "condition", 0)}) {
+    ${generator.statementToCode(block, "statement")}
+
+    default: {
+        ${generator.statementToCode(block, "default")}
+    }
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        branch_Statement(block, generator, manager) {
+            
+            return `case (${generator.valueToCode(block, "condition", 0)}): {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`;
         }
 
         repeat(args) {

@@ -102,6 +102,8 @@
                 };
             }
 
+            this.defaultAction = "Action"
+
             sugarcube.extensionInstances = {};
         }
 
@@ -114,11 +116,11 @@
             inline = inline || true;
             switch (type) {
                 case sugarcube.BlockType.HAT:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.PROCEDURE_DEFINITION:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.REPORTER:
@@ -162,12 +164,12 @@
                     break;
 
                 case sugarcube.BlockType.COMMAND:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
-                    BlockJson.previousStatement = BlockJson.previousStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
+                    BlockJson.previousStatement = BlockJson.previousStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.TERMINAL:
-                    BlockJson.previousStatement = BlockJson.previousStatement || "Action";
+                    BlockJson.previousStatement = BlockJson.previousStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.OBJECT:
@@ -195,8 +197,8 @@
                     break;
 
                 default:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
-                    BlockJson.previousStatement = BlockJson.previousStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
+                    BlockJson.previousStatement = BlockJson.previousStatement || this.defaultAction;
                     break;
             }
 
@@ -223,10 +225,6 @@
                 return sugarcube.generator.blockToCode(nextBlock);
             }
             return "";
-        }
-
-        fixifyTheArgs(args) {
-            return args.replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(").replaceAll(") {", ") => {").replaceAll('\\n}"', "}").replaceAll('\\"', '"').replaceAll("\\n", "\n");
         }
 
         //This just registers the compile code for the block.
@@ -328,8 +326,6 @@
                         }
 
                         baseBlockCode += "}})";
-
-                        //let baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this.target,self:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
 
                         if (block.outputConnection) {
                             return [baseBlockCode, 0];
@@ -585,9 +581,7 @@
 
                                             case sugarcube.ArgumentType.STATEMENT: {
                                                 argument.type = "input_statement";
-                                                if (argument.nextStatement) {
-                                                    argument.check = argument.nextStatement;
-                                                }
+                                                argument.check = argument.nextStatement || this.defaultAction;
                                                 break;
                                             }
 
@@ -669,10 +663,10 @@
 
                         //Statements
                         if (block.nextStatement) {
-                            blockDef.nextStatement = blockDef.nextStatement;
+                            blockDef.nextStatement = block.nextStatement;
                         }
                         if (block.previousStatement) {
-                            blockDef.previousStatement = blockDef.previousStatement;
+                            blockDef.previousStatement = block.previousStatement;
                         }
 
                         //Add the blockly block definition and register the block compiler
