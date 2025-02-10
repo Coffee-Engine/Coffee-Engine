@@ -1,7 +1,21 @@
 (function () {
     coffeeEngine.inputs = {
         keys: {},
-        mouse: {},
+        mouse: {
+            __CL__: false,
+
+            set locked(value) {
+                coffeeEngine.inputs.mouse.__CL__ = value;
+
+                if (coffeeEngine.inputs.mouse.__CL__) {
+                    coffeeEngine.renderer.canvas.requestPointerLock();
+                }
+                else {
+                    document.exitPointerLock();
+                }
+            },
+            get locked() {return coffeeEngine.inputs.mouse.__CL__;},
+        },
         //gamepad objects
         gamepads: {
             0: {},
@@ -66,6 +80,10 @@
     //Mouse stuff
     window.addEventListener("mousedown", (event) => {
         coffeeEngine.inputs.mouse[event.button] = true;
+        if (coffeeEngine.inputs.mouse.locked) {
+            if (!coffeeEngine.isEditor) coffeeEngine.renderer.canvas.requestPointerLock();
+        }
+
         coffeeEngine.sendEvent("desktopInput", { type: "mouse", button: event.button });
     });
 

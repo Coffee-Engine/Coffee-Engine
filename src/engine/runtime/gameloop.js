@@ -1,11 +1,11 @@
 (function () {
     coffeeEngine.runtime.frameloopFunction = () => {
-        coffeeEngine.runtime.frameStart();
         if (!coffeeEngine.runtime.paused) {
             coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
             coffeeEngine.runtime.update(coffeeEngine.runtime.deltaTime);
             coffeeEngine.runtime.draw();
         }
+        coffeeEngine.runtime.frameStart();
     };
 
     coffeeEngine.runtime.startFrameLoop = (framerate) => {

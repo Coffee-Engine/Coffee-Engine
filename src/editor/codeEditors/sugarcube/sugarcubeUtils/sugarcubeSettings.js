@@ -226,5 +226,4 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
     }
 
     sugarcube.workspace.getToolbox().refreshSelection();
-    console.log(sugarcube.filtered.contents);
 };

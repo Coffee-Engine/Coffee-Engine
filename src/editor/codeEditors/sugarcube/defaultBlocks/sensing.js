@@ -212,6 +212,22 @@
                     },
                     "---",
                     {
+                        opcode: "lockMouse",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sensing.block.lockMouse"],
+                        arguments: {
+                            mode: {
+                                menu:"modeMenu"
+                            }
+                        }
+                    },
+                    {
+                        opcode: "lockStatus",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.sensing.block.lockStatus"],
+                    },
+                    "---",
+                    {
                         opcode: "controllerConnected",
                         type: sugarcube.BlockType.BOOLEAN,
                         text: editor.language["sugarcube.sensing.block.controllerConnected"],
@@ -314,6 +330,13 @@
                         ],
                         acceptReporters: true,
                     },
+                    modeMenu: {
+                        items:[
+                            { text: editor.language["sugarcube.sensing.menu.lockStatus.lock"], value: "true" },
+                            { text: editor.language["sugarcube.sensing.menu.lockStatus.unlock"], value: "false" },
+                        ],
+                        acceptReporters: true,
+                    },
                     controllers: {
                         items: ["1", "2", "3", "4"],
                         acceptReporters: true,
@@ -366,14 +389,41 @@
             };
         }
 
+        //Key stuff
         isKeyDown({ key }) {
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.keys[key]);
         }
 
+        //Mouse stuff
         mouseDown({ button }) {
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.mouse[button]);
         }
 
+        mouseX() {
+            return sugarcube.cast.toNumber(
+                sugarcube.cast.toBoolean(coffeeEngine.inputs.mouse.locked) ? 
+                coffeeEngine.inputs.mouse.movementX : 
+                coffeeEngine.inputs.mouse.screenX
+            );
+        }
+
+        mouseY() {
+            return sugarcube.cast.toNumber(
+                sugarcube.cast.toBoolean(coffeeEngine.inputs.mouse.locked) ? 
+                coffeeEngine.inputs.mouse.movementY : 
+                coffeeEngine.inputs.mouse.screenY
+            );
+        }
+
+        lockMouse(mode) {
+            coffeeEngine.inputs.mouse.locked = sugarcube.cast.toBoolean(mode);
+        }
+
+        lockStatus() {
+            return sugarcube.cast.toBoolean(coffeeEngine.inputs.mouse.locked);
+        }
+
+        //Controller stuff
         //Really simple!
         controllerConnected({ id }) {
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.gamepads[id].object);
@@ -413,6 +463,7 @@
             return coffeeEngine.inputs.gamepads[id].id || "none";
         }
 
+        //Time stuff
         timer() {
             return coffeeEngine.timer;
         }
@@ -438,6 +489,7 @@
             }
         }
 
+        //Fields
         controller_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
