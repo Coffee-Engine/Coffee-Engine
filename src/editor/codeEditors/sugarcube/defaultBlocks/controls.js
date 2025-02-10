@@ -242,6 +242,7 @@
             
             return `case (${generator.valueToCode(block, "condition", 0)}): {
     ${generator.statementToCode(block, "statement")}
+    break;
 }\n${manager.nextBlockToCode(block, generator)}`;
         }
 
