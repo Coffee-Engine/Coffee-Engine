@@ -198,9 +198,10 @@ sugarcube.easyColourBlock = (block, color, hat) => {
 
 sugarcube.setToolboxBasedOnFilter = (filter) => {
     //Loop through all categories filtering
-    sugarcube.filtered.contents = [];
+    sugarcube.filtered.contents = []//JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
     for (let index = 0; index < sugarcube.toolbox.contents.length; index++) {
-        const category = JSON.parse(JSON.stringify(sugarcube.toolbox.contents[index]));
+        let category = JSON.parse(JSON.stringify(sugarcube.toolbox.contents[index]));
+
         let blocksInCategory = 0;
         for (let blockID = 0; blockID < category.contents.length; blockID++) {
             const block = category.contents[blockID];
@@ -220,9 +221,10 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
             }
         }
         //If we don't have any blocks don't show the category
+        //if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
         if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
     }
 
-    sugarcube.workspace.updateToolbox(sugarcube.filtered);
     sugarcube.workspace.getToolbox().refreshSelection();
+    console.log(sugarcube.filtered.contents);
 };

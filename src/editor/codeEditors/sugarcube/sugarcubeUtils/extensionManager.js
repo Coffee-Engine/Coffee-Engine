@@ -1036,7 +1036,9 @@
                         }
 
                         //Then concat our two things into a freakish monstrosity, and update the toolbox.
-                        sugarcube.filtered.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                        const extensionIndex = this.getExtensionToolboxIndex(myInfo.id);
+                        if (extensionIndex < 0) return;
+                        sugarcube.filtered.contents[extensionIndex].contents = extension.defaultBlockInfo.concat(generatedExtras);
                     }
                 };
             }
@@ -1060,6 +1062,16 @@
             );
         }
 
+        getExtensionToolboxIndex(extensionID) {
+            //Find its index
+            return sugarcube.filtered.contents.indexOf(
+                //Get the extension's def
+                sugarcube.filtered.contents.find((item) => {
+                    return item.id == extensionID;
+                })
+            );
+        }
+
         removeExtension(extensionID) {
             if (sugarcube.extensionInstances[extensionID]) {
                 //run the disposal function if it exists
@@ -1078,10 +1090,6 @@
                     sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
                     sugarcube.workspace.getToolbox().refreshSelection();
-                }
-
-                if (coffeeEngine.isEditor) {
-                    sugarcube.toolboxDefault = JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
                 }
             }
         }

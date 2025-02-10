@@ -225,6 +225,7 @@
                 
                 void main()
                 {
+
                     //Set our variables
                     LIGHT_AFFECTION = 1.0;
                     COLOR = v_color;
