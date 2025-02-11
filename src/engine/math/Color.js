@@ -3,7 +3,7 @@
         HexToRGB: (Hex) => {
             if (typeof Hex === "string") {
                 if (Hex.length > 7) {
-                    const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(Hex);
+                    const splitHex = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(Hex) || [0,0,0,255];
                     return {
                         r: parseInt(splitHex[1], 16),
                         g: parseInt(splitHex[2], 16),
