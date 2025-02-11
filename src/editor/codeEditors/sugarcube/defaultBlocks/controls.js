@@ -24,6 +24,7 @@
                     "---",
                     {
                         opcode: "ifStatement",
+                        compileFunc: "ifStatement",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.ifStatement"],
                         arguments: {
@@ -40,6 +41,7 @@
                     },
                     {
                         opcode: "ifElse_Statement",
+                        compileFunc: "ifElse_Statement",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.ifElse_Statement"],
                         arguments: {
@@ -102,6 +104,7 @@
                     "---",
                     {
                         opcode: "repeat",
+                        compileFunc: "repeat",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.repeat"],
                         arguments: {
@@ -119,6 +122,7 @@
                     },
                     {
                         opcode: "foreach",
+                        compileFunc: "foreach",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.foreach"],
                         arguments: {
@@ -135,6 +139,7 @@
                     },
                     {
                         opcode: "repeatUNT",
+                        compileFunc: "repeatUNT",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.repeatUNT"],
                         arguments: {
@@ -151,6 +156,7 @@
                     },
                     {
                         opcode: "while",
+                        compileFunc: "while",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.while"],
                         arguments: {
@@ -166,7 +172,7 @@
                         },
                     },
                     "---",
-                    /* Hidden until further notice
+                    //Further notice is now
                     {
                         opcode: "continue",
                         compileFunc: "continue",
@@ -179,7 +185,6 @@
                             }
                         }
                     },
-                    */
                     {
                         opcode: "break",
                         compileFunc: "break",
@@ -214,18 +219,20 @@
             });
         }
 
-        ifStatement(args) {
-            if (sugarcube.cast.toBoolean(args.condition) == true) {
-                args.statement();
-            }
+        //! Beyond this point is compiled blocks beware!
+        ifStatement(block, generator, manager) {
+            return `if (${generator.valueToCode(block, "condition", 0) || false}) {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`
         }
 
-        ifElse_Statement(args) {
-            if (sugarcube.cast.toBoolean(args.condition) == true) {
-                args.statement();
-            } else {
-                args.statement2();
-            }
+        ifElse_Statement(block, generator, manager) {
+            return `if (${generator.valueToCode(block, "condition", 0) || false}) {
+    ${generator.statementToCode(block, "statement")}
+}
+else {
+    ${generator.statementToCode(block, "statement2")}
+}\n${manager.nextBlockToCode(block, generator)}`
         }
 
         switch_Statement(block, generator, manager) {
@@ -246,30 +253,36 @@
 }\n${manager.nextBlockToCode(block, generator)}`;
         }
 
-        repeat(args) {
-            for (let index = 0; index < args.num; index++) {
-                args.statement();
-            }
+        repeat(block, generator, manager) {
+            return `{
+    let num = ${generator.valueToCode(block, "num", 0)};
+    for (let index = 0; index < num; index++) {
+        ${generator.statementToCode(block, "statement")}
+    }
+}\n${manager.nextBlockToCode(block, generator)}`;
         }
 
-        foreach(args) {
-            if (!Array.isArray(args.array)) return;
-
-            args.array.forEach((item) => {
-                args.statement();
-            });
+        foreach(block, generator, manager) {
+            return `{
+    let val = ${generator.valueToCode(block, "array", 0) || "[]"};
+    if (Array.isArray(val)) {
+        for (let ArrayKey in val) {
+            ${generator.statementToCode(block, "statement")}
+        }
+    }
+}\n${manager.nextBlockToCode(block, generator)}`;
         }
 
-        repeatUNT(args, util) {
-            while (!sugarcube.cast.toBoolean(util.recalls.condition())) {
-                args.statement();
-            }
+        repeatUNT(block, generator, manager) {
+            return `while (!(${generator.valueToCode(block, "condition", 0) || false})) {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`;
         }
 
-        while(args, util) {
-            while (sugarcube.cast.toBoolean(util.recalls.condition())) {
-                args.statement();
-            }
+        while(block, generator, manager) {
+            return `while (${generator.valueToCode(block, "condition", 0) || false}) {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`;
         }
 
         continue() {
