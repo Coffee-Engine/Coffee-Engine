@@ -21,8 +21,8 @@
                 right = right ? -1 : 1;
                 height = ((up ? -1 : 1) * height) / 2;
                 return `
-          c 0 0 0 ${height} ${-right * 25} ${height}
-          c 0 0 ${right * 25} 0 ${right * 25} ${height}
+          c ${-right * 5} 0 0 ${height} ${-right * 25} ${height}
+          c ${right * 25} 0 ${right * 20} ${height} ${right * 25} ${height}
         `;
             }
 
