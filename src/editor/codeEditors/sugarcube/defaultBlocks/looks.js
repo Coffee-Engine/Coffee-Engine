@@ -39,7 +39,7 @@
                     },
                     {
                         opcode: "getSprite",
-                        typeof: sugarcube.BlockType.REPORTER,
+                        type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.looks.block.getSprite"],
                         filter: ["Sprite", "Billboard"],
                     },

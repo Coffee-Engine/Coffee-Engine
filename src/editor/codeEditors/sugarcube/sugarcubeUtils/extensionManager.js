@@ -111,15 +111,11 @@
 
         updateFunctions = {};
 
-        //Block shape definer.
+        //A quick macro for making non-extension blocks, internally used for menus.
         addBlocklyBlock(blockName, type, BlockJson, inline) {
             inline = inline || true;
             switch (type) {
                 case sugarcube.BlockType.HAT:
-                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
-                    break;
-
-                case sugarcube.BlockType.PROCEDURE_DEFINITION:
                     BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
                     break;
 
@@ -353,72 +349,20 @@
             //if it is an object (Or anything else really)
             else {
                 //Get the type and text
-                const type = block.type || block.blockType;
+                const type = sugarcube.BlockTypeConstructors[block.type || block.blockType];
                 const style = block.style || id + "blocks";
-                let text = block.text;
+                let { text, opcode, isInline } = block;
 
-                const opcode = block.opcode;
-                switch (type) {
-                    case "label":
-                        blockData = {
-                            kind: "label",
-                            text: text,
-                        };
-                        break;
+                //Switch between block definition types
+                switch (typeof type) {
+                    case "object": {
+                        let {next, previous, output} = type;
 
-                    case "button":
-                        //Create button
-                        blockData = {
-                            kind: "button",
-                            text: text,
-                            callbackKey: id + opcode,
-                        };
+                        if (previous) previous = (previous === true) ? this.defaultAction : previous;
+                        if (next) next = (next === true) ? this.defaultAction : next;
+                        if (output) output = (output === true) ? "ANY" : output;
 
-                        //Register callback code for the button
-                        sugarcube.buttons[id + opcode] = () => {
-                            sugarcube.extensionInstances[extension.id][opcode]();
-                        };
-
-                        //If we have a workspace register the callback
-                        if (sugarcube.workspace) {
-                            sugarcube.workspace.registerButtonCallback(id + opcode, sugarcube.buttons[id + opcode]);
-                        }
-                        break;
-
-                    //For duplicating blocks in the toolbox
-                    case "duplicate":
-                        blockData = {
-                            kind: "block",
-                            type: block.extensionID ? block.extensionID + block.of : id + block.of,
-                        };
-                        if (!Blockly.Blocks[blockData.type]) return;
-
-                        if (block.extraState) {
-                            blockData.extraState = block.extraState;
-                        }
-
-                        //Wierd block hack
-                        //I wish blockly preserved block inputs inside the actual block itself instead of having
-                        //half in the actual block, half in an outside definition
-                        if (this.blockDefs[block.extensionID ? block.extensionID : extension.id][block.of].inputs) {
-                            blockData.inputs = this.blockDefs[block.extensionID ? block.extensionID : extension.id][block.of].inputs;
-                        }
-                        break;
-
-                    default:
-                        //Declare the conversion for the function
-                        //The this will be our object/scene
-                        //sugarcube.JS_GEN.forBlock[id + opcode] = `sugarcube.extensions.${extension.id}[${opcode}]({},this);`;
-
-                        //Define the arguments used in block creation
-                        blockData = {
-                            kind: "block",
-                            type: id + opcode,
-                            inputs: {},
-                            fieldData: [],
-                        };
-
-                        //For the funny scratch styled branches
+                        //Scratch Styled Branches
                         if (typeof text == "object") {
                             //Joined variable
                             let joined = "";
@@ -455,7 +399,7 @@
                             text = joined;
                         }
 
-                        //And the toolbox definition
+                        //The actual block def
                         let blockDef = {
                             message0: text,
                             style: style,
@@ -464,9 +408,14 @@
                             extensions: [],
                         };
 
-                        //If it has arguments loop through those and add them to the args 0
-                        //Should probably add something for multiline things.
-                        //Maybe Arrays
+                        blockData = {
+                            kind: "block",
+                            type: id + opcode,
+                            inputs: {},
+                            fieldData: [],
+                        };
+                        
+                        //The arguments of the block
                         if (block.arguments) {
                             //Get keys and loop through arguments
                             const argumentKeys = Object.keys(block.arguments);
@@ -611,19 +560,18 @@
                             }
                         }
 
-                        if (block.alignments) {
-                            blockDef["lastDummyAlign0"] = block.alignment;
-                        }
-
-                        //For the funni!
-                        if (block.filter) {
-                            blockData.filter = block.filter;
-                        }
-
+                        //Cool stuff
                         //If there is an output or tooltip add them to the block definition
                         //Note that output only determines what the block puts out.
+                        if (block.alignments) blockDef["lastDummyAlign0"] = block.alignment;
+                        if (previous) blockDef.previousStatement = previous;
+                        if (next) blockDef.nextStatement = next;
+                        if (output) blockDef.output = output;
+                        if (block.filter) blockData.filter = block.filter;
+                        if (block.extraState) blockData.extraState = block.extraState;
+
+                        //The mutator
                         if (block.mutator) {
-                            //first we check to see if the mutator + extension ID exists.
                             if (Blockly.Extensions.TEST_ONLY.allExtensions[id + block.mutator]) {
                                 blockDef.mutator = id + block.mutator;
                             } else {
@@ -631,26 +579,29 @@
                             }
                         }
 
-                        if (block.extraState) {
-                            blockData.extraState = block.extraState;
-                        }
-
-                        if (block.output) {
-                            blockDef.output = block.output;
-                        }
-
-                        //Statements
-                        if (block.nextStatement) {
-                            blockDef.nextStatement = block.nextStatement;
-                        }
-                        if (block.previousStatement) {
-                            blockDef.previousStatement = block.previousStatement;
-                        }
-
-                        //Add the blockly block definition and register the block compiler
+                        //Register the block code
                         this.registerBlockCode(block, extension.id);
-                        this.addBlocklyBlock(id + opcode, block.isTerminal && type == "command" ? "terminal" : type, blockDef);
+
+                        //Add the block to the registry
+                        Blockly.Blocks[id + opcode] = {
+                            init: function () {
+                                this.setInputsInline(!isInline);
+                                this.jsonInit(blockDef);
+                            },
+                        };
+
                         break;
+                    }
+
+                    case "function": {
+                        blockData = type(block, sugarcube.workspace, this, {id: extension.id, opcode: opcode});
+                        break;
+                    }
+
+                    default: {
+                        console.error(`error on\n${extension.id}_${opcode}\n`,block.type || block.blockType)
+                        blockData = { kind: "label", text: `error on\n${extension.id}_${opcode}` };
+                    }
                 }
             }
 

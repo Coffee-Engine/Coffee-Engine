@@ -20,7 +20,7 @@
                     {
                         opcode: "declaration",
                         compileFunc: "declaration",
-                        type: sugarcube.BlockType.PROCEDURE_DEFINITION,
+                        type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.myblocks.block.define"],
                         mutator: "hatBlock_Mutator",
                         contextMenu: "removeCustomBlock",
