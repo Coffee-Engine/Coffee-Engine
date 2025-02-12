@@ -1,5 +1,6 @@
 (function () {
     //I'm to lazy to try and extract the zelos renderer so we are replacing it.
+    sugarcube.BlockShapes = {};
 
     sugarcube.customZelosConstant = class extends Blockly.zelos.ConstantProvider {
         init() {
@@ -10,6 +11,11 @@
             });
 
             super.init();
+
+            sugarcube.BlockShapes.Object = this.makeObject();
+            sugarcube.BlockShapes.Reference = this.makeCoolShape();
+            sugarcube.BlockShapes.Array = this.SQUARED;
+            sugarcube.BlockShapes.Field_ReporterAcceptance = this.SQUARED;
         }
 
         makeObject() {
@@ -149,58 +155,26 @@
             };
         }
 
-        OBJECT = this.makeObject();
-        REFERENCE = this.makeCoolShape();
-
         shapeFor(connection) {
             let check = connection.getCheck();
             !check && connection.targetConnection && (check = connection.targetConnection.getCheck());
             switch (connection.type) {
                 case Blockly.ConnectionType.OUTPUT_VALUE: {
-                    switch (check[0]) {
-                        case "Object": {
-                            return this.OBJECT;
-                        }
-
-                        case "Array": {
-                            return this.SQUARED;
-                        }
-
-                        case "Field_ReporterAcceptance": {
-                            return this.SQUARED;
-                        }
-
-                        case "Reference": {
-                            return this.REFERENCE;
-                        }
-
-                        default: {
-                            return super.shapeFor(connection);
-                        }
+                    if (!check) return super.shapeFor(connection);
+                    if (sugarcube.BlockShapes[check[0]]) {
+                        return sugarcube.BlockShapes[check[0]]
+                    }
+                    else {
+                        return super.shapeFor(connection);
                     }
                 }
                 case Blockly.ConnectionType.INPUT_VALUE: {
                     if (!check) return super.shapeFor(connection);
-                    switch (check[0]) {
-                        case "Object": {
-                            return this.OBJECT;
-                        }
-
-                        case "Array": {
-                            return this.SQUARED;
-                        }
-
-                        case "Field_ReporterAcceptance": {
-                            return this.SQUARED;
-                        }
-
-                        case "Reference": {
-                            return this.REFERENCE;
-                        }
-
-                        default: {
-                            return super.shapeFor(connection);
-                        }
+                    if (sugarcube.BlockShapes[check[0]]) {
+                        return sugarcube.BlockShapes[check[0]]
+                    }
+                    else {
+                        return super.shapeFor(connection);
                     }
                 }
                 default: {
