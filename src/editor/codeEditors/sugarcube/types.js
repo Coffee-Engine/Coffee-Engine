@@ -55,25 +55,4 @@
 
         REFERENCE: "reference",
     };
-
-    sugarcube.ArgumentDefaultValues = {
-        boolean: false,
-
-        multiline: "Hello\nWorld!",
-
-        number: 0,
-
-        color: "#ff0000",
-    };
-
-    sugarcube.ArgumentShadowConversions = {
-        string: "__sugarcube_string_reporter",
-        multiline: "__sugarcube_multiline_string_reporter",
-
-        number: "__sugarcube_number_reporter",
-
-        color: "__sugarcube_color_reporter",
-
-        angle: "__sugarcube_angle_reporter",
-    };
 })();
