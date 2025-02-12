@@ -358,9 +358,17 @@
                     case "object": {
                         let {next, previous, output} = type;
 
-                        if (previous) previous = (previous === true) ? this.defaultAction : previous;
-                        if (next) next = (next === true) ? this.defaultAction : next;
-                        if (output) output = (output === true) ? "ANY" : output;
+                        //Parse these properly
+                        if (previous) previous = (previous === true) ? (block.previousStatement || this.defaultAction) : previous;
+                        if (next) next = (next === true) ? (block.nextStatement || this.defaultAction) : next;
+                        if (output) output = (output === true) ? (block.output || "ANY") : output;
+                        //Make sure they are arrays
+                        if (previous && !Array.isArray(previous)) previous = [previous];
+                        if (next && !Array.isArray(next)) next = [next];
+                        if (output && !Array.isArray(output)) output = [output];
+                        
+                        //Then finally add ANY if any does not exist and any of the connections
+                        if (output && !output.includes("ANY")) output.push("ANY");
 
                         //Scratch Styled Branches
                         if (typeof text == "object") {
