@@ -195,6 +195,7 @@ editor.EnglishLang = {
     "editor.window.createBlock.addLabel": "Label",
     "editor.window.createBlock.statementInput": "Statement",
     "editor.window.createBlock.referenceInput": "Function",
+    "editor.window.createBlock.Returns.returns": "returns",
 
     "editor.window.properties": "Properties",
     "editor.window.properties.noFile": "No file selected",

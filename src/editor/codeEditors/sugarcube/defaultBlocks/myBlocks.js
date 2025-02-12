@@ -88,6 +88,19 @@
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
                     },
+                    {
+                        opcode:"return",
+                        compileFunc:"return",
+                        text: "return [value]",
+                        type: sugarcube.BlockType.TERMINAL,
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue:"value"
+                            }
+                        }
+                    }
                     /*{
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_command",
@@ -185,12 +198,30 @@
             //Am
             //Steve
             Object.values(sugarcube.customBlocks.storage).forEach((block) => {
-                returned.push({
-                    type: sugarcube.BlockType.DUPLICATE,
-                    of: "execute_command",
-                    extraState: block,
-                });
+                //Check to see if anything is returned
+                if (block.returns) {
+                    returned.push({
+                        type: sugarcube.BlockType.DUPLICATE,
+                        of: "execute_reporter",
+                        extraState: block,
+                    });
+                }
+                else {
+                    returned.push({
+                        type: sugarcube.BlockType.DUPLICATE,
+                        of: "execute_command",
+                        extraState: block,
+                    });
+                }
             });
+
+            if (returned.length > 0) {
+                returned.splice(0,0,
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "return",
+                });
+            }
 
             return returned;
         }
@@ -443,6 +474,10 @@
         argument(block, generator, manager) {
             //The humble argument
             return `args["${block.editedState.id}"]`;
+        }
+
+        return(block, generator) {
+            return `return ${generator.valueToCode(block, "value", 0)}`;
         }
     }
 

@@ -434,7 +434,7 @@
 
     //Bad html class. Might be cool
     editor.colorPicker.class = class extends HTMLElement {
-        static observedAttributes = ["color", "disabled", "translucency"];
+        static observedAttributes = ["color", "disabled", "translucency", "size"];
 
         #color = "#ffffff";
         translucency = false;
@@ -502,7 +502,8 @@
             this.style.borderRadius = "50%";
             this.style.borderStyle = "solid";
 
-            this.style.width = "16px";
+            this.style.width = `${this.getAttribute("size") || 16}px`;
+            this.style.height = `${this.getAttribute("size") || 16}px`;
 
             this.style.minWidth = "8px";
             this.style.minHeight = "8px";

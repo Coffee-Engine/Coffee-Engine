@@ -48,10 +48,12 @@
             sugarcube.customBlocks.fieldTypes.forEach((fieldType) => {
                 const button = document.createElement("button");
 
+                //Style and add the text for each option
                 button.style.margin = "4px";
                 button.style.gridAutoColumns = "auto 16px";
                 button.innerHTML = `<img src="${fieldType.Image}" style="height:3em;"><p style="font-size:16px; margin:0px; padding:0px;">${fieldType.Name}</p>`;
 
+                //Then add the functionality when clicked
                 button.onclick = () => {
                     const newParam = {
                         type: fieldType.Type,
@@ -96,26 +98,46 @@
                 typeDiv.appendChild(button);
             });
 
-            container.appendChild(blockDisplay);
-            container.appendChild(typeDiv);
-
+            //Will store stuff like color and returning
+            const propertyDiv = document.createElement("div");
+            propertyDiv.style.display = "flex";
+            propertyDiv.style.alignItems = "center";
+            propertyDiv.style.justifyContent = "center";
+            
             //This is where we colour the custom block
             const colorInput = document.createElement("color-picker");
             colorInput.setAttribute("hasExtensions", true);
+            colorInput.setAttribute("size", "32");
             colorInput.onchange = () => {
                 blockDiv.style.backgroundColor = colorInput.value;
             };
-            container.appendChild(colorInput);
-            colorInput.style.width = "32px";
-            colorInput.style.height = "32px";
+            propertyDiv.appendChild(colorInput);
             colorInput.value = sugarcube.blocklyTheme.blockStyles["myblocks_blocks"].colourIdentifier;
-
-            colorInput.style.position = "relative";
             colorInput.style.margin = "8px";
-            colorInput.style.marginLeft = "50%";
+            colorInput.style.position = "relative";
+            colorInput.style.transform = "translate(0%,0%)";
 
-            colorInput.style.transform = "translate(-50%,0%)";
+            //The text that just says return
+            const returnText = document.createElement("p");
+            returnText.innerText = `${editor.language["editor.window.createBlock.returns"]} : `;
+            returnText.style.marginLeft = "8px";
+            returnText.style.fontSize = "16px";
+            propertyDiv.appendChild(returnText);
 
+            //Then the checkbox
+            const returnInput = document.createElement("input");
+            returnInput.type = "checkbox";
+            returnInput.style.transform = "translate(0%,0%)";
+            returnInput.style.width = "16px";
+            returnInput.style.height = "16px";
+            propertyDiv.appendChild(returnInput);
+
+            //Add the display and the input type div
+            container.appendChild(blockDisplay);
+            container.appendChild(typeDiv);
+            container.appendChild(propertyDiv);
+
+            //This is where the "Done" and "Cancel" buttons are stored.
             const buttonDiv = document.createElement("div");
             buttonDiv.style.display = "grid";
             buttonDiv.style.gridTemplateColumns = "50% 50%";
@@ -125,7 +147,7 @@
                 closeButton.style.margin = "10%";
                 closeButton.style.marginLeft = "25%";
                 closeButton.style.marginRight = "12.5%";
-                closeButton.innerText = "cancel";
+                closeButton.innerText = editor.language["engine.generic.back"];
                 buttonDiv.appendChild(closeButton);
 
                 //Close button functionality
@@ -137,7 +159,7 @@
                 doneButton.style.margin = "10%";
                 doneButton.style.marginLeft = "12.5%";
                 doneButton.style.marginRight = "25%";
-                doneButton.innerText = "done";
+                doneButton.innerText = editor.language["engine.generic.done"];
                 buttonDiv.appendChild(doneButton);
 
                 //Done button functionality
@@ -147,7 +169,7 @@
                     sugarcube.customBlocks.blockFromDefinition({
                         parameters: params,
                         color: colorInput.value,
-                        returns: "string",
+                        returns: returnInput.checked,
                     });
                     //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("myblocks");
