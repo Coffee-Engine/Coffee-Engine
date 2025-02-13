@@ -395,6 +395,7 @@ editor.EnglishLang = {
     "sugarcube.variables.contextMenu.removeVariable": "Remove Variable",
 
     "sugarcube.variables.objectLike.substitute": "substitute [objectLike] with [value]",
+    "sugarcube.variables.objectLike.originate": "make [objectLike] original",
     "sugarcube.variables.objectLike.deletionConfirmation": "Are you sure you want to delete \"[variable]\"?",
 
     "sugarcube.lists": "Lists",

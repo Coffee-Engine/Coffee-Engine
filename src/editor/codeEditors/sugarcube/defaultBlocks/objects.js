@@ -101,6 +101,18 @@
                             },
                         },
                     },
+                    {
+                        opcode: "originate",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.variables.objectLike.originate"],
+                        hideFromPalette: true,
+                        arguments: {
+                            objectLike: {
+                                type: sugarcube.ArgumentType.STRING,
+                                menu: "tableMenu",
+                            },
+                        },
+                    },
                 ],
                 menus: {
                     tableMenu: {
@@ -192,6 +204,10 @@
                 {
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "substitute",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "originate",
                 }
             );
 
@@ -261,6 +277,12 @@
             if (typeof self[table] != "object" || Array.isArray(self[table])) return;
 
             return (self[objectLike] = value);
+        }
+
+        originate({ objectLike }, { self }) {
+            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            
+            return (self[objectLike] = Object.assign({}, self[objectLike]));
         }
 
         removeTable(block) {

@@ -608,7 +608,7 @@
 
                     default: {
                         console.error(`error on\n${extension.id}_${opcode}\n`,block.type || block.blockType)
-                        blockData = { kind: "label", text: `error on\n${extension.id}_${opcode}` };
+                        blockData = { kind: "label", text: `error on\n${extension.id}_${opcode}\nBlocktype is ${block.type || block.blockType}` };
                     }
                 }
             }
