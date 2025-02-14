@@ -1,25 +1,15 @@
 import { colors, colorLog, toDataUri } from "./helperFunctions.mjs";
 import * as child from "child_process";
+import promisify from "util";
 
 const ElectronExport = {
     DISPLAY_NAME: `${colors.BackBlue}Electron ${colors.Blue} (Current Platform)`,
-    BUILD: (html, buildData) => {
+    BUILD: async (html, buildData) => {
         //build the executable
         //This part is outta my hands
         console.log("Building, this may take a bit");
-        const process = child.spawn("npm run make", [], { stdio: 'inherit' });
-
-        //process.stdout.on('data', (data) => {
-        //    console.log(`G : ${data.toString()}`);
-        //});
-
-        //process.stderr.on('data', (data) => {
-        //    console.log(`G : ${data.toString()}`);
-        //});
-
-        //process.on('exit', (data) => {
-        //    console.log(`Build completed with ${data.toString()}`);
-        //});
+        child.execSync("npm run make", { stdio: 'inherit' });
+        console.log("Build complete!");
     },
 };
 

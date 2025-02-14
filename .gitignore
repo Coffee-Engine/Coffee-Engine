@@ -10,7 +10,7 @@
 .cci                    #* Cumulus
 
 #? The node libraries used for this project!
-node_modules/*
+node_modules/
 
 #? Build Stuff
 build/

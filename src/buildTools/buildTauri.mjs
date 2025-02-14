@@ -1,10 +1,11 @@
 import { colors, colorLog, toDataUri } from "./helperFunctions.mjs";
 import * as child from "child_process";
 import * as fs from "fs";
+import promisify from "util";
 
 const TauriExport = {
     DISPLAY_NAME: `${colors.Cyan}Tau${colors.Yellow}ri ${colors.Blue} (Current Platform)`,
-    BUILD: (html, buildData) => {
+    BUILD: async (html, buildData) => {
         const tauriConfig = JSON.parse(
             fs.readFileSync("src-tauri/tauri.conf.json", {
                 encoding: "utf8",
@@ -25,7 +26,8 @@ const TauriExport = {
         //build the executable
         //This part is outta my hands
         console.log("Building, this may take a bit");
-        const process = child.spawn("npm run tauri build", [], { stdio: 'inherit' });
+        child.execSync("npm run tauri build", { stdio: 'inherit' });
+        console.log("Build complete!");
     },
 };
 
