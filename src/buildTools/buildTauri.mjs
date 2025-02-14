@@ -1,5 +1,5 @@
 import { colors, colorLog, toDataUri } from "./helperFunctions.mjs";
-import * as spawn from "child_process";
+import * as child from "child_process";
 import * as fs from "fs";
 
 const TauriExport = {
@@ -25,7 +25,7 @@ const TauriExport = {
         //build the executable
         //This part is outta my hands
         console.log("Building, this may take a bit");
-        const process = spawn("npm run tauri build", [], { stdio: 'inherit' });
+        const process = child.spawn("npm run tauri build", [], { stdio: 'inherit' });
     },
 };
 
