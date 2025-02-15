@@ -16,6 +16,28 @@
                     this.doClassValidation_ = (newValue) => {
                         return sugarcube.extensionInstances[extensionID][fieldData.validate](newValue);
                     };
+                } else {
+                    //Base validation. Just turn it into a string or number.
+                    this.doClassValidation_ = (newValue) => {
+                        switch (typeof newValue) {
+                            case "string": {
+                                if (!fieldData.noQuoteString) {
+                                    if (newValue.startsWith('"') && newValue.endsWith('"')) return newValue;
+                                    else return `"${newValue.replaceAll('"', '\\"')}"`;
+                                }
+                                return newValue;
+                            }
+
+                            case "object":
+                                return JSON.stringify(newValue);
+
+                            case "undefined":
+                                return "";
+
+                            default:
+                                return newValue;
+                        }
+                    };
                 }
 
                 //If we have a custom render or init function
@@ -29,12 +51,11 @@
                             this.clickTarget_ = this.sourceBlock_.getSvgRoot();
                         }
                     };
-                }
-                else if (fieldData.wholeBlockIsField) {
+                } else if (fieldData.wholeBlockIsField) {
                     this.initView = () => {
                         this.fullBlockClickTarget_ = true;
                         this.clickTarget_ = this.sourceBlock_.getSvgRoot();
-                    }
+                    };
                 }
 
                 if (fieldData.render) {
@@ -42,14 +63,13 @@
                         sugarcube.extensionInstances[extensionID][fieldData.render](this.value_, this.textContent_, this);
 
                         if (this.textContent_ && !fieldData.manualNodeValue) {
-                            this.textContent_.nodeValue = this.value_;
+                            this.updateTextContent();
                         }
                         this.updateSize_();
                     };
                 } else {
                     this.render_ = () => {
-                        if (this.textContent_) this.textContent_.nodeValue = this.value_;
-
+                        this.updateTextContent();
                         this.updateSize_();
                     };
                 }
@@ -168,6 +188,24 @@
                 for (let i = this.editorListeners_.length, listener; (listener = this.editorListeners_[i]); i--) {
                     Blockly.browserEvents.unbind(listener);
                     this.editorListeners_.pop();
+                }
+            }
+
+            updateTextContent() {
+                if (this.textContent_) {
+                    //Do a quick test to see if the value of the field is enclosed in strings with purpose
+                    if (!this.value_) return;
+
+                    if (fieldData.noQuoteString) {
+                        this.textContent_.nodeValue = this.value_;
+                    } else {
+                        //Strip the quotes
+                        if (this.value_.startsWith('"') && this.value_.endsWith('"')) {
+                            this.textContent_.nodeValue = this.value_.substring(1, this.value_.length - 1);
+                        } else {
+                            this.textContent_.nodeValue = this.value_;
+                        }
+                    }
                 }
             }
 

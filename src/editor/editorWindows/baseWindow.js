@@ -84,14 +84,13 @@
             if (value) {
                 this.closeButton.style.opacity = "100%";
                 this.closeButton.style.pointerEvents = "auto";
-            }
-            else {
+            } else {
                 this.closeButton.style.opacity = "50%";
                 this.closeButton.style.pointerEvents = "none";
             }
         }
         get closable() {
-            return this.#closable
+            return this.#closable;
         }
         #closable = true;
         set dockable(value) {
@@ -99,14 +98,13 @@
             if (value) {
                 this.dockButton.style.opacity = "100%";
                 this.dockButton.style.pointerEvents = "auto";
-            }
-            else {
+            } else {
                 this.dockButton.style.opacity = "50%";
                 this.dockButton.style.pointerEvents = "none";
             }
         }
         get dockable() {
-            return this.#dockable
+            return this.#dockable;
         }
         #dockable = true;
 
@@ -261,7 +259,6 @@
                 this._dispose();
             };
 
-
             this.TaskBar.appendChild(this.titleDiv);
             this.TaskBar.appendChild(this.dockButton);
             this.TaskBar.appendChild(this.closeButton);
@@ -363,7 +360,9 @@
                             this.height = this.#height - moveEvent.movementY;
                         }
 
-                        this.resized();
+                        this.tabs.forEach((tab) => {
+                            tab.owner.resized();
+                        });
                     };
 
                     return;
@@ -535,7 +534,9 @@
                         this.height = this.height - moveEvent.movementY;
                     }
 
-                    this.resized();
+                    this.tabs.forEach((tab) => {
+                        tab.owner.resized();
+                    });
                 };
             };
         }
@@ -584,10 +585,17 @@
                             if (tab.owner.width < 10) tab.owner.width = 400;
                             if (tab.owner.height < 10) tab.owner.height = 400;
 
-                            tab.content.style.opacity = "100";
+                            tab.content.style.visibility = "visible";
                             tab.content.style.zIndex = "1";
 
                             this.__refreshTaskbar();
+
+                            //Go to the first tab if we detab the current tab
+                            if (tabIndex == this.__CurrentTab) {
+                                this.tabs[0].content.style.visibility = "visible";
+                                this.tabs[0].content.style.zIndex = "1";
+                                this.__CurrentTab = 0;
+                            }
                         };
 
                         //add and configure the tab
@@ -604,10 +612,10 @@
                         event.stopPropagation();
 
                         //Make sure the current tab exists;
-                        this.tabs[this.__CurrentTab].content.style.opacity = "0";
+                        this.tabs[this.__CurrentTab].content.style.visibility = "hidden";
                         this.tabs[this.__CurrentTab].content.style.zIndex = "0";
 
-                        this.tabs[tabIndex].content.style.opacity = "100";
+                        this.tabs[tabIndex].content.style.visibility = "visible";
                         this.tabs[tabIndex].content.style.zIndex = "1";
                         this.__CurrentTab = tabIndex;
                     };
@@ -669,7 +677,7 @@
             //Approved? Maybe?
             if (content.parentElement) content.parentElement.removeChild(content);
 
-            content.style.opacity = "0";
+            content.style.visibility = "hidden";
             content.style.zIndex = "0";
             this.tabs[this.__CurrentTab].content.style.zIndex = "1";
             this.contentHolder.appendChild(content);

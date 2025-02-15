@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.runtime.prefixes = [
         `<!DOCTYPE html>
 <html lang="en">
@@ -18,9 +18,7 @@
 </head>
 <body>
     <canvas id="coffeeEngine_MainCanvas" class="coffeeCanvas" width="640" height="480"></canvas>\n`,
-    ]
+    ];
 
-    editor.runtime.suffixes = [
-        `</body></html>`
-    ]
-})()
+    editor.runtime.suffixes = [`</body></html>`];
+})();

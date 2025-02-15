@@ -439,10 +439,10 @@
                 floating: [
                     {
                         content: "viewport",
-                        x:37.5,
-                        y:37.5,
-                        width:25,
-                        height:25
+                        x: 37.5,
+                        y: 37.5,
+                        width: 25,
+                        height: 25,
                     },
                 ],
             };

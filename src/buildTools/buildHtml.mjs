@@ -11,15 +11,18 @@ const HTMLExport = {
             //Exclude anything from BuildTools, and compilation COMPAT!
             if (filePath.includes("buildTools/") || filePath.includes("htmlCompilationCompat/")) return;
 
+            //Make sure we are including all files, besides HTML and CSS
             if (filePath.includes(".") && !(filePath.includes(".html") || filePath.includes(".css"))) {
                 let thing = inRamFS;
+
+                //Break down the path and find the file
                 filePath.split("/").forEach((split) => {
-                    console.log(split);
                     if (split.includes(".")) {
+                        //Log our filepath
+                        console.log(`added "src/${filePath}" to internal FS`);
                         thing[split] = toDataUri("src/" + filePath);
                     } else {
                         if (!thing[split]) {
-                            console.log(split);
                             thing[split] = {};
                         }
                         thing = thing[split];
@@ -32,12 +35,15 @@ const HTMLExport = {
         const cssStyles = html.match(/<link.*rel="stylesheet".*href=".*".*\/>/g);
         let newHead = '<meta charset="UTF-8" />\n<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n<title>Coffee Engine</title>\n';
         cssStyles.forEach((style) => {
+            //Find our css file and read, then inject it
             const stylePath = style.replace(/<link.*rel="stylesheet".*href="/, "").replace(/".*\/>/, "");
             let styleFile = fs.readFileSync(`src/${stylePath}`, {
                 encoding: "utf8",
                 flag: "r",
             });
             newHead += `<style>\n${styleFile}</style>\n`;
+            //Notify the compilee
+            console.log(`added "src/${stylePath}" to built`);
         });
 
         //Grab our scripts and get ready to add the new body stuff.
@@ -47,19 +53,21 @@ const HTMLExport = {
         //Body building!
         let newBody = `<script>\nwindow.editorFSObject = ${JSON.stringify(inRamFS)}\n</script>\n`;
         scripts.forEach((script) => {
+            //Construct our script files
             const scriptPath = script.replace(/<script.*src=\"/, "").replace(/".*><\/script>/, "");
             let scriptFile = fs.readFileSync(`src/${scriptPath}`, {
                 encoding: "utf8",
                 flag: "r",
             });
-
             newBody += `<script>\n${scriptFile}\n</script>\n`;
+            //Notify the compilee
+            console.log(`added "src/${scriptPath}" to built`);
         });
 
-        console.log(newBody);
+        //Now we construct our html
+        html = `<!doctype html><html lang="en"><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0" /><title>Coffee Engine</title><head>${newHead}</head><body>${newBody}</body></html>`;
 
-        html = `<!doctype html><html lang="en"><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0" /><title>Coffee Engine</title><head>${newHead}</head><body>${newBody}</body></html>`; //html.replaceAll(/<body>[\w\d\s\n\t."'<>\/=!\-]*<\/body>/g,`<body>\n${newBody}</body>`).replaceAll(/<head>[\w\d\s\n\t."'<>\/=!\-+:;,=]*<\/head>/g,`<head>${newHead}</head>`);
-
+        //Add our file
         fs.appendFileSync(`out/html/${buildData[0]}_${buildData[1]}.html`, html, (err) => {
             if (err) {
                 colorLog("Compilation failed", colors.BackRed);

@@ -56,7 +56,7 @@
                             element.lastClick = Date.now();
                             editor.selectedNode = directory[key];
 
-                            editor.sendEvent("nodeSelected", { target: directory[key], type: "file", path: `${path}${key}`});
+                            editor.sendEvent("nodeSelected", { target: directory[key], type: "file", path: `${path}${key}` });
                         };
 
                         //Our file dropdown
@@ -151,8 +151,7 @@
                         //Special functionality for namepsaces
                         if (hasNamepspaceID && key == "project:") {
                             this.displayDirectory(directory[key], lowerDiv, !even, ``);
-                        }
-                        else {
+                        } else {
                             this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
                         }
 

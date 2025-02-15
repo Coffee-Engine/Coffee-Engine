@@ -2,7 +2,7 @@
     editor.settings.elementFromType = (type, elementDefs, category, setting) => {
         switch (type) {
             case "number": {
-                const input = (elementDefs.hasSlider) ? document.createElement("div") : document.createElement("input");
+                const input = elementDefs.hasSlider ? document.createElement("div") : document.createElement("input");
 
                 //Slider stuff
                 if (elementDefs.hasSlider) {
@@ -16,11 +16,11 @@
                     numberInput.type = "number";
                     numberInput.value = Number(editor.settings.values[category][setting]);
                     numberInput.style.minWidth = "64px";
-    
+
                     numberInput.min = elementDefs.min;
                     numberInput.max = elementDefs.max;
                     numberInput.step = elementDefs.step[0] || elementDefs.step;
-    
+
                     numberInput.oninput = () => {
                         sliderInput.value = numberInput.value;
                         editor.settings.values[category][setting] = numberInput.value;
@@ -32,11 +32,11 @@
                     sliderInput.value = Number(editor.settings.values[category][setting]);
                     sliderInput.style.minWidth = "64px";
                     sliderInput.style.transform = "translate(0%,50%)";
-    
+
                     sliderInput.min = elementDefs.min;
                     sliderInput.max = elementDefs.max;
                     sliderInput.step = elementDefs.step[1] || elementDefs.step || 0.01;
-    
+
                     sliderInput.oninput = () => {
                         numberInput.value = sliderInput.value;
                         editor.settings.values[category][setting] = sliderInput.value;
@@ -52,11 +52,11 @@
                     input.type = "number";
                     input.value = Number(editor.settings.values[category][setting]);
                     input.style.minWidth = "128px";
-    
+
                     input.min = elementDefs.min;
                     input.max = elementDefs.max;
                     input.step = elementDefs.step;
-    
+
                     input.onchange = () => {
                         editor.settings.values[category][setting] = input.value;
                         if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(input.value);
@@ -74,28 +74,26 @@
                 if (Array.isArray(elementDefs.values)) {
                     elementDefs.values.forEach((value) => {
                         const option = document.createElement("option");
-    
+
                         option.value = value;
                         option.innerText = editor.language[`engine.settings.category.${category}.${setting}.${value}`];
-    
+
                         input.appendChild(option);
                     });
-                }
-                else if (typeof elementDefs.values == "function") {
+                } else if (typeof elementDefs.values == "function") {
                     const returned = elementDefs.values();
 
                     //Make sure the output is an array if not return something saying the output was invalid
                     if (Array.isArray(returned)) {
                         returned.forEach((value) => {
                             const option = document.createElement("option");
-        
+
                             option.value = value;
                             option.innerText = editor.language[`engine.settings.category.${category}.${setting}.${value}`] || value;
-        
+
                             input.appendChild(option);
                         });
-                    }
-                    else {
+                    } else {
                         const option = document.createElement("option");
                         option.value = "???";
                         option.innerText = "invalid";
@@ -173,7 +171,7 @@
                 //Then when we click it wait for a key input
                 input.onclick = () => {
                     input.innerText = editor.language["engine.settings.pressAnyKey"];
-                    
+
                     //Honestly really silly
                     const keyDownFunction = (event) => {
                         //Stop propogation and prevent the default action
@@ -191,10 +189,10 @@
                         editor.settings.values[category][setting] = value;
                         if (editor.settingDefs[category][setting].onChange) editor.settingDefs[category][setting].onChange(value);
                         editor.Storage.setStorage("settingsValues", editor.settings.values);
-                
+
                         document.removeEventListener("keydown", keyDownFunction);
                     };
-                    document.addEventListener("keydown", keyDownFunction)
+                    document.addEventListener("keydown", keyDownFunction);
                 };
 
                 return input;

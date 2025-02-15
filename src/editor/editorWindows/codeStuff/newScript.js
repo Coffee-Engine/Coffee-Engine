@@ -33,9 +33,11 @@
                 nodeMaker.x = window.innerWidth / 2 - 200;
                 nodeMaker.y = window.innerHeight / 2 - 100;
 
+                nodeMaker.title = editor.language["editor.window.createScript.selectInheritence"];
+
                 nodeMaker.onNodeClicked = (nodeName) => {
                     sugarcubeInheritence = nodeName;
-                    this.inheritence.innerHTML = `${editor.language["editor.window.createScript.inherits"]} : ${editor.language[`engine.nodeNames.${nodeName}`]}`;
+                    this.inheritence.innerHTML = `${editor.language["editor.window.createScript.inherits"]} : ${editor.language[`engine.nodeNames.${nodeName}`] || nodeName}`;
                     nodeMaker._dispose();
                 };
             };

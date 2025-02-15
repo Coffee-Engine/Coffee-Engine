@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.dock = {
         refreshLayout: (initial, missingPercentageX, missingPercentageY) => {
             //Our percentages
@@ -7,11 +7,12 @@
 
             //Set the horizontal grid layout then loop through each item
             let percentages = "";
-            for (let ID = 0; ID < editor.layout.layout.length; ID++) {
+            const horizontalLayout = editor.layout.layout;
+            for (let ID = 0; ID < horizontalLayout.length; ID++) {
                 //Add the percentage + the missing part
-                editor.layout.layout[ID].size += missingPercentageX / editor.layout.layout.length;
+                horizontalLayout[ID].size += missingPercentageX / horizontalLayout.length;
 
-                percentages += editor.layout.layout[ID].size + "% ";
+                percentages += horizontalLayout[ID].size + "% ";
                 //Get the "Sub Dock" which is the vertical part of the dock
                 let subDock = editor.dock.element.children[ID];
                 //If there is no "Sub Dock" add one
@@ -24,14 +25,16 @@
                 }
 
                 let rowPercentage = "";
-                editor.layout.layout[ID].contents.forEach((window) => {
+                horizontalLayout[ID].contents.forEach((window) => {
                     //Updatte window size to compensate for missing percentage
-                    window.size += (missingPercentageY[ID] || 0) / editor.layout.layout[ID].contents.length;
+                    window.size += (missingPercentageY[ID] || 0) / horizontalLayout[ID].contents.length;
 
                     //Then update column size
                     rowPercentage += window.size + "% ";
                     if (!window.content.resized) return;
-                    window.content.resized();
+                    window.content.tabs.forEach((tab) => {
+                        tab.owner.resized();
+                    });
                 });
 
                 //Set the grid property
@@ -53,9 +56,9 @@
                     //Loop over each window and subtract the indent
                     percentageGoneY.push(100);
 
-                    for (let index = 0; index < editor.layout.layout[X].contents.length; index++) {
+                    for (let index = 0; index < horizontalLayout[X].contents.length; index++) {
                         //Wowzers
-                        const window = editor.layout.layout[X].contents[index];
+                        const window = horizontalLayout[X].contents[index];
                         window.content.dockedColumn -= backIndent;
                         percentageGoneY[X] -= window.size;
 
@@ -67,8 +70,8 @@
                 //If there are no windows remove them and account for that
                 else {
                     editor.dock.element.children[X].parentNode.removeChild(editor.dock.element.children[X]);
-                    percentageGoneX += editor.layout.layout[X].size;
-                    editor.layout.layout.splice(X, 1);
+                    percentageGoneX += horizontalLayout[X].size;
+                    horizontalLayout.splice(X, 1);
 
                     //move our X back and add an indent
                     backIndent += 1;
@@ -103,9 +106,10 @@
             let adjancency = "beforebegin";
 
             //Make sure our columns exist
-            if (editor.layout.layout.length == 0) {
+            const horizontalLayout = editor.layout.layout;
+            if (horizontalLayout.length == 0) {
                 //add our dock to the layout
-                editor.layout.layout.splice(column, 0, { size: 100, contents: [{ size: 100, content: window }] });
+                horizontalLayout.splice(column, 0, { size: 100, contents: [{ size: 100, content: window }] });
 
                 //Create our sub dock
                 const subDock = document.createElement("div");
@@ -119,17 +123,17 @@
                 //Differentiate between rows and columns
                 if (useRows) {
                     //Resize the columns
-                    const halfSize = editor.layout.layout[column].contents[row].size / 2;
-                    editor.layout.layout[column].contents.splice(columnBefore ? row : row + 1, 0, { size: halfSize, content: window });
-                    editor.layout.layout[column].contents[row + (columnBefore ? 1 : 0)].size = halfSize;
+                    const halfSize = horizontalLayout[column].contents[row].size / 2;
+                    horizontalLayout[column].contents.splice(columnBefore ? row : row + 1, 0, { size: halfSize, content: window });
+                    horizontalLayout[column].contents[row + (columnBefore ? 1 : 0)].size = halfSize;
 
                     //row = columnBefore ? row : row + 1;
                     adjancency = columnBefore ? "beforebegin" : "afterend";
                 } else {
                     //Resize the columns
-                    const halfSize = editor.layout.layout[column].size / 2;
-                    editor.layout.layout.splice(columnBefore ? column : column + 1, 0, { size: halfSize, contents: [{ size: 100, content: window }] });
-                    editor.layout.layout[column + (columnBefore ? 1 : 0)].size = halfSize;
+                    const halfSize = horizontalLayout[column].size / 2;
+                    horizontalLayout.splice(columnBefore ? column : column + 1, 0, { size: halfSize, contents: [{ size: 100, content: window }] });
+                    horizontalLayout[column + (columnBefore ? 1 : 0)].size = halfSize;
 
                     const subDock = document.createElement("div");
                     subDock.style.display = "grid";
@@ -138,8 +142,8 @@
                     editor.dock.element.children[column].insertAdjacentElement(columnBefore ? "beforebegin" : "afterend", subDock);
 
                     //MOVE COLUMNS THAT NEED TO BE MOVED!
-                    for (let columnPush = column + 1; columnPush < editor.layout.layout.length; columnPush++) {
-                        const column = editor.layout.layout[columnPush];
+                    for (let columnPush = column + 1; columnPush < horizontalLayout.length; columnPush++) {
+                        const column = horizontalLayout[columnPush];
                         column.contents.forEach((window) => {
                             window.content.dockedColumn = columnPush;
                         });
@@ -150,6 +154,11 @@
             }
 
             editor.dock.dockWindowDiv(window, column, row, adjancency);
+
+            if (!window.resized) return;
+            window.tabs.forEach((tab) => {
+                tab.owner.resized();
+            });
 
             editor.dock.refreshLayout();
         },
@@ -189,7 +198,8 @@
 
             //Make sure our editor layout exists even.
             //If it doesnt just fullscreen
-            if (editor.layout.layout.length == 0) {
+            const horizontalLayout = editor.layout.layout;
+            if (horizontalLayout.length == 0) {
                 editor.dock.dockWindow(targetWindow, 0, 0, true, true);
                 editor.dock.closeDockWindowUI();
                 callback();
@@ -203,8 +213,8 @@
             editor.dock.overlayElement.style.pointerEvents = "auto";
             editor.dock.overlayElement.style.backdropFilter = "blur(4px)";
 
-            for (let ID = 0; ID < editor.layout.layout.length; ID++) {
-                percentages += `1.5% ${editor.layout.layout[ID].size - 3}% 1.5% `;
+            for (let ID = 0; ID < horizontalLayout.length; ID++) {
+                percentages += `1.5% ${horizontalLayout[ID].size - 3}% 1.5% `;
 
                 //Our pushers these let us append elements to either side
                 let leftPusher = document.createElement("div");
@@ -241,8 +251,8 @@
                 editor.dock.overlayElement.appendChild(rightPusher);
 
                 let rowPercentage = "";
-                for (let rowID = 0; rowID < editor.layout.layout[ID].contents.length; rowID++) {
-                    const window = editor.layout.layout[ID].contents[rowID];
+                for (let rowID = 0; rowID < horizontalLayout[ID].contents.length; rowID++) {
+                    const window = horizontalLayout[ID].contents[rowID];
 
                     rowPercentage += `1.5% ${window.size - 3}% 1.5% `;
 
@@ -279,6 +289,11 @@
                     //If we click the center box add the tab, and close the docking UI
                     row.onclick = () => {
                         window.content.__addTab(targetWindow);
+                        //Resize the tabs
+                        if (!targetWindow.resized) return;
+                        targetWindow.tabs.forEach((tab) => {
+                            tab.owner.resized();
+                        });
                         editor.dock.closeDockWindowUI();
                         callback();
                     };

@@ -1,9 +1,9 @@
 editor.defaultThemes = {
     Mocha: {
-        "--background-1": "#46352a",
-        "--background-2": "#3d2c21",
-        "--background-3": "#302117",
-        "--background-4": "#291a10",
+        "--background-1": "#422f20",
+        "--background-2": "#36271b",
+        "--background-3": "#2b1c12",
+        "--background-4": "#1a110b",
 
         "--text-1": "#e7cab7",
         "--text-2": "#d6ae93",

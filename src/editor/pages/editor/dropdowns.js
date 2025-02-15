@@ -1,4 +1,4 @@
-(function() {
+(function () {
     //Is this hacky? Maybe. check out the base editor file for the actual dropdowns
     editor.__setupDropdownFunctionality = () => {
         editor.dropdownBar = {
@@ -11,7 +11,7 @@
             switch (value) {
                 case "save":
                     if (editor.safeties.filePermissions) {
-                        editor.updateProjectDB();                        
+                        editor.updateProjectDB();
                     }
                     project.decaf.save();
                     break;
@@ -70,5 +70,5 @@
                     break;
             }
         };
-    }
+    };
 })();

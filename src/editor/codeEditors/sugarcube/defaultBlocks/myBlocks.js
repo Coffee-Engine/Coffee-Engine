@@ -20,7 +20,7 @@
                     {
                         opcode: "declaration",
                         compileFunc: "declaration",
-                        type: sugarcube.BlockType.PROCEDURE_DEFINITION,
+                        type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.myblocks.block.define"],
                         mutator: "hatBlock_Mutator",
                         contextMenu: "removeCustomBlock",
@@ -28,6 +28,7 @@
                     },
                     {
                         opcode: "input_string",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.REPORTER,
                         text: "",
                         output: ["noClones"],
@@ -36,6 +37,7 @@
                     },
                     {
                         opcode: "input_bool",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.BOOLEAN,
                         text: "",
                         output: ["noClones"],
@@ -44,6 +46,7 @@
                     },
                     {
                         opcode: "input_array",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.ARRAY,
                         text: "",
                         output: ["noClones"],
@@ -52,6 +55,7 @@
                     },
                     {
                         opcode: "input_object",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.OBJECT,
                         text: "",
                         output: ["noClones"],
@@ -60,6 +64,7 @@
                     },
                     {
                         opcode: "input_reference",
+                        compileFunc: "argument",
                         type: sugarcube.BlockType.REFERENCE,
                         text: "",
                         output: ["noClones"],
@@ -83,6 +88,19 @@
                         mutator: "commandBlock_Mutator",
                         hideFromPalette: true,
                     },
+                    {
+                        opcode:"return",
+                        compileFunc:"return",
+                        text: "return [value]",
+                        type: sugarcube.BlockType.TERMINAL,
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue:"value"
+                            }
+                        }
+                    }
                     /*{
                         type: sugarcube.BlockType.DUPLICATE,
                         of: "execute_command",
@@ -180,12 +198,30 @@
             //Am
             //Steve
             Object.values(sugarcube.customBlocks.storage).forEach((block) => {
-                returned.push({
-                    type: sugarcube.BlockType.DUPLICATE,
-                    of: "execute_command",
-                    extraState: block,
-                });
+                //Check to see if anything is returned
+                if (block.returns) {
+                    returned.push({
+                        type: sugarcube.BlockType.DUPLICATE,
+                        of: "execute_reporter",
+                        extraState: block,
+                    });
+                }
+                else {
+                    returned.push({
+                        type: sugarcube.BlockType.DUPLICATE,
+                        of: "execute_command",
+                        extraState: block,
+                    });
+                }
             });
+
+            if (returned.length > 0) {
+                returned.splice(0,0,
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "return",
+                });
+            }
 
             return returned;
         }
@@ -239,24 +275,25 @@
                     if (declaration) {
                         switch (typeof declaration) {
                             case "string":
-                                block.inputFromJson_({
-                                    type: "input_value",
-                                    name: item.id,
-                                    check: "noClones",
-                                });
+                                //Obscure blockly google group question 🙏🙏
+                                //I pray to you
+                                //https://groups.google.com/g/blockly/c/hnhObVXLJw4
+                                const input = block.appendValueInput(item.id);
 
                                 //Block it up
                                 const blockIN = sugarcube.workspace.newBlock(declaration);
                                 blockIN.editedState = item;
                                 blockIN.editedState.color = state.color;
+                                blockIN.editedState._shouldDuplicate_ = true;
+                                blockIN.editedState._isClone_ = false;
                                 blockIN.initSvg();
                                 blockIN.render();
-                                block.inputList[block.inputList.length - 1].connection.connect(blockIN.outputConnection);
+                                input.connection.connect(blockIN.outputConnection);
                                 blockIN.loadExtraState(item);
                                 break;
 
                             case "function":
-                                sugarcube.customBlocks.fieldTypes[index].declaration(block, item);
+                                declaration(block, item);
                                 break;
 
                             default:
@@ -308,8 +345,8 @@
             */
 
             //set block color
-            sugarcube.easyColourBlock(block, state.color);
-            
+            sugarcube.easyColourBlock(block, state.color, "none");
+
             return state;
         }
 
@@ -332,14 +369,16 @@
             //put our stuff on the block
             block._isClone_ = state._isClone_;
             block._shouldDuplicate_ = state._shouldDuplicate_;
-            if ((!block._isClone_) && block._shouldDuplicate_) {
-                console.log(block);
+
+            //The solution to our dillema. For some reason duplicated blocks also duplicate the actual connection property objects
+            if (block._isClone_) {
+                block.outputConnection.check = JSON.parse(JSON.stringify(block.outputConnection.check));
+                block.outputConnection.check[block.outputConnection.check.indexOf("noClones")] = "clones";
             }
 
             if (block._isClone_) {
                 block.setDeletable(true);
-            }
-            else {
+            } else {
                 block.setDeletable(false);
             }
 
@@ -357,7 +396,7 @@
                     })
                 );
             }
-            
+
             //set block color
             sugarcube.easyColourBlock(block, state.color);
 
@@ -377,52 +416,68 @@
             const { parameters, returns } = block.editedState;
             let functionName = returns;
 
-            parameters.forEach(param => {
+            parameters.forEach((param) => {
                 functionName += `_${param.id}`;
             });
 
-            return `this["${functionName}"] = (args) => {\n${manager.nextBlockToCode(block, generator)}\n}`;
+            const innerCode = manager.nextBlockToCode(block, generator);
+
+            return `this["${functionName.replaceAll('"', '\\"')}"] = ${innerCode.includes("await") ? "async " : ""}(args) => {\n${innerCode}\n}`;
         }
 
         execute(block, generator, manager) {
-            const { returns } = block.editedState;
+            const { parameters, returns } = block.editedState;
             let functionName = returns;
-            
+
+            parameters.forEach((param) => {
+                functionName += `_${param.id}`;
+            });
+
             const args = {};
             const recalls = {};
 
-            block.inputList.forEach((input) => {
-                functionName += `_${input.name}`;
+            let baseBlockCode = `this["${functionName.replaceAll('"', '\\"')}"]({\n`;
 
-                if (!input.connection) return;
-                if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                    recalls[input.name] = Function(generator.statementToCode(block, input.name));
-                    return;
-                }
-                args[input.name] = generator.valueToCode(block, input.name, 0);
-
-                //Our recall for the rest of the types.
-
-                const value = generator.valueToCode(block, input.name, 0);
-                //Functionals are easy
-                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
-                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                }
-                //Now we need to check the rest.
-                else {
-                    //Number
-                    if (!isNaN(Number(value))) {
-                        recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
+            //Compile this like a block
+            if (block.inputList) {
+                block.inputList.forEach((input) => {
+                    if (!input.connection) return;
+                    if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
+                        args[input.name] = `() => {\n${generator.statementToCode(block, input.name)}\n}`;
+                        recalls[input.name] = args[input.name];
                         return;
                     }
 
-                    //String
-                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
-                }
-            });
+                    const value = generator.valueToCode(block, input.name, 0);
+                    args[input.name] = value;
+                    recalls[input.name] = `() => {\nreturn ${value}\n}`;
+                });
+            }
 
-            return `this["${functionName}"](${manager.fixifyTheArgs(JSON.stringify(args, manager.stringifyFunction))})`;
+            for (const arg in args) {
+                baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
+            }
+
+            //Then we do the recalls in util
+            baseBlockCode += "},{target:this.target,self:this,recalls:{\n";
+
+            for (const recall in recalls) {
+                baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
+            }
+
+            baseBlockCode += `}})\n${manager.nextBlockToCode(block, generator)}`;
+
+            //Do this mess. (I might make a macro for this)
+            return baseBlockCode;
+        }
+
+        argument(block, generator, manager) {
+            //The humble argument
+            return `args["${block.editedState.id}"]`;
+        }
+
+        return(block, generator) {
+            return `return ${generator.valueToCode(block, "value", 0)}`;
         }
     }
 
@@ -564,7 +619,7 @@
         createFunction: (input) => {
             input.style.paddingLeft = "16px";
             input.style.paddingRight = "16px";
-            input.style.clipPath = "polygon(4px 37.5%, 12px 25%, 16px 0%, calc(100% - 16px) 0%, calc(100% - 12px) 25%, calc(100% - 4px) 37.5%, 100% 50%, calc(100% - 4px) 62.5%, calc(100% - 12px) 75%, calc(100% - 16px) 100%, 16px 100%,12px 75%, 4px 62.5%, 0% 50%)";
+            input.style.clipPath = "polygon(4px 37.5%, 6px 25%, 16px 0%, calc(100% - 16px) 0%, calc(100% - 12px) 25%, calc(100% - 4px) 37.5%, 100% 50%, calc(100% - 4px) 62.5%, calc(100% - 6px) 75%, calc(100% - 16px) 100%, 16px 100%,12px 75%, 4px 62.5%, 0% 50%)";
         },
         parseFunction: (block, item) => {
             block.inputFromJson_({

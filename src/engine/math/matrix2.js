@@ -72,7 +72,7 @@
         }
 
         __duplicate(to) {
-            to.contents = (new coffeeEngine.matrix4(this.contents)).contents;
+            to.contents = new coffeeEngine.matrix4(this.contents).contents;
         }
 
         serialize() {

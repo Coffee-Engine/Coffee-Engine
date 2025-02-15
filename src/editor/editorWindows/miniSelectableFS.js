@@ -16,7 +16,7 @@
             this.currentSystemRoot = value;
 
             this.Content.innerHTML = "";
-            
+
             this.displayDirectory(this.systemRoot, this.Content, true);
         }
 
@@ -91,8 +91,7 @@
                         //Special functionality for namepsaces
                         if (hasNamepspaceID && key == "project:") {
                             this.displayDirectory(directory[key], lowerDiv, !even, ``);
-                        }
-                        else {
+                        } else {
                             this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
                         }
 

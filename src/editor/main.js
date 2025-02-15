@@ -2,7 +2,7 @@ window.editor = {
     currentPage: {},
     language: {},
 
-    runtime:{},
+    runtime: {},
     selectedNode: null,
 
     events: {
@@ -89,12 +89,12 @@ window.editor = {
     },
 
     controls: {
-        forward:"w",
-        left:"a",
-        back:"s",
-        right:"d",
-        up:"e",
-        down:"q",
+        forward: "w",
+        left: "a",
+        back: "s",
+        right: "d",
+        up: "e",
+        down: "q",
     },
 
     safeties: {
@@ -137,8 +137,7 @@ editor.windows.__Serialization = {
             }
 
             return serializedArray;
-        }
-        else {
+        } else {
             for (const key in editor.windows.__Serialization.all) {
                 const constructor = editor.windows.__Serialization.all[key];
                 if (constructor == windowOBJ.constructor) return key;

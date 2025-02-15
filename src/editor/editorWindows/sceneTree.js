@@ -54,13 +54,13 @@
                 element.contextFunction = () => {
                     return [
                         { text: editor.language["editor.window.sceneTree.duplicate"], value: "duplicate" },
-                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" }
+                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },
                     ];
                 };
 
                 element.contentAnswer = (value) => {
                     switch (value) {
-                        case "duplicate": { 
+                        case "duplicate": {
                             const nodeKeys = Node.getProperties();
                             const duplicated = new Node.constructor();
 
@@ -72,8 +72,7 @@
 
                                 if (Node[key.name] && Node[key.name].__duplicate) {
                                     Node[key.name].__duplicate(duplicated[key.name]);
-                                }
-                                else {
+                                } else {
                                     duplicated[key.name] = Node[key.name];
                                 }
                             }

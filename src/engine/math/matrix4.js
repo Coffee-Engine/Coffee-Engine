@@ -44,7 +44,7 @@
 0.0, 0.0, 0.0, 1.0
         */
 
-        rotateQuaternion(qx,qy,qz,qw) {
+        rotateQuaternion(qx, qy, qz, qw) {
             //const rotator = new coffeeEngine.matrix4([
             //    [1.0 - 2.0*y*y - 2.0*z*z, 2.0*x*y - 2.0*z*w, 2.0*x*z + 2.0*y*w, 0.0,],
             //    [2.0*x*y + 2.0*z*w, 1.0 - 2.0*x*x - 2.0*z*z, 2.0*y*z - 2.0*x*w, 0.0,],
@@ -53,17 +53,28 @@
             //]);
             var te = this.elements;
 
-            var x = qx, y = qy, z = qz, w = qw;
-            var x2 = x + x, y2 = y + y, z2 = z + z;
-            var xx = x * x2, xy = x * y2, xz = x * z2;
-            var yy = y * y2, yz = y * z2, zz = z * z2;
-            var wx = w * x2, wy = w * y2, wz = w * z2;
-            
+            var x = qx,
+                y = qy,
+                z = qz,
+                w = qw;
+            var x2 = x + x,
+                y2 = y + y,
+                z2 = z + z;
+            var xx = x * x2,
+                xy = x * y2,
+                xz = x * z2;
+            var yy = y * y2,
+                yz = y * z2,
+                zz = z * z2;
+            var wx = w * x2,
+                wy = w * y2,
+                wz = w * z2;
+
             const rotator = new coffeeEngine.matrix4([
-                [1 - ( yy + zz ),xy + wz,xz - wy,0],
-                [xy - wz,1 - ( xx + zz ),yz + wx,0],
-                [xz + wy,yz - wx,1 - ( xx + yy ),0],
-                [0,0,0,1]
+                [1 - (yy + zz), xy + wz, xz - wy, 0],
+                [xy - wz, 1 - (xx + zz), yz + wx, 0],
+                [xz + wy, yz - wx, 1 - (xx + yy), 0],
+                [0, 0, 0, 1],
             ]);
             return this.multiply(rotator);
         }
@@ -142,11 +153,11 @@
         }
 
         webGLValue() {
-            return [...this.contents[0],...this.contents[1],...this.contents[2],...this.contents[3]];;
+            return [...this.contents[0], ...this.contents[1], ...this.contents[2], ...this.contents[3]];
         }
 
         __duplicate(to) {
-            to.contents = (new coffeeEngine.matrix4(this.contents)).contents;
+            to.contents = new coffeeEngine.matrix4(this.contents).contents;
         }
 
         serialize() {

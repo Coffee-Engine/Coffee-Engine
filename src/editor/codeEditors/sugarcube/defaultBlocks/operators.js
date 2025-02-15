@@ -1,5 +1,9 @@
 (function () {
     class operators {
+        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose.
+        deg2Rad = 0.0174533;
+        rad2Deg = 57.2958;
+
         getInfo() {
             return {
                 id: "operators",
@@ -124,11 +128,12 @@
                         text: editor.language["sugarcube.operators.block.notEqual"],
                         arguments: {
                             A: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "0",
                             },
                             B: {
-                                type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue: 50,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "50",
                             },
                         },
                     },
@@ -166,11 +171,12 @@
                         text: editor.language["sugarcube.operators.block.equalTo"],
                         arguments: {
                             A: {
-                                type: sugarcube.ArgumentType.NUMBER,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "0",
                             },
                             B: {
-                                type: sugarcube.ArgumentType.NUMBER,
-                                defaultValue: 50,
+                                type: sugarcube.ArgumentType.STRING,
+                                defaultValue: "50",
                             },
                         },
                     },
@@ -294,7 +300,7 @@
         }
 
         notEqual({ A, B }) {
-            return sugarcube.cast.toNumber(A) != sugarcube.cast.toNumber(B);
+            return A != B;
         }
 
         lessThan({ A, B }) {
@@ -306,7 +312,7 @@
         }
 
         equalTo({ A, B }) {
-            return sugarcube.cast.toNumber(A) == sugarcube.cast.toNumber(B);
+            return A == B;
         }
 
         moreThan({ A, B }) {
@@ -336,6 +342,24 @@
 
                 case "tenPOW":
                     return Math.pow(10, sugarcube.cast.toNumber(B));
+
+                case "sin":
+                    return Math.sin(sugarcube.cast.toNumber(B) * this.deg2Rad);
+
+                case "cos":
+                    return Math.cos(sugarcube.cast.toNumber(B) * this.deg2Rad);
+
+                case "tan":
+                    return Math.tan(sugarcube.cast.toNumber(B) * this.deg2Rad);
+
+                case "asin":
+                    return Math.asin(sugarcube.cast.toNumber(B) * this.rad2Deg);
+
+                case "acos":
+                    return Math.acos(sugarcube.cast.toNumber(B) * this.rad2Deg);
+
+                case "atan":
+                    return Math.atan(sugarcube.cast.toNumber(B) * this.rad2Deg);
 
                 default:
                     return Math[A](sugarcube.cast.toNumber(B));

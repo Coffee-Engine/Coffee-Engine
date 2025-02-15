@@ -48,6 +48,10 @@
             }
 
             //Refresh stuff
+            if (this.#scriptObject) {
+                this.#scriptObject.target = value;
+            }
+
             coffeeEngine.runtime.currentScene.castEvent("childMoved", this);
         }
         get parent() {
@@ -63,12 +67,11 @@
             if (!value) return;
 
             this.#scriptPath = value;
-            console.log(!coffeeEngine.isEditor);
             if (!coffeeEngine.isEditor) {
-                coffeeEngine.behaviorManager.behaviorFromFile(value).then(classObj => {
-                    this.#scriptObject = new (classObj)();
+                coffeeEngine.behaviorManager.behaviorFromFile(value).then((classObj) => {
+                    this.#scriptObject = new classObj();
                     this.#scriptObject.target = this;
-    
+
                     if (this.#scriptObject.ready) {
                         this.#scriptObject.ready();
                     }
@@ -78,6 +81,10 @@
 
         get script() {
             return this.#scriptPath;
+        }
+
+        get scriptObject() {
+            return this.#scriptObject;
         }
 
         constructor() {
@@ -107,11 +114,12 @@
 
         //The main disposal unit
         _dispose() {
-            if (this.parent) {
-                this.parent.removeChild(this);
-                this.dispose();
-                delete this;
-            }
+            //Dispose key components
+            if (this.#scriptObject && this.#scriptObject.dispose) this.#scriptObject.dispose();
+            if (this.parent) this.parent.removeChild(this);
+
+            this.dispose();
+            delete this;
         }
 
         //Children addition
@@ -141,11 +149,7 @@
 
         //Determines what properties are serialized and added;
         getProperties() {
-            return [
-                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME },
-                "---",
-                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
-            ];
+            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
         }
     }
 

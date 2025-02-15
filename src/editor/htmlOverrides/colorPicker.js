@@ -289,20 +289,12 @@
                 button.style.setProperty("--extColor", sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier);
 
                 button.onclick = () => {
-                    const result = (extensionsReturnAll) ? [
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourSecondary,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourTertiary,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourQuaternary,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourQuinary,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].useBlackWhiteFields,
-                        sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier
-                    ] : coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier);
+                    const result = extensionsReturnAll ? [sugarcube.blocklyTheme.blockStyles[extensionID].colourPrimary, sugarcube.blocklyTheme.blockStyles[extensionID].colourSecondary, sugarcube.blocklyTheme.blockStyles[extensionID].colourTertiary, sugarcube.blocklyTheme.blockStyles[extensionID].colourQuaternary, sugarcube.blocklyTheme.blockStyles[extensionID].colourQuinary, sugarcube.blocklyTheme.blockStyles[extensionID].useBlackWhiteFields, sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier] : coffeeEngine.ColorMath.HexToRGB(sugarcube.blocklyTheme.blockStyles[extensionID].colourIdentifier);
                     if (!result) return;
 
                     //Split it
-                    split = (extensionsReturnAll) ? result[0] : result;
-                    updateColors((extensionsReturnAll) ? result : null);
+                    split = extensionsReturnAll ? result[0] : result;
+                    updateColors(extensionsReturnAll ? result : null);
                 };
 
                 extensionHolder.appendChild(button);
@@ -442,7 +434,7 @@
 
     //Bad html class. Might be cool
     editor.colorPicker.class = class extends HTMLElement {
-        static observedAttributes = ["color", "disabled", "translucency"];
+        static observedAttributes = ["color", "disabled", "translucency", "size"];
 
         #color = "#ffffff";
         translucency = false;
@@ -510,7 +502,8 @@
             this.style.borderRadius = "50%";
             this.style.borderStyle = "solid";
 
-            this.style.width = "16px";
+            this.style.width = `${this.getAttribute("size") || 16}px`;
+            this.style.height = `${this.getAttribute("size") || 16}px`;
 
             this.style.minWidth = "8px";
             this.style.minHeight = "8px";
