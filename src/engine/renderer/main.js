@@ -25,6 +25,7 @@
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
             //Normal
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA,
             DaveShade.RENDERBUFFER_TYPES.DEPTH,
         ]);
 
@@ -203,6 +204,7 @@
                 layout (location = 2) out vec4 o_emission;
                 layout (location = 3) out vec4 o_position;
                 layout (location = 4) out vec4 o_normal;
+                layout (location = 5) out vec4 u_OID;
 
                 uniform vec4 u_colorMod;
                 uniform mat4 u_model;
@@ -257,6 +259,10 @@
                     o_matAtr *= o_color.w;
                     o_emission *= o_color.w;
                     o_normal *= o_color.w;
+
+                    u_OID.r = 0.0;
+                    u_OID.g = 0.0;
+                    u_OID.b = 0.0;
                 }
                 `
             ),
@@ -291,6 +297,7 @@
                 layout (location = 2) out vec4 o_emission;
                 layout (location = 3) out vec4 o_position;
                 layout (location = 4) out vec4 o_normal;
+                layout (location = 5) out vec4 u_OID;
                 
                 void main()
                 {
@@ -320,6 +327,9 @@
                     o_matAtr = vec4(0);
                     o_position = vec4(1);
                     o_normal = vec4(0);
+                    u_OID.r = 0.0;
+                    u_OID.g = 0.0;
+                    u_OID.b = 0.0;
                 }
                 `
             ),
