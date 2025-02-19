@@ -84,6 +84,17 @@
             if (!coffeeEngine.isEditor) coffeeEngine.renderer.canvas.requestPointerLock();
         }
 
+        //In game click function.
+        if ((!coffeeEngine.isEditor) && coffeeEngine.renderer.daveshade) {
+            //Locate target
+            let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
+            hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
+
+            //destroy
+            hit = coffeeEngine.runtime.currentScene.drawList[hit];
+            if (hit) hit.clicked(new coffeeEngine.vector2(event.layerX, event.layerY));
+        }
+
         coffeeEngine.sendEvent("desktopInput", { type: "mouse", button: event.button });
     });
 

@@ -101,6 +101,13 @@
             }
         }
 
+        clicked(mousePosition) {
+            // prettier-ignore
+            if (this.#scriptObject && this.#scriptObject.clicked) {
+                this.#scriptObject.clicked(mousePosition);
+            }
+        }
+
         draw(drawID) {
             // prettier-ignore
             coffeeEngine.renderer.nodesRendered += 1;

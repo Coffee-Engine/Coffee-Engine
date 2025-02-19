@@ -18,6 +18,11 @@ class behavior {
         //${editor.language["editor.window.typed.updateMessage"]}
     }
 
+    //${editor.language["editor.window.typed.clickUncommentMessage"]}
+    //clicked(mousePosition) {
+    //    //${editor.language["editor.window.typed.clickMessage"]}
+    //}
+
     //${editor.language["editor.window.typed.drawUncommentMessage"]}
     //draw() {
     //    //${editor.language["editor.window.typed.drawMessage"]}
@@ -44,6 +49,11 @@ class behavior contains
     function update(delta)
         //${editor.language["editor.window.typed.updateMessage"]}
     end
+
+    //${editor.language["editor.window.typed.clickUncommentMessage"]}
+    //function clicked(mousePosition) 
+    //    //${editor.language["editor.window.typed.clickMessage"]}
+    //end
 
     //${editor.language["editor.window.typed.drawUncommentMessage"]}
     //function draw()
@@ -93,6 +103,7 @@ class behavior {
     //Our main code
     __ReadyFuncs = [];
     __UpdateFuncs = [];
+    __ClickFuncs = [];
     __DisposeFuncs = [];
     constructor() {
         ${sugarcube.buildCode(workspace)}
@@ -107,6 +118,12 @@ class behavior {
     update(delta) {
         for (const func in this.__UpdateFuncs) {
             this.__UpdateFuncs[func](delta);
+        }
+    }
+
+    clicked(mousePosition) {
+        for (const func in this.__ClickFuncs) {
+            this.__ClickFuncs[func](mousePosition);
         }
     }
 

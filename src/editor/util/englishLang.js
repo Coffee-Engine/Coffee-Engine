@@ -172,6 +172,8 @@ editor.EnglishLang = {
     "editor.window.typed.commentMessage": "This is a default behavior!",
     "editor.window.typed.initMessage": "Code for initilization goes here.",
     "editor.window.typed.updateMessage": "Code for each frame goes here.",
+    "editor.window.typed.clickUncommentMessage": "If you want custom click code uncomment this function.",
+    "editor.window.typed.clickMessage": "Code for when the node is clicked",
     "editor.window.typed.drawUncommentMessage": "If you want custom draw code uncomment this function.",
     "editor.window.typed.drawMessage": "Draw Code Here",
 

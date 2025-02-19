@@ -35,7 +35,7 @@
                     },
                     {
                         opcode: "whenClicked",
-                        eventListenerName: "onClicked",
+                        compileFunc: "whenClicked",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.whenClicked"],
                     },
@@ -112,6 +112,12 @@
         coffeeEngine.removeEventListener("desktopInput", sugarcubeInputEvent);
     })
 }`;
+        }
+
+        whenClicked(block, generator, manager) {
+            return `this.__ClickFuncs.push(() => {
+    ${manager.nextBlockToCode(block, generator)}
+})`;
         }
 
         broadcastRecieve(block, generator, manager, blockData) {
