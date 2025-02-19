@@ -148,8 +148,45 @@
                     case 0: {
                         let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
                         hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
+                        hit = coffeeEngine.runtime.currentScene.drawList[hit];
+
+                        //Node dragging
+                        if (this.previouslySelectedNode == hit) {
+                            const moveEvent = (event) => {
+                                if (!this.draggingNode) {
+                                    this.canvas.requestPointerLock();
+                                    this.draggingNode = true;
+                                }
+        
+                                if (hit instanceof coffeeEngine.getNode("Node2D")) {
+                                    hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
+                                    hit.position.y += event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05;
+                                }
+                                else if (hit instanceof coffeeEngine.getNode("Node3D")) {
+                                    hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
+                                    hit.position.y += event.movementX * coffeeEngine.renderer.cameraData.transform[1] * 0.05;
+                                    hit.position.z += event.movementX * coffeeEngine.renderer.cameraData.transform[2] * 0.05;
+
+                                    hit.position.x += -event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05;
+                                    hit.position.y += -event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05;
+                                    hit.position.z += -event.movementY * coffeeEngine.renderer.cameraData.transform[6] * 0.05;
+                                }
+                            }
+
+                            document.addEventListener("mousemove", moveEvent);
+
+                            document.addEventListener("mouseup", () => {
+                                if (this.draggingNode) document.exitPointerLock();
+                                document.removeEventListener("mouseup",moveEvent); 
+                                document.removeEventListener("mousemove", moveEvent);
+                                this.draggingNode = false;
+                            });
+                        }
+
+                        this.previouslySelectedNode = hit;
+
                         //Select the hit node
-                        if (hit >= 0) editor.sendEvent("nodeSelected", { target: coffeeEngine.runtime.currentScene.drawList[hit], type: "node" });
+                        if (hit) editor.sendEvent("nodeSelected", { target: hit, type: "node" });
                         break;
                     }
                 
