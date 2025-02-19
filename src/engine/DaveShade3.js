@@ -133,6 +133,8 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture: GL.createTexture(),
                 resize: (width, height) => {
+                    renderBufferInfo.width = width;
+                    renderBufferInfo.height = height;
                     GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGB, width, height, 0, GL.RGB, GL.UNSIGNED_BYTE, null);
                 },
@@ -158,6 +160,8 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture: GL.createTexture(),
                 resize: (width, height) => {
+                    renderBufferInfo.width = width;
+                    renderBufferInfo.height = height;
                     GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, null);
                 },
@@ -180,6 +184,8 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture: GL.createTexture(),
                 resize: (width, height) => {
+                    renderBufferInfo.width = width;
+                    renderBufferInfo.height = height;
                     GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA16F, width, height, 0, GL.RGBA, GL.FLOAT, null);
                 },
@@ -202,6 +208,8 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture: GL.createTexture(),
                 resize: (width, height) => {
+                    renderBufferInfo.width = width;
+                    renderBufferInfo.height = height;
                     GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.R8, width, height, 0, GL.RED, GL.UNSIGNED_BYTE, null);
                 },
@@ -224,6 +232,8 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 texture: GL.createTexture(),
                 resize: (width, height) => {
+                    renderBufferInfo.width = width;
+                    renderBufferInfo.height = height;
                     GL.bindTexture(GL.TEXTURE_2D, renderBufferInfo.texture);
                     GL.texImage2D(GL.TEXTURE_2D, 0, GL.R16F, width, height, 0, GL.RED, GL.FLOAT, null);
                 },
@@ -247,6 +257,8 @@ window.DaveShade = {};
             const renderBufferInfo = {
                 renderBuffer: GL.createRenderbuffer(),
                 resize: (width, height) => {
+                    renderBufferInfo.width = width;
+                    renderBufferInfo.height = height;
                     GL.bindRenderbuffer(GL.RENDERBUFFER, renderBufferInfo.renderBuffer);
                     GL.renderbufferStorage(GL.RENDERBUFFER, GL.DEPTH_COMPONENT16, width, height);
                 },
@@ -686,7 +698,7 @@ window.DaveShade = {};
             const returned = {};
             for (const key in attributeJSON) {
                 const element = attributeJSON[key];
-                const buffer = coffeeEngine.renderer.daveshade.GL.createBuffer();
+                const buffer = daveShadeInstance.GL.createBuffer();
                 GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
                 GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
 
@@ -695,6 +707,75 @@ window.DaveShade = {};
 
             return returned;
         };
+
+        //* Our texture reader
+        daveShadeInstance.textureReadingBuffer = daveShadeInstance.createFramebuffer(1,1,[DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA]);
+
+        //? create stuff required to render these temporary textures
+        daveShadeInstance.textureReadingShader = daveShadeInstance.createShader(`precision highp float;
+        attribute vec4 a_position;
+        attribute vec2 a_texCoord;
+
+        varying vec2 v_texCoord;
+        
+        void main() {
+            gl_Position = a_position;
+            v_texCoord = a_texCoord;
+        }
+        `,`precision highp float;
+        varying vec2 v_texCoord;
+
+        uniform sampler2D u_texture;
+        
+        void main() {
+            gl_FragColor = texture2D(u_texture, v_texCoord);
+        }
+        `);
+
+        //? Create the data for the quad
+        daveShadeInstance.textureReadingQuad = daveShadeInstance.buffersFromJSON({
+            a_position: new Float32Array(
+                [
+                    -1,-1,0,1,
+                    -1,1,0,1,
+                    1,-1,0,1,
+                    -1,1,0,1,
+                    1,-1,0,1,
+                    1,1,0,1,
+                ]
+            ),
+            a_texCoord: new Float32Array(
+                [
+                    0,1,
+                    0,0,
+                    1,1,
+                    0,0,
+                    1,1,
+                    1,0,
+                ]
+            )
+        });
+        
+        //? the actual read function
+        daveShadeInstance.readTexturePixel = (texture,x,y) => {
+            //Resize the texture
+            daveShadeInstance.textureReadingBuffer.resize(texture.width,texture.height);
+            daveShadeInstance.textureReadingBuffer.use();
+            
+            //Clear and draw
+            daveShadeInstance.GL.clear(daveShadeInstance.GL.COLOR_BUFFER_BIT);
+            daveShadeInstance.textureReadingShader.uniforms.u_texture.value = texture.texture;
+            daveShadeInstance.textureReadingShader.setBuffers(daveShadeInstance.textureReadingQuad);
+            daveShadeInstance.textureReadingShader.drawFromBuffers(6);
+
+            //Then finally get the data
+            let output = new Uint8Array(4);
+            daveShadeInstance.GL.readPixels(x,y,1,1,daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, output);
+            //scale it back down to hopefully save ram
+            daveShadeInstance.textureReadingBuffer.resize(1,1);
+
+            return Array.from(output);
+        }
 
         return daveShadeInstance;
     };

@@ -148,7 +148,7 @@
             //Now lets draw the objects
             for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
                 const node = this.drawList[drawItem];
-                node.draw();
+                node.draw(drawItem + 1);
             }
         }
 

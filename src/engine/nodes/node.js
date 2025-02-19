@@ -101,7 +101,7 @@
             }
         }
 
-        draw() {
+        draw(drawID) {
             // prettier-ignore
             coffeeEngine.renderer.nodesRendered += 1;
             if (this.#scriptObject && this.#scriptObject.draw) {

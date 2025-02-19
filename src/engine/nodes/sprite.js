@@ -67,7 +67,7 @@
             this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
         }
 
-        draw() {
+        draw(drawID) {
             super.draw();
 
             if (this.texture) {
@@ -77,6 +77,7 @@
 
                 if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture;
                 if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
 
                 this.#shader.drawFromBuffers(6);
             }

@@ -6,7 +6,7 @@
         shader = coffeeEngine.renderer.mainShaders.unlit;
         sprite = coffeeEngine.renderer.sprites.light;
 
-        draw() {
+        draw(drawID) {
             const scene = coffeeEngine.runtime.currentScene;
             scene.__setLight(scene.lightCount, [this.position.x, this.position.y, this.position.z, this.radius, this.color[0], this.color[1], this.color[2], 0, 1, 1, 1, 1, 0, 0, 0, 0]);
             scene.lightCount += 1;
@@ -26,6 +26,7 @@
                 this.shader.uniforms.u_texture.value = this.sprite.texture;
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = [this.color[0], this.color[1], this.color[2], 1];
+                this.shader.uniforms.u_objectID.value = drawID;
                 this.shader.drawFromBuffers(6);
             }
         }

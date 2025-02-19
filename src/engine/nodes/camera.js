@@ -50,7 +50,7 @@
             }
         }
 
-        draw() {
+        draw(drawID) {
             super.draw();
             //Editor display
             if (coffeeEngine.isEditor) {
@@ -67,12 +67,14 @@
                 this.shader.uniforms.u_texture.value = this.sprite.texture;
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
+                this.shader.uniforms.u_objectID.value = drawID;
                 this.shader.drawFromBuffers(6);
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
                 this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = [1, 1, 1, 1];
+                this.shaderArrow.uniforms.u_objectID.value = drawID;
                 this.shaderArrow.drawFromBuffers(48);
             }
         }

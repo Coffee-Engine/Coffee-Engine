@@ -137,10 +137,24 @@
         setupInput() {
             //Our controls and render time
             this.canvas.addEventListener("mousedown", (event) => {
-                if (event.button == 2) {
-                    this.canvas.requestPointerLock();
+                switch (event.button) {
+                    case 2: {
+                        this.canvas.requestPointerLock();
 
-                    this.controlling = true;
+                        this.controlling = true;
+                        break;
+                    }
+
+                    case 0: {
+                        let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
+                        hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
+                        //Select the hit node
+                        if (hit >= 0) editor.sendEvent("nodeSelected", { target: coffeeEngine.runtime.currentScene.drawList[hit], type: "node" });
+                        break;
+                    }
+                
+                    default:
+                        break;
                 }
             });
 

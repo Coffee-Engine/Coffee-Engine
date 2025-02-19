@@ -46,7 +46,7 @@
             super.update(deltaTime);
         }
 
-        draw() {
+        draw(drawID) {
             super.draw();
         }
 

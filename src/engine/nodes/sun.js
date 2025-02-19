@@ -22,7 +22,7 @@
             return this.#lightColor;
         }
 
-        draw() {
+        draw(drawID) {
             super.draw();
 
             //Rotate our sun variable in the scene
@@ -38,12 +38,14 @@
                 this.shader.uniforms.u_texture.value = coffeeEngine.renderer.sprites.sun.texture;
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = this.#lightColorArray;
+                this.shader.uniforms.u_objectID.value = drawID;
                 this.shader.drawFromBuffers(6);
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
                 this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = this.#lightColorArray;
+                this.shaderArrow.uniforms.u_objectID.value = drawID;
                 this.shaderArrow.drawFromBuffers(48);
             }
         }

@@ -41,7 +41,7 @@
             return this.#modulatedColor;
         }
 
-        draw() {
+        draw(drawID) {
             super.draw();
 
             if (this.meshData && this.#material && this.meshData instanceof coffeeEngine.mesh.class) {
@@ -53,6 +53,7 @@
                     this.#material.shader.setBuffers(data);
                     this.#material.shader.uniforms.u_model.value = this.matrix.webGLValue();
                     if (this.#material.shader.uniforms.u_colorMod) this.#material.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                    if (this.#material.shader.uniforms.u_objectID) this.#material.shader.uniforms.u_objectID.value = drawID;
                     this.#material.shader.drawFromBuffers(pointCount);
                 }
             }

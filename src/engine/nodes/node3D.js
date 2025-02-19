@@ -41,7 +41,7 @@
         }
 
         //Oh yeah mr krabs
-        sortValue() {
+        sortValue(drawID) {
             return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
         }
     }

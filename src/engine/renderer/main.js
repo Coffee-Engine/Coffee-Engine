@@ -143,6 +143,7 @@
                 out vec3 v_position;
                 out vec3 v_normal;
                 out vec2 v_texCoord;
+                out vec3 v_OID;
     
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
@@ -150,6 +151,7 @@
                 uniform vec2 u_wFactor;
                 uniform float u_aspectRatio;
                 uniform float u_time;
+                uniform highp int u_objectID;
 
                 vec3 POSITION;
                 vec4 COLOR;
@@ -186,6 +188,10 @@
                     gl_Position.w = gl_Position.z;
                     gl_Position -= vec4(0,0,1,0);
                     gl_Position.x /= u_aspectRatio;
+
+                    v_OID.r = float(u_objectID)/255.0;
+                    v_OID.g = float(u_objectID/256)/255.0;
+                    v_OID.b = float(u_objectID/65536)/255.0;
                 }
                 `,
                 //Fragment
@@ -198,13 +204,14 @@
                 in vec3 v_position;
                 in vec3 v_normal;
                 in vec2 v_texCoord;
+                in vec3 v_OID;
 
                 layout (location = 0) out vec4 o_color;
                 layout (location = 1) out vec4 o_matAtr;
                 layout (location = 2) out vec4 o_emission;
                 layout (location = 3) out vec4 o_position;
                 layout (location = 4) out vec4 o_normal;
-                layout (location = 5) out vec4 u_OID;
+                layout (location = 5) out vec4 o_OID;
 
                 uniform vec4 u_colorMod;
                 uniform mat4 u_model;
@@ -260,9 +267,7 @@
                     o_emission *= o_color.w;
                     o_normal *= o_color.w;
 
-                    u_OID.r = 0.0;
-                    u_OID.g = 0.0;
-                    u_OID.b = 0.0;
+                    o_OID = vec4(v_OID,1.0);
                 }
                 `
             ),
@@ -297,7 +302,7 @@
                 layout (location = 2) out vec4 o_emission;
                 layout (location = 3) out vec4 o_position;
                 layout (location = 4) out vec4 o_normal;
-                layout (location = 5) out vec4 u_OID;
+                layout (location = 5) out vec4 o_OID;
                 
                 void main()
                 {
@@ -327,9 +332,10 @@
                     o_matAtr = vec4(0);
                     o_position = vec4(1);
                     o_normal = vec4(0);
-                    u_OID.r = 0.0;
-                    u_OID.g = 0.0;
-                    u_OID.b = 0.0;
+                    o_OID.x = 0.0;
+                    o_OID.y = 0.0;
+                    o_OID.z = 0.0;
+                    o_OID.w = 1.0;
                 }
                 `
             ),
@@ -364,6 +370,7 @@
                 uniform vec3 u_ambientColor;
 
                 uniform vec2 u_res;
+                uniform highp int u_fullBright;
 
                 float lightDot(vec3 a,vec3 b) {
                     return (dot(a,b) + 1.0) / 2.0;
@@ -383,7 +390,7 @@
 
                     vec3 lightColor = u_ambientColor;
 
-                    if (matAttributes.z > 0.0) {
+                    if (matAttributes.z > 0.0 && u_fullBright == 0) {
                         lightColor += u_sunColor * dot(normal, u_sunDir);
 
                         for (int i=0;i<64;i++) {
