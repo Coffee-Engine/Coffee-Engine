@@ -474,6 +474,9 @@ editor.EnglishLang = {
     "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
     "engine.nodeProperties.MeshDisplay.material": "Material",
+    "engine.nodeProperties.Camera.fov": "FOV",
+    "engine.nodeProperties.Camera.flatten": "Orthographic",
+    "engine.nodeProperties.Camera.zoom": "Camera Zoom",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",

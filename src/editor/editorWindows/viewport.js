@@ -90,8 +90,8 @@
                 this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
             }
 
-            //this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
-            //this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
+            this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
+            this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
 
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);

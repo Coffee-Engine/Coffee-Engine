@@ -184,11 +184,12 @@
 
                     //W manipulation... wait not in that way
                     gl_Position.w = min(mix(1.0, gl_Position.z, u_wFactor.x), gl_Position.z);
-                    gl_Position -= vec4(0,0,1,0);
                     if (u_wFactor.x < 1.0) {
-                        gl_Position.z /= 100.0;
-                        gl_Position.xy /= u_wFactor.y;
+                        gl_Position.z /= 1000.0;
+                        gl_Position.xy /= mix(u_wFactor.y, 1.0, u_wFactor.x);
                     }
+
+                    gl_Position -= vec4(0,0,1,0);
                     gl_Position.x /= u_aspectRatio;
 
                     v_OID.r = float(u_objectID)/255.0;

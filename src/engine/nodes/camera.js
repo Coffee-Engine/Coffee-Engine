@@ -2,7 +2,7 @@
     class cameraNode extends coffeeEngine.getNode("Node3D") {
         activeCamera = true;
         fov = 90;
-        orthoganalism = 0.0;
+        orthographic = false;
         zoom = 1.0;
 
         shader = coffeeEngine.renderer.mainShaders.unlit;
@@ -37,7 +37,7 @@
                     cameraData.transform = this.matrix.webGLValue();
                     cameraData.unflattenedTransform = this.matrix;
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
-                    cameraData.wFactor = [1 - this.orthoganalism, this.zoom];
+                    cameraData.wFactor = [(this.orthographic) ? 1 : 0, this.zoom];
                     cameraData.aspectRatio = canvas.width / canvas.height;
                     cameraData.position.x = -this.position.x;
                     cameraData.position.y = -this.position.y;
@@ -80,7 +80,7 @@
         }
 
         getProperties() {
-            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, "---", { name: "fov", translationKey: "engine.nodeProperties.Camera.fov", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "orthoganalism", translationKey: "engine.nodeProperties.Camera.flatten", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "zoom", translationKey: "engine.nodeProperties.Camera.zoom", type: coffeeEngine.PropertyTypes.FLOAT }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
+            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, "---", { name: "fov", translationKey: "engine.nodeProperties.Camera.fov", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "orthographic", translationKey: "engine.nodeProperties.Camera.flatten", type: coffeeEngine.PropertyTypes.BOOLEAN }, { name: "zoom", translationKey: "engine.nodeProperties.Camera.zoom", type: coffeeEngine.PropertyTypes.FLOAT }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
         }
     }
 
