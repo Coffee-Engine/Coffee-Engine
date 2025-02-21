@@ -175,20 +175,32 @@
         ]);
     };
 
-    coffeeEngine.matrix4.projection = (fov, aspect, near, far) => {
-        const fovRad = Math.tan(((fov * 0.5) / 180) * 3.141592682);
-        const range = far - near;
-
+    //Adapt 3JS's frustrum system, and projection matrices to allow for more accurate FOV
+    //https://github.com/timoxley/threejs/blob/master/src/core/Matrix4.js
+    coffeeEngine.matrix4.frustrum = (left, right, bottom, top, near, far) => {
         const returned = coffeeEngine.matrix4.identity();
+		const x = 2 * near / ( right - left );
+		const y = 2 * near / ( top - bottom );
 
-        returned.contents[0][0] = fovRad / aspect;
-        returned.contents[1][1] = fovRad;
-        returned.contents[2][2] = far / range;
-        returned.contents[3][2] = (-far * near) / range;
-        returned.contents[2][3] = 1;
-        returned.contents[3][3] = 0;
+		const a = ( right + left ) / ( right - left );
+		const b = ( top + bottom ) / ( top - bottom );
+		const c = ( far + near ) / ( far - near );
+		const d = - 2 * far * near / ( far - near );
 
-        return returned;
+		returned.contents[0][0] = x;  returned.contents[0][1] = 0;  returned.contents[0][2] = a;   returned.contents[0][3] = 0;
+		returned.contents[1][0] = 0;  returned.contents[1][1] = y;  returned.contents[1][2] = b;   returned.contents[1][3] = 0;
+		returned.contents[2][0] = 0;  returned.contents[2][1] = 0;  returned.contents[2][2] = c;   returned.contents[2][3] = d;
+		returned.contents[3][0] = 0;  returned.contents[3][1] = 0;  returned.contents[3][2] = -1; returned.contents[3][3] = 0;
+
+		return returned;
+    };
+
+    coffeeEngine.matrix4.projection = (fov, aspect, near, far) => {
+        var ymax = near * Math.tan( fov * Math.PI / 360 );
+		var ymin = -ymax;
+		var xmin = ymin * aspect;
+		var xmax = ymax * aspect;
+		return coffeeEngine.matrix4.frustrum( xmin, xmax, ymin, ymax, near, far );
     };
 
     coffeeEngine.matrix4.deserialize = (data) => {

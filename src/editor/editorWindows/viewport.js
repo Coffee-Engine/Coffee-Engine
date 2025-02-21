@@ -78,12 +78,10 @@
             this.projection = coffeeEngine.matrix4.projection(this.previewCamera.fov, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
-            this.wFactor[0] += (1 - this.wFactor[0]) * 0.125;
-            if (this.wFactor[0] > 0.9875) {
-                this.wFactor[0] = 1;
+            this.wFactor += (1 - this.wFactor) * 0.125;
+            if (this.wFactor > 0.9875) {
+                this.wFactor = 1;
             }
-
-            this.wFactor[1] += (1 - this.wFactor[1]) * 0.125;
         }
 
         viewportControlsOrtho() {
@@ -92,23 +90,21 @@
                 this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
             }
 
-            this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
-            this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
+            //this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
+            //this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
 
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, 0);
+            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, 1);
             this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
             //Smooth transition
-            this.wFactor[0] += (0 - this.wFactor[0]) * 0.125;
-            if (this.wFactor[0] < 0.0125) {
-                this.wFactor[0] = 0;
+            this.wFactor += (0 - this.wFactor) * 0.125;
+            if (this.wFactor < 0.0125) {
+                this.wFactor = 0;
             }
-
-            this.wFactor[1] += (this.previewCamera.zoom - this.wFactor[1]) * 0.125;
         }
 
         renderLoop() {
@@ -121,7 +117,7 @@
             coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
             coffeeEngine.renderer.cameraData.unflattenedTransform = this.matrix;
             coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
-            coffeeEngine.renderer.cameraData.wFactor = this.wFactor;
+            coffeeEngine.renderer.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom];
             coffeeEngine.renderer.cameraData.aspectRatio = this.aspectRatio;
             coffeeEngine.renderer.cameraData.position.x = -this.previewCamera.x;
             coffeeEngine.renderer.cameraData.position.y = -this.previewCamera.y;
@@ -263,7 +259,7 @@
             this.controlling = false;
             this.orthographicMode = false;
             this.profilerToggle = false;
-            this.wFactor = [1, 1];
+            this.wFactor = 1;
             this.previewCamera = {
                 x: 0,
                 y: 0,
