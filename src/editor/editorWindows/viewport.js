@@ -156,7 +156,7 @@
         
                                 if (hit instanceof coffeeEngine.getNode("Node2D")) {
                                     hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
-                                    hit.position.y += event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05;
+                                    hit.position.y -= event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05;
                                 }
                                 else if (hit instanceof coffeeEngine.getNode("Node3D")) {
                                     hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
