@@ -5,10 +5,6 @@
     };
 
     class motion {
-        // I AM NOT doing (180/π) this is a pet peeve of mine. Its unnessacary cycles used for no purpose.
-        deg2Rad = 0.0174533;
-        rad2Deg = 57.2958;
-
         getInfo() {
             return {
                 id: "motion",
@@ -373,13 +369,13 @@
         //General Rotation
         turnAround2D({ degrees }, util) {
             if (typeof util.target.rotation == "number") {
-                util.target.rotation += sugarcube.cast.toNumber(degrees) * this.deg2Rad;
+                util.target.rotation += coffeeEngine.deg2Rad(sugarcube.cast.toNumber(degrees));
             }
         }
 
         setrotation2D({ degrees }, util) {
             if (typeof util.target.rotation == "number") {
-                util.target.rotation = sugarcube.cast.toNumber(degrees) * this.deg2Rad;
+                util.target.rotation = coffeeEngine.deg2Rad(sugarcube.cast.toNumber(degrees));
             }
         }
 
@@ -392,11 +388,11 @@
         }
 
         turnAround3D(args, util) {
-            if (util.target.rotation) util.target.rotation[args.axis] += sugarcube.cast.toNumber(args.degrees) * this.deg2Rad;
+            if (util.target.rotation) util.target.rotation[args.axis] += coffeeEngine.deg2Rad(sugarcube.cast.toNumber(args.degrees));
         }
 
         setrotation3D(args, util) {
-            if (util.target.rotation) util.target.rotation[args.axis] = sugarcube.cast.toNumber(args.degrees) * this.deg2Rad;
+            if (util.target.rotation) util.target.rotation[args.axis] = coffeeEngine.deg2Rad(sugarcube.cast.toNumber(args.degrees));
         }
 
         //Why do it like this? Its so we don't have to do matrix to euler.
@@ -416,22 +412,22 @@
         //Same principal. I'm too stubborn to do a conversion formula so we are using a constant
         direction(args, util) {
             if (util.target.rotation === undefined) return 0;
-            return sugarcube.cast.toNumber(util.target.rotation) * this.rad2Deg;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation));
         }
 
         yaw(args, util) {
             if (!util.target.rotation) return 0;
-            return sugarcube.cast.toNumber(util.target.rotation.y) * this.rad2Deg;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation.y));
         }
 
         pitch(args, util) {
             if (!util.target.rotation) return 0;
-            return sugarcube.cast.toNumber(util.target.rotation.x) * this.rad2Deg;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation.x));
         }
 
         roll(args, util) {
             if (!util.target.rotation) return 0;
-            return sugarcube.cast.toNumber(util.target.rotation.z) * this.rad2Deg;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation.z));
         }
 
         //Custom Fields

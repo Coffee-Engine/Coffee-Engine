@@ -127,10 +127,15 @@
             input.style.minWidth = "0px";
             input.style.borderLeftColor = color;
 
-            input.value = nodeValue[partition];
+            //Convert it
+            input.value = Number(nodeValue[partition]);
+            if (isNaN(input.value)) input.value = 0;
+            //Turn it to degrees if it is in radians
+            if (property) input.value *= (180/Math.PI);
+
             input.onchange = () => {
-                node[property.name][partition] = input.value;
-                input.value = nodeValue[partition];
+                node[property.name][partition] = input.value * (Math.PI/180);
+                input.value = nodeValue[partition] * (180/Math.PI);
                 if (onchange) onchange(property, node[property.name], node);
             };
 
