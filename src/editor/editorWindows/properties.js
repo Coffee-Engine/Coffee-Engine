@@ -131,13 +131,21 @@
             input.value = Number(nodeValue[partition]);
             if (isNaN(input.value)) input.value = 0;
             //Turn it to degrees if it is in radians
-            if (property) input.value = coffeeEngine.rad2Deg(input.value);
-
-            input.onchange = () => {
-                node[property.name][partition] = coffeeEngine.deg2Rad(input.value);
-                input.value = coffeeEngine.rad2Deg(nodeValue[partition]);
-                if (onchange) onchange(property, node[property.name], node);
-            };
+            if (property.isRadians) input.value = coffeeEngine.rad2Deg(input.value);
+            if (property.isRadians) {
+                input.onchange = () => {
+                    node[property.name][partition] = coffeeEngine.deg2Rad(input.value);
+                    input.value = coffeeEngine.rad2Deg(nodeValue[partition]);
+                    if (onchange) onchange(property, node[property.name], node);
+                };
+            }
+            else {
+                input.onchange = () => {
+                    node[property.name][partition] = input.value;
+                    input.value = nodeValue[partition];
+                    if (onchange) onchange(property, node[property.name], node);
+                };
+            }
 
             return input;
         }
