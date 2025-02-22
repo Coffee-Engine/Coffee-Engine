@@ -332,8 +332,8 @@
 
                     o_color.w = 1.0;
                     o_emission = vec4(0);
-                    o_matAtr = vec4(0);
-                    o_position = vec4(1);
+                    o_matAtr = vec4(-1,0,0,1);
+                    o_position = vec4(SkySphere,1);
                     o_normal = vec4(0);
                     o_OID.x = 0.0;
                     o_OID.y = 0.0;
@@ -371,6 +371,8 @@
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
                 uniform vec3 u_ambientColor;
+                uniform vec3 u_cameraPosition;
+                uniform mat4 u_camera;
 
                 uniform vec2 u_res;
                 uniform highp int u_fullBright;
@@ -384,6 +386,9 @@
                     vec2 screenUV = gl_FragCoord.xy / u_res;
                     vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
                     vec3 position = texture2D(u_position, screenUV).xyz;
+                    if (matAttributes.z < 0.0) {
+                        position -= u_cameraPosition;
+                    }
                     vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
 
                     gl_FragColor = texture2D(u_color,screenUV) + texture2D(u_emission,screenUV);
@@ -429,6 +434,52 @@
                         }
 
                         gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
+                    }
+
+                    if (u_fullBright == 0) {
+
+                        //Calculate position
+                        vec3 relativePos = position;
+                        relativePos -= u_cameraPosition;
+
+                        //Normalize it
+                        relativePos = normalize(relativePos);
+
+                        vec3 fogLight = vec3(0);
+
+                        for (int i=0;i<64;i++) {
+                            if (i >= u_lightCount) {
+                                break;
+                            }
+
+                            //Stuff required to calculate the end result
+                            mat4 light = u_lights[i];
+                            vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
+                            vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
+                            vec3 lightPosition = vec3(light[0][0], light[0][1], light[0][2]);
+
+                            //General application calculations. Distance^Intensity so that the light gets funkier
+                            vec3 relative = lightPosition - (relativePos * length(lightPosition - u_cameraPosition));
+                            float distance = pow(length(relative),2.0);
+                            vec3 calculated = color * (light[0][3] / distance);
+
+                            //Now we calculate the final output
+                            if (facingDirection != vec3(1)) {
+
+                                float spottedDir = lightDot(normalize(relative),facingDirection);
+                                if (spottedDir < 0.0) {
+                                    spottedDir = 0.0;
+                                }
+                            
+                                spottedDir = pow(spottedDir, 2.0 * light[2][3]);
+
+                                calculated *= spottedDir;
+                            }
+
+                            fogLight.xyz += calculated;
+                        }
+
+                        gl_FragColor.xyz += fogLight;
                     }
                 }
                 `
