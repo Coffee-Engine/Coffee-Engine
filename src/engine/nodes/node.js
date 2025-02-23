@@ -129,6 +129,19 @@
             delete this;
         }
 
+        //Determines how the object will be sorted
+        sortValue() {
+            return 0;
+        }
+
+        isColliding() {
+            let colliding = false;
+            for (child in this.children) {
+                return colliding || this.children[child].isColliding();
+            }
+            return colliding;
+        }
+
         //Children addition
         addChild(child) {
             if (child == this) return;
@@ -147,11 +160,6 @@
             if (this.children.includes(child)) {
                 this.children.splice(this.children.indexOf(child), 1);
             }
-        }
-
-        //Determines how the object will be sorted
-        sortValue() {
-            return 0;
         }
 
         //Determines what properties are serialized and added;
