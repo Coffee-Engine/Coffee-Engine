@@ -2,9 +2,12 @@
     coffeeEngine.SAT = {
         //Making a base class so this can be easily tweaked at any time
         BaseClass: class {
+            get axis() {
+                //Return an array of vector 3
+                return [];
+            }
+
             constructor() {
-                //Also vector 3s
-                this.axis = [];
                 //Vector 3s
                 this.points = [];
                 //Our matrix, this will be inherited from our parent node
@@ -63,9 +66,10 @@
                     if (!((coMin <= myMax) && (myMin <= coMax))) return result;
                     //If we are modify the result
                     else {
-                        //Add the axis, and the length
+                        //Find the smallest push distance to escape
                         if (result.pushLength > myMin) {
-                            result.pushLength = myMin;
+                            //Inverse it so we push out instead of in
+                            result.pushLength = -Math.abs(myMin - coMin);
                             result.pushVector = axis;
                         }
                     }
