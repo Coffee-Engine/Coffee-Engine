@@ -15,7 +15,7 @@
             getMin(matrix, axis) {
                 //Make a minimum vector
                 let min = Infinity;
-                //               Ain't That Wacky? ^^^^^^^^ ^^^^^^^^ ^^^^^^^^
+                //Ain't That Wacky?
                 for (const pointID in this.points) {
                     //Convert the point to be multipliable to a matrix
                     const point = matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
@@ -31,12 +31,12 @@
             getMax(matrix, axis) {
                 //Make a minimum vector
                 let max = -Infinity;
-                //               Ain't That Wacky? ^^^^^^^^^ ^^^^^^^^^ ^^^^^^^^^
+                //Ain't That Wacky?
                 for (const pointID in this.points) {
                     //Convert the point to be multipliable to a matrix
                     const point = matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
 
-                    //Find the min
+                    //Find the max
                     if (point > max) max = point;
                 }
 
@@ -45,8 +45,9 @@
 
             //The real magic happens here
             solve(collider) {
+                const result = new coffeeEngine.SAT.SATResult();
                 //Immediately fail the SAT test if we detect something fishy.
-                if (!collider instanceof coffeeEngine.SAT.BaseClass) return new coffeeEngine.SAT.SATResult();
+                if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
 
                 const combinedAxis = this.axis.concat(collider.axis);
                 for (const axisID in combinedAxis) {
@@ -57,14 +58,31 @@
 
                     const coMin = collider.getMin(collider.matrix, axis);
                     const coMax = collider.getMax(collider.matrix, axis);
+
+                    //If we aren't colliding just send an empty result
+                    if (!((coMin <= myMax) && (myMin <= coMax))) return result;
+                    //If we are modify the result
+                    else {
+                        //Add the axis, and the length
+                        if (result.pushLength > myMin) {
+                            result.pushLength = myMin;
+                            result.pushVector = axis;
+                        }
+                    }
                 }
+
+                //If we are completely sucessful tick the sucessful boolean
+                result.successful = true;
+                return result;
             }
         },
 
         //Yes, I think an SATResult class would do us good.
         SATResult: class {
             successful = false;
-            pushVectors = {};
+            //Not an actual vector3
+            pushVector = null;
+            pushLength = Infinity;
         }
     }
 })();
