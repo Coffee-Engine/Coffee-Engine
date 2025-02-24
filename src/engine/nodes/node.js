@@ -142,9 +142,8 @@
             return colliding;
         }
 
-        getSATBounds() {
-            
-        }
+        //For now return null
+        getSATBounds() { return null; }
 
         //Children addition
         addChild(child) {
