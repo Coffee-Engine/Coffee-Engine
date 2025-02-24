@@ -2,19 +2,19 @@
     const shapes = {
         cube: {
             points: [
-                new coffeeEngine.vector4( 1, 1, 1),
-                new coffeeEngine.vector4(-1, 1, 1),
-                new coffeeEngine.vector4(-1,-1, 1),
-                new coffeeEngine.vector4(-1,-1,-1),
-                new coffeeEngine.vector4( 1,-1,-1),
-                new coffeeEngine.vector4( 1, 1,-1),
-                new coffeeEngine.vector4(-1, 1,-1),
-                new coffeeEngine.vector4( 1,-1, 1),
+                new coffeeEngine.vector3( 1, 1, 1),
+                new coffeeEngine.vector3(-1, 1, 1),
+                new coffeeEngine.vector3(-1,-1, 1),
+                new coffeeEngine.vector3(-1,-1,-1),
+                new coffeeEngine.vector3( 1,-1,-1),
+                new coffeeEngine.vector3( 1, 1,-1),
+                new coffeeEngine.vector3(-1, 1,-1),
+                new coffeeEngine.vector3( 1,-1, 1),
             ],
             axis: [
-                new coffeeEngine.vector4( 1, 0, 0),
-                new coffeeEngine.vector4( 0, 1, 0),
-                new coffeeEngine.vector4( 0, 0, 1),
+                new coffeeEngine.vector3( 1, 0, 0),
+                new coffeeEngine.vector3( 0, 1, 0),
+                new coffeeEngine.vector3( 0, 0, 1),
             ]
         }
     }
@@ -33,7 +33,7 @@
             super();
 
             this.type = "OBB";
-            this.points = shapes.cube;
+            this.points = shapes.cube.points;
         }
 
         axis_OBB_OBB(otherOBB) {

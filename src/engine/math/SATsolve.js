@@ -54,7 +54,10 @@
                 //Immediately fail the SAT test if we detect something fishy.
                 if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
 
-                const combinedAxis = this.axis.concat(collider.axis);
+                //get the axis types
+                let combinedAxis = this.axis.concat(collider.axis);
+                if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = this.axis.concat(this[`axis_${this.type}_${collider.type}`]());
+                
                 for (const axisID in combinedAxis) {
                     const axis = combinedAxis[axisID];
                     
@@ -69,9 +72,10 @@
                     //If we are modify the result
                     else {
                         //Find the smallest push distance to escape
-                        if (result.pushLength > myMin) {
+                        const pushBack = myMax - myMin;
+                        if ((result.pushLength >= pushBack && pushBack != 0) || result.pushLength === null) {
                             //Inverse it so we push out instead of in
-                            result.pushLength = -Math.abs(myMin - coMin);
+                            result.pushLength = pushBack;
                             result.pushVector = axis;
                         }
                     }
