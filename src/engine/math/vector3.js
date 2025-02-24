@@ -63,7 +63,8 @@
         }
 
         dot(b) {
-            return this.mul(b).normalize();
+            const multiplied = this.mul(b);
+            return multiplied.x + multiplied.y + multiplied.z;
         }
 
         cross() {
@@ -98,6 +99,10 @@
 
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "vector3", value: this.webGLValue() };
+        }
+
+        toVector4() {
+            return new coffeeEngine.vector4(this.x, this.y, this.z, 1);
         }
     };
 

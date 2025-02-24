@@ -136,7 +136,7 @@
 
         isColliding() {
             let colliding = false;
-            for (child in this.children) {
+            for (const child in this.children) {
                 return colliding || this.children[child].isColliding();
             }
             return colliding;

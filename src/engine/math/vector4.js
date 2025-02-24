@@ -72,7 +72,8 @@
         }
 
         dot(b) {
-            return this.mul(b).normalize();
+            const multiplied = this.mul(b);
+            return multiplied.x + multiplied.y + multiplied.z + multiplied.w;
         }
 
         flip() {
@@ -96,6 +97,10 @@
 
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "vector4", value: this.webGLValue() };
+        }
+
+        toVector3() {
+            return new coffeeEngine.vector3(this.x, this.y, this.z);
         }
     };
 

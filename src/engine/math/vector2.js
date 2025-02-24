@@ -54,7 +54,8 @@
         }
 
         dot(b) {
-            return this.mul(b).normalize();
+            const multiplied = this.mul(b)
+            return multiplied.x + multiplied.y;
         }
 
         cross() {
