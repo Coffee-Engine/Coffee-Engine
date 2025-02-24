@@ -12,6 +12,8 @@
                 this.points = [];
                 //Our matrix, this will be inherited from our parent node
                 this.matrix = coffeeEngine.matrix4.identity();
+                
+                this.type = "base";
             }
 
             //We need to push in 2 vector 3s for an offset, and axis
