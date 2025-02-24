@@ -142,6 +142,10 @@
             return colliding;
         }
 
+        getSATBounds() {
+            
+        }
+
         //Children addition
         addChild(child) {
             if (child == this) return;
