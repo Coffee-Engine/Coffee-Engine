@@ -35,12 +35,15 @@
             container.style.gridTemplateRows = "24px ".repeat(Object.keys(coffeeEngine.nodeRegister).length);
             container.style.margin = "0px";
             container.style.overflow = "hidden";
+            
+            //Set our target root
+            this.TargetRoot = coffeeEngine.runtime.currentScene;
         }
 
         onNodeClicked = (nodeName) => {
             const NewNode = new (coffeeEngine.getNode(nodeName))();
             NewNode.name = editor.language[`engine.nodeNames.${nodeName}`] || nodeName;
-            coffeeEngine.runtime.currentScene.addChild(NewNode);
+            this.TargetRoot.addChild(NewNode);
             this._dispose();
         };
 

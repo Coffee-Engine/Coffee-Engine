@@ -59,18 +59,23 @@
             super.draw();
 
             if (this.texture) {
+                const translatedWorld = this.mixedMatrix.getTranslation();
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
                 //Rotate and scale our billboard depending on MULTIPLE variables
                 if (this.omnidirectional)
-                    this.#shader.uniforms.u_model.value = this.matrix
+                    this.#shader.uniforms.u_model.value = coffeeEngine.matrix4
+                        .identity()
+                        .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                         .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                         .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                         .scale(this.scale.x, this.scale.y, -1)
                         .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
                         .webGLValue();
                 else
-                    this.#shader.uniforms.u_model.value = this.matrix
+                    this.#shader.uniforms.u_model.value = coffeeEngine.matrix4
+                        .identity()
+                        .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                         .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                         .scale(this.scale.x, this.scale.y, -1)
                         .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)

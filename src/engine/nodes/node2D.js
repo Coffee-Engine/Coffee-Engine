@@ -21,8 +21,6 @@
             return this.#rotation;
         }
 
-        matrix = coffeeEngine.matrix4.identity();
-
         updateMatrix() {
             this.matrix = coffeeEngine.matrix4.identity();
             this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);

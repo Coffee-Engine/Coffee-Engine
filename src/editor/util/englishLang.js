@@ -140,6 +140,8 @@ editor.EnglishLang = {
     "editor.window.sceneTree": "Scene Tree",
     "editor.window.sceneTree.addObject": "Add Node",
 
+    "editor.window.sceneTree.addChild": "Add Child",
+    "editor.window.sceneTree.addDuplicateChild": "Duplicate as Child",
     "editor.window.sceneTree.duplicate": "Duplicate Node",
     "editor.window.sceneTree.delete": "Remove Node",
 

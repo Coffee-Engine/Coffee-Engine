@@ -53,6 +53,8 @@
             if (!root) {
                 element.contextFunction = () => {
                     return [
+                        { text: editor.language["editor.window.sceneTree.addChild"], value: "addChild" },
+                        { text: editor.language["editor.window.sceneTree.addDuplicateChild"], value: "addDuplicateChild" },
                         { text: editor.language["editor.window.sceneTree.duplicate"], value: "duplicate" },
                         { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },
                     ];
@@ -60,6 +62,38 @@
 
                 element.contentAnswer = (value) => {
                     switch (value) {
+                        case "addChild": {
+                            const createdWindow = new editor.windows.nodeMaker(400, 350);
+                            createdWindow.__moveToTop();
+            
+                            createdWindow.x = window.innerWidth / 2 - 200;
+                            createdWindow.y = window.innerHeight / 2 - 175;
+
+                            createdWindow.TargetRoot = Node;
+                            break;
+                        }
+
+                        case "addDuplicateChild": {
+                            const nodeKeys = Node.getProperties();
+                            const duplicated = new Node.constructor();
+
+                            for (let keyID in nodeKeys) {
+                                const key = nodeKeys[keyID];
+
+                                if (typeof key != "object") continue;
+                                if (key == "parent" || key == "children") continue;
+
+                                if (Node[key.name] && Node[key.name].__duplicate) {
+                                    Node[key.name].__duplicate(duplicated[key.name]);
+                                } else {
+                                    duplicated[key.name] = Node[key.name];
+                                }
+                            }
+
+                            Node.addChild(duplicated);
+                            break;
+                        }
+
                         case "duplicate": {
                             const nodeKeys = Node.getProperties();
                             const duplicated = new Node.constructor();

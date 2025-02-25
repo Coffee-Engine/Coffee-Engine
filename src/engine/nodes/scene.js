@@ -12,6 +12,10 @@
         sunColor = [0, 0, 0];
         ambientColor = [0, 0, 0];
         lightCount = 0;
+        
+        //? And here is our matrix.
+        //? The humble matrix
+        mixedMatrix = coffeeEngine.matrix4.identity();
 
         constructor() {
             this.children = [];

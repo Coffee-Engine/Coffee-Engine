@@ -71,7 +71,7 @@
             super.draw();
 
             if (this.texture) {
-                this.#shader.uniforms.u_model.value = this.matrix.webGLValue();
+                this.#shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
 
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
 

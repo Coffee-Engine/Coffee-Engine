@@ -26,14 +26,15 @@
             super.draw();
 
             //Rotate our sun variable in the scene
-            coffeeEngine.runtime.currentScene.sunDirection = [-this.matrix.contents[0][2], -this.matrix.contents[1][2], -this.matrix.contents[2][2]];
+            coffeeEngine.runtime.currentScene.sunDirection = [-this.mixedMatrix.contents[0][2], -this.mixedMatrix.contents[1][2], -this.mixedMatrix.contents[2][2]];
             coffeeEngine.runtime.currentScene.sunColor = [this.#lightColorArray[0], this.#lightColorArray[1], this.#lightColorArray[2]];
 
             //Editor display
             if (coffeeEngine.isEditor) {
                 this.shader.setBuffers(coffeeEngine.shapes.plane);
 
-                const renderMatrix = coffeeEngine.matrix4.identity().translate(this.position.x, this.position.y, this.position.z).rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y).webGLValue();
+                const translatedWorld = this.mixedMatrix.getTranslation();
+                const renderMatrix = coffeeEngine.matrix4.identity().translate(translatedWorld.x, translatedWorld.y, translatedWorld.z).rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y).webGLValue();
 
                 this.shader.uniforms.u_texture.value = coffeeEngine.renderer.sprites.sun.texture;
                 this.shader.uniforms.u_model.value = renderMatrix;
@@ -43,7 +44,7 @@
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
-                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
+                this.shaderArrow.uniforms.u_model.value = this.mixedMatrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = this.#lightColorArray;
                 this.shaderArrow.uniforms.u_objectID.value = drawID;
                 this.shaderArrow.drawFromBuffers(48);

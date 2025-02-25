@@ -3,7 +3,6 @@
         position = new coffeeEngine.vector3(0, 0, 0);
         rotation = new coffeeEngine.vector3(0, 0, 0);
         scale = new coffeeEngine.vector3(1, 1, 1);
-        matrix = coffeeEngine.matrix4.identity();
 
         updateMatrix() {
             this.matrix = coffeeEngine.matrix4.identity();

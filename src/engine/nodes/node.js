@@ -4,6 +4,11 @@
         //We store our update event in here
         __storedUpdate = null;
 
+        //? And here is our matrix.
+        //? The humble matrix
+        matrix = coffeeEngine.matrix4.identity();
+        mixedMatrix = coffeeEngine.matrix4.identity();
+
         set parent(value) {
             if (value != null && value.addChild) {
                 // prettier-ignore
@@ -109,6 +114,7 @@
         }
 
         draw(drawID) {
+            this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
             // prettier-ignore
             coffeeEngine.renderer.nodesRendered += 1;
             if (this.#scriptObject && this.#scriptObject.draw) {

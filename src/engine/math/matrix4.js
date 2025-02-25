@@ -163,6 +163,14 @@
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "matrix4", value: this.contents };
         }
+
+        getTranslation() {
+            const returned = new coffeeEngine.vector3(0,0,0);
+            returned.x = this.contents[0][3];
+            returned.y = this.contents[1][3];
+            returned.z = this.contents[2][3];
+            return returned;
+        }
     };
 
     coffeeEngine.matrix4.identity = () => {

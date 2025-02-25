@@ -51,7 +51,7 @@
                     const pointCount = this.meshData.pointCount[subMeshIndex];
 
                     this.#material.shader.setBuffers(data);
-                    this.#material.shader.uniforms.u_model.value = this.matrix.webGLValue();
+                    this.#material.shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
                     if (this.#material.shader.uniforms.u_colorMod) this.#material.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
                     if (this.#material.shader.uniforms.u_objectID) this.#material.shader.uniforms.u_objectID.value = drawID;
                     this.#material.shader.drawFromBuffers(pointCount);

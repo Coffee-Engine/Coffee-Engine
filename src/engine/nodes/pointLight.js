@@ -7,8 +7,12 @@
         sprite = coffeeEngine.renderer.sprites.light;
 
         draw(drawID) {
+            super.draw();
+            
             const scene = coffeeEngine.runtime.currentScene;
-            scene.__setLight(scene.lightCount, [this.position.x, this.position.y, this.position.z, this.radius, this.color[0], this.color[1], this.color[2], 0, 1, 1, 1, 1, 0, 0, 0, 0]);
+            const translatedWorld = this.mixedMatrix.getTranslation();
+
+            scene.__setLight(scene.lightCount, [translatedWorld.x, translatedWorld.y, translatedWorld.z, this.radius, this.color[0], this.color[1], this.color[2], 0, 1, 1, 1, 1, 0, 0, 0, 0]);
             scene.lightCount += 1;
 
             //Editor display
@@ -17,7 +21,7 @@
 
                 const renderMatrix = coffeeEngine.matrix4
                     .identity()
-                    .translate(this.position.x, this.position.y, this.position.z)
+                    .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                     .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                     .scale((this.sprite.width / this.sprite.height) * 0.5, 0.5, 0.5)
