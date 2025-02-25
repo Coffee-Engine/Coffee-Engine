@@ -13,7 +13,7 @@
     };
 
     //To exclude or not to exclude
-    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res"];
+    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID"];
 
     const matEditor = ({ panel, refreshListing }) => {
         return {
@@ -30,9 +30,11 @@
                     if (exclude.includes(uniform)) continue;
 
                     //* Band aid and duct tape solution
-                    uniforms.push(uniformTypes[shader.uniforms[uniform].type]);
+                    uniforms.push(Object.assign({}, uniformTypes[shader.uniforms[uniform].type]));
                     uniforms[uniforms.length - 1].name = uniform;
                 }
+
+                console.log(uniforms);
 
                 return [{ name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
             },
@@ -44,7 +46,9 @@
                     });
                 } else {
                     node.params = node.params || {};
-                    node.params[property.name] = value;
+                    node.params[property.name] = [value, shader.uniforms[property.name].type];
+
+                    console.log(property.name);
 
                     return true;
                 }

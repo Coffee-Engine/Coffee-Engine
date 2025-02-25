@@ -21,5 +21,19 @@
             LIGHT_AFFECTION = 0.0;
         }
         `);
+
+        renderer.mainShaders.PBR = renderer.compilePBRshader(`
+        uniform sampler2D Albedo;
+        uniform sampler2D NormalMap;
+
+        void fragment() {
+            mat3 normalTransform = mat3(1);
+            normalTransform[0] = NORMAL;
+            normalTransform[1] = vec3(NORMAL.y, NORMAL.z, NORMAL.x);
+            normalTransform[2] = vec3(NORMAL.x, NORMAL.z, NORMAL.y);
+            COLOR = texture(Albedo, UV);
+            NORMAL.xyz = texture(NormalMap, UV).xyz * normalTransform;
+        }
+        `);
     };
 })();
