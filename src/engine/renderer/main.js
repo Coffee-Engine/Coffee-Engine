@@ -406,9 +406,9 @@
                     vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
                     vec3 halfway = viewToFrag;
 
-                    float distance = pow(length(relative),2.0) / matAttributes.x;
+                    float distance = pow(length(relative),2.0);
                     vec3 calculated = color * (light[0][3] / distance);
-                    calculated *= pow(lightDot(normal,-normalize(relative)), 1.0+(matAttributes.y * 3.0));
+                    calculated *= pow(lightDot(normal,-normalize(relative)), 1.0+(matAttributes.y * 3.0)) * matAttributes.x;
 
                     //Now we calculate the final output
                     if (facingDirection != vec3(1)) {
