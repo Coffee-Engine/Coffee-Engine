@@ -27,7 +27,7 @@
         uniform sampler2D NormalMap;
 
         void fragment() {
-            mat3 normalTransform = mat3(NORMAL,TANGENT,BITANGENT);
+            mat3 normalTransform = transpose(mat3(TANGENT,BITANGENT,NORMAL));
             COLOR = texture(Albedo, UV);
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
         }

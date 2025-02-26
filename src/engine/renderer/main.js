@@ -183,9 +183,9 @@
 
                     //Then we pass them to the fragment shader
                     v_color = COLOR;
-                    v_normal = (vec4(NORMAL,0) * u_model).xyz;
-                    v_tangent = (vec4(TANGENT,0) * u_model).xyz;
-                    v_bitangent = (vec4(BITANGENT,0) * u_model).xyz;
+                    v_normal = normalize(vec4(NORMAL,0) * u_model).xyz;
+                    v_tangent = normalize(vec4(TANGENT,0) * u_model).xyz;
+                    v_bitangent = normalize(vec4(BITANGENT,0) * u_model).xyz;
                     v_texCoord = UV;
     
                     //Transform my stuff!
@@ -260,9 +260,9 @@
                     SPECULAR = 0.0;
                     ALPHA_GLOW = 0.0;
                     UV = v_texCoord;
-                    NORMAL = normalize(v_normal);
-                    TANGENT = normalize(v_tangent);
-                    BITANGENT = normalize(v_bitangent);
+                    NORMAL = v_normal;
+                    TANGENT = v_tangent;
+                    BITANGENT = v_bitangent;
 
                     //Call our user function
                     fragment();
