@@ -394,7 +394,7 @@
                 uniform highp int u_fullBright;
 
                 float lightDot(vec3 a,vec3 b) {
-                    return (dot(a,b) + 1.0) / 2.0;
+                    return min(1.0,max(0.0,dot(a,b)));
                 }
                 
                 void main()
@@ -415,7 +415,7 @@
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0 && u_fullBright == 0) {
-                        lightColor += u_sunColor * dot(normal, u_sunDir);
+                        lightColor += u_sunColor * lightDot(normal, u_sunDir);
 
                         for (int i=0;i<64;i++) {
                             if (i >= u_lightCount) {
