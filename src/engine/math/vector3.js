@@ -67,7 +67,7 @@
             return multiplied.x + multiplied.y + multiplied.z;
         }
 
-        cross() {
+        cross(b) {
             return new coffeeEngine.vector3(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
         }
 

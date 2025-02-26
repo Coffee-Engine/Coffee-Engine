@@ -1,5 +1,5 @@
 (function() {
-    const shapes = {
+    coffeeEngine.SATShapes = {
         cube: {
             points: [
                 new coffeeEngine.vector3( 1, 1, 1),
