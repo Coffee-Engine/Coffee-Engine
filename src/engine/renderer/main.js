@@ -387,14 +387,42 @@
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
                 uniform vec3 u_ambientColor;
-                uniform vec3 u_cameraPosition;
                 uniform mat4 u_camera;
 
                 uniform vec2 u_res;
                 uniform highp int u_fullBright;
 
+                vec3 viewToFrag;
+
                 float lightDot(vec3 a,vec3 b) {
                     return min(1.0,max(0.0,dot(a,b)));
+                }
+
+                vec3 calculateLight(mat4 light, vec3 position, vec3 normal, vec3 matAttributes) {
+                    vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
+                    vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
+
+                    //General application calculations. Distance^Intensity so that the light gets funkier
+                    vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
+                    vec3 halfway = viewToFrag;
+
+                    float distance = pow(length(relative),2.0) / matAttributes.x;
+                    vec3 calculated = color * (light[0][3] / distance);
+                    calculated *= pow(lightDot(normal,-normalize(relative)), 1.0+(matAttributes.y * 3.0));
+
+                    //Now we calculate the final output
+                    if (facingDirection != vec3(1)) {
+                        float spottedDir = lightDot(normalize(relative),facingDirection);
+                        if (spottedDir < 0.0) {
+                            spottedDir = 0.0;
+                        }
+                    
+                        spottedDir = pow(spottedDir, 2.0 * light[2][3]);
+
+                        calculated *= spottedDir;
+                    }
+
+                    return calculated;
                 }
                 
                 void main()
@@ -402,8 +430,10 @@
                     vec2 screenUV = gl_FragCoord.xy / u_res;
                     vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
                     vec3 position = texture2D(u_position, screenUV).xyz;
+                    viewToFrag = vec3(u_camera[3][0],u_camera[3][1],u_camera[3][2]) - position;
+
                     if (matAttributes.z < 0.0) {
-                        position -= u_cameraPosition;
+                        position -= vec3(u_camera[3][0],u_camera[3][1],u_camera[3][2]);
                     }
                     vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
 
@@ -424,29 +454,8 @@
 
                             //Stuff required to calculate the end result
                             mat4 light = u_lights[i];
-                            vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
-                            vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
 
-                            //General application calculations. Distance^Intensity so that the light gets funkier
-                            vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
-                            float distance = pow(length(relative),2.0);
-                            vec3 calculated = color * (light[0][3] / distance);
-                            calculated *= lightDot(normal,-normalize(relative));
-
-                            //Now we calculate the final output
-                            if (facingDirection != vec3(1)) {
-
-                                float spottedDir = lightDot(normalize(relative),facingDirection);
-                                if (spottedDir < 0.0) {
-                                    spottedDir = 0.0;
-                                }
-                            
-                                spottedDir = pow(spottedDir, 2.0 * light[2][3]);
-
-                                calculated *= spottedDir;
-                            }
-
-                            lightColor.xyz += calculated;
+                            lightColor.xyz += calculateLight(light, position, normal, matAttributes.xyz);
                         }
 
                         gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);

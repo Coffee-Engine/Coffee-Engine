@@ -25,11 +25,15 @@
         renderer.mainShaders.PBR = renderer.compilePBRshader(`
         uniform sampler2D Albedo;
         uniform sampler2D NormalMap;
+        uniform sampler2D SpecularMap;
+        uniform sampler2D RoughnessMap;
 
         void fragment() {
             mat3 normalTransform = transpose(mat3(TANGENT,BITANGENT,NORMAL));
             COLOR = texture(Albedo, UV);
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
+            ROUGHNESS = texture(RoughnessMap, UV).x;
+            SPECULAR = texture(SpecularMap, UV).x;
         }
         `);
     };

@@ -172,7 +172,6 @@
             mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
             mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
             mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            mainPass.uniforms.u_cameraPosition.value = renderer.cameraData.position.webGLValue();
             mainPass.uniforms.u_sunDir.value = this.sunDirection;
             mainPass.uniforms.u_sunColor.value = this.sunColor;
             mainPass.uniforms.u_ambientColor.value = this.ambientColor;
