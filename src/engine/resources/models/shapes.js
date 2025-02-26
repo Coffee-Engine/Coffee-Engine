@@ -1,6 +1,6 @@
 coffeeEngine.renderer.initilizeShapes = () => {
     coffeeEngine.shapes = {
-        plane: coffeeEngine.renderer.daveshade.buffersFromJSON({
+        plane: coffeeEngine.mesh.finalizeAndParse([{
             a_position: new Float32Array(
                 [
                     -1,-1,0,1,
@@ -48,8 +48,8 @@ coffeeEngine.renderer.initilizeShapes = () => {
                     0,0,1,
                 ]
             ),
-        }),
-        arrow: coffeeEngine.renderer.daveshade.buffersFromJSON({
+        }])[0],
+        arrow: coffeeEngine.mesh.finalizeAndParse([{
             a_position: new Float32Array(
                 [
                     -0.066863,
@@ -693,6 +693,6 @@ coffeeEngine.renderer.initilizeShapes = () => {
                     -0.3158
                   ]
             ),
-        })
+        }])[0]
     }
 }

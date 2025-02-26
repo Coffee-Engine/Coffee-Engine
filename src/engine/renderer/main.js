@@ -137,11 +137,15 @@
                 in vec4 a_position;
                 in vec4 a_color;
                 in vec3 a_normal;
+                in vec3 a_tangent;
+                in vec3 a_bitangent;
                 in vec2 a_texCoord;
     
                 out vec4 v_color;
                 out vec3 v_position;
                 out vec3 v_normal;
+                out vec3 v_tangent;
+                out vec3 v_bitangent;
                 out vec2 v_texCoord;
                 out vec3 v_OID;
     
@@ -156,6 +160,8 @@
                 vec3 POSITION;
                 vec4 COLOR;
                 vec3 NORMAL;
+                vec3 TANGENT;
+                vec3 BITANGENT;
                 vec2 UV;
 
                 void vertex() {}
@@ -167,6 +173,8 @@
                     POSITION = a_position.xyz;
                     COLOR = a_color;
                     NORMAL = a_normal;
+                    TANGENT = a_tangent;
+                    BITANGENT = a_bitangent;
                     UV = a_texCoord;
 
                     //Call our user input
@@ -176,6 +184,8 @@
                     //Then we pass them to the fragment shader
                     v_color = COLOR;
                     v_normal = (vec4(NORMAL,0) * u_model).xyz;
+                    v_tangent = (vec4(TANGENT,0) * u_model).xyz;
+                    v_bitangent = (vec4(BITANGENT,0) * u_model).xyz;
                     v_texCoord = UV;
     
                     //Transform my stuff!
@@ -206,6 +216,8 @@
                 in vec4 v_color;
                 in vec3 v_position;
                 in vec3 v_normal;
+                in vec3 v_tangent;
+                in vec3 v_bitangent;
                 in vec2 v_texCoord;
                 in vec3 v_OID;
 
@@ -227,6 +239,8 @@
                 vec4 COLOR;
                 vec3 EMISSION;
                 vec3 NORMAL;
+                vec3 TANGENT;
+                vec3 BITANGENT;
                 vec2 UV;
                 float ROUGHNESS;
                 float SPECULAR;
@@ -246,7 +260,9 @@
                     SPECULAR = 0.0;
                     ALPHA_GLOW = 0.0;
                     UV = v_texCoord;
-                    NORMAL = v_normal;
+                    NORMAL = normalize(v_normal);
+                    TANGENT = normalize(v_tangent);
+                    BITANGENT = normalize(v_bitangent);
 
                     //Call our user function
                     fragment();

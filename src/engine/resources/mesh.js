@@ -5,6 +5,71 @@
             pointCount = [];
         },
 
+        //Returns stored
+        finalizeAndParse: (data) => {
+            for (const index in data) {
+                //Look through each vertex in position
+                const positions = data[index].a_position;
+                const uvs = data[index].a_texCoord;
+
+                data[index].a_tangent = [];
+                data[index].a_bitangent = [];
+
+                let triangleUVID = 0;
+                data[index]
+                for (let trianglePointID=0; trianglePointID<data[index].a_position.length; trianglePointID += 12) {
+                    //get points from buffer
+                    const point1 = [positions[trianglePointID], positions[trianglePointID+1], positions[trianglePointID+2]];
+                    const point2 = [positions[trianglePointID+4], positions[trianglePointID+5], positions[trianglePointID+6]];
+                    const point3 = [positions[trianglePointID+8], positions[trianglePointID+9], positions[trianglePointID+10]];
+
+                    //get uvs from buffer
+                    const uv1 = [uvs[triangleUVID], uvs[triangleUVID+1]];
+                    const uv2 = [uvs[triangleUVID+2], uvs[triangleUVID+3]];
+                    const uv3 = [uvs[triangleUVID+4], uvs[triangleUVID+5]];
+                    
+                    //Calculate edges
+                    const edge1 = [point2[0]-point1[0], point2[1]-point1[1], point2[2]-point1[2]];
+                    const edge2 = [point3[0]-point1[0], point3[1]-point1[1], point3[2]-point1[2]];
+
+                    //Then delta UVs
+                    const deltaUV1 = [uv2[0] - uv1[0], uv2[1] - uv1[1]];
+                    const deltaUV2 = [uv3[0] - uv1[0], uv3[1] - uv1[1]];
+
+                    //Then finally calculate the tangent and BItangent
+                    const f = 1/(deltaUV1[0] * deltaUV2[1] - deltaUV2[0] * deltaUV1[1]); //Cross product
+                    
+                    //Our 2 sibling vectors to the normal
+                    const tangent = [
+                        f * (deltaUV2[1] * edge1[0] - deltaUV1[1] * edge2[0]),
+                        f * (deltaUV2[1] * edge1[1] - deltaUV1[1] * edge2[1]),
+                        f * (deltaUV2[1] * edge1[2] - deltaUV1[1] * edge2[2])
+                    ];
+
+                    const bitangent = [
+                        f * (-deltaUV2[0] * edge1[0] + deltaUV1[0] * edge2[0]),
+                        f * (-deltaUV2[0] * edge1[1] + deltaUV1[0] * edge2[1]),
+                        f * (-deltaUV2[0] * edge1[2] + deltaUV1[0] * edge2[2])
+                    ];
+
+                    //Add three copies for each triangle
+                    data[index].a_tangent.push(tangent,tangent,tangent);
+                    data[index].a_bitangent.push(bitangent,bitangent,bitangent);
+
+                    //StepUVID
+                    triangleUVID += 6;
+                }
+                //Flatten and convert to f32 then convert to buffers later
+                data[index].a_tangent = new Float32Array(data[index].a_tangent.flat(4));
+                data[index].a_bitangent = new Float32Array(data[index].a_bitangent.flat(4));
+
+                //Convert it to buffers
+                data[index] = coffeeEngine.renderer.daveshade.buffersFromJSON(data[index]);
+            }
+
+            return data;
+        },
+
         fromProjectFile: (src) => {
             const fileReader = new FileReader();
             return new Promise((resolve, reject) => {
@@ -27,9 +92,7 @@
                             coffeeEngine.mesh.storage[src] = stored;
 
                             if (coffeeEngine.mesh.parsers[extension]) coffeeEngine.mesh.parsers[extension](fileReader.result, stored);
-                            for (const index in stored.data) {
-                                stored.data[index] = coffeeEngine.renderer.daveshade.buffersFromJSON(stored.data[index]);
-                            }
+                            stored.data = coffeeEngine.mesh.finalizeAndParse(stored.data);
 
                             resolve(stored);
                         };

@@ -592,6 +592,24 @@ window.DaveShade = {};
             daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
         };
 
+        daveShadeInstance.cullFace = (face) => {
+            switch (face) {
+                case "back":
+                    GL.enable(GL.CULL_FACE);
+                    GL.cullFace(GL.BACK);                    
+                    break;
+
+                case "front":
+                    GL.enable(GL.CULL_FACE);
+                    GL.cullFace(GL.FRONT);
+                    break;
+            
+                default:
+                    GL.disable(GL.CULL_FACE);
+                    break;
+            }
+        }
+
         //For going back to canvas rendering
         daveShadeInstance.renderToCanvas = () => {
             GL.bindFramebuffer(GL.FRAMEBUFFER, null);

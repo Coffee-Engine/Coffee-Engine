@@ -29,10 +29,10 @@
         void fragment() {
             mat3 normalTransform = mat3(1);
             normalTransform[0] = NORMAL;
-            normalTransform[1] = vec3(NORMAL.y, NORMAL.z, NORMAL.x);
-            normalTransform[2] = vec3(NORMAL.x, NORMAL.z, NORMAL.y);
+            normalTransform[1] = TANGENT;
+            normalTransform[2] = BITANGENT;
             COLOR = texture(Albedo, UV);
-            NORMAL.xyz = texture(NormalMap, UV).xyz * normalTransform;
+            NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
         }
         `);
     };

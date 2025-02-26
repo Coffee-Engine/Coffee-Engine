@@ -105,10 +105,12 @@
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
             this.__drawSky(renderer);
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            renderer.daveshade.cullFace("front");
             this.__drawScene(renderer);
 
             //Render it back to the main draw pass.
             renderer.daveshade.renderToCanvas();
+            renderer.daveshade.cullFace();
             this.__drawFinal(renderer, renderer.mainShaders.mainPass);
         }
 
