@@ -13,7 +13,7 @@
         void fragment() {
             COLOR = texture(u_texture,UV);
             ROUGHNESS = 1.0;
-            SPECULAR = 0.0;
+            SPECULAR = 1.0;
         }
         `);
 
@@ -36,6 +36,7 @@
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
             ROUGHNESS = texture(RoughnessMap, UV).x;
             SPECULAR = 1.0;//texture(SpecularMap, UV).x;
+            LIGHT_AFFECTION = 2.0;
         }
         `);
     };

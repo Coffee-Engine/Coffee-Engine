@@ -439,9 +439,10 @@
                     return ggx1 * ggx2;
                 }
 
-                vec3 calculateLight(mat4 light, vec3 albedo, vec3 position, vec3 normal, vec3 matAttributes) {
+                vec3 calculateLightPBR(mat4 light, vec3 albedo, vec3 position, vec3 normal, vec3 matAttributes) {
                     vec3 lightPosition = vec3(light[0][0],light[0][1],light[0][2]);
                     vec3 lightColour = vec3(light[1][0],light[1][1],light[1][2]);
+                    vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
 
                     vec3 lightToFrag = normalize(lightPosition - position);
                     vec3 halfway = normalize(viewToFrag + lightToFrag);
@@ -463,8 +464,46 @@
                     vec3 specular     = numerator / denominator;  
                         
                     // add to outgoing radiance Lo
-                    float NdotL = max(dot(normal, lightToFrag), 0.0);                
+                    float NdotL = max(dot(normal, lightToFrag), 0.0);     
+                    if (facingDirection != vec3(1)) {
+                        float spottedDir = lightDot(normalize(-lightToFrag),facingDirection);
+                        if (spottedDir < 0.0) {
+                            spottedDir = 0.0;
+                        }
+                    
+                        spottedDir = pow(spottedDir, 2.0 * light[2][3]);
+
+                        NdotL *= spottedDir;
+                    }
+
                     return (kD * albedo / 3.1415962 + specular) * radiance * NdotL; 
+                }
+
+                vec3 calculateLight(mat4 light, vec3 position, vec3 normal) {
+                    vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
+                    vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
+
+                    //General application calculations. Distance^Intensity so that the light gets funkier
+                    vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
+                    vec3 halfway = viewToFrag;
+
+                    float distance = pow(length(relative),3.0);
+                    vec3 calculated = color * (light[0][3] / distance);
+                    calculated *= lightDot(normal,-normalize(relative));
+
+                    //Now we calculate the final output
+                    if (facingDirection != vec3(1)) {
+                        float spottedDir = lightDot(normalize(relative),facingDirection);
+                        if (spottedDir < 0.0) {
+                            spottedDir = 0.0;
+                        }
+                    
+                        spottedDir = pow(spottedDir, 2.0 * light[2][3]);
+
+                        calculated *= spottedDir;
+                    }
+
+                    return calculated;
                 }
                 
                 void main()
@@ -498,9 +537,11 @@
                             //Stuff required to calculate the end result
                             mat4 light = u_lights[i];
 
-                            lightColor.xyz += calculateLight(light, gl_FragColor.xyz, position, normal, matAttributes.xyz);
+                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, gl_FragColor.xyz, position, normal, matAttributes.xyz);}
+                            else {lightColor.xyz += calculateLight(light, position, normal);}
                         }
 
+                        matAttributes.z -= ceil(matAttributes.z) - 1.0;
                         gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
                     }
 
