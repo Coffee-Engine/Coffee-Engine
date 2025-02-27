@@ -35,7 +35,7 @@
             COLOR = texture(Albedo, UV);
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
             ROUGHNESS = texture(RoughnessMap, UV).x;
-            SPECULAR = 1.0;//texture(SpecularMap, UV).x;
+            SPECULAR = texture(SpecularMap, UV).x;
             LIGHT_AFFECTION = 2.0;
         }
         `);
