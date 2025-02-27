@@ -400,6 +400,10 @@
                     return min(1.0,max(0.0,dot(a,b)));
                 }
 
+                float lightDot(vec3 a,vec3 b, vec2 thinness) {
+                    return min(1.0,max(0.0,dot(a,b) + thinness.x) * thinness.y);
+                }
+
                 vec3 fresnelSchlick(float cosTheta, vec3 F0)
                 {
                     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
@@ -466,7 +470,7 @@
                     // add to outgoing radiance Lo
                     float NdotL = max(dot(normal, lightToFrag), 0.0);     
                     if (facingDirection != vec3(1)) {
-                        float spottedDir = lightDot(normalize(-lightToFrag),facingDirection);
+                        float spottedDir = lightDot(normalize(-lightToFrag),facingDirection, vec2(1.0, 0.5));
                         if (spottedDir < 0.0) {
                             spottedDir = 0.0;
                         }
@@ -489,11 +493,11 @@
 
                     float distance = pow(length(relative),3.0);
                     vec3 calculated = color * (light[0][3] / distance);
-                    calculated *= lightDot(normal,-normalize(relative));
+                    calculated *= lightDot(normal,-normalize(relative), vec2(0.5, 0.75));
 
                     //Now we calculate the final output
                     if (facingDirection != vec3(1)) {
-                        float spottedDir = lightDot(normalize(relative),facingDirection);
+                        float spottedDir = lightDot(normalize(relative),facingDirection, vec2(1.0, 0.5));
                         if (spottedDir < 0.0) {
                             spottedDir = 0.0;
                         }
