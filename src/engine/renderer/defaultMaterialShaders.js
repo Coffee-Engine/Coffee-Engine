@@ -25,6 +25,7 @@
         `);
 
         renderer.mainShaders.PBR = renderer.compilePBRshader(`
+        #define is_PBR;
         uniform sampler2D Albedo;
         uniform sampler2D NormalMap;
         uniform sampler2D SpecularMap;
@@ -36,7 +37,7 @@
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
             ROUGHNESS = texture(RoughnessMap, UV).x;
             SPECULAR = texture(SpecularMap, UV).x;
-            LIGHT_AFFECTION = 2.0;
+            LIGHT_AFFECTION = 1.0;
         }
         `);
     };

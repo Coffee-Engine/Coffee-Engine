@@ -275,6 +275,12 @@
                         discard;
                     }
 
+                    #ifdef is_PBR
+                    if (LIGHT_AFFECTION > 0.0) {
+                        LIGHT_AFFECTION += 1.0;
+                    }
+                    #endif
+
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
                     o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,o_color.w);
                     o_emission = vec4(EMISSION,o_color.w);
