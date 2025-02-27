@@ -167,7 +167,7 @@
         __drawFinal(renderer, mainPass) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             mainPass.setBuffers(coffeeEngine.shapes.plane);
-            mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[1].texture;
             mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
             mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
             mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
@@ -176,6 +176,7 @@
             mainPass.uniforms.u_sunColor.value = this.sunColor;
             mainPass.uniforms.u_ambientColor.value = this.ambientColor;
             mainPass.uniforms.u_lightCount.value = this.lightCount;
+            mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
             mainPass.drawFromBuffers(6);
         }
 

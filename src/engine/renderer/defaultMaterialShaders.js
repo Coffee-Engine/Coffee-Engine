@@ -12,6 +12,8 @@
         uniform sampler2D u_texture;
         void fragment() {
             COLOR = texture(u_texture,UV);
+            ROUGHNESS = 1.0;
+            SPECULAR = 0.0;
         }
         `);
 
@@ -33,7 +35,7 @@
             COLOR = texture(Albedo, UV);
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
             ROUGHNESS = texture(RoughnessMap, UV).x;
-            SPECULAR = texture(SpecularMap, UV).x;
+            SPECULAR = 1.0;//texture(SpecularMap, UV).x;
         }
         `);
     };
