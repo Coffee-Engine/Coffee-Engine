@@ -17,7 +17,7 @@
 
     const matEditor = ({ panel, refreshListing }) => {
         return {
-            getProperties: () => {
+            getProperties: (material, initial) => {
                 //Get shaders
                 let baseShaders = {};
                 Object.keys(coffeeEngine.renderer.mainShaders).map((key) => {
@@ -34,21 +34,25 @@
                     uniforms[uniforms.length - 1].name = uniform;
                 }
 
-                console.log(uniforms);
+                //Get our shader variables if this isn't our first rodeo
+                if (initial) {
+                    coffeeEngine.renderer.fileToShader(material.shader).then((shaderOBJ) => {
+                        shader = shaderOBJ;
+                        refreshListing();
+                    });
+                }
 
                 return [{ name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
             },
             onPropertyChange: (property, value, node) => {
                 if (property.name == "shader") {
-                    coffeeEngine.renderer.fileToShader(value).then((value) => {
-                        shader = value;
+                    coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
+                        shader = shaderOBJ;
                         refreshListing();
                     });
                 } else {
                     node.params = node.params || {};
                     node.params[property.name] = [value, shader.uniforms[property.name].type];
-
-                    console.log(property.name);
 
                     return true;
                 }

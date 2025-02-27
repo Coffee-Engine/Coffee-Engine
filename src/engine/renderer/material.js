@@ -19,7 +19,6 @@
                 //Internal shaders
                 if (shader.startsWith("coffee:/")) {
                     //Remove the coffee predesessor, and get the default shader
-                    console.log(shader.replace("coffee:/", ""));
                     this.shader = coffeeEngine.renderer.mainShaders[shader.replace("coffee:/", "").replace(".glsl", "")];
                 } else {
                     //Get it from the path

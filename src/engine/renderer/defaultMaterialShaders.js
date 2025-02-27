@@ -37,7 +37,6 @@
             NORMAL.xyz = (texture(NormalMap, UV).xyz + -0.5) * 2.0 * normalTransform;
             ROUGHNESS = texture(RoughnessMap, UV).x;
             SPECULAR = texture(SpecularMap, UV).x;
-            LIGHT_AFFECTION = 1.0;
         }
         `);
     };
