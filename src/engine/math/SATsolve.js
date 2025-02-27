@@ -14,6 +14,7 @@
                 this.matrix = coffeeEngine.matrix4.identity();
                 
                 this.type = "base";
+                this.collisionType = coffeeEngine.collisionTypes.SAT;
             }
 
             //We need to push in 2 vector 3s for an offset, and axis
@@ -48,12 +49,21 @@
                 return max;
             }
 
+            getClosestPoint(point) {};
+
             //The real magic happens here
             solve(collider) {
                 const result = new coffeeEngine.SAT.SATResult();
                 //Immediately fail the SAT test if we detect something fishy.
                 if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
 
+                //Point to point collisions.
+                if (collider.collisionType || this.collisionType) {
+
+                    return result;
+                }
+
+                //If not point to point use SAT
                 //get the axis types
                 let combinedAxis = this.axis.concat(collider.axis);
                 if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = this.axis.concat(this[`axis_${this.type}_${collider.type}`](collider));

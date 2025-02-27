@@ -12,6 +12,7 @@
         constructor() {
             super();
 
+            this.collisionType = coffeeEngine.collisionTypes.SAT;
             this.type = "OBB";
             this.points = coffeeEngine.SATShapes.cube.points;
         }
@@ -31,6 +32,10 @@
                 new coffeeEngine.vector3(this.matrix.contents[2][0], this.matrix.contents[2][1], this.matrix.contents[2][2]).cross(new coffeeEngine.vector3(otherOBB.matrix.contents[2][0], otherOBB.matrix.contents[2][1], otherOBB.matrix.contents[2][2]))
             ]
             
+        }
+
+        getClosestPoint(point) {
+
         }
     }
 })();

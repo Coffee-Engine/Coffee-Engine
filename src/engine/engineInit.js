@@ -8,6 +8,10 @@ window.coffeeEngine = {
     broadcasts: {},
     runtime: {},
     classes: {},
+    collisionTypes: {
+        SAT:false,
+        POINT:true,
+    },
     resources: {},
     renderer: {
         nodesRendered: 0,
