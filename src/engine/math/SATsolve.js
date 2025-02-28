@@ -70,6 +70,11 @@
                     else if (collider.pointSolve) result.successful = collider.pointSolve(coPoint, myPoint);
                     else result.successful = myPoint.equals(coPoint);
 
+                    if (result.successful) {
+                        result.pushVector = myPoint.sub(coPoint).normalize();
+                        result.pushLength = myPoint.sub(coPoint).length();
+                    }
+
                     return result;
                 }
 
