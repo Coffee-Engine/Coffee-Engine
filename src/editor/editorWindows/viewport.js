@@ -149,6 +149,8 @@
                         //Node dragging
                         if (this.previouslySelectedNode == hit) {
                             const moveEvent = (event) => {
+                                if (!this.previouslySelectedNode) return;
+                                
                                 if (!this.draggingNode) {
                                     this.canvas.requestPointerLock();
                                     this.draggingNode = true;
