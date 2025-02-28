@@ -49,7 +49,7 @@
                 return max;
             }
 
-            getClosestPoint(point) {};
+            getClosestPoint(point) {}
 
             //The real magic happens here
             solve(collider) {
@@ -59,7 +59,10 @@
 
                 //Point to point collisions.
                 if (collider.collisionType || this.collisionType) {
+                    let myPoint = this.point;
+                    let coPoint = collider.point;
 
+                    if (!myPoint) myPoint = getClosestPoint;
                     return result;
                 }
 

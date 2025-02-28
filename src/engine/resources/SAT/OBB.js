@@ -35,7 +35,24 @@
         }
 
         getClosestPoint(point) {
+            //Set up final result
+            let result = new coffeeEngine.vector3(0,0,0);
+            //Get needed variables
+            const axes = this.axis;
+            const size = [axes[0].length(),axes[1].length(),axes[2].length()];
+            const direction = this.matrix.getTranslation().sub(point);
 
+            for (let axisID=0; axisID<3; axisID++) {
+                //Get axis and distance, Normalize
+                const axis = axes[axisID].normalize();
+                let dist = -direction.dot(axis);
+
+                //Get the distance and resize
+                dist = Math.min(size[axisID], Math.max(dist, -size[axisID]));
+                result = result.add(axis.mul(dist));
+            }
+
+            return result;
         }
     }
 })();

@@ -42,10 +42,12 @@
         }
 
         mul(b) {
+            if (typeof b == "number") return new coffeeEngine.vector3(this.x * b, this.y * b, this.z * b); 
             return new coffeeEngine.vector3(this.x * b.x, this.y * b.y, this.z * b.z);
         }
 
         div(b) {
+            if (typeof b == "number") return new coffeeEngine.vector3(this.x / b, this.y / b, this.z / b); 
             return new coffeeEngine.vector3(this.x / b.x, this.y / b.y, this.z / b.z);
         }
 
