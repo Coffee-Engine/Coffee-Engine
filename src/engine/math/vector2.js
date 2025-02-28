@@ -70,6 +70,10 @@
             return new coffeeEngine.vector2(this.y * Math.sin(rad) + this.x * Math.cos(rad), this.y * Math.cos(rad) - this.x * Math.sin(rad));
         }
 
+        equals(b) {
+            return (this.x == b.x && this.y == b.y);
+        }
+
         webGLValue() {
             return [this.x, this.y];
         }

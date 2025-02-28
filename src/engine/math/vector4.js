@@ -84,6 +84,10 @@
             return matrix.mulVector(this);
         }
 
+        equals(b) {
+            return (this.x == b.x && this.y == b.y && this.z == b.z && this.w == b.w);
+        }
+
         webGLValue() {
             return [this.x, this.y, this.z, this.w];
         }

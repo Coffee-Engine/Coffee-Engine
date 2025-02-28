@@ -66,9 +66,9 @@
                     if (!coPoint) coPoint = this.getClosestPoint(this.point);
 
                     //Do our thing, (Unhinged)
-                    if (this.pointSolve) result.successful = this.pointSolve(coPoint);
-                    else if (collider.pointSolve) result.successful = collider.pointSolve(myPoint);
-                    else result.successful = (myPoint.x == coPoint.x && myPoint.y == coPoint.y && myPoint.z == coPoint.z);
+                    if (this.pointSolve) result.successful = this.pointSolve(myPoint, coPoint);
+                    else if (collider.pointSolve) result.successful = collider.pointSolve(coPoint, myPoint);
+                    else result.successful = myPoint.equals(coPoint);
 
                     return result;
                 }

@@ -89,6 +89,10 @@
             return returned;
         }
 
+        equals(b) {
+            return (this.x == b.x && this.y == b.y && this.z == b.z);
+        }
+
         webGLValue() {
             return [this.x, this.y, this.z];
         }
