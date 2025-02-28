@@ -62,7 +62,14 @@
                     let myPoint = this.point;
                     let coPoint = collider.point;
 
-                    if (!myPoint) myPoint = getClosestPoint;
+                    if (!myPoint) myPoint = this.getClosestPoint(coPoint);
+                    if (!coPoint) coPoint = this.getClosestPoint(this.point);
+
+                    //Do our thing, (Unhinged)
+                    if (this.pointSolve) result.successful = this.pointSolve(coPoint);
+                    else if (collider.pointSolve) result.successful = collider.pointSolve(myPoint);
+                    else result.successful = (myPoint.x == coPoint.x && myPoint.y == coPoint.y && myPoint.z == coPoint.z);
+
                     return result;
                 }
 
