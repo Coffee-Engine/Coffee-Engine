@@ -36,7 +36,7 @@
 
         getClosestPoint(point) {
             //Set up final result
-            let result = new coffeeEngine.vector3(0,0,0);
+            let result = this.matrix.getTranslation();
             //Get needed variables
             const axes = this.axis;
             const size = [axes[0].length(),axes[1].length(),axes[2].length()];
