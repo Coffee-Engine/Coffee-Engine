@@ -140,16 +140,25 @@
             return 0;
         }
 
-        isColliding() {
-            let colliding = false;
-            for (const child in this.children) {
-                return colliding || this.children[child].isColliding();
-            }
-            return colliding;
-        }
+        isColliding(collidee, collisionList) {
+            if (!collisionList) collisionList = new Array();
 
-        //For now return null
-        getSATBounds() { return null; }
+            //Iterate collisions
+            for (const child in this.children) {
+                const collision = this.children[child].isColliding(collidee,collisionList);
+                if (typeof collision == "object") {
+                    //Use a sprawl to determine splicing
+                    if (Array.isArray(collision)) {
+                        collisionList.splice(0,0,...collision);
+                    }
+                    else {
+                        collisionList.push(collision);
+                    }
+                }
+            }
+            //Return nothing if we fail
+            return;
+        }
 
         //Children addition
         addChild(child) {
