@@ -22,6 +22,8 @@
 
                     shader.setBuffers(coffeeEngine.shapes.plane);
                     shader.uniforms.u_model.value = renderMatrix;
+
+                    //Simple debug test
                     shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
                     shader.uniforms.u_objectID.value = drawID;
                     shader.drawFromBuffers(6);

@@ -89,6 +89,31 @@
             this.castEvent("update", deltaTime);
         }
 
+        //Collision stuff
+        isColliding(collidee, collisionList) {
+            //Make sure we are not the parent, or collider;
+            if (collidee == this) return [];
+
+            if (!collisionList) collisionList = new Array();
+
+            //Iterate collisions
+            for (const child in this.children) {
+                const collision = this.children[child].isColliding(collidee,collisionList);
+                if (typeof collision == "object") {
+                    //Use a sprawl to determine splicing
+                    if (Array.isArray(collision)) {
+                        collisionList.splice(0,0,...collision);
+                    }
+                    else {
+                        collisionList.push(collision);
+                    }
+                }
+            }
+            //Return nothing if we fail
+            return collisionList;
+        }
+
+        //This big drawing stuff
         draw() {
             const renderer = coffeeEngine.renderer;
             const GL = renderer.daveshade.GL;

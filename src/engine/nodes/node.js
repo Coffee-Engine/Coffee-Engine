@@ -141,6 +141,9 @@
         }
 
         isColliding(collidee, collisionList) {
+            //Make sure we are not the parent, or collider;
+            if (collidee == this || collidee.parent == this) return [];
+
             if (!collisionList) collisionList = new Array();
 
             //Iterate collisions
@@ -156,8 +159,8 @@
                     }
                 }
             }
-            //Return nothing if we fail
-            return;
+            //Return our collision list
+            return collisionList;
         }
 
         //Children addition

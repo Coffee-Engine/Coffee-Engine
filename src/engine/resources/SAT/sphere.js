@@ -15,7 +15,7 @@
 
         pointSolve(myPoint, coPoint) {
             const direction = coPoint.sub(myPoint).normalize();
-            const distance = Math.min(coPoint.sub(myPoint).length(), this.radius);
+            const distance = Math.min(coPoint.sub(myPoint).length(), this.radius / 2);
             return direction.mul(distance).equals(coPoint);
         }
     }

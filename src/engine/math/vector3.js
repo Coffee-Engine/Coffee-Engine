@@ -61,6 +61,7 @@
 
         normalize() {
             const length = this.length();
+            if (length == 0) return new coffeeEngine.vector3(0,0,0);
             return this.div({ x: length, y: length, z: length });
         }
 
