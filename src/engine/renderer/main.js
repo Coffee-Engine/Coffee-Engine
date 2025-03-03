@@ -245,7 +245,6 @@
                 float ROUGHNESS;
                 float SPECULAR;
                 float LIGHT_AFFECTION;
-                float ALPHA_GLOW;
 
                 void fragment() {}
                 
@@ -258,7 +257,6 @@
                     EMISSION = vec3(0);
                     ROUGHNESS = 0.0;
                     SPECULAR = 0.0;
-                    ALPHA_GLOW = 0.0;
                     UV = v_texCoord;
                     NORMAL = v_normal;
                     TANGENT = v_tangent;
@@ -287,7 +285,6 @@
                     o_position = vec4(v_position,o_color.w);
                     o_normal = vec4(NORMAL,o_color.w);
 
-                    o_color.xyz *= mix(o_color.w,1.0,ALPHA_GLOW);
                     o_matAtr *= o_color.w;
                     o_emission *= o_color.w;
                     o_normal *= o_color.w;
