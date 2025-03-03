@@ -83,6 +83,10 @@ window.editor = {
     sendEvent: (event, data) => {
         if (typeof editor.events[event] != "object") return;
 
+        if (event == "nodeSelected") {
+            editor.lastSelectedNode = data.target;
+        }
+
         editor.events[event].forEach((event) => {
             event(data);
         });
