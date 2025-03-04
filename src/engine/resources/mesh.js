@@ -94,6 +94,11 @@
                             coffeeEngine.mesh.storage[src] = stored;
 
                             if (coffeeEngine.mesh.parsers[extension]) coffeeEngine.mesh.parsers[extension](fileReader.result, stored);
+                            //save the points
+                            stored.unparsed = {};
+                            Object.keys(stored.data).forEach(key => {
+                                stored.unparsed[key] = stored.data[key];
+                            });
                             stored.data = coffeeEngine.mesh.finalizeAndParse(stored.data);
 
                             resolve(stored);
