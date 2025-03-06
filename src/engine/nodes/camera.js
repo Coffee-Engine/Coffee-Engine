@@ -31,6 +31,7 @@
             // prettier-ignore
             if (!coffeeEngine.isEditor) {
                 if (this.activeCamera) {
+                    const translatedWorld = this.mixedMatrix.getTranslation();
                     const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
 
@@ -39,9 +40,9 @@
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom];
                     cameraData.aspectRatio = canvas.width / canvas.height;
-                    cameraData.position.x = -this.position.x;
-                    cameraData.position.y = -this.position.y;
-                    cameraData.position.z = -this.position.z;
+                    cameraData.position.x = -translatedWorld.x;
+                    cameraData.position.y = -translatedWorld.y;
+                    cameraData.position.z = -translatedWorld.z;
 
                     coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.rotation.y;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.y = this.rotation.x;
@@ -55,10 +56,11 @@
             //Editor display
             if (coffeeEngine.isEditor) {
                 this.shader.setBuffers(coffeeEngine.shapes.plane);
+                const translatedWorld = this.mixedMatrix.getTranslation();
 
                 const renderMatrix = coffeeEngine.matrix4
                     .identity()
-                    .translate(this.position.x, this.position.y, this.position.z)
+                    .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                     .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                     .scale((this.sprite.width / this.sprite.height) * 0.5, 0.5, 0.5)

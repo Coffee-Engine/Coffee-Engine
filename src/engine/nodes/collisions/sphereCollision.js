@@ -11,10 +11,11 @@
                 if (editor.lastSelectedNode != this) return;
 
                 const halfRadius = this.radius/2.0;
+                const translatedWorld = this.mixedMatrix.getTranslation();
 
                 const renderMatrix = coffeeEngine.matrix4
                     .identity()
-                    .translate(this.position.x, this.position.y, this.position.z)
+                    .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                     .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                     .scale(halfRadius, halfRadius, halfRadius)
