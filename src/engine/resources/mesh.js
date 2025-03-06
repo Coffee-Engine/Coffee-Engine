@@ -25,9 +25,9 @@
                      const point3 = [positions[trianglePointID+8], positions[trianglePointID+9], positions[trianglePointID+10]];
 
                      //get uvs from buffer
-                     const uv1 = [uvs[triangleUVID], uvs[triangleUVID+1]];
-                     const uv2 = [uvs[triangleUVID+2], uvs[triangleUVID+3]];
-                     const uv3 = [uvs[triangleUVID+4], uvs[triangleUVID+5]];
+                     const uv1 = [uvs[triangleUVID] || 0, uvs[triangleUVID+1] || 0];
+                     const uv2 = [uvs[triangleUVID+2] || 0, uvs[triangleUVID+3] || 0];
+                     const uv3 = [uvs[triangleUVID+4] || 0, uvs[triangleUVID+5] || 0];
                 
                     //Calculate edges
                     const edge1 = [point2[0]-point1[0], point2[1]-point1[1], point2[2]-point1[2]];

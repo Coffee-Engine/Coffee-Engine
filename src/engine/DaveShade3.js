@@ -110,6 +110,11 @@ window.DaveShade = {};
         TRIANGLES: 4,
     };
 
+    DaveShade.side = {
+        FRONT:"front",
+        BACK:"back"
+    }
+
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
         //Size up the render buffer's texture
         renderBufferInfo.resize(framebufferInfo.width, framebufferInfo.height);
@@ -594,12 +599,12 @@ window.DaveShade = {};
 
         daveShadeInstance.cullFace = (face) => {
             switch (face) {
-                case "back":
+                case DaveShade.side.BACK:
                     GL.enable(GL.CULL_FACE);
                     GL.cullFace(GL.BACK);                    
                     break;
 
-                case "front":
+                case DaveShade.side.FRONT:
                     GL.enable(GL.CULL_FACE);
                     GL.cullFace(GL.FRONT);
                     break;

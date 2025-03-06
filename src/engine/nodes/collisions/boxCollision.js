@@ -4,10 +4,16 @@
 
         draw(drawID) {
             super.draw();
-            const shader = coffeeEngine.renderer.mainShaders.editorCircle;
             //Editor display
             if (coffeeEngine.isEditor) {
                 if (editor.lastSelectedNode != this) return;
+                //Get our shader
+                const shader = coffeeEngine.renderer.mainShaders.editorShape;
+                
+                //Cull the faces
+                coffeeEngine.renderer.daveshade.cullFace(DaveShade.side.FRONT);
+
+                //Set our buffers and draw
                 shader.setBuffers(coffeeEngine.shapes.cube);
                 shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
 
@@ -15,6 +21,7 @@
                 shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 shader.uniforms.u_objectID.value = drawID;
                 shader.drawFromBuffers(36);
+                coffeeEngine.renderer.daveshade.cullFace();
             }
         }
 

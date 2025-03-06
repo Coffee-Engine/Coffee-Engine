@@ -15,7 +15,7 @@
         }
         `);
 
-        renderer.mainShaders.editorBox = renderer.compilePBRshader(`
+        renderer.mainShaders.editorShape = renderer.compilePBRshader(`
         void fragment() {
             COLOR = vec4(0.14117647058, 0.58823529411, 0.9294117647, 0.125);
             LIGHT_AFFECTION = 0.0;

@@ -5,10 +5,12 @@
         
         draw(drawID) {
             super.draw();
-            const shader = coffeeEngine.renderer.mainShaders.editorCircle;
             //Editor display
             if (coffeeEngine.isEditor) {
                 if (editor.lastSelectedNode != this) return;
+
+                //Get our shader and draw our circle
+                const shader = coffeeEngine.renderer.mainShaders.editorCircle;
 
                 const halfRadius = this.radius/2.0;
                 const translatedWorld = this.mixedMatrix.getTranslation();
