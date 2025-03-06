@@ -1,4 +1,4 @@
-project.settingConfigs = {
+project.settingDefinitions = {
     scene: {
         type: "list",
         contents: [
