@@ -19,6 +19,9 @@ window.coffeeEngine = {
     },
     preloadFunctions: {},
     nodeRegister: {},
+    collisionGroup: {
+        "default":{"default": true},
+    },
     isEditor: false,
     //Just a simple node registrar thing
     registerNode: (node, name, parentNode) => {
