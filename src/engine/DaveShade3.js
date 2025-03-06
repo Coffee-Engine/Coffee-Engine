@@ -1,8 +1,8 @@
 /*
                          %@@@@@@@@@@@@@@@+               
                        @@@@##@@@@@@@####@@@              
-                     #@@##@@@@@@@@@@@@@@@@               
-                     @@##@@=            +.               
+                     #@@##@@@@@@@@@@@@@@@+               
+                     @@##@@=                             
        @@@@@@@@@@@@@@@###@#                              
     @@@@@@@@@@@@@@@@#####@%                              
   -@@@@@@@        @@@@###@@                              
@@ -111,8 +111,8 @@ window.DaveShade = {};
     };
 
     DaveShade.side = {
-        FRONT:"front",
-        BACK:"back"
+        FRONT:0,
+        BACK:1
     }
 
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
@@ -801,7 +801,7 @@ window.DaveShade = {};
         }
 
         return daveShadeInstance;
-    };
+    };  
 
     DaveShade.findFunctionInGLSL = (glsl, func, type) => {
         type = type || "void";
