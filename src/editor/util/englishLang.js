@@ -134,7 +134,7 @@ editor.EnglishLang = {
     "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
     "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
 
-    "editor.window.editor.language.projectSettings": "Project Settings",
+    "editor.window.projectManager": "Project Settings",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",

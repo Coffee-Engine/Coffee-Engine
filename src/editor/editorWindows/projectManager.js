@@ -1,7 +1,7 @@
 (function() {
     editor.windows.projectManager = class extends editor.windows.base {
         init (container) {
-            this.title = editor.language["editor.dropdown.project.projectSettings"];
+            this.title = editor.language["editor.window.projectManager"];
         }
     }
 
