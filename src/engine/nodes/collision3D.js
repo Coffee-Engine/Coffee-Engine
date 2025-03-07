@@ -11,7 +11,7 @@
         isColliding(collidee) {
             if (collidee == this || (!collidee instanceof node)) return;
             //Make sure we are in a compatible collision grouping
-            if (!coffeeEngine.collisionGroups[collidee.collisionGroup][this.collisionGroup]) return;
+            if (!coffeeEngine.collisionGroup[collidee.collisionGroup][this.collisionGroup]) return;
             if (this.collision && collidee.collision) {
                 const result = this.collision.solve(collidee.collision);
                 if (result.successful) return result;
@@ -20,6 +20,7 @@
         }
 
         detectCollisions(collisionList) {
+            if (this.collision && this.collision.matrix != this.mixedMatrix) this.collision.matrix = this.mixedMatrix;
             return coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
         }
     }

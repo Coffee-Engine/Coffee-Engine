@@ -152,7 +152,7 @@
                 if (typeof collision == "object") {
                     //Use a sprawl to determine splicing
                     if (Array.isArray(collision)) {
-                        collisionList.splice(0,0,...collision);
+                        collisionList.push(...collision);
                     }
                     else {
                         collisionList.push(collision);
@@ -160,7 +160,7 @@
                 }
             }
             //Return our collision list
-            return collisionList;
+            return false;
         }
 
         detectCollisions(collisionList) {
