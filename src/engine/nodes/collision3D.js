@@ -18,6 +18,10 @@
             };
             return;
         }
+
+        detectCollisions(collisionList) {
+            return coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
+        }
     }
 
     coffeeEngine.registerNode(node, "Collision3D", "Node3D");

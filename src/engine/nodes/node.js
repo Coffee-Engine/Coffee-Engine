@@ -163,6 +163,26 @@
             return collisionList;
         }
 
+        detectCollisions(collisionList) {
+            if (!collisionList) collisionList = new Array();
+
+            //Iterate collisions
+            for (const child in this.children) {
+                const collision = this.children[child].detectCollisions(collisionList);
+                if (typeof collision == "object") {
+                    //Use a sprawl to determine splicing
+                    if (Array.isArray(collision)) {
+                        collisionList.splice(0,0,...collision);
+                    }
+                    else {
+                        collisionList.push(collision);
+                    }
+                }
+            }
+            //Return our collision list
+            return collisionList;
+        }
+
         //Children addition
         addChild(child) {
             if (child == this) return;

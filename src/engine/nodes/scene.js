@@ -109,7 +109,7 @@
                     }
                 }
             }
-            //Return nothing if we fail
+            //Return our collision list
             return collisionList;
         }
 
