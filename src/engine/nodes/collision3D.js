@@ -20,7 +20,8 @@
         }
 
         detectCollisions(collisionList) {
-            if (this.collision && this.collision.matrix != this.mixedMatrix) this.collision.matrix = this.mixedMatrix;
+            this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
+            this.collision.matrix = this.mixedMatrix;
             return coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
         }
     }

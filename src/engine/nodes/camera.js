@@ -35,7 +35,10 @@
                     const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
 
-                    cameraData.transform = this.mixedMatrix.webGLValue();
+                    const renderMatrix = coffeeEngine.matrix4.identity().rotationX(this.rotation.x).rotationY(this.rotation.y)
+                        .translate(-translatedWorld.x, -translatedWorld.y, -translatedWorld.z)
+
+                    cameraData.transform = renderMatrix.webGLValue();
                     cameraData.unflattenedTransform = this.mixedMatrix;
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom];
@@ -74,7 +77,7 @@
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
-                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
+                this.shaderArrow.uniforms.u_model.value = this.mixedMatrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 this.shaderArrow.uniforms.u_objectID.value = drawID;
                 this.shaderArrow.drawFromBuffers(48);

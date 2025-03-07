@@ -101,6 +101,7 @@
 
         update(deltaTime) {
             // prettier-ignore
+            this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
             if (this.#scriptObject && this.#scriptObject.update) {
                 this.#scriptObject.update(deltaTime);
             }
@@ -165,6 +166,9 @@
 
         detectCollisions(collisionList) {
             if (!collisionList) collisionList = new Array();
+
+            //Make sure we have the newest iteration of our matrix
+            this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
 
             //Iterate collisions
             for (const child in this.children) {
