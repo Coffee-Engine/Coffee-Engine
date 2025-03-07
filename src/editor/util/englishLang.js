@@ -273,6 +273,7 @@ editor.EnglishLang = {
     "sugarcube.controls.block.call": "call [reference]",
 
     "sugarcube.sensing": "Sensing",
+    "sugarcube.sensing.block.isTouching": "colliding?",
     "sugarcube.sensing.block.isKeyDown": "key [key] pressed?",
     "sugarcube.sensing.block.mouseDown": "[button] mouse button down",
     "sugarcube.sensing.block.mouseX": "mouse x",
