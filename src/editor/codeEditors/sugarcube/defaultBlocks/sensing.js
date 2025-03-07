@@ -395,6 +395,11 @@
             };
         }
 
+        //Collision
+        isTouching(args, { target }) {
+            return sugarcube.cast.toBoolean(target.detectCollisions().length > 0);
+        }
+
         //Key stuff
         isKeyDown({ key }) {
             return sugarcube.cast.toBoolean(coffeeEngine.inputs.keys[key]);
