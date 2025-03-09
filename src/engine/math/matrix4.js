@@ -152,6 +152,11 @@
             return returned;
         }
 
+        //Find a way to automate this
+        inverse() {
+
+        }
+
         webGLValue() {
             return [...this.contents[0], ...this.contents[1], ...this.contents[2], ...this.contents[3]];
         }
