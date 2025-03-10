@@ -154,7 +154,61 @@
 
         //Find a way to automate this
         inverse() {
-
+            const returned = coffeeEngine.matrix4.identity();
+            const m2233  = this.contents[2][2] * this.contents[3][3];
+            const m3223  = this.contents[3][2] * this.contents[2][3];
+            const m1233  = this.contents[1][2] * this.contents[3][3];
+            const m3213  = this.contents[3][2] * this.contents[1][3];
+            const m1223  = this.contents[1][2] * this.contents[2][3];
+            const m2213  = this.contents[2][2] * this.contents[1][3];
+            const m0233  = this.contents[0][2] * this.contents[3][3];
+            const m3203  = this.contents[3][2] * this.contents[0][3];
+            const m0223  = this.contents[0][2] * this.contents[2][3];
+            const m2203  = this.contents[2][2] * this.contents[0][3];
+            const m0213 = this.contents[0][2] * this.contents[1][3];
+            const m1203 = this.contents[1][2] * this.contents[0][3];
+            const m2031 = this.contents[2][0] * this.contents[3][1];
+            const m3021 = this.contents[3][0] * this.contents[2][1];
+            const m1031 = this.contents[1][0] * this.contents[3][1];
+            const m3011 = this.contents[3][0] * this.contents[1][1];
+            const m1021 = this.contents[1][0] * this.contents[2][1];
+            const m2011 = this.contents[2][0] * this.contents[1][1];
+            const m0031 = this.contents[0][0] * this.contents[3][1];
+            const m3001 = this.contents[3][0] * this.contents[0][1];
+            const m0021 = this.contents[0][0] * this.contents[2][1];
+            const m2001 = this.contents[2][0] * this.contents[0][1];
+            const m0011 = this.contents[0][0] * this.contents[1][1];
+            const m1001 = this.contents[1][0] * this.contents[0][1];
+          
+            const t0 = (m2233 * this.contents[1][1] + m3213 * this.contents[2][1] + m1223 * this.contents[3][1]) -
+                (m3223 * this.contents[1][1] + m1233 * this.contents[2][1] + m2213 * this.contents[3][1]);
+            const t1 = (m3223 * this.contents[0][1] + m0233 * this.contents[2][1] + m2203 * this.contents[3][1]) -
+                (m2233 * this.contents[0][1] + m3203 * this.contents[2][1] + m0223 * this.contents[3][1]);
+            const t2 = (m1233 * this.contents[0][1] + m3203 * this.contents[1][1] + m0213 * this.contents[3][1]) -
+                (m3213 * this.contents[0][1] + m0233 * this.contents[1][1] + m1203 * this.contents[3][1]);
+            const t3 = (m2213 * this.contents[0][1] + m0223 * this.contents[1][1] + m1203 * this.contents[2][1]) -
+                (m1223 * this.contents[0][1] + m2203 * this.contents[1][1] + m0213 * this.contents[2][1]);
+          
+            const d = 1.0 / (this.contents[0][0] * t0 + this.contents[1][0] * t1 + this.contents[2][0] * t2 + this.contents[3][0] * t3);
+          
+            returned.contents[0][0] = d * t0;
+            returned.contents[0][1] = d * t1;
+            returned.contents[0][2] = d * t2;
+            returned.contents[0][3] = d * t3;
+            returned.contents[1][0] = d * ((m3223 * this.contents[1][0] + m1233 * this.contents[2][0] + m2213 * this.contents[3][0]) - (m2233 * this.contents[1][0] + m3213 * this.contents[2][0] + m1223 * this.contents[3][0]));
+            returned.contents[1][1] = d * ((m2233 * this.contents[0][0] + m3203 * this.contents[2][0] + m0223 * this.contents[3][0]) - (m3223 * this.contents[0][0] + m0233 * this.contents[2][0] + m2203 * this.contents[3][0]));
+            returned.contents[1][2] = d * ((m3213 * this.contents[0][0] + m0233 * this.contents[1][0] + m1203 * this.contents[3][0]) - (m1233 * this.contents[0][0] + m3203 * this.contents[1][0] + m0213 * this.contents[3][0]));
+            returned.contents[1][3] = d * ((m1223 * this.contents[0][0] + m2203 * this.contents[1][0] + m0213 * this.contents[2][0]) - (m2213 * this.contents[0][0] + m0223 * this.contents[1][0] + m1203 * this.contents[2][0]));
+            returned.contents[2][0] = d * ((m2031 * this.contents[1][3] + m3011 * this.contents[2][3] + m1021 * this.contents[3][3]) - (m3021 * this.contents[1][3] + m1031 * this.contents[2][3] + m2011 * this.contents[3][3]));
+            returned.contents[2][1] = d * ((m3021 * this.contents[0][3] + m0031 * this.contents[2][3] + m2001 * this.contents[3][3]) - (m2031 * this.contents[0][3] + m3001 * this.contents[2][3] + m0021 * this.contents[3][3]));
+            returned.contents[2][2] = d * ((m1031 * this.contents[0][3] + m3001 * this.contents[1][3] + m0011 * this.contents[3][3]) - (m3011 * this.contents[0][3] + m0031 * this.contents[1][3] + m1001 * this.contents[3][3]));
+            returned.contents[2][3] = d * ((m2011 * this.contents[0][3] + m0021 * this.contents[1][3] + m1001 * this.contents[2][3]) - (m1021 * this.contents[0][3] + m2001 * this.contents[1][3] + m0011 * this.contents[2][3]));
+            returned.contents[3][0] = d * ((m1031 * this.contents[2][2] + m2011 * this.contents[3][2] + m3021 * this.contents[1][2]) - (m1021 * this.contents[3][2] + m2031 * this.contents[1][2] + m3011 * this.contents[2][2]));
+            returned.contents[3][1] = d * ((m0021 * this.contents[3][2] + m2031 * this.contents[0][2] + m3001 * this.contents[2][2]) - (m0031 * this.contents[2][2] + m2001 * this.contents[3][2] + m3021 * this.contents[0][2]));
+            returned.contents[3][2] = d * ((m0031 * this.contents[1][2] + m1001 * this.contents[3][2] + m3011 * this.contents[0][2]) - (m0011 * this.contents[3][2] + m1031 * this.contents[0][2] + m3001 * this.contents[1][2]));
+            returned.contents[3][3] = d * ((m0011 * this.contents[2][2] + m1021 * this.contents[0][2] + m2001 * this.contents[1][2]) - (m0021 * this.contents[1][2] + m1001 * this.contents[2][2] + m2011 * this.contents[0][2]));
+          
+            return returned;
         }
 
         webGLValue() {
