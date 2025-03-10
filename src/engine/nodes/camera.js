@@ -35,10 +35,10 @@
                     const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
 
-                    const renderMatrix = coffeeEngine.matrix4.identity().rotationX(this.rotation.x).rotationY(this.rotation.y)
-                        .translate(-translatedWorld.x, -translatedWorld.y, -translatedWorld.z)
+                    const renderMatrix = coffeeEngine.matrix4.identity().rotationX(-this.rotation.x).rotationY(this.rotation.y)
+                        .translate(-this.position.x, -this.position.y, -this.position.z);
 
-                    cameraData.transform = this.mixedMatrix.webGLValue();
+                    cameraData.transform = this.parent.mixedMatrix.inverse().multiply(renderMatrix).webGLValue();
                     cameraData.unflattenedTransform = this.mixedMatrix;
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom];
@@ -48,8 +48,8 @@
                     cameraData.position.z = -translatedWorld.z;
 
                     coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.rotation.y;
-                    coffeeEngine.renderer.cameraData.cameraRotationEul.y = this.rotation.x;
-                    coffeeEngine.renderer.cameraData.cameraRotationEul.z = this.rotation.z;
+                    coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;
+                    coffeeEngine.renderer.cameraData.cameraRotationEul.z = -this.rotation.z;
                 }
             }
         }
