@@ -38,7 +38,7 @@
                     const renderMatrix = coffeeEngine.matrix4.identity().rotationX(-this.rotation.x).rotationY(this.rotation.y)
                         .translate(-this.position.x, -this.position.y, -this.position.z);
 
-                    cameraData.transform = this.parent.mixedMatrix.inverse().multiply(renderMatrix).webGLValue();
+                    cameraData.transform = renderMatrix.multiply(this.parent.mixedMatrix.inverse()).webGLValue();
                     cameraData.unflattenedTransform = this.mixedMatrix;
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom];
