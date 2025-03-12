@@ -26,8 +26,8 @@
             }
         }
 
-        update(deltaTime) {
-            super.update(deltaTime);
+        update(deltaTime, noChildren) {
+            super.update(deltaTime, noChildren);
             // prettier-ignore
             if (!coffeeEngine.isEditor) {
                 if (this.activeCamera) {

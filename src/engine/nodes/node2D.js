@@ -40,14 +40,6 @@
             this.updateMatrix();
         }
 
-        update(deltaTime) {
-            super.update(deltaTime);
-        }
-
-        draw(drawID) {
-            super.draw();
-        }
-
         getProperties() {
             // prettier-ignore
             return [

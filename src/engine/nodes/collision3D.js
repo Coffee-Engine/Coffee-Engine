@@ -2,8 +2,8 @@
     class node extends coffeeEngine.getNode("Node3D") {
         collisionGroup = "default";
 
-        update(deltaTime) {
-            super.update(deltaTime);
+        update(deltaTime, noChildren) {
+            super.update(deltaTime, noChildren);
             if (this.collision) this.collision.matrix = this.mixedMatrix;
         }
 

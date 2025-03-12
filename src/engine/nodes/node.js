@@ -19,10 +19,10 @@
 
                 //* Add our event listeners if they don't exist.
                 // prettier-ignore
-                if (!coffeeEngine.runtime.currentScene.hasEventListener("update", this.__storedUpdate)) {
-                    this.__storedUpdate = (deltaTime) => {this.update(deltaTime)};
-                    coffeeEngine.runtime.currentScene.addEventListener("update", this.__storedUpdate);
-                }
+                //if (!coffeeEngine.runtime.currentScene.hasEventListener("update", this.__storedUpdate)) {
+                //    this.__storedUpdate = (deltaTime) => {this.update(deltaTime)};
+                //    coffeeEngine.runtime.currentScene.addEventListener("update", this.__storedUpdate);
+                //}
                 // prettier-ignore
                 if (!coffeeEngine.runtime.currentScene.inDrawList(this)) {
                     coffeeEngine.runtime.currentScene.addToDrawList(this);
@@ -36,11 +36,11 @@
                 if (this.parent) this.#parent.removeChild(this,true);
 
                 // prettier-ignore
-                if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.__storedUpdate)) {
-                    coffeeEngine.runtime.currentScene.removeEventListener("update", this.__storedUpdate);
-                    //Clear the update
-                    this.__storedUpdate = null;
-                }
+                //if (coffeeEngine.runtime.currentScene.hasEventListener("update", this.__storedUpdate)) {
+                //    coffeeEngine.runtime.currentScene.removeEventListener("update", this.__storedUpdate);
+                //    //Clear the update
+                //    this.__storedUpdate = null;
+                //}
 
                 // prettier-ignore
                 if (coffeeEngine.runtime.currentScene.inDrawList(this)) {
@@ -99,11 +99,17 @@
 
         ready() {}
 
-        update(deltaTime) {
+        update(deltaTime, noChildren) {
             // prettier-ignore
             this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
             if (this.#scriptObject && this.#scriptObject.update) {
                 this.#scriptObject.update(deltaTime);
+            }
+
+            if (!noChildren) {
+                this.children.forEach(child => {
+                    child.update(deltaTime, noChildren);
+                })
             }
         }
 

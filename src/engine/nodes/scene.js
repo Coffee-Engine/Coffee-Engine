@@ -86,7 +86,11 @@
         }
 
         update(deltaTime) {
-            this.castEvent("update", deltaTime);
+            this.children.forEach(child => {
+                child.update();
+            })
+            
+            //this.castEvent("update", deltaTime);
         }
 
         //Collision stuff

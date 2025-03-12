@@ -27,14 +27,6 @@
             this.updateMatrix();
         }
 
-        update(deltaTime) {
-            super.update(deltaTime);
-        }
-
-        draw() {
-            super.draw();
-        }
-
         getProperties() {
             // prettier-ignore
             return [

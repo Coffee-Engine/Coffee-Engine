@@ -82,6 +82,28 @@
                 //get the axis types
                 let combinedAxis = this.axis.concat(collider.axis);
                 if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = this.axis.concat(this[`axis_${this.type}_${collider.type}`](collider));
+
+                //filter out similar axis
+                for (let i=0; i<combinedAxis.length; i++) {
+                    const myAxis = combinedAxis[i];
+                    for (let j=i+1; j<combinedAxis.length; j++) {
+                        const opposingAxis = combinedAxis[j];
+
+                        if (opposingAxis.normalize().equals(myAxis.normalize())) {
+                            let myLength = myAxis.length();
+                            let opposingLength = opposingAxis.length();
+                            if (opposingLength < myLength) {
+                                combinedAxis.splice(j,1);
+                                j--;
+                            }
+                            else if (myLength < opposingLength) {
+                                combinedAxis.splice(i,1);
+                                i--;
+                                break;
+                            }
+                        }
+                    }
+                }
                 
                 for (const axisID in combinedAxis) {
                     const axis = combinedAxis[axisID];
@@ -98,11 +120,16 @@
                     else {
                         //Find the smallest push distance to escape
                         const pushDir = Math.abs(coMin - myMax) < Math.abs(myMin - coMax);
-                        const pushBack = (pushDir) ? coMin-myMax : myMin-coMax;
-                        if ((Math.abs(result.pushLength) >= Math.abs(pushBack) && pushBack != 0) || result.pushLength === null) {
+
+                        //Make sure to get the actual length and not the matrix sided length
+                        const length2 = (axis.length() * axis.length());
+                        const pushBack = ((pushDir) ? coMin-myMax : coMax-myMin) / length2;
+
+                        //Then do the math
+                        if ((Math.abs(result.pushLength) >= Math.abs(pushBack) && axis.length() > 0) || result.pushLength === null) {
                             //Inverse it so we push out instead of in
                             result.pushLength = -pushBack;
-                            result.pushVector = axis;
+                            result.pushVector = axis.normalize();
                         }
                     }
                 }
