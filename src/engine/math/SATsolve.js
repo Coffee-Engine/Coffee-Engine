@@ -101,7 +101,7 @@
                         const pushBack = (pushDir) ? coMin-myMax : myMin-coMax;
                         if ((Math.abs(result.pushLength) >= Math.abs(pushBack) && pushBack != 0) || result.pushLength === null) {
                             //Inverse it so we push out instead of in
-                            result.pushLength = pushBack;
+                            result.pushLength = -pushBack;
                             result.pushVector = axis;
                         }
                     }
