@@ -5,7 +5,8 @@
         update(deltaTime) {
             super.update(deltaTime, true);
             //get my collisions
-            const output = this.detectCollisions();
+            const output = [];
+            this.detectCollisions(output);
 
             if (output.length > 0) {
                 //Find outputs and push object out of trouble

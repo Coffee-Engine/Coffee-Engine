@@ -167,7 +167,7 @@
                 }
             }
             //Return our collision list
-            return false;
+            return collisionList.length > 0;
         }
 
         detectCollisions(collisionList) {
@@ -178,19 +178,10 @@
 
             //Iterate collisions
             for (const child in this.children) {
-                const collision = this.children[child].detectCollisions(collisionList);
-                if (typeof collision == "object") {
-                    //Use a sprawl to determine splicing
-                    if (Array.isArray(collision)) {
-                        collisionList.splice(0,0,...collision);
-                    }
-                    else {
-                        collisionList.push(collision);
-                    }
-                }
+                this.children[child].detectCollisions(collisionList);
             }
             //Return our collision list
-            return collisionList;
+            return collisionList.length > 0;
         }
 
         //Children addition

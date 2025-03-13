@@ -397,7 +397,7 @@
 
         //Collision
         isTouching(args, { target }) {
-            return sugarcube.cast.toBoolean(target.detectCollisions().length > 0);
+            return sugarcube.cast.toBoolean(target.detectCollisions());
         }
 
         //Key stuff

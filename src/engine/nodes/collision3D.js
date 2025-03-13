@@ -22,7 +22,9 @@
         detectCollisions(collisionList) {
             this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
             this.collision.matrix = this.mixedMatrix;
-            return coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
+            coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
+
+            return collisionList.length > 0;
         }
     }
 

@@ -10,6 +10,7 @@
             constructor() {
                 //Vector 3s
                 this.points = [];
+                this.transformedPoints = [];
                 //Our matrix, this will be inherited from our parent node
                 this.matrix = coffeeEngine.matrix4.identity();
                 
@@ -82,31 +83,9 @@
                 //get the axis types
                 let combinedAxis = this.axis.concat(collider.axis);
                 if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = this.axis.concat(this[`axis_${this.type}_${collider.type}`](collider));
-
-                //filter out similar axis
-                for (let i=0; i<combinedAxis.length; i++) {
-                    const myAxis = combinedAxis[i];
-                    for (let j=i+1; j<combinedAxis.length; j++) {
-                        const opposingAxis = combinedAxis[j];
-
-                        if (opposingAxis.normalize().equals(myAxis.normalize())) {
-                            let myLength = myAxis.length();
-                            let opposingLength = opposingAxis.length();
-                            if (opposingLength < myLength) {
-                                combinedAxis.splice(j,1);
-                                j--;
-                            }
-                            else if (myLength < opposingLength) {
-                                combinedAxis.splice(i,1);
-                                i--;
-                                break;
-                            }
-                        }
-                    }
-                }
                 
                 for (const axisID in combinedAxis) {
-                    const axis = combinedAxis[axisID];
+                    const axis = combinedAxis[axisID].normalize();
                     
                     const myMin = this.getMin(this.matrix, axis);
                     const myMax = this.getMax(this.matrix, axis);
@@ -120,16 +99,13 @@
                     else {
                         //Find the smallest push distance to escape
                         const pushDir = Math.abs(coMin - myMax) < Math.abs(myMin - coMax);
-
-                        //Make sure to get the actual length and not the matrix sided length
-                        const length2 = (axis.length() * axis.length());
-                        const pushBack = ((pushDir) ? coMin-myMax : coMax-myMin) / length2;
+                        const pushBack = (pushDir) ? coMin-myMax : coMax-myMin;
 
                         //Then do the math
                         if ((Math.abs(result.pushLength) >= Math.abs(pushBack) && axis.length() > 0) || result.pushLength === null) {
                             //Inverse it so we push out instead of in
                             result.pushLength = -pushBack;
-                            result.pushVector = axis.normalize();
+                            result.pushVector = axis;
                         }
                     }
                 }
