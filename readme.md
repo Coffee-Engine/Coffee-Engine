@@ -28,9 +28,9 @@ Coffee Engine should be very customizable with almost everything being able to b
 you can use `node build.mjs` to build a non-Browser version of the engine, when building it should show a little command line tool for you to mess around with.
 if you just want to test on a browser, use a local server
 
-### And about IOS Safari?
+### IOS bugs
 
-no, if you find a fix for safari, commit it.
+If you find a fix for any IOS bug, commit it.
 
 ## Forking
 
