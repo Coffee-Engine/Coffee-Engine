@@ -10,7 +10,6 @@
             constructor() {
                 //Vector 3s
                 this.points = [];
-                this.transformedPoints = [];
                 //Our matrix, this will be inherited from our parent node
                 this.matrix = coffeeEngine.matrix4.identity();
                 
@@ -19,13 +18,13 @@
             }
 
             //We need to push in 2 vector 3s for an offset, and axis
-            getMin(matrix, axis) {
+            getMin(axis) {
                 //Make a minimum vector
                 let min = Infinity;
                 //Ain't That Wacky?
                 for (const pointID in this.points) {
                     //Convert the point to be multipliable to a matrix
-                    const point = matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
+                    const point = this.matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
 
                     //Find the min
                     if (point < min) min = point;
@@ -35,13 +34,13 @@
             }
 
             //We need to push in 2 vector 3s for an offset, and axis
-            getMax(matrix, axis) {
+            getMax(axis) {
                 //Make a minimum vector
                 let max = -Infinity;
                 //Ain't That Wacky?
                 for (const pointID in this.points) {
                     //Convert the point to be multipliable to a matrix
-                    const point = matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
+                    const point = this.matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
 
                     //Find the max
                     if (point > max) max = point;
@@ -87,11 +86,11 @@
                 for (const axisID in combinedAxis) {
                     const axis = combinedAxis[axisID].normalize();
                     
-                    const myMin = this.getMin(this.matrix, axis);
-                    const myMax = this.getMax(this.matrix, axis);
+                    const myMin = this.getMin(axis);
+                    const myMax = this.getMax(axis);
 
-                    const coMin = collider.getMin(collider.matrix, axis);
-                    const coMax = collider.getMax(collider.matrix, axis);
+                    const coMin = collider.getMin(axis);
+                    const coMax = collider.getMax(axis);
 
                     //If we aren't colliding just send an empty result
                     if (!((coMin <= myMax) && (myMin <= coMax))) return result;
