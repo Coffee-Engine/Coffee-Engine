@@ -82,7 +82,6 @@
                 //get the axis types
                 let combinedAxis = this.axis.concat(collider.axis);
                 if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = combinedAxis.concat(this[`axis_${this.type}_${collider.type}`](collider));
-                if (coffeeEngine.inputs.keys["p"]) console.log(combinedAxis);
                 
                 for (const axisID in combinedAxis) {
                     const axis = combinedAxis[axisID];
