@@ -26,5 +26,5 @@
         }
     }
 
-    coffeeEngine.registerNode(node, "CharacterNode3D", "Node3D");
+    coffeeEngine.registerNode(node, "PhysicalNode3D", "Node3D");
 })();
