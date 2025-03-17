@@ -230,6 +230,15 @@
             returned.z = this.contents[2][3];
             return returned;
         }
+
+        getScale() {
+            const returned = new coffeeEngine.vector3(0,0,0);
+            returned.x = new coffeeEngine.vector3(this.contents[0][0],this.contents[1][0],this.contents[2][0]).length();
+            returned.y = new coffeeEngine.vector3(this.contents[0][1],this.contents[1][1],this.contents[2][1]).length();
+            returned.z = new coffeeEngine.vector3(this.contents[0][2],this.contents[1][2],this.contents[2][2]).length();
+
+            return returned;
+        }
     };
 
     coffeeEngine.matrix4.identity = () => {

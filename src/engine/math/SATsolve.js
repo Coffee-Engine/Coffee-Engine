@@ -81,10 +81,11 @@
                 //If not point to point use SAT
                 //get the axis types
                 let combinedAxis = this.axis.concat(collider.axis);
-                if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = this.axis.concat(this[`axis_${this.type}_${collider.type}`](collider));
+                if (this[`axis_${this.type}_${collider.type}`]) combinedAxis = combinedAxis.concat(this[`axis_${this.type}_${collider.type}`](collider));
+                if (coffeeEngine.inputs.keys["p"]) console.log(combinedAxis);
                 
                 for (const axisID in combinedAxis) {
-                    const axis = combinedAxis[axisID].normalize();
+                    const axis = combinedAxis[axisID];
                     
                     const myMin = this.getMin(axis);
                     const myMax = this.getMax(axis);

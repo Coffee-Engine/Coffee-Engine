@@ -2,11 +2,23 @@
     //Oblique bounding box
     coffeeEngine.SAT.OBB = class extends coffeeEngine.SAT.BaseClass {
         get axis() {
-            return [
+            //Uniformly scale our matrix real quick
+            const axis = [
                 new coffeeEngine.vector3(this.matrix.contents[0][0], this.matrix.contents[0][1], this.matrix.contents[0][2]),
                 new coffeeEngine.vector3(this.matrix.contents[1][0], this.matrix.contents[1][1], this.matrix.contents[1][2]),
                 new coffeeEngine.vector3(this.matrix.contents[2][0], this.matrix.contents[2][1], this.matrix.contents[2][2])
             ];
+
+            //Get each column's scale
+            const scale = this.matrix.getScale();
+
+            //Normalize rows to get rotation
+            axis[0] = axis[0].div(scale).normalize();
+            axis[1] = axis[1].div(scale).normalize();
+            axis[2] = axis[2].div(scale).normalize();
+
+            //Return our axis
+            return axis;
         }
         
         constructor() {
@@ -18,28 +30,16 @@
         }
 
         axis_OBB_OBB(otherOBB) {
-            //Get our XYZ axis for each matrix
-            const Norm_AX = new coffeeEngine.vector3(this.matrix.contents[0][0], this.matrix.contents[0][1], this.matrix.contents[0][2]).normalize();
-            const Norm_AY = new coffeeEngine.vector3(this.matrix.contents[1][0], this.matrix.contents[1][1], this.matrix.contents[1][2]).normalize();
-            const Norm_AZ = new coffeeEngine.vector3(this.matrix.contents[2][0], this.matrix.contents[2][1], this.matrix.contents[2][2]).normalize();
+            //Get our axis
+            const myAxis = this.axis;
+            const coAxis = otherOBB.axis;
 
-            const Norm_BX = new coffeeEngine.vector3(otherOBB.matrix.contents[0][0], otherOBB.matrix.contents[0][1], otherOBB.matrix.contents[0][2]).normalize();
-            const Norm_BY = new coffeeEngine.vector3(otherOBB.matrix.contents[1][0], otherOBB.matrix.contents[1][1], otherOBB.matrix.contents[1][2]).normalize();
-            const Norm_BZ = new coffeeEngine.vector3(otherOBB.matrix.contents[2][0], otherOBB.matrix.contents[2][1], otherOBB.matrix.contents[2][2]).normalize();
-
+            // prettier-ignore
             return [
-                Norm_AX.cross(Norm_BX),
-                Norm_AY.cross(Norm_BX),
-                Norm_AZ.cross(Norm_BX),
-
-                Norm_AX.cross(Norm_BY),
-                Norm_AY.cross(Norm_BY),
-                Norm_AZ.cross(Norm_BY),
-
-                Norm_AX.cross(Norm_BZ),
-                Norm_AY.cross(Norm_BZ),
-                Norm_AZ.cross(Norm_BZ)
-            ]
+                myAxis[0].cross(coAxis[0]).normalize(), myAxis[1].cross(coAxis[0]).normalize(), myAxis[2].cross(coAxis[0]).normalize(),
+                myAxis[0].cross(coAxis[1]).normalize(), myAxis[1].cross(coAxis[1]).normalize(), myAxis[2].cross(coAxis[1]).normalize(),
+                myAxis[0].cross(coAxis[2]).normalize(), myAxis[1].cross(coAxis[2]).normalize(), myAxis[2].cross(coAxis[2]).normalize()
+            ];
         }
 
         getClosestPoint(point) {
