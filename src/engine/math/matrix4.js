@@ -239,6 +239,30 @@
 
             return returned;
         }
+
+        getRotation() {
+            const scale = this.getScale();
+            const returned = new coffeeEngine.matrix3.identity();
+
+            const axis = [
+                new coffeeEngine.vector3(this.matrix.contents[0][0], this.matrix.contents[0][1], this.matrix.contents[0][2]),
+                new coffeeEngine.vector3(this.matrix.contents[1][0], this.matrix.contents[1][1], this.matrix.contents[1][2]),
+                new coffeeEngine.vector3(this.matrix.contents[2][0], this.matrix.contents[2][1], this.matrix.contents[2][2])
+            ];
+
+            //Normalize rows to get rotation
+            axis[0] = axis[0].div(scale).normalize();
+            axis[1] = axis[1].div(scale).normalize();
+            axis[2] = axis[2].div(scale).normalize();
+
+            //Set the matrix contents
+            returned.contents[0] = [axis[0].x, axis[0].y, axis[0].z];
+            returned.contents[1] = [axis[1].x, axis[1].y, axis[1].z];
+            returned.contents[2] = [axis[2].x, axis[2].y, axis[2].z];
+
+            //Return the matrix
+            return returned;
+        }
     };
 
     coffeeEngine.matrix4.identity = () => {
