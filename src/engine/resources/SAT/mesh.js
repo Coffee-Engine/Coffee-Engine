@@ -3,19 +3,17 @@
     coffeeEngine.SAT.mesh = class extends coffeeEngine.SAT.BaseClass {
         //Our mesh data
         #mesh = null;
-        #parsedData = null;
         //The mesh octree
-        octree = [];
         octreeCollision = new coffeeEngine.SAT.OBB();
         octreeMaxDepth = 4;
 
         set mesh(value) {
             //Let's quickly parse the data
             this.#mesh = value;
-            this.#parsedData = [];
 
             //If the mesh contains no collision data create collision data
             if (!this.#mesh.octree) {
+                const parsedData = [];
                 //Parse our mesh to prevent rampant calculations while doing collisions.
                 for (let submeshID in this.#mesh.unparsed) {
                     const positions = this.#mesh.unparsed[submeshID].a_position;
@@ -34,7 +32,7 @@
                         const normal = edge1.cross(edge2);
         
                         //Add our parsed data to the array;
-                        this.#parsedData.push({
+                        parsedData.push({
                             points:[point1,point2,point3],
                             edges:[edge1,edge2,edge3],
                             normal:normal,
@@ -59,7 +57,7 @@
                 }
 
                 //Then create our octree
-                this.createOctree(this.#mesh, this.#parsedData, this.mesh.lowestBound, this.mesh.highestBound);
+                this.createOctree(this.#mesh, parsedData, this.mesh.lowestBound, this.mesh.highestBound);
             }
         }
 
