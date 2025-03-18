@@ -24,7 +24,7 @@
                 //Ain't That Wacky?
                 for (const pointID in this.points) {
                     //Convert the point to be multipliable to a matrix
-                    const point = this.matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
+                    const point = this.matrix.multiplyVector(this.points[pointID]).toVector3().dot(axis);
 
                     //Find the min
                     if (point < min) min = point;
@@ -40,7 +40,7 @@
                 //Ain't That Wacky?
                 for (const pointID in this.points) {
                     //Convert the point to be multipliable to a matrix
-                    const point = this.matrix.multiplyVector(this.points[pointID].toVector4()).toVector3().dot(axis);
+                    const point = this.matrix.multiplyVector(this.points[pointID]).toVector3().dot(axis);
 
                     //Find the max
                     if (point > max) max = point;
@@ -56,6 +56,11 @@
                 const result = new coffeeEngine.SAT.SATResult();
                 //Immediately fail the SAT test if we detect something fishy.
                 if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
+
+                //For cases where we have a custom solver
+                if (collider.customSolve) collider.customSolve(result);
+                else if (this.customSolve) this.customSolve(result);
+                if (collider.customSolve || this.customSolve) return result;
 
                 //Point to point collisions.
                 if (collider.collisionType || this.collisionType) {

@@ -140,6 +140,7 @@
         }
 
         multiplyVector(vector) {
+            if (vector.w === undefined) vector.w = 1;
             const returned = new coffeeEngine.vector4(0, 0, 0, 0);
             // prettier-ignore
             returned.x = vector.x * this.contents[0][0] + vector.y * this.contents[0][1] + vector.z * this.contents[0][2] + vector.w * this.contents[0][3];

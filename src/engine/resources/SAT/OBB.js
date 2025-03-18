@@ -42,6 +42,30 @@
             ];
         }
 
+        //Note that the triangle itself isn't a SAT class within itself but data within a class
+        axis_OBB_triangle(triangleData) {
+            const myAxis = this.axis;
+
+            //Get the cross products of each value
+            return [
+                //Throw the normal in here for funnies
+                triangleData.normal,
+
+                //Then calculate our needed cross products
+                myAxis[0].cross(triangleData.edges[0]),
+                myAxis[0].cross(triangleData.edges[1]),
+                myAxis[0].cross(triangleData.edges[2]),
+
+                myAxis[1].cross(triangleData.edges[0]),
+                myAxis[1].cross(triangleData.edges[1]),
+                myAxis[1].cross(triangleData.edges[2]),
+
+                myAxis[2].cross(triangleData.edges[0]),
+                myAxis[2].cross(triangleData.edges[1]),
+                myAxis[2].cross(triangleData.edges[2])
+            ];
+        }
+
         getClosestPoint(point) {
             //Set up final result
             let result = this.matrix.getTranslation();

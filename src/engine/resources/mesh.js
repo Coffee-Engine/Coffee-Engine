@@ -1,17 +1,21 @@
 (function () {
     coffeeEngine.mesh = {
         class: class {
+            //Data Juicy Data
             data = {};
+            unparsed = [];
             pointCount = [];
+            //Our high and low bounds
+            highestBound = new coffeeEngine.vector3(-Infinity, -Infinity, -Infinity);
+            lowestBound = new coffeeEngine.vector3(Infinity, Infinity, Infinity);
         },
 
         //Returns stored
-        finalizeAndParse: (data) => {
+        finalizeAndParse: (data, stored) => {
             for (const index in data) {
                 //Look through each vertex in position
                 const positions = data[index].a_position;
                 const uvs = data[index].a_texCoord;
-                const normals = data[index].a_normal;
 
                 data[index].a_tangent = [];
                 data[index].a_bitangent = [];
@@ -57,6 +61,30 @@
                     data[index].a_tangent.push(tangent,tangent,tangent);
                     data[index].a_bitangent.push(bitangent,bitangent,bitangent);
 
+                    //Adjust our bounds if we have stored data
+                    if (stored) {
+                        let lowest = [
+                            Math.min(point1[0],point2[0],point3[0]),
+                            Math.min(point1[1],point2[1],point3[1]),
+                            Math.min(point1[2],point2[2],point3[2]),
+                        ];
+
+                        let highest = [
+                            Math.max(point1[0],point2[0],point3[0]),
+                            Math.max(point1[1],point2[1],point3[1]),
+                            Math.max(point1[2],point2[2],point3[2]),
+                        ];
+
+                        //Set the bounds if possible
+                        if (stored.lowestBound.x > lowest[0]) stored.lowestBound.x = lowest[0];
+                        if (stored.lowestBound.y > lowest[1]) stored.lowestBound.y = lowest[1];
+                        if (stored.lowestBound.z > lowest[2]) stored.lowestBound.z = lowest[2];
+                        
+                        if (stored.highestBound.x < highest[0]) stored.highestBound.x = highest[0];
+                        if (stored.highestBound.y < highest[1]) stored.highestBound.y = highest[1];
+                        if (stored.highestBound.z < highest[2]) stored.highestBound.z = highest[2];
+                    }
+
                     //StepUVID
                     triangleUVID += 6;
                 }
@@ -95,11 +123,10 @@
 
                             if (coffeeEngine.mesh.parsers[extension]) coffeeEngine.mesh.parsers[extension](fileReader.result, stored);
                             //save the points
-                            stored.unparsed = {};
                             Object.keys(stored.data).forEach(key => {
-                                stored.unparsed[key] = stored.data[key];
+                                stored.unparsed.push(stored.data[key]);
                             });
-                            stored.data = coffeeEngine.mesh.finalizeAndParse(stored.data);
+                            stored.data = coffeeEngine.mesh.finalizeAndParse(stored.data, stored);
 
                             resolve(stored);
                         };
