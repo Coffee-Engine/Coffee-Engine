@@ -15,8 +15,8 @@
             this.#parsedData = [];
 
             //Parse our mesh to prevent rampant calculations while doing collisions.
-            for (submeshID in this.mesh.unparsed) {
-                const positions = this.mesh.unparsed[submeshID].a_position;
+            for (let submeshID in this.#mesh.unparsed) {
+                const positions = this.#mesh.unparsed[submeshID].a_position;
                 for (let positionIndex = 0; positionIndex < positions.length; positionIndex+=12) {
                     //Get our points
                     const point1 = new coffeeEngine.vector3(positions[positionIndex], positions[positionIndex+1], positions[positionIndex+2]);
@@ -57,7 +57,7 @@
             }
 
             //Then create our octree
-            this.createOctree();
+            this.createOctree(this.octree, this.#parsedData, this.mesh.lowestBound, this.mesh.highestBound);
         }
 
         get mesh() {
@@ -65,18 +65,73 @@
         }
 
         //To create our octree
-        createOctree(min, max, depth) {
-            //Empty the tree
+        createOctree(layer, triangles, min, max, depth) {
+            //Get our depth and our next depth
             depth = depth || 0;
-            if (!(depth >= 0)) this.octree = [];
+            const next = depth + 1;
 
+            //If we are at the bottom root the tree
+            if (depth == 0) {
+                //Empty the tree
+                this.octree = [];
+                const center = min.add(max).div(2);
+                
+                //Order
+                this.createOctree(this.octree, triangles, min, center, next); //---
+                this.createOctree(this.octree, triangles, center, max, next); //+++
+                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( min.x, center.y, center.z), new coffeeEngine.vector3(center.x, max.y, max.z), next); //-++
+                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( center.x, min.y, center.z), new coffeeEngine.vector3(max.x, center.y, max.z), next); //+-+
+                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( center.x, center.y, min.z), new coffeeEngine.vector3(max.x, max.y, center.z), next); //++-
+                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( center.x, min.y, min.z), new coffeeEngine.vector3(min.x, center.y, center.z), next); //+--
+                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( min.x, center.y, min.z), new coffeeEngine.vector3(center.x, min.y, center.z), next); //-+-
+                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( min.x, min.y, center.z), new coffeeEngine.vector3(center.x, center.y, min.z), next); //--+
+                return;
+            }
+
+            //if we aren't define our octant
+            layer.push({
+                matrix: coffeeEngine.matrix4.identity(),
+                final: false,
+                contents: []
+            });
             
+            //Set our layer to our newly created layer
+            layer = layer[layer.length - 1];
+            const center = min.add(max).div(2);
+            const scale = max.sub(min).div(2);
+
+            //Get our matrix's transformed
+            layer.matrix = layer.matrix.translate(center.x, center.y, center.z).scale(scale.x, scale.y, scale.z);
+
+            //use our layer matrix as our octree matrix
+            this.octreeCollision.matrix = layer.matrix;
+
+            //Do collision tests to determine which triangles are within the octants
+            const colliding = [];
+            for (let triangleID in triangles) {
+                if (this.solveTriangleSAT(triangles[triangleID], this.octreeCollision).successful) colliding.push(triangles[triangleID]);
+            }
+
+            //If we are at our wits end, stop
+            if (depth > this.octreeMaxDepth || colliding.length <= 1) {
+                layer.final = true;
+                layer.contents = colliding;
+            }
+            else {
+                //If we aren't do it again (Lap depth+1)
+                this.createOctree(layer.contents, colliding, min, center, next); //---
+                this.createOctree(layer.contents, colliding, center, max, next); //+++
+                this.createOctree(layer.contents, colliding, new coffeeEngine.vector3( min.x, center.y, center.z), new coffeeEngine.vector3(center.x, max.y, max.z), next); //-++
+                this.createOctree(layer.contents, colliding, new coffeeEngine.vector3( center.x, min.y, center.z), new coffeeEngine.vector3(max.x, center.y, max.z), next); //+-+
+                this.createOctree(layer.contents, colliding, new coffeeEngine.vector3( center.x, center.y, min.z), new coffeeEngine.vector3(max.x, max.y, center.z), next); //++-
+                this.createOctree(layer.contents, colliding, new coffeeEngine.vector3( center.x, min.y, min.z), new coffeeEngine.vector3(min.x, center.y, center.z), next); //+--
+                this.createOctree(layer.contents, colliding, new coffeeEngine.vector3( min.x, center.y, min.z), new coffeeEngine.vector3(center.x, min.y, center.z), next); //-+-
+                this.createOctree(layer.contents, colliding, new coffeeEngine.vector3( min.x, min.y, center.z), new coffeeEngine.vector3(center.x, center.y, min.z), next); //--+
+            }
         }
         
         constructor() {
             super();
-
-            this.mesh = null;
             this.type = "mesh";
         }
 
