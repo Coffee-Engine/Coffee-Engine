@@ -14,50 +14,53 @@
             this.#mesh = value;
             this.#parsedData = [];
 
-            //Parse our mesh to prevent rampant calculations while doing collisions.
-            for (let submeshID in this.#mesh.unparsed) {
-                const positions = this.#mesh.unparsed[submeshID].a_position;
-                for (let positionIndex = 0; positionIndex < positions.length; positionIndex+=12) {
-                    //Get our points
-                    const point1 = new coffeeEngine.vector3(positions[positionIndex], positions[positionIndex+1], positions[positionIndex+2]);
-                    const point2 = new coffeeEngine.vector3(positions[positionIndex+4], positions[positionIndex+5], positions[positionIndex+6]);
-                    const point3 = new coffeeEngine.vector3(positions[positionIndex+8], positions[positionIndex+9], positions[positionIndex+10]);
-    
-                    //Calculate edges
-                    const edge1 = point2.sub(point1);
-                    const edge2 = point3.sub(point2);
-                    const edge3 = point1.sub(point3);
-    
-                    //Calculate normal
-                    const normal = edge1.cross(edge2);
-    
-                    //Add our parsed data to the array;
-                    this.#parsedData.push({
-                        points:[point1,point2,point3],
-                        edges:[edge1,edge2,edge3],
-                        normal:normal,
+            //If the mesh contains no collision data create collision data
+            if (!this.#mesh.octree) {
+                //Parse our mesh to prevent rampant calculations while doing collisions.
+                for (let submeshID in this.#mesh.unparsed) {
+                    const positions = this.#mesh.unparsed[submeshID].a_position;
+                    for (let positionIndex = 0; positionIndex < positions.length; positionIndex+=12) {
+                        //Get our points
+                        const point1 = new coffeeEngine.vector3(positions[positionIndex], positions[positionIndex+1], positions[positionIndex+2]);
+                        const point2 = new coffeeEngine.vector3(positions[positionIndex+4], positions[positionIndex+5], positions[positionIndex+6]);
+                        const point3 = new coffeeEngine.vector3(positions[positionIndex+8], positions[positionIndex+9], positions[positionIndex+10]);
+        
+                        //Calculate edges
+                        const edge1 = point2.sub(point1);
+                        const edge2 = point3.sub(point2);
+                        const edge3 = point1.sub(point3);
+        
+                        //Calculate normal
+                        const normal = edge1.cross(edge2);
+        
+                        //Add our parsed data to the array;
+                        this.#parsedData.push({
+                            points:[point1,point2,point3],
+                            edges:[edge1,edge2,edge3],
+                            normal:normal,
 
-                        //Our min max functions
-                        getMin: (axis) => {
-                            return Math.min(
-                                this.matrix.multiplyVector(point1).toVector3().dot(axis),
-                                this.matrix.multiplyVector(point2).toVector3().dot(axis),
-                                this.matrix.multiplyVector(point3).toVector3().dot(axis)
-                            );
-                        },
-                        getMax: (axis) => {
-                            return Math.max(
-                                this.matrix.multiplyVector(point1).toVector3().dot(axis),
-                                this.matrix.multiplyVector(point2).toVector3().dot(axis),
-                                this.matrix.multiplyVector(point3).toVector3().dot(axis)
-                            );
-                        }
-                    });
-                };
+                            //Our min max functions
+                            getMin: (axis) => {
+                                return Math.min(
+                                    this.matrix.multiplyVector(point1).toVector3().dot(axis),
+                                    this.matrix.multiplyVector(point2).toVector3().dot(axis),
+                                    this.matrix.multiplyVector(point3).toVector3().dot(axis)
+                                );
+                            },
+                            getMax: (axis) => {
+                                return Math.max(
+                                    this.matrix.multiplyVector(point1).toVector3().dot(axis),
+                                    this.matrix.multiplyVector(point2).toVector3().dot(axis),
+                                    this.matrix.multiplyVector(point3).toVector3().dot(axis)
+                                );
+                            }
+                        });
+                    };
+                }
+
+                //Then create our octree
+                this.createOctree(this.#mesh, this.#parsedData, this.mesh.lowestBound, this.mesh.highestBound);
             }
-
-            //Then create our octree
-            this.createOctree(this.octree, this.#parsedData, this.mesh.lowestBound, this.mesh.highestBound);
         }
 
         get mesh() {
@@ -73,18 +76,18 @@
             //If we are at the bottom root the tree
             if (depth == 0) {
                 //Empty the tree
-                this.octree = [];
+                layer.octree = [];
                 const center = min.add(max).div(2);
                 
                 //Order
-                this.createOctree(this.octree, triangles, min, center, next); //---
-                this.createOctree(this.octree, triangles, center, max, next); //+++
-                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( min.x, center.y, center.z), new coffeeEngine.vector3(center.x, max.y, max.z), next); //-++
-                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( center.x, min.y, center.z), new coffeeEngine.vector3(max.x, center.y, max.z), next); //+-+
-                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( center.x, center.y, min.z), new coffeeEngine.vector3(max.x, max.y, center.z), next); //++-
-                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( center.x, min.y, min.z), new coffeeEngine.vector3(min.x, center.y, center.z), next); //+--
-                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( min.x, center.y, min.z), new coffeeEngine.vector3(center.x, min.y, center.z), next); //-+-
-                this.createOctree(this.octree, triangles, new coffeeEngine.vector3( min.x, min.y, center.z), new coffeeEngine.vector3(center.x, center.y, min.z), next); //--+
+                this.createOctree(layer.octree, triangles, min, center, next); //---
+                this.createOctree(layer.octree, triangles, center, max, next); //+++
+                this.createOctree(layer.octree, triangles, new coffeeEngine.vector3( min.x, center.y, center.z), new coffeeEngine.vector3(center.x, max.y, max.z), next); //-++
+                this.createOctree(layer.octree, triangles, new coffeeEngine.vector3( center.x, min.y, center.z), new coffeeEngine.vector3(max.x, center.y, max.z), next); //+-+
+                this.createOctree(layer.octree, triangles, new coffeeEngine.vector3( center.x, center.y, min.z), new coffeeEngine.vector3(max.x, max.y, center.z), next); //++-
+                this.createOctree(layer.octree, triangles, new coffeeEngine.vector3( center.x, min.y, min.z), new coffeeEngine.vector3(min.x, center.y, center.z), next); //+--
+                this.createOctree(layer.octree, triangles, new coffeeEngine.vector3( min.x, center.y, min.z), new coffeeEngine.vector3(center.x, min.y, center.z), next); //-+-
+                this.createOctree(layer.octree, triangles, new coffeeEngine.vector3( min.x, min.y, center.z), new coffeeEngine.vector3(center.x, center.y, min.z), next); //--+
                 return;
             }
 
@@ -113,7 +116,7 @@
             }
 
             //If we are at our wits end, stop
-            if (depth > this.octreeMaxDepth || colliding.length <= 1) {
+            if (depth >= this.octreeMaxDepth || colliding.length <= 1) {
                 layer.final = true;
                 layer.contents = colliding;
             }

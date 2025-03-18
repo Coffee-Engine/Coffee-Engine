@@ -5,6 +5,7 @@
             data = {};
             unparsed = [];
             pointCount = [];
+            octree = null;
             //Our high and low bounds
             highestBound = new coffeeEngine.vector3(-Infinity, -Infinity, -Infinity);
             lowestBound = new coffeeEngine.vector3(Infinity, Infinity, Infinity);
