@@ -71,11 +71,13 @@
             depth = depth || 0;
             const next = depth + 1;
 
+            //Calculate the center for octree calculations
+            const center = min.add(max).div(2);
+
             //If we are at the bottom root the tree
             if (depth == 0) {
                 //Empty the tree
                 layer.octree = [];
-                const center = min.add(max).div(2);
                 
                 //Order
                 this.createOctree(layer.octree, triangles, min, center, next); //---
@@ -97,8 +99,7 @@
             });
             
             //Set our layer to our newly created layer
-            layer = layer[layer.length - 1];
-            const center = min.add(max).div(2);
+            layer = layer[layer.length - 1];            
             const scale = max.sub(min).div(2);
 
             //Get our matrix's transformed
