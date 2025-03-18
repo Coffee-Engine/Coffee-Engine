@@ -84,6 +84,17 @@
             return matrix.mulVector(this);
         }
 
+        closestPoint(start, end) {
+            const direction = end.sub(start);
+            const interp = Math.min(1.0, Math.max(
+                this.sub(start).dot(direction).div(direction.dot(direction)), 
+                0.0
+            ));
+    
+            //Get the inerpolated point.
+            return start.add(direction.mul(interp));
+        }
+
         equals(b) {
             return (this.x == b.x && this.y == b.y && this.z == b.z && this.w == b.w);
         }

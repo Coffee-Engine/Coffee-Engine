@@ -8,6 +8,8 @@
         octreeMaxDepth = 4;
 
         set mesh(value) {
+            if (!value || !(value instanceof coffeeEngine.mesh.class)) return;
+
             //Let's quickly parse the data
             this.#mesh = value;
 
@@ -30,9 +32,8 @@
         
                         //Calculate normal
                         const normal = edge1.cross(edge2);
-        
-                        //Add our parsed data to the array;
-                        parsedData.push({
+
+                        const createdData = {
                             points:[point1,point2,point3],
                             edges:[edge1,edge2,edge3],
                             normal:normal,
@@ -51,8 +52,67 @@
                                     this.matrix.multiplyVector(point2).toVector3().dot(axis),
                                     this.matrix.multiplyVector(point3).toVector3().dot(axis)
                                 );
+                            },
+
+                            pointInSelf: (point) => {
+                                //Find deltas between tri points and our desired point
+                                const delta1 = point1.sub(point);
+                                const delta2 = point2.sub(point);
+                                const delta3 = point3.sub(point);
+
+                                //Get the normal of each new triangle
+                                const normal12 = delta1.cross(delta2).normalize();
+                                const normal23 = delta2.cross(delta3).normalize();
+                                const normal31 = delta3.cross(delta1).normalize();
+
+                                //Check to see if the normals of any triangle are not the same
+                                if (normal23.dot(normal31) < 1) return false;
+                                if (normal23.dot(normal12) < 1) return false;
+
+                                //Return true if we are in the triangle
+                                return true;
+                            },
+
+                            getClosestPoint: (point) => {
+                                //Calculate the point on the triangle's normal plane
+                                const planeDistance = normal.dot(point1);
+                                const planeDot = normal.dot(point);
+                                const scaledPlaneDistance = normal.mul(planeDot - planeDistance);
+
+                                //Start calculating the point
+                                let nearestOnPlane = point.sub(scaledPlaneDistance);
+                                
+                                //If we are in the triangle return that point
+                                if (createdData.pointInSelf(nearestOnPlane)) {
+                                    return nearestOnPlane;
+                                }
+
+                                //If we aren't calculate the nearest edge point
+                                const nearest12 = point.closestPoint(point1, point2);
+                                const nearest23 = point.closestPoint(point2, point3);
+                                const nearest31 = point.closestPoint(point3, point1);
+
+                                //We need to get the closest distance for this
+                                const distance12 = nearest12.sub(point).length();
+                                const distance23 = nearest23.sub(point).length();
+                                const distance31 = nearest31.sub(point).length();
+
+                                const nearest = Math.min(distance12, distance23, distance31);
+
+                                //now we just check and decide which one is closest
+                                if (distance12 == nearest) {
+                                    return nearest12;
+                                }
+                                else if (distance23 == nearest) {
+                                    return nearest23;
+                                }
+
+                                return nearest31;
                             }
-                        });
+                        };
+        
+                        //Add our parsed data to the array;
+                        parsedData.push(createdData);
                     };
                 }
 
@@ -147,6 +207,26 @@
             const result = new coffeeEngine.SAT.SATResult();
             //Immediately fail the SAT test if we detect something fishy.
             if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
+
+            //Point to point collisions.
+            if (collider.collisionType) {
+                let coPoint = collider.point;
+                let myPoint = triangle.getClosestPoint(coPoint);
+
+                if (!coPoint) coPoint = collider.getClosestPoint(this.point);
+
+                //Do our thing, (Unhinged)
+                if (this.pointSolve) result.successful = this.pointSolve(myPoint, coPoint);
+                else if (collider.pointSolve) result.successful = collider.pointSolve(coPoint, myPoint);
+                else result.successful = myPoint.equals(coPoint);
+
+                if (result.successful) {
+                    result.pushVector = myPoint.sub(coPoint).normalize();
+                    result.pushLength = myPoint.sub(coPoint).length();
+                }
+
+                return result;
+            }
 
             //If not point to point use SAT
             //get the axis types

@@ -70,6 +70,17 @@
             return new coffeeEngine.vector2(this.y * Math.sin(rad) + this.x * Math.cos(rad), this.y * Math.cos(rad) - this.x * Math.sin(rad));
         }
 
+        closestPoint(start, end) {
+            const direction = end.sub(start);
+            const interp = Math.min(1.0, Math.max(
+                this.sub(start).dot(direction).div(direction.dot(direction)), 
+                0.0
+            ));
+    
+            //Get the inerpolated point.
+            return start.add(direction.mul(interp));
+        }
+
         equals(b) {
             return (this.x == b.x && this.y == b.y);
         }
