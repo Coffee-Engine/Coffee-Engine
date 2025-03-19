@@ -62,7 +62,7 @@
 
         //Oh yeah mr krabs
         sortValue() {
-            return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
+            return -this.position.sub(coffeeEngine.renderer.cameraData.position).length();
         }
     }
 
