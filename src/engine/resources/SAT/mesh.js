@@ -31,7 +31,7 @@
                         const edge3 = point1.sub(point3);
         
                         //Calculate normal
-                        const normal = edge1.cross(edge2);
+                        const normal = edge1.cross(edge2).normalize();
 
                         const createdData = {
                             points:[point1,point2,point3],
@@ -118,7 +118,7 @@
                 }
 
                 //precalc our transforms
-                this.onTransformed = (matrix) => {
+                this.transformPoints = (matrix) => {
                     for (let triangleID in parsedData) {
                         const triangle = parsedData[triangleID];
                         triangle.transformed = [
@@ -128,8 +128,6 @@
                         ];
                     }
                 }
-
-                this.onTransformed(this.matrix);
 
                 //Then create our octree
                 this.createOctree(this.#mesh, parsedData, this.mesh.lowestBound, this.mesh.highestBound);
@@ -215,6 +213,8 @@
         solve(collider) {
             //Make sure we have a mesh
             if (!(this.mesh instanceof coffeeEngine.mesh.class)) return;
+
+            this.transformPoints(this.matrix);
 
             //Get the triangles from the octree
             const triangleTestArray = new Array();

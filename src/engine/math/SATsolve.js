@@ -17,8 +17,6 @@
                     //Convert the point to be multipliable to a matrix
                     this.transformedPoints.push(this.matrix.multiplyVector(this.points[pointID]).toVector3());
                 }
-
-                this.onTransformed(value);
             }
 
             get matrix() {
@@ -140,8 +138,6 @@
                 result.successful = true;
                 return result;
             }
-
-            onTransformed(matrix) {}
         },
 
         //Yes, I think an SATResult class would do us good.

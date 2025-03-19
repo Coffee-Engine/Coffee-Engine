@@ -34,7 +34,8 @@
             container.style.display = "grid";
             container.style.gridTemplateRows = "24px ".repeat(Object.keys(coffeeEngine.nodeRegister).length);
             container.style.margin = "0px";
-            container.style.overflow = "hidden";
+            container.style.overflowX = "hidden";
+            container.style.overflowY = "scroll";
             
             //Set our target root
             this.TargetRoot = coffeeEngine.runtime.currentScene;
