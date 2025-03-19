@@ -14,6 +14,7 @@
         });
         const daveshadeInstance = renderer.daveshade;
 
+        //Add our draw buffer
         renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
             //Colors
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
@@ -29,8 +30,10 @@
             DaveShade.RENDERBUFFER_TYPES.DEPTH,
         ]);
 
+        //We do use the ZBuffer
         daveshadeInstance.useZBuffer(true);
 
+        //Create our camera data.
         renderer.cameraData = {
             position: new coffeeEngine.vector3(0, 0, 0),
 
@@ -126,6 +129,7 @@
             cameraRotationEul: new coffeeEngine.vector3(0, 0, 0),
         };
 
+        //Our base shaders
         renderer.mainShaders = {
             basis: daveshadeInstance.createShader(
                 //Vertex
@@ -558,7 +562,15 @@
             ),
         };
 
+        //Our shader compiler
+        renderer.shaderHintRegex = /^.*\/\/\s*\?HINT:.*$/gm;
+        renderer.shaderUniformRegex = /\s[\w\d\[\]_]*\s*;/g;
+        renderer.extractionRegex = /(?:\/\/\s*\?HINT:)(.*)/g;
         renderer.compilePBRshader = (shaderCode) => {
+            //Find hints in shader code
+            const hintLines = shaderCode.match(renderer.shaderHintRegex);
+            
+            //Compile our shader
             const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
             const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
             const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
@@ -566,7 +578,26 @@
             const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
             const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
 
-            return daveshadeInstance.createShader(compiledVert, compiledFrag);
+            const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
+
+            if (!compiledShader) return;
+
+            //Now use the hints
+            for (let hintLineID in hintLines) {
+                let hint = hintLines[hintLineID].trim();
+
+                if (hint.startsWith("uniform")) {
+                    //Get our uniform's name
+                    const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
+                    
+                    if (compiledShader.uniforms[hintUniform]) {
+                        compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].split(" ");
+                    }
+                }
+                console.log(hint);
+            }
+
+            return compiledShader;
         };
 
         renderer.textureStorage = {};
