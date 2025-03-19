@@ -57,9 +57,9 @@
 
                             pointInSelf: (point) => {
                                 //Find deltas between tri points and our desired point
-                                const delta1 = point1.sub(point);
-                                const delta2 = point2.sub(point);
-                                const delta3 = point3.sub(point);
+                                const delta1 = createdData.transformed[0].sub(point);
+                                const delta2 = createdData.transformed[1].sub(point);
+                                const delta3 = createdData.transformed[2].sub(point);
 
                                 //Get the normal of each new triangle
                                 const normal12 = delta1.cross(delta2).normalize();
@@ -76,7 +76,7 @@
 
                             getClosestPoint: (point) => {
                                 //Calculate the point on the triangle's normal plane
-                                const planeDistance = normal.dot(point1);
+                                const planeDistance = normal.dot(createdData.transformed[0]);
                                 const planeDot = normal.dot(point);
                                 const scaledPlaneDistance = normal.mul(planeDot - planeDistance);
 
@@ -89,9 +89,9 @@
                                 }
 
                                 //If we aren't calculate the nearest edge point
-                                const nearest12 = point.closestPoint(point1, point2);
-                                const nearest23 = point.closestPoint(point2, point3);
-                                const nearest31 = point.closestPoint(point3, point1);
+                                const nearest12 = point.closestPoint(createdData.transformed[0], createdData.transformed[1]);
+                                const nearest23 = point.closestPoint(createdData.transformed[1], createdData.transformed[2]);
+                                const nearest31 = point.closestPoint(createdData.transformed[2], createdData.transformed[0]);
 
                                 //We need to get the closest distance for this
                                 const distance12 = nearest12.sub(point).length();
