@@ -34,9 +34,26 @@
             use() {
                 //Loop through our params and set the keys
                 if (this.shader) {
+                    const filledKeys = Object.keys(this.params);
+                    const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => !filledKeys.includes(key));
+
                     for (const key in this.params) {
                         if (typeof this.params[key][0] === "string") typeConversions[this.params[key][1]](this.params[key]);
                         else if (this.shader.uniforms[key] && this.params[key][0]) this.shader.uniforms[key].value = this.params[key][0];
+                    }
+
+                    //Set non filled keys
+                    for (const keyID in nonFilledKeys) {
+                        const key = this.shader.uniforms[nonFilledKeys[keyID]];
+                        switch (key.type) {
+                            case 35678:
+                                if (!key.hints) break;
+                                if (coffeeEngine.renderer.sprites[key.hints[0]]) key.value = coffeeEngine.renderer.sprites[key.hints[0]].texture;
+                                break;
+                        
+                            default:
+                                break;
+                        }
                     }
 
                     if (this.shader.uniforms.u_time) this.shader.uniforms.u_time.value = coffeeEngine.timer;

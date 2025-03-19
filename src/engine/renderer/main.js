@@ -566,6 +566,7 @@
         renderer.shaderHintRegex = /^.*\/\/\s*\?HINT:.*$/gm;
         renderer.shaderUniformRegex = /\s[\w\d\[\]_]*\s*;/g;
         renderer.extractionRegex = /(?:\/\/\s*\?HINT:)(.*)/g;
+        renderer.cleanupRegex = /\/\/\s*\?HINT:/g;
         renderer.compilePBRshader = (shaderCode) => {
             //Find hints in shader code
             const hintLines = shaderCode.match(renderer.shaderHintRegex);
@@ -591,10 +592,10 @@
                     const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
                     
                     if (compiledShader.uniforms[hintUniform]) {
-                        compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].split(" ");
+                        //Clean up our hints
+                        compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].replace(renderer.cleanupRegex, "").trim().split(" ");
                     }
                 }
-                console.log(hint);
             }
 
             return compiledShader;
