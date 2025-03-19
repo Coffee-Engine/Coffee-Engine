@@ -7,9 +7,28 @@
                 return [];
             }
 
+            #matrix = coffeeEngine.matrix4.identity();
+
+            set matrix(value) {
+                this.#matrix = value;
+                
+                this.transformedPoints = [];
+                for (const pointID in this.points) {
+                    //Convert the point to be multipliable to a matrix
+                    this.transformedPoints.push(this.matrix.multiplyVector(this.points[pointID]).toVector3());
+                }
+
+                this.onTransformed(value);
+            }
+
+            get matrix() {
+                return this.#matrix;
+            }
+
             constructor() {
                 //Vector 3s
                 this.points = [];
+                this.transformedPoints = this.points;
                 //Our matrix, this will be inherited from our parent node
                 this.matrix = coffeeEngine.matrix4.identity();
                 
@@ -22,9 +41,9 @@
                 //Make a minimum vector
                 let min = Infinity;
                 //Ain't That Wacky?
-                for (const pointID in this.points) {
+                for (const pointID in this.transformedPoints) {
                     //Convert the point to be multipliable to a matrix
-                    const point = this.matrix.multiplyVector(this.points[pointID]).toVector3().dot(axis);
+                    const point = this.transformedPoints[pointID].dot(axis);
 
                     //Find the min
                     if (point < min) min = point;
@@ -38,9 +57,9 @@
                 //Make a minimum vector
                 let max = -Infinity;
                 //Ain't That Wacky?
-                for (const pointID in this.points) {
+                for (const pointID in this.transformedPoints) {
                     //Convert the point to be multipliable to a matrix
-                    const point = this.matrix.multiplyVector(this.points[pointID]).toVector3().dot(axis);
+                    const point = this.transformedPoints[pointID].dot(axis);
 
                     //Find the max
                     if (point > max) max = point;
@@ -57,9 +76,12 @@
                 //Immediately fail the SAT test if we detect something fishy.
                 if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
 
+                //If we have a custom solve on the collider use that
+                if (collider.solve != this.solve) return collider.solve(this);
+
                 //For cases where we have a custom solver
-                if (collider.customSolve) collider.customSolve(result);
-                else if (this.customSolve) this.customSolve(result);
+                if (collider.customSolve) collider.customSolve(result, this);
+                else if (this.customSolve) this.customSolve(result, collider);
                 if (collider.customSolve || this.customSolve) return result;
 
                 //Point to point collisions.
@@ -106,7 +128,7 @@
                         const pushBack = (pushDir) ? coMin-myMax : coMax-myMin;
 
                         //Then do the math
-                        if ((Math.abs(result.pushLength) >= Math.abs(pushBack) && axis.length() > 0) || result.pushLength === null) {
+                        if (result.pushLength === null || (Math.abs(result.pushLength) > Math.abs(pushBack) && axis.length() > 0)) {
                             //Inverse it so we push out instead of in
                             result.pushLength = -pushBack;
                             result.pushVector = axis;
@@ -118,6 +140,8 @@
                 result.successful = true;
                 return result;
             }
+
+            onTransformed(matrix) {}
         },
 
         //Yes, I think an SATResult class would do us good.

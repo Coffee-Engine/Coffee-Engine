@@ -52,17 +52,17 @@
                 triangleData.normal,
 
                 //Then calculate our needed cross products
-                myAxis[0].cross(triangleData.edges[0]),
-                myAxis[0].cross(triangleData.edges[1]),
-                myAxis[0].cross(triangleData.edges[2]),
+                myAxis[0].cross(triangleData.edges[0]).normalize(),
+                myAxis[0].cross(triangleData.edges[1]).normalize(),
+                myAxis[0].cross(triangleData.edges[2]).normalize(),
 
-                myAxis[1].cross(triangleData.edges[0]),
-                myAxis[1].cross(triangleData.edges[1]),
-                myAxis[1].cross(triangleData.edges[2]),
+                myAxis[1].cross(triangleData.edges[0]).normalize(),
+                myAxis[1].cross(triangleData.edges[1]).normalize(),
+                myAxis[1].cross(triangleData.edges[2]).normalize(),
 
-                myAxis[2].cross(triangleData.edges[0]),
-                myAxis[2].cross(triangleData.edges[1]),
-                myAxis[2].cross(triangleData.edges[2])
+                myAxis[2].cross(triangleData.edges[0]).normalize(),
+                myAxis[2].cross(triangleData.edges[1]).normalize(),
+                myAxis[2].cross(triangleData.edges[2]).normalize()
             ];
         }
 

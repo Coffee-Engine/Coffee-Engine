@@ -35,22 +35,23 @@
 
                         const createdData = {
                             points:[point1,point2,point3],
+                            transformed:[point1,point2,point3],
                             edges:[edge1,edge2,edge3],
                             normal:normal,
 
                             //Our min max functions
                             getMin: (axis) => {
                                 return Math.min(
-                                    this.matrix.multiplyVector(point1).toVector3().dot(axis),
-                                    this.matrix.multiplyVector(point2).toVector3().dot(axis),
-                                    this.matrix.multiplyVector(point3).toVector3().dot(axis)
+                                    createdData.transformed[0].dot(axis),
+                                    createdData.transformed[1].dot(axis),
+                                    createdData.transformed[2].dot(axis)
                                 );
                             },
                             getMax: (axis) => {
                                 return Math.max(
-                                    this.matrix.multiplyVector(point1).toVector3().dot(axis),
-                                    this.matrix.multiplyVector(point2).toVector3().dot(axis),
-                                    this.matrix.multiplyVector(point3).toVector3().dot(axis)
+                                    createdData.transformed[0].dot(axis),
+                                    createdData.transformed[1].dot(axis),
+                                    createdData.transformed[2].dot(axis)
                                 );
                             },
 
@@ -115,6 +116,20 @@
                         parsedData.push(createdData);
                     };
                 }
+
+                //precalc our transforms
+                this.onTransformed = (matrix) => {
+                    for (let triangleID in parsedData) {
+                        const triangle = parsedData[triangleID];
+                        triangle.transformed = [
+                            matrix.multiplyVector(triangle.points[0]).toVector3(),
+                            matrix.multiplyVector(triangle.points[1]).toVector3(),
+                            matrix.multiplyVector(triangle.points[2]).toVector3()
+                        ];
+                    }
+                }
+
+                this.onTransformed(this.matrix);
 
                 //Then create our octree
                 this.createOctree(this.#mesh, parsedData, this.mesh.lowestBound, this.mesh.highestBound);
@@ -197,16 +212,60 @@
             this.type = "mesh";
         }
 
-        customSolve(result) {
+        solve(collider) {
             //Make sure we have a mesh
             if (!(this.mesh instanceof coffeeEngine.mesh.class)) return;
-            //W I P
+
+            //Get the triangles from the octree
+            const triangleTestArray = new Array();
+            this.loopThroughActiveTriangles(triangleTestArray, this.mesh.octree, collider);
+
+            //Then do the collisions with the octree triangles
+            let shortest = new coffeeEngine.SAT.SATResult();
+            if (triangleTestArray.length > 0) {
+                for (let triangleID in triangleTestArray) {
+                    //Get the solved triangle
+                    const solved = this.solveTriangleSAT(triangleTestArray[triangleID], collider);
+
+                    //If we are not successful stop where we are and move onto the next triangle
+                    if (!solved.successful) continue;
+
+                    //Determine if its shorter than shortest
+                    if (solved.pushLength < shortest.pushLength) {
+                        shortest = solved;
+                    }
+                }
+            }
+
+            //Pass our result if we are successful
+            return shortest;
+        }
+
+        loopThroughActiveTriangles(activeTriangleArray, branch, collider) {
+            for (let branchID = 0; branchID < branch.length; branchID++) {
+                const subBranch = branch[branchID];
+                
+                //Solve the collision between the octree branch and the collider
+                this.octreeCollision.matrix = this.matrix.multiply(subBranch.matrix);
+                if (this.octreeCollision.solve(collider).successful) {
+                    //If successful determine if the branch is the final of its line
+                    if (subBranch.final) {
+                        //If it is push the contents
+                        for (let triangleID in subBranch.contents) {
+                            const triangle = subBranch.contents[triangleID]
+                            if (!activeTriangleArray.includes(triangle)) activeTriangleArray.push(triangle);
+                        }
+                    }
+                    else {
+                        //If not go further
+                        this.loopThroughActiveTriangles(activeTriangleArray, subBranch.contents, collider);
+                    }
+                }
+            }
         }
 
         solveTriangleSAT(triangle, collider) {
             const result = new coffeeEngine.SAT.SATResult();
-            //Immediately fail the SAT test if we detect something fishy.
-            if (!collider instanceof coffeeEngine.SAT.BaseClass) return result;
 
             //Point to point collisions.
             if (collider.collisionType) {
