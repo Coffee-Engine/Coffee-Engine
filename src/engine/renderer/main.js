@@ -197,7 +197,7 @@
                     v_position = (vec4(POSITION,1) * u_model).xyz;
 
                     //W manipulation... wait not in that way
-                    gl_Position.w = min(mix(1.0, gl_Position.z, u_wFactor.x), gl_Position.z);
+                    gl_Position.w = mix(1.0, gl_Position.z, u_wFactor.x);
                     if (u_wFactor.x < 1.0) {
                         gl_Position.z /= 1000.0;
                         gl_Position.xy /= mix(u_wFactor.y, 1.0, u_wFactor.x);
