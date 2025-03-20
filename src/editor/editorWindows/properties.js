@@ -39,7 +39,7 @@
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    properties = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing });
+                    properties = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing, path: path });
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyDef, propertyValue, node) => {

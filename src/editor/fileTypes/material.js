@@ -15,7 +15,7 @@
     //To exclude or not to exclude
     const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID"];
 
-    const matEditor = ({ panel, refreshListing }) => {
+    const matEditor = ({ panel, refreshListing, path }) => {
         return {
             getProperties: (material, initial) => {
                 //Get shaders
@@ -48,11 +48,20 @@
                 if (property.name == "shader") {
                     coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
                         shader = shaderOBJ;
+                        
+                        const liveMaterial = coffeeEngine.renderer.materialStorage[path];
+                        if (liveMaterial) liveMaterial.shader = shaderOBJ;
                         refreshListing();
                     });
                 } else {
                     node.params = node.params || {};
                     node.params[property.name] = [value, shader.uniforms[property.name].type];
+
+                    const liveMaterial = coffeeEngine.renderer.materialStorage[path];
+                    if (liveMaterial) {
+                        if (!liveMaterial.params[property.name]) [value, shader.uniforms[property.name].type];
+                        else liveMaterial.params[property.name][0] = value;
+                    }
 
                     return true;
                 }
