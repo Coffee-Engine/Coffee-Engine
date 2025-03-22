@@ -1,6 +1,6 @@
 (function () {
     class cameraNode extends coffeeEngine.getNode("Node3D") {
-        activeCamera = true;
+        activeCamera = false;
         fov = 90;
         orthographic = false;
         zoom = 1.0;
@@ -95,6 +95,8 @@
                 { name: "fov", translationKey: "engine.nodeProperties.Camera.fov", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 { name: "orthographic", translationKey: "engine.nodeProperties.Camera.flatten", type: coffeeEngine.PropertyTypes.BOOLEAN }, 
                 { name: "zoom", translationKey: "engine.nodeProperties.Camera.zoom", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                "---",
+                { name: "activeCamera", translationKey: "engine.nodeProperties.Camera.active", type: coffeeEngine.PropertyTypes.BOOLEAN},
                 "---", 
                 { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];

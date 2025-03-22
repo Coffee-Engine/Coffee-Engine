@@ -487,6 +487,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.Camera.fov": "FOV",
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
+    "engine.nodeProperties.Camera.active": "Active",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
