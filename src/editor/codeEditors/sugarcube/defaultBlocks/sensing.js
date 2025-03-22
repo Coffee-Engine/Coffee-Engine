@@ -182,6 +182,12 @@
                         type: sugarcube.BlockType.BOOLEAN,
                         text: editor.language["sugarcube.sensing.block.isTouching"],
                     },
+                    {
+                        opcode: "pushDirections", 
+                        type: sugarcube.BlockType.ARRAY,
+                        text: editor.language["sugarcube.sensing.block.pushDirections"],
+                        filter: ["PhysicalNode2D", "PhysicalNode3D"],
+                    },
                     "---",
                     {
                         opcode: "isKeyDown",
@@ -398,6 +404,16 @@
         //Collision
         isTouching(args, { target }) {
             return sugarcube.cast.toBoolean(target.detectCollisions());
+        }
+
+        pushDirections(args, { target }) {
+            const outputs = [];
+            for (let outputID in target.outputAxis) {
+                const pushObject = target.outputAxis[outputID];
+                outputs.push(pushObject.pushVector.mul(pushObject.pushLength));
+            }
+
+            return outputs;
         }
 
         //Key stuff

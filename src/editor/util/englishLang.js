@@ -274,6 +274,7 @@ editor.EnglishLang = {
 
     "sugarcube.sensing": "Sensing",
     "sugarcube.sensing.block.isTouching": "colliding?",
+    "sugarcube.sensing.block.pushDirections": "push directions",
     "sugarcube.sensing.block.isKeyDown": "key [key] pressed?",
     "sugarcube.sensing.block.mouseDown": "[button] mouse button down",
     "sugarcube.sensing.block.mouseX": "mouse x",

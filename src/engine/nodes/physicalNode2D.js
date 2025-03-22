@@ -1,5 +1,5 @@
 (function () {
-    class node extends coffeeEngine.getNode("Node3D") {
+    class node extends coffeeEngine.getNode("Node2D") {
         collisionGroup = "default";
 
         update(deltaTime) {
@@ -14,7 +14,6 @@
                     const outputObject = this.outputAxis[outputID];
                     this.position.x += outputObject.pushVector.x * outputObject.pushLength;
                     this.position.y += outputObject.pushVector.y * outputObject.pushLength;
-                    this.position.z += outputObject.pushVector.z * outputObject.pushLength;
                 }
             }
 
@@ -26,5 +25,5 @@
         }
     }
 
-    coffeeEngine.registerNode(node, "PhysicalNode3D", "Node3D");
+    coffeeEngine.registerNode(node, "PhysicalNode2D", "Node2D");
 })();

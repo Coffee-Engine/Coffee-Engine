@@ -42,6 +42,11 @@
             ];
         }
 
+        axis_OBB_retangle(rectangle) {
+            // prettier-ignore
+            return rectangle.axis_retangle_OBB(this);
+        }
+
         //Note that the triangle itself isn't a SAT class within itself but data within a class
         axis_OBB_triangle(triangleData) {
             const myAxis = this.axis;

@@ -1,6 +1,6 @@
 (function() {
-    class node extends coffeeEngine.getNode("Collision3D") {
-        collision = new coffeeEngine.SAT.OBB();
+    class node extends coffeeEngine.getNode("Collision2D") {
+        collision = new coffeeEngine.SAT.retangle();
 
         draw(drawID) {
             super.draw();
@@ -9,19 +9,15 @@
                 if (editor.lastSelectedNode != this) return;
                 //Get our shader
                 const shader = coffeeEngine.renderer.mainShaders.editorShape;
-                
-                //Cull the faces
-                coffeeEngine.renderer.daveshade.cullFace(DaveShade.side.FRONT);
 
                 //Set our buffers and draw
-                shader.setBuffers(coffeeEngine.shapes.cube);
+                shader.setBuffers(coffeeEngine.shapes.plane);
                 shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
 
                 //Simple debug test
                 shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 shader.uniforms.u_objectID.value = drawID;
-                shader.drawFromBuffers(36);
-                coffeeEngine.renderer.daveshade.cullFace();
+                shader.drawFromBuffers(6);
             }
         }
 
@@ -39,5 +35,5 @@
         }
     }
 
-    coffeeEngine.registerNode(node, "BoxCollision", "Collision3D");
+    coffeeEngine.registerNode(node, "RectangleCollision", "Collision2D");
 })();
