@@ -12,6 +12,10 @@
         sunColor = [0, 0, 0];
         ambientColor = [0, 0, 0];
         lightCount = 0;
+        
+        //? And here is our matrix.
+        //? The humble matrix
+        mixedMatrix = coffeeEngine.matrix4.identity();
 
         constructor() {
             this.children = [];
@@ -82,9 +86,38 @@
         }
 
         update(deltaTime) {
-            this.castEvent("update", deltaTime);
+            this.children.forEach(child => {
+                child.update();
+            })
+            
+            //this.castEvent("update", deltaTime);
         }
 
+        //Collision stuff
+        isColliding(collidee, collisionList) {
+            //Make sure we are not the parent, or collider;
+            if (collidee == this) return [];
+
+            if (!collisionList) collisionList = new Array();
+
+            //Iterate collisions
+            for (const child in this.children) {
+                const collision = this.children[child].isColliding(collidee,collisionList);
+                if (typeof collision == "object") {
+                    //Use a sprawl to determine splicing
+                    if (Array.isArray(collision)) {
+                        collisionList.splice(0,0,...collision);
+                    }
+                    else {
+                        collisionList.push(collision);
+                    }
+                }
+            }
+            //Return our collision list
+            return collisionList;
+        }
+
+        //This big drawing stuff
         draw() {
             const renderer = coffeeEngine.renderer;
             const GL = renderer.daveshade.GL;
@@ -105,6 +138,7 @@
 
             //Render it back to the main draw pass.
             renderer.daveshade.renderToCanvas();
+            renderer.daveshade.cullFace();
             this.__drawFinal(renderer, renderer.mainShaders.mainPass);
         }
 
@@ -167,11 +201,11 @@
             mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
             mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
             mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            mainPass.uniforms.u_cameraPosition.value = renderer.cameraData.position.webGLValue();
             mainPass.uniforms.u_sunDir.value = this.sunDirection;
             mainPass.uniforms.u_sunColor.value = this.sunColor;
             mainPass.uniforms.u_ambientColor.value = this.ambientColor;
             mainPass.uniforms.u_lightCount.value = this.lightCount;
+            mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
             mainPass.drawFromBuffers(6);
         }
 
@@ -367,7 +401,15 @@
         }
 
         getProperties() {
-            return [{ name: "skyColor", translationKey: "engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, { name: "horizonColor", translationKey: "engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, { name: "groundColor", translationKey: "engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, { name: "centerColor", translationKey: "engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, "---", { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }];
+            // prettier-ignore
+            return [
+                { name: "skyColor", translationKey: "engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                { name: "horizonColor", translationKey: "engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                { name: "groundColor", translationKey: "engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                { name: "centerColor", translationKey: "engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                "---", 
+                { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }
+            ];
 
             //Input Testing stuff
             /*

@@ -51,6 +51,8 @@
                     if (meshData.data.length > 0) {
                         //Flatten em
                         const dataLength = data.length - 1;
+
+                        //Calculate tangent and bitangent
                         data[dataLength].a_position = new Float32Array(data[dataLength].a_position.flat(4));
                         data[dataLength].a_texCoord = new Float32Array(data[dataLength].a_texCoord.flat(4));
                         data[dataLength].a_normal = new Float32Array(data[dataLength].a_normal.flat(4));

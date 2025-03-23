@@ -42,10 +42,12 @@
         }
 
         mul(b) {
+            if (typeof b == "number") return new coffeeEngine.vector3(this.x * b, this.y * b, this.z * b); 
             return new coffeeEngine.vector3(this.x * b.x, this.y * b.y, this.z * b.z);
         }
 
         div(b) {
+            if (typeof b == "number") return new coffeeEngine.vector3(this.x / b, this.y / b, this.z / b); 
             return new coffeeEngine.vector3(this.x / b.x, this.y / b.y, this.z / b.z);
         }
 
@@ -59,14 +61,16 @@
 
         normalize() {
             const length = this.length();
+            if (length == 0) return new coffeeEngine.vector3(0,0,0);
             return this.div({ x: length, y: length, z: length });
         }
 
         dot(b) {
-            return this.mul(b).normalize();
+            const multiplied = this.mul(b);
+            return multiplied.x + multiplied.y + multiplied.z;
         }
 
-        cross() {
+        cross(b) {
             return new coffeeEngine.vector3(this.y * b.z - this.z * b.y, this.z * b.x - this.x * b.z, this.x * b.y - this.y * b.x);
         }
 
@@ -86,6 +90,21 @@
             return returned;
         }
 
+        closestPoint(start, end) {
+            const direction = end.sub(start);
+            const interp = Math.min(1.0, Math.max(
+                this.sub(start).dot(direction).div(direction.dot(direction)), 
+                0.0
+            ));
+    
+            //Get the inerpolated point.
+            return start.add(direction.mul(interp));
+        }
+
+        equals(b) {
+            return (this.x == b.x && this.y == b.y && this.z == b.z);
+        }
+
         webGLValue() {
             return [this.x, this.y, this.z];
         }
@@ -98,6 +117,10 @@
 
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "vector3", value: this.webGLValue() };
+        }
+
+        toVector4() {
+            return new coffeeEngine.vector4(this.x, this.y, this.z, 1);
         }
     };
 

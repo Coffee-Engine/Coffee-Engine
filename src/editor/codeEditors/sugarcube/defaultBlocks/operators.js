@@ -210,6 +210,56 @@
                     },
                     "---",
                     {
+                        opcode: "and",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.and"],
+                        arguments: {
+                            A: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            },
+                            B: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "or",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.or"],
+                        arguments: {
+                            A: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            },
+                            B: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "xor",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.xor"],
+                        arguments: {
+                            A: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            },
+                            B: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "not",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.not"],
+                        arguments: {
+                            A: {
+                                type: sugarcube.ArgumentType.BOOLEAN,
+                            }
+                        },
+                    },
+                    "---",
+                    {
                         opcode: "modulo",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.operators.block.modulo"],
@@ -321,6 +371,23 @@
 
         moreThanEqualTo({ A, B }) {
             return sugarcube.cast.toNumber(A) >= sugarcube.cast.toNumber(B);
+        }
+
+        and({ A, B }) {
+            return (sugarcube.cast.toBoolean(A) && sugarcube.cast.toBoolean(B));
+        }
+
+        or({ A, B }) {
+            return (sugarcube.cast.toBoolean(A) || sugarcube.cast.toBoolean(B));
+        }
+
+        xor({ A, B }) {
+            //Yes JS has a XOR operator... I know its bitwise so we have to convert
+            return sugarcube.cast.toBoolean(sugarcube.cast.toBoolean(A) ^ sugarcube.cast.toBoolean(B));
+        }
+
+        not({ A }) {
+            return !sugarcube.cast.toBoolean(A);
         }
 
         modulo({ A, B }) {

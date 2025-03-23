@@ -9,8 +9,12 @@
         sprite = coffeeEngine.renderer.sprites.spotlight;
 
         draw(drawID) {
+            super.draw();
+            
             const scene = coffeeEngine.runtime.currentScene;
-            scene.__setLight(scene.lightCount, [this.position.x, this.position.y, this.position.z, this.radius, this.color[0], this.color[1], this.color[2], 0, this.matrix.contents[0][2], this.matrix.contents[1][2], this.matrix.contents[2][2], this.falloff, 0, 0, 0, 0]);
+            const translatedWorld = this.mixedMatrix.getTranslation();
+
+            scene.__setLight(scene.lightCount, [translatedWorld.x, translatedWorld.y, translatedWorld.z, this.radius, this.color[0], this.color[1], this.color[2], 0, this.mixedMatrix.contents[0][2], this.mixedMatrix.contents[1][2], this.mixedMatrix.contents[2][2], this.falloff, 0, 0, 0, 0]);
             scene.lightCount += 1;
 
             //Editor display
@@ -19,7 +23,7 @@
 
                 const renderMatrix = coffeeEngine.matrix4
                     .identity()
-                    .translate(this.position.x, this.position.y, this.position.z)
+                    .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                     .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                     .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                     .scale((this.sprite.width / this.sprite.height) * 0.5, 0.5, 0.5)
@@ -33,7 +37,7 @@
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
 
-                this.shaderArrow.uniforms.u_model.value = this.matrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
+                this.shaderArrow.uniforms.u_model.value = this.mixedMatrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
                 this.shaderArrow.uniforms.u_colorMod.value = [this.color[0], this.color[1], this.color[2], 1];
                 this.shaderArrow.uniforms.u_objectID.value = drawID;
                 this.shaderArrow.drawFromBuffers(48);
@@ -41,12 +45,24 @@
         }
 
         getProperties() {
-            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, "---", { name: "radius", translationKey: "engine.nodeProperties.Light.radius", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "falloff", translationKey: "engine.nodeProperties.SpotLight.falloff", type: coffeeEngine.PropertyTypes.FLOAT }, { name: "color", translationKey: "engine.nodeProperties.Light.color", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
+            // prettier-ignore
+            return [
+                { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---", 
+                { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
+                "---", 
+                { name: "radius", translationKey: "engine.nodeProperties.Light.radius", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "falloff", translationKey: "engine.nodeProperties.SpotLight.falloff", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "color", translationKey: "engine.nodeProperties.Light.color", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                "---", 
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+            ];
         }
 
         //Oh yeah mr krabs
         sortValue() {
-            return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
+            return -this.position.sub(coffeeEngine.renderer.cameraData.position).length();
         }
     }
 

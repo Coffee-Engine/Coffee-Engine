@@ -414,13 +414,13 @@
         }
 
         substitute({ objectLike, value }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            if (typeof self[objectLike] != "object" || Array.isArray(self[objectLike])) return;
 
             return (self[objectLike] = value);
         }
 
         originate({ objectLike }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
+            if (typeof self[objectLike] != "object" || Array.isArray(self[objectLike])) return;
             
             return (self[objectLike] = [...self[objectLike]]);
         }

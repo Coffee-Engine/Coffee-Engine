@@ -353,17 +353,17 @@
         //Position Getters
         xposition(args, util) {
             if (!util.target.position) return 0;
-            return ugarcube.cast.toNumber(util.target.position.x);
+            return sugarcube.cast.toNumber(util.target.position.x);
         }
 
         yposition(args, util) {
             if (!util.target.position) return 0;
-            return ugarcube.cast.toNumber(util.target.position.y);
+            return sugarcube.cast.toNumber(util.target.position.y);
         }
 
         zposition(args, util) {
             if (!util.target.position) return 0;
-            return ugarcube.cast.toNumber(util.target.position.z);
+            return sugarcube.cast.toNumber(util.target.position.z);
         }
 
         //General Rotation

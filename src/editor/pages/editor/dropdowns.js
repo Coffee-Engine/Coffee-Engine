@@ -20,6 +20,16 @@
                     project.decaf.save(true);
                     break;
 
+                //Open our project settings menu.
+                case "settings":
+                    if (!(editor.windows.existing.projectManager && editor.windows.existing.projectManager.length > 0)) {
+                        const popupWindow = new editor.windows.projectManager(window.innerWidth / 2, window.innerHeight / 2);
+                        popupWindow.x = window.innerWidth / 4;
+                        popupWindow.y = window.innerHeight / 4;
+                        popupWindow.__moveToTop();
+                    }
+                    break;
+
                 default:
                     break;
             }

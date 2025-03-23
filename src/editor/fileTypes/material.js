@@ -13,11 +13,11 @@
     };
 
     //To exclude or not to exclude
-    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res"];
+    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID"];
 
-    const matEditor = ({ panel, refreshListing }) => {
+    const matEditor = ({ panel, refreshListing, path }) => {
         return {
-            getProperties: () => {
+            getProperties: (material, initial) => {
                 //Get shaders
                 let baseShaders = {};
                 Object.keys(coffeeEngine.renderer.mainShaders).map((key) => {
@@ -30,21 +30,38 @@
                     if (exclude.includes(uniform)) continue;
 
                     //* Band aid and duct tape solution
-                    uniforms.push(uniformTypes[shader.uniforms[uniform].type]);
+                    uniforms.push(Object.assign({}, uniformTypes[shader.uniforms[uniform].type]));
                     uniforms[uniforms.length - 1].name = uniform;
+                }
+
+                //Get our shader variables if this isn't our first rodeo
+                if (initial) {
+                    coffeeEngine.renderer.fileToShader(material.shader).then((shaderOBJ) => {
+                        shader = shaderOBJ;
+                        refreshListing();
+                    });
                 }
 
                 return [{ name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
             },
             onPropertyChange: (property, value, node) => {
                 if (property.name == "shader") {
-                    coffeeEngine.renderer.fileToShader(value).then((value) => {
-                        shader = value;
+                    coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
+                        shader = shaderOBJ;
+                        
+                        const liveMaterial = coffeeEngine.renderer.materialStorage[path];
+                        if (liveMaterial) liveMaterial.shader = shaderOBJ;
                         refreshListing();
                     });
                 } else {
                     node.params = node.params || {};
-                    node.params[property.name] = value;
+                    node.params[property.name] = [value, shader.uniforms[property.name].type];
+
+                    const liveMaterial = coffeeEngine.renderer.materialStorage[path];
+                    if (liveMaterial) {
+                        if (!liveMaterial.params[property.name]) [value, shader.uniforms[property.name].type];
+                        else liveMaterial.params[property.name][0] = value;
+                    }
 
                     return true;
                 }

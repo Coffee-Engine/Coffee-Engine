@@ -1,8 +1,8 @@
 /*
                          %@@@@@@@@@@@@@@@+               
                        @@@@##@@@@@@@####@@@              
-                     #@@##@@@@@@@@@@@@@@@@               
-                     @@##@@=            +.               
+                     #@@##@@@@@@@@@@@@@@@+               
+                     @@##@@=                             
        @@@@@@@@@@@@@@@###@#                              
     @@@@@@@@@@@@@@@@#####@%                              
   -@@@@@@@        @@@@###@@                              
@@ -109,6 +109,11 @@ window.DaveShade = {};
         LINES: 1,
         TRIANGLES: 4,
     };
+
+    DaveShade.side = {
+        FRONT:0,
+        BACK:1
+    }
 
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
         //Size up the render buffer's texture
@@ -592,6 +597,24 @@ window.DaveShade = {};
             daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
         };
 
+        daveShadeInstance.cullFace = (face) => {
+            switch (face) {
+                case DaveShade.side.BACK:
+                    GL.enable(GL.CULL_FACE);
+                    GL.cullFace(GL.BACK);                    
+                    break;
+
+                case DaveShade.side.FRONT:
+                    GL.enable(GL.CULL_FACE);
+                    GL.cullFace(GL.FRONT);
+                    break;
+            
+                default:
+                    GL.disable(GL.CULL_FACE);
+                    break;
+            }
+        }
+
         //For going back to canvas rendering
         daveShadeInstance.renderToCanvas = () => {
             GL.bindFramebuffer(GL.FRAMEBUFFER, null);
@@ -778,7 +801,7 @@ window.DaveShade = {};
         }
 
         return daveShadeInstance;
-    };
+    };  
 
     DaveShade.findFunctionInGLSL = (glsl, func, type) => {
         type = type || "void";

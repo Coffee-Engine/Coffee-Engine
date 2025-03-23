@@ -17,10 +17,10 @@
         angle: "__sugarcube_angle_reporter",
 
         dummy: { type: "input_dummy" },
-        reference: { type: "input_value", check: "Reference" },
-        array: { type: "input_value", check: "Array" },
-        object: { type: "input_value", check: "Object" },
-        boolean: { type: "input_value", check: "Boolean" },
+        reference: { type: "input_value", check: ["Reference", "ANY"] },
+        array: { type: "input_value", check: ["Array", "ANY"] },
+        object: { type: "input_value", check: ["Object", "ANY"] },
+        boolean: { type: "input_value", check: ["Boolean", "ANY"] },
         
         statement: (argument, extManager) => {
             return { type: "input_statement", check: argument.nextStatement || extManager.defaultAction }

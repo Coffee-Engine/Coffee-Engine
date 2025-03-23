@@ -8,6 +8,10 @@ window.coffeeEngine = {
     broadcasts: {},
     runtime: {},
     classes: {},
+    collisionTypes: {
+        SAT:false,
+        POINT:true,
+    },
     resources: {},
     renderer: {
         nodesRendered: 0,
@@ -15,6 +19,9 @@ window.coffeeEngine = {
     },
     preloadFunctions: {},
     nodeRegister: {},
+    collisionGroup: {
+        "default":{"default": true},
+    },
     isEditor: false,
     //Just a simple node registrar thing
     registerNode: (node, name, parentNode) => {

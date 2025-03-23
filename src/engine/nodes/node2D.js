@@ -1,7 +1,26 @@
 (function () {
     class node extends coffeeEngine.getNode("Node") {
-        position = new coffeeEngine.vector2(0, 0);
-        scale = new coffeeEngine.vector2(1, 1);
+        //Allow for position and scale to be set directly
+        #position = new coffeeEngine.vector2(0, 0);
+        #scale = new coffeeEngine.vector2(1, 1);
+
+        //Setting position directly
+        set position(value) {
+            this.#position.x = value.x || 0;
+            this.#position.y = value.y || 0;
+        }
+        get position() {
+            return this.#position;
+        }
+
+        //Setting scale directly
+        set scale(value) {
+            this.#scale.x = value.x || 0;
+            this.#scale.y = value.y || 0;
+        }
+        get scale() {
+            return this.#scale;
+        }
 
         #layer = 1;
         set layer(value) {
@@ -20,8 +39,6 @@
         get rotation() {
             return this.#rotation;
         }
-
-        matrix = coffeeEngine.matrix4.identity();
 
         updateMatrix() {
             this.matrix = coffeeEngine.matrix4.identity();
@@ -42,16 +59,17 @@
             this.updateMatrix();
         }
 
-        update(deltaTime) {
-            super.update(deltaTime);
-        }
-
-        draw(drawID) {
-            super.draw();
-        }
-
         getProperties() {
-            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, { name: "layer", translationKey: "engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
+            // prettier-ignore
+            return [
+                { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---", 
+                { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "layer", translationKey: "engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, 
+                { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, 
+                { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, "---", 
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+            ];
         }
 
         sortValue() {

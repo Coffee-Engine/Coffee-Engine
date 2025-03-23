@@ -48,12 +48,21 @@
         <script src="engine/runtime/gameloop.js"></script>
 
         <!--Resources-->
-        <script src="engine/resources/shapes.js"></script>
+        <script src="engine/resources/models/shapes.js"></script>
         <script src="engine/resources/mesh.js"></script>
-        <script src="engine/resources/obj.js"></script>
-        <script src="engine/resources/dae.js"></script>
-        <script src="engine/resources/gltf.js"></script>
+        <script src="engine/resources/models/obj.js"></script>
+        <script src="engine/resources/models/dae.js"></script>
+        <script src="engine/resources/models/gltf.js"></script>
         <script src="engine/resources/behaviorManager.js"></script>
+
+        <!--Collision-->
+        <script src="engine/math/SATsolve.js"></script>
+        <script src="engine/resources/SAT/shapes.js"></script>
+        <script src="engine/resources/SAT/OBB.js"></script>
+        <script src="engine/resources/SAT/sphere.js"></script>
+        <script src="engine/resources/SAT/mesh.js"></script>
+        <script src="engine/resources/SAT/rectangle.js"></script>
+        <script src="engine/resources/SAT/circle.js"></script>
 
         <!--Nodes-->
         <script src="engine/nodes/node.js"></script>
@@ -66,6 +75,15 @@
         <script src="engine/nodes/sun.js"></script>
         <script src="engine/nodes/pointLight.js"></script>
         <script src="engine/nodes/spotLight.js"></script>
+        <script src="engine/nodes/collision2D.js"></script>
+        <script src="engine/nodes/collisions/rectangleCollision.js"></script>
+        <script src="engine/nodes/collisions/circleCollision.js"></script>
+        <script src="engine/nodes/collision3D.js"></script>
+        <script src="engine/nodes/collisions/boxCollision.js"></script>
+        <script src="engine/nodes/collisions/sphereCollision.js"></script>
+        <script src="engine/nodes/collisions/meshCollision.js"></script>
+        <script src="engine/nodes/physicalNode2D.js"></script>
+        <script src="engine/nodes/physicalNode3D.js"></script>
 
         <!--Load monaco before settings-->
         <script src="editor/codeEditors/monaco/injection.js"></script>
@@ -105,6 +123,7 @@
         <!--Project management-->
         <script src="project/projectManagement.js"></script>
         <script src="project/projectScanning.js"></script>
+        <script src="project/projectSettings.js"></script>
         <script src="project/inOut.js"></script>
 
         <!--Editor Stuff-->
@@ -118,6 +137,7 @@
         <script src="editor/editorWindows/logWindow.js"></script>
         <script src="editor/editorWindows/markdownReader.js"></script>
         <script src="editor/editorWindows/properties.js"></script>
+        <script src="editor/editorWindows/projectManager.js"></script>
 
         <!--2 Scene related ones-->
         <script src="editor/editorWindows/sceneTree.js"></script>

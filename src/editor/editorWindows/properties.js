@@ -12,7 +12,7 @@
         }
 
         //Gets the proper listing for object's properties
-        refreshListing(myself, { target, type, path, unique }) {
+        refreshListing(myself, { target, type, path, unique }, repeat) {
             myself.Content.innerHTML = "";
 
             //? Just hope to Zues this works
@@ -24,7 +24,7 @@
 
             //Allow for the property panel on files to refresh the parental listing
             let refreshListing = () => {
-                myself.refreshListing(myself, { target: target, type: type, path: path });
+                myself.refreshListing(myself, { target: target, type: type, path: path }, true);
             };
 
             //If we are a file display our name in the property panel
@@ -39,7 +39,7 @@
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    properties = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing });
+                    properties = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing, path: path });
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyDef, propertyValue, node) => {
@@ -50,13 +50,13 @@
                     //Read and parse if nessasary? Necesary? needed... needed.
                     myself.fileReader.onload = () => {
                         myself.ParsedObject = JSON.parse(myself.fileReader.result) || {};
-                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange);
+                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange, !repeat);
                     };
 
                     //Check to make sure we don't already have this parsed and read
                     if (myself.Current != target) myself.fileReader.readAsText(target);
                     else {
-                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange);
+                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange, !repeat);
                     }
                     myself.Current = target;
                 }
@@ -65,11 +65,11 @@
             }
 
             //If we are a scene node just display our properties
-            this.displayProperties(myself, { read: target, properties: properties }, onchange);
+            this.displayProperties(myself, { read: target, properties: properties }, onchange, !repeat);
         }
 
         //Actually displays the properties of an object
-        displayProperties(myself, { read, target, properties }, onchange) {
+        displayProperties(myself, { read, target, properties }, onchange, initial) {
             target = target || read;
 
             //If there is no property editor for this thing
@@ -84,7 +84,7 @@
             }
 
             //Get properties from our node
-            properties.getProperties().forEach((property) => {
+            properties.getProperties(read, initial).forEach((property) => {
                 //Create our element
                 const element = document.createElement("div");
                 element.style.margin = "2px";

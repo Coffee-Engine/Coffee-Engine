@@ -134,12 +134,16 @@ editor.EnglishLang = {
     "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
     "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
 
+    "editor.window.projectManager": "Project Settings",
+
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
 
     "editor.window.sceneTree": "Scene Tree",
     "editor.window.sceneTree.addObject": "Add Node",
 
+    "editor.window.sceneTree.addChild": "Add Child",
+    "editor.window.sceneTree.addDuplicateChild": "Duplicate as Child",
     "editor.window.sceneTree.duplicate": "Duplicate Node",
     "editor.window.sceneTree.delete": "Remove Node",
 
@@ -269,6 +273,8 @@ editor.EnglishLang = {
     "sugarcube.controls.block.call": "call [reference]",
 
     "sugarcube.sensing": "Sensing",
+    "sugarcube.sensing.block.isTouching": "colliding?",
+    "sugarcube.sensing.block.pushDirections": "push directions",
     "sugarcube.sensing.block.isKeyDown": "key [key] pressed?",
     "sugarcube.sensing.block.mouseDown": "[button] mouse button down",
     "sugarcube.sensing.block.mouseX": "mouse x",
@@ -351,6 +357,10 @@ editor.EnglishLang = {
     "sugarcube.operators.block.modulo": "[A] mod [B]",
     "sugarcube.operators.block.round": "round [A]",
     "sugarcube.operators.block.arithmatic": "[A] of [B]",
+    "sugarcube.operators.block.and": "[A] and [B]",
+    "sugarcube.operators.block.or": "[A] or [B]",
+    "sugarcube.operators.block.xor": "either [A] or [B]",
+    "sugarcube.operators.block.not": "not [A]",
     "sugarcube.operators.menu.operations.abs": "abs",
     "sugarcube.operators.menu.operations.floor": "floor",
     "sugarcube.operators.menu.operations.ceiling": "ceiling",
@@ -475,8 +485,10 @@ editor.EnglishLang = {
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
     "engine.nodeProperties.MeshDisplay.material": "Material",
     "engine.nodeProperties.Camera.fov": "FOV",
+    "engine.nodeProperties.Camera.nearPlane": "nearPlane",
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
+    "engine.nodeProperties.Camera.active": "Active",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",

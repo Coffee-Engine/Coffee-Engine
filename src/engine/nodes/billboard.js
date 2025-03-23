@@ -59,18 +59,23 @@
             super.draw();
 
             if (this.texture) {
+                const translatedWorld = this.mixedMatrix.getTranslation();
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
                 //Rotate and scale our billboard depending on MULTIPLE variables
                 if (this.omnidirectional)
-                    this.#shader.uniforms.u_model.value = this.matrix
+                    this.#shader.uniforms.u_model.value = coffeeEngine.matrix4
+                        .identity()
+                        .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                         .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                         .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
                         .scale(this.scale.x, this.scale.y, -1)
                         .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
                         .webGLValue();
                 else
-                    this.#shader.uniforms.u_model.value = this.matrix
+                    this.#shader.uniforms.u_model.value = coffeeEngine.matrix4
+                        .identity()
+                        .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
                         .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
                         .scale(this.scale.x, this.scale.y, -1)
                         .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
@@ -91,7 +96,23 @@
                 return key;
             });
 
-            return [{ name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, "---", { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, "---", { name: "spritePath", translationKey: "engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, { name: "omnidirectional", translationKey: "engine.nodeProperties.Billboard.omnidirectional", type: coffeeEngine.PropertyTypes.BOOLEAN }, { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, "---", { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, { name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }];
+            // prettier-ignore
+            return [
+                { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---", 
+                { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
+                { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                "---", 
+                { name: "spritePath", translationKey: "engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
+                { name: "omnidirectional", translationKey: "engine.nodeProperties.Billboard.omnidirectional", type: coffeeEngine.PropertyTypes.BOOLEAN }, 
+                { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                "---", 
+                { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, 
+                { name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }, 
+                "---", 
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+            ];
         }
 
         sortValue(secondPass) {
