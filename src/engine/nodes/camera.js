@@ -4,6 +4,7 @@
         fov = 90;
         orthographic = false;
         zoom = 1.0;
+        nearPlane = 0.05;
 
         shader = coffeeEngine.renderer.mainShaders.unlit;
         shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
@@ -41,7 +42,7 @@
                     cameraData.transform = renderMatrix.multiply(this.parent.mixedMatrix.inverse()).webGLValue();
                     cameraData.unflattenedTransform = this.mixedMatrix;
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
-                    cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom];
+                    cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     cameraData.aspectRatio = canvas.width / canvas.height;
                     cameraData.position.x = -translatedWorld.x;
                     cameraData.position.y = -translatedWorld.y;
@@ -93,6 +94,7 @@
                 { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
                 "---", 
                 { name: "fov", translationKey: "engine.nodeProperties.Camera.fov", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "nearPlane", translationKey: "engine.nodeProperties.Camera.nearPlane", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 { name: "orthographic", translationKey: "engine.nodeProperties.Camera.flatten", type: coffeeEngine.PropertyTypes.BOOLEAN }, 
                 { name: "zoom", translationKey: "engine.nodeProperties.Camera.zoom", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 "---",

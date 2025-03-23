@@ -156,7 +156,7 @@
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
                 uniform mat4 u_camera;
-                uniform vec2 u_wFactor;
+                uniform vec3 u_wFactor;
                 uniform float u_aspectRatio;
                 uniform float u_time;
                 uniform highp int u_objectID;
@@ -206,6 +206,10 @@
                     gl_Position -= vec4(0,0,1,0);
                     gl_Position.x /= u_aspectRatio;
 
+                    //Near plane manipulation
+                    gl_Position.xy /= u_wFactor.z;
+                    gl_Position.w /= u_wFactor.z;
+
                     v_OID.r = float(u_objectID)/255.0;
                     v_OID.g = float(u_objectID/256)/255.0;
                     v_OID.b = float(u_objectID/65536)/255.0;
@@ -236,7 +240,7 @@
                 uniform mat4 u_model;
                 uniform mat4 u_projection;
                 uniform mat4 u_camera;
-                uniform vec2 u_wFactor;
+                uniform vec3 u_wFactor;
                 uniform float u_aspectRatio;
                 uniform float u_time;
 

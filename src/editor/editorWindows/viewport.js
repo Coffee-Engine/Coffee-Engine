@@ -117,7 +117,7 @@
             coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
             coffeeEngine.renderer.cameraData.unflattenedTransform = this.matrix;
             coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
-            coffeeEngine.renderer.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom];
+            coffeeEngine.renderer.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
             coffeeEngine.renderer.cameraData.aspectRatio = this.aspectRatio;
             coffeeEngine.renderer.cameraData.position.x = -this.previewCamera.x;
             coffeeEngine.renderer.cameraData.position.y = -this.previewCamera.y;

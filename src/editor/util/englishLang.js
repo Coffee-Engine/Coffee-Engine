@@ -485,6 +485,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
     "engine.nodeProperties.MeshDisplay.material": "Material",
     "engine.nodeProperties.Camera.fov": "FOV",
+    "engine.nodeProperties.Camera.nearPlane": "nearPlane",
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
     "engine.nodeProperties.Camera.active": "Active",
