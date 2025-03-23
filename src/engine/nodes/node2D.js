@@ -1,7 +1,26 @@
 (function () {
     class node extends coffeeEngine.getNode("Node") {
-        position = new coffeeEngine.vector2(0, 0);
-        scale = new coffeeEngine.vector2(1, 1);
+        //Allow for position and scale to be set directly
+        #position = new coffeeEngine.vector2(0, 0);
+        #scale = new coffeeEngine.vector2(1, 1);
+
+        //Setting position directly
+        set position(value) {
+            this.#position.x = value.x || 0;
+            this.#position.y = value.y || 0;
+        }
+        get position() {
+            return this.#position;
+        }
+
+        //Setting scale directly
+        set scale(value) {
+            this.#scale.x = value.x || 0;
+            this.#scale.y = value.y || 0;
+        }
+        get scale() {
+            return this.#scale;
+        }
 
         #layer = 1;
         set layer(value) {

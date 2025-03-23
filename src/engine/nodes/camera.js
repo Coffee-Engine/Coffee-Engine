@@ -16,13 +16,16 @@
             if (coffeeEngine.isEditor) {
                 this.matrix = coffeeEngine.matrix4.identity();
                 this.matrix = this.matrix.translate(this.position.x, this.position.y, this.position.z);
-                this.matrix = this.matrix.rotationZ(this.rotation.z);
-                this.matrix = this.matrix.rotationX(this.rotation.x);
-                this.matrix = this.matrix.rotationY(-this.rotation.y);
-            } else {
-                this.matrix = coffeeEngine.matrix4.identity();
-                this.matrix = this.matrix.rotationX(this.rotation.x);
                 this.matrix = this.matrix.rotationY(this.rotation.y);
+                this.matrix = this.matrix.rotationX(this.rotation.x);
+                this.matrix = this.matrix.rotationZ(this.rotation.z);
+            } 
+            //In game ordering
+            else {
+                this.matrix = coffeeEngine.matrix4.identity();
+                this.matrix = this.matrix.rotationZ(-this.rotation.z);
+                this.matrix = this.matrix.rotationX(-this.rotation.x);
+                this.matrix = this.matrix.rotationY(-this.rotation.y);
                 this.matrix = this.matrix.translate(-this.position.x, -this.position.y, -this.position.z);
             }
         }
@@ -36,10 +39,8 @@
                     const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
 
-                    const renderMatrix = coffeeEngine.matrix4.identity().rotationX(-this.rotation.x).rotationY(this.rotation.y)
-                        .translate(-this.position.x, -this.position.y, -this.position.z);
-
-                    cameraData.transform = renderMatrix.multiply(this.parent.mixedMatrix.inverse()).webGLValue();
+                    //Update our camera data
+                    cameraData.transform = this.matrix.multiply(this.parent.mixedMatrix.inverse()).webGLValue();
                     cameraData.unflattenedTransform = this.mixedMatrix;
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
@@ -48,7 +49,7 @@
                     cameraData.position.y = -translatedWorld.y;
                     cameraData.position.z = -translatedWorld.z;
 
-                    coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.rotation.y;
+                    coffeeEngine.renderer.cameraData.cameraRotationEul.x = -this.rotation.y;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.z = -this.rotation.z;
                 }

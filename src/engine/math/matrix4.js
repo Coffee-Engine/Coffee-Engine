@@ -243,12 +243,12 @@
 
         getRotation() {
             const scale = this.getScale();
-            const returned = new coffeeEngine.matrix3.identity();
+            const returned = coffeeEngine.matrix3.identity();
 
             const axis = [
-                new coffeeEngine.vector3(this.matrix.contents[0][0], this.matrix.contents[0][1], this.matrix.contents[0][2]),
-                new coffeeEngine.vector3(this.matrix.contents[1][0], this.matrix.contents[1][1], this.matrix.contents[1][2]),
-                new coffeeEngine.vector3(this.matrix.contents[2][0], this.matrix.contents[2][1], this.matrix.contents[2][2])
+                new coffeeEngine.vector3(this.contents[0][0], this.contents[0][1], this.contents[0][2]),
+                new coffeeEngine.vector3(this.contents[1][0], this.contents[1][1], this.contents[1][2]),
+                new coffeeEngine.vector3(this.contents[2][0], this.contents[2][1], this.contents[2][2])
             ];
 
             //Normalize rows to get rotation
