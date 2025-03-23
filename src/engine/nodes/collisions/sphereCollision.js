@@ -6,7 +6,7 @@
         update(deltaTime) {
             super.update(deltaTime);
 
-            this.collision.radius = this.radius/2.0;
+            this.collision.radius = this.radius;
         }
         
         draw(drawID) {

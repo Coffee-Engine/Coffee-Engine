@@ -1,12 +1,12 @@
 (function() {
-    class node extends coffeeEngine.getNode("Collision3D") {
+    class node extends coffeeEngine.getNode("Collision2D") {
         collision = new coffeeEngine.SAT.Circle();
         radius = 1.0;
 
         update(deltaTime) {
             super.update(deltaTime);
 
-            this.collision.radius = this.radius/2.0;
+            this.collision.radius = this.radius;
         }
         
         draw(drawID) {
@@ -21,7 +21,7 @@
                 const halfRadius = this.radius/2.0;
 
                 shader.setBuffers(coffeeEngine.shapes.plane);
-                shader.uniforms.u_model.value = this.mixedMatrix.scale(halfRadius, halfRadius, halfRadius);
+                shader.uniforms.u_model.value = this.mixedMatrix.scale(halfRadius, halfRadius, halfRadius).webGLValue();
 
                 //Simple debug test
                 shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
@@ -43,5 +43,5 @@
         }
     }
 
-    coffeeEngine.registerNode(node, "SphereCollision", "Collision3D");
+    coffeeEngine.registerNode(node, "CircleCollision", "Collision2D");
 })();
