@@ -13,9 +13,7 @@
                 for (let outputID in this.outputAxis) {
                     const outputObject = this.outputAxis[outputID];
                     const pushVector = this.mixedMatrix.getRotation().multiplyVector(outputObject.pushVector).mul(outputObject.pushLength);
-                    this.position.x += pushVector.x;
-                    this.position.y += pushVector.y;
-                    this.position.z += pushVector.z;
+                    this.position = this.position.add(pushVector);
                 }
             }
 
