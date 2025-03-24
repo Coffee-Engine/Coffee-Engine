@@ -246,7 +246,6 @@ editor.EnglishLang = {
 
     "sugarcube.sounds": "Sounds",
     "sugarcube.sounds.block.playLocal": "play [sound]",
-    "sugarcube.sounds.block.playGlobal": "play [sound] globally",
     "sugarcube.sounds.block.playAtXY": "play [sound] at x: [x] y: [y]",
     "sugarcube.sounds.block.playAtXYZ": "play [sound] at x: [x] y: [y] z: [z]",
 
