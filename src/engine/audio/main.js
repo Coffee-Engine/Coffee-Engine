@@ -50,12 +50,12 @@
             return audioObject;
         },
 
-        //Simple, elegant
-        playDecodedUntilDone: (decodedAudio, ID) => {
-            const audioObject = coffeeEngine.audio.playDecoded(decodedAudio, ID);
-            audioObject.addEventListener("ended", ({ natural }) => {
-                if (natural) audioObject.discard();
-            })
+        //Some other ones
+        playFromProjectFile: (src, ID) => {
+            //Get our audio first
+            coffeeEngine.audio.fromProjectFile(src).then((audio) => {
+                coffeeEngine.audio.playDecoded(audio, ID);
+            });
         }
     }
 })();
