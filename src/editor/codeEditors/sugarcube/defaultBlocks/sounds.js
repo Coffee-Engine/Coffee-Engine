@@ -22,6 +22,25 @@
                         }
                     },
                     {
+                        opcode: "playAtXY",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sounds.block.playAtXY"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Audio",
+                            },
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 0
+                            }
+                        }
+                    },
+                    {
                         opcode: "playAtXYZ",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.sounds.block.playAtXYZ"],
@@ -75,6 +94,7 @@
             return new Promise((resolve, reject) => {
                 //If we have an audio object
                 if (sound instanceof coffeeEngine.audio.audioObject) {
+                    this.lastSound = sound;
                     sound.play();
                     resolve(sound);
                     return;
@@ -93,6 +113,16 @@
 
         playGlobal({ sound }) {
             this.__simplePlayAudio(sound);
+        }
+
+        playAtXY({ sound, x, y}) {
+            //Simple
+            this.__simplePlayAudio(sound).then((audioObject) => {
+                if (!audioObject.hasAudioEffect("coffee-panner")) {
+                    //Create our pannerNode
+                    audioObject.addAudioEffect(this.__createPannerNodeAt(x,y,0), "coffee-panner");
+                }
+            });
         }
 
         playAtXYZ({ sound, x, y, z }) {

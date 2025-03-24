@@ -58,7 +58,7 @@
                     //Set audio data
                     audioListener.positionX.value = -translatedWorld.x;
                     audioListener.positionY.value = -translatedWorld.y;
-                    audioListener.positionZ.value = -translatedWorld.z;
+                    audioListener.positionZ.value = (this.orthographic) ? 0 : -translatedWorld.z;
 
                     const rotationData = this.mixedMatrix.getRotation();
 
