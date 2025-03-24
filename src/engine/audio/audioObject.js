@@ -12,6 +12,10 @@
             ended: [],
         }
 
+        effects = {};
+        lastEffect;
+        firstEffect;
+
         //Get the current timing
         get currentTime() {
             if (this.paused) return this.pauseTime - this.startTime;
@@ -41,7 +45,7 @@
 
             this.bufferSource = this.context.createBufferSource();
             this.bufferSource.buffer = this.decoded;
-            this.bufferSource.connect(this.context.destination);
+            this.bufferSource.connect(this.firstEffect || this.context.destination);
             this.bufferSource.addEventListener("ended", this.endEvent);
         }
 
@@ -59,6 +63,8 @@
         }
 
         resume() {
+            if (!this.paused) return;
+            
             //get timings correct
             const start = (this.pauseTime - this.startTime);
             if (this.paused) this.startTime = this.context.currentTime - (this.pauseTime - this.startTime);
@@ -123,6 +129,58 @@
                 this.events[event].forEach(func => {
                     func(data);
                 });
+            }
+        }
+
+        //Effect manager
+        addAudioEffect(effect, ID) {
+            if (!effect instanceof AudioNode) return;
+
+            ID = ID || "NO-ID";
+            this.effects[ID] = effect;
+
+            //If we have a last effect connect to it
+            if (this.lastEffect) {
+                this.lastEffect.disconnect();
+                this.lastEffect.connect(effect);
+
+                //set previous and next
+                this.lastEffect.next = effect;
+                effect.previous = this.lastEffect;
+                effect.next = this.context.destination;
+            }
+            else {
+                this.bufferSource.disconnect();
+                this.bufferSource.connect(effect);
+                
+                //Set previous and next
+                effect.previous = this.bufferSource;
+                effect.next = this.context.destination;
+            }
+
+            effect.connect(this.context.destination);
+        }
+
+        hasAudioEffect(ID) {
+            ID = ID || "NO-ID";
+            return this.effects[ID] !== undefined;
+        }
+
+        removeAudioEffect(ID) {
+            ID = ID || "NO-ID";
+            if (this.hasAudioEffect(ID)) {
+                const effect = this.effects[ID];
+
+                //Close the gap
+                effect.previous.next = effect.next;
+                effect.next.previous = effect.previous;
+
+                //Then reconnect
+                effect.disconnect();
+                effect.previous.connect(effect.next);
+
+                //Remove the effect key
+                delete this.effects[ID];
             }
         }
     };

@@ -248,6 +248,7 @@ editor.EnglishLang = {
     "sugarcube.sounds.block.playGlobal": "start sound [sound]",
     "sugarcube.sounds.block.playAtXY": "start sound [sound] at x: [x] y: [y]",
     "sugarcube.sounds.block.playAtXYZ": "start sound [sound] at x: [x] y: [y] z: [z]",
+    "sugarcube.sounds.block.lastPlayedSound": "last played sound",
 
     "sugarcube.events": "Events",
     "sugarcube.events.block.onStart": "on ready",

@@ -21,7 +21,35 @@
                             }
                         }
                     },
+                    {
+                        opcode: "playAtXYZ",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sounds.block.playAtXYZ"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Audio",
+                            },
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 0
+                            },
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 10
+                            }
+                        }
+                    },
                     "---",
+                    {
+                        opcode: "lastPlayedSound",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sounds.block.lastPlayedSound"]
+                    }
                 ],
                 fields: {
                     Audio: {
@@ -34,8 +62,51 @@
             };
         }
 
+        __createPannerNodeAt(x,y,z) {
+            const pannerNode = new PannerNode(coffeeEngine.audio.context);
+            pannerNode.positionX.value = x;
+            pannerNode.positionY.value = y;
+            pannerNode.positionZ.value = z;
+
+            return pannerNode;
+        }
+
+        __simplePlayAudio(sound) {
+            return new Promise((resolve, reject) => {
+                //If we have an audio object
+                if (sound instanceof coffeeEngine.audio.audioObject) {
+                    sound.play();
+                    resolve(sound);
+                    return;
+                }
+    
+                //If not
+                coffeeEngine.audio.playFromProjectFile(sound).then(audioObject => {
+                    //Set last sound to be the right object
+                    this.lastSound = audioObject;
+                    resolve(audioObject);
+                }).catch(() => {
+                    reject();
+                });
+            })
+        }
+
         playGlobal({ sound }) {
-            console.log(coffeeEngine.audio.playFromProjectFile(sound));
+            this.__simplePlayAudio(sound);
+        }
+
+        playAtXYZ({ sound, x, y, z }) {
+            //Simple
+            this.__simplePlayAudio(sound).then((audioObject) => {
+                if (!audioObject.hasAudioEffect("coffee-panner")) {
+                    //Create our pannerNode
+                    audioObject.addAudioEffect(this.__createPannerNodeAt(x,y,z), "coffee-panner");
+                }
+            });
+        }
+
+        lastPlayedSound() {
+            return this.lastSound;
         }
 
         file_Init(field) {
