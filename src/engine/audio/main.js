@@ -47,6 +47,8 @@
                 }
             }
 
+            audioObject.start();
+
             return audioObject;
         },
 

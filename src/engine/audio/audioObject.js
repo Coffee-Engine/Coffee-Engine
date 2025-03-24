@@ -43,7 +43,7 @@
             //Set pausing to be appropriate
             this.paused = false;
             this.naturallyEnded = true;
-            self.sendEvent("started", {});
+            this.sendEvent("started", {});
             this.bufferSource.start();
         }
 
