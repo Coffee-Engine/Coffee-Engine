@@ -4,6 +4,7 @@
         storage: {},
         playingTracks: {},
 
+        //Conversion
         fromProjectFile: (src) => {
             return new Promise((resolve, reject) => {
                 //If the mesh exists in RAM, load it
@@ -33,16 +34,22 @@
                     })
             });
         },
+
         playDecoded: (decodedAudio, ID) => {
-            const bufferSource = coffeeEngine.audio.context.createBufferSource();
-            bufferSource.buffer = decodedAudio;
-            bufferSource.connect(coffeeEngine.audio.context.destination);
-            bufferSource.start();
+            const audioObject = new coffeeEngine.audio.audioObject(decodedAudio);
 
             bufferSource.COFFEE_ID = ID;
             if (bufferSource.COFFEE_ID) coffeeEngine.audio.playingTracks[ID] = bufferSource;
+            bufferSource.discard = () => {
+                if (bufferSource.COFFEE_ID) {
+                    delete coffeeEngine.audio.playingTracks[ID];
+                }
+            }
 
             return bufferSource;
+        },
+        playDecodedUntilDone: (decodedAudio, ID) => {
+            const myTrack = coffeeEngine.audio.playDecoded(decodedAudio, ID);
         }
     }
 })();

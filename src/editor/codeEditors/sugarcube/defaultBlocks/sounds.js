@@ -12,7 +12,7 @@
                 blocks: [
                     {
                         opcode: "getParent",
-                        type: sugarcube.BlockType.OBJECT,
+                        type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.scene.block.getParent"],
                     },
                 ],
@@ -27,12 +27,22 @@
             };
         }
 
+        playAudioUntil() {
+            return new Promise((resolve, reject) => {
+
+            });
+        }
+
+        playAudio() {
+            
+        }
+
         file_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
         }
 
-        image_Editor(field) {
+        audio_Editor(field) {
             const loadal = this.callLoadal(field);
 
             //Note that gifs will not be animated, they do come as non animated too. Like PNGs
