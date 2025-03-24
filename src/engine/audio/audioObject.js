@@ -20,31 +20,57 @@
 
         constructor(decodedAudio) {
             this.context = coffeeEngine.audio.context;
-            this.bufferSource = this.context.createBufferSource();
-            this.bufferSource.buffer = decodedAudio;
-            this.bufferSource.connect(this.context.destination);
+            this.decoded = decodedAudio;
 
             //Attach our end event listener
             const self = this;
-            this.bufferSource.addEventListener("ended", () => {
+            this.endEvent = () => {
                 //Handle pausing vs ending
                 if (self.paused) self.sendEvent("paused", {});
 
                 //Ending
                 self.sendEvent("ended", { natural: self.naturallyEnded });
-            });
+            };
+        }
+
+        createBuffer() {
+            if (this.bufferSource) {
+                this.stop();
+                this.bufferSource.removeEventListener("ended", this.endEvent);
+            }
+
+            this.bufferSource = this.context.createBufferSource();
+            this.bufferSource.buffer = this.decoded;
+            this.bufferSource.connect(this.context.destination);
+            this.bufferSource.addEventListener("ended", this.endEvent);
         }
 
         start() {
             //get timings correct
-            if (this.paused) this.startTime = this.context.currentTime - (this.pauseTime - this.startTime);
-            else this.startTime = this.context.currentTime;
+            this.startTime = this.context.currentTime;
+
+            this.createBuffer();
 
             //Set pausing to be appropriate
             this.paused = false;
             this.naturallyEnded = true;
             this.sendEvent("started", {});
             this.bufferSource.start();
+        }
+
+        resume() {
+            //get timings correct
+            const start = (this.pauseTime - this.startTime);
+            if (this.paused) this.startTime = this.context.currentTime - (this.pauseTime - this.startTime);
+            else this.startTime = this.context.currentTime;
+
+            this.createBuffer();
+
+            //Set pausing to be appropriate
+            this.paused = false;
+            this.naturallyEnded = true;
+            this.sendEvent("started", {});
+            this.bufferSource.start(0, start);
         }
 
         pause() {

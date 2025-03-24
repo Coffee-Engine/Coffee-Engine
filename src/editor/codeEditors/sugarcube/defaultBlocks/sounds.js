@@ -35,7 +35,7 @@
         }
 
         playGlobal({ sound }) {
-            coffeeEngine.audio.playFromProjectFile(sound);
+            console.log(coffeeEngine.audio.playFromProjectFile(sound));
         }
 
         file_Init(field) {

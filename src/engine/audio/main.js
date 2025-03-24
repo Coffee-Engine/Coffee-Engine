@@ -55,8 +55,10 @@
         //Some other ones
         playFromProjectFile: (src, ID) => {
             //Get our audio first
-            coffeeEngine.audio.fromProjectFile(src).then((audio) => {
-                coffeeEngine.audio.playDecoded(audio, ID);
+            return new Promise((resolve, reject) => {
+                coffeeEngine.audio.fromProjectFile(src).then((audio) => {
+                    resolve(coffeeEngine.audio.playDecoded(audio, ID));
+                });
             });
         }
     }
