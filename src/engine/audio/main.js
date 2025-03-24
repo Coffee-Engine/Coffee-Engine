@@ -35,21 +35,27 @@
             });
         },
 
+        //Play functions
         playDecoded: (decodedAudio, ID) => {
             const audioObject = new coffeeEngine.audio.audioObject(decodedAudio);
 
-            bufferSource.COFFEE_ID = ID;
-            if (bufferSource.COFFEE_ID) coffeeEngine.audio.playingTracks[ID] = bufferSource;
-            bufferSource.discard = () => {
-                if (bufferSource.COFFEE_ID) {
-                    delete coffeeEngine.audio.playingTracks[ID];
+            audioObject.COFFEE_ID = ID;
+            if (audioObject.COFFEE_ID) coffeeEngine.audio.playingTracks[ID] = audioObject;
+            audioObject.discard = () => {
+                if (audioObject.COFFEE_ID) {
+                    delete audioObject.audio.playingTracks[ID];
                 }
             }
 
-            return bufferSource;
+            return audioObject;
         },
+
+        //Simple, elegant
         playDecodedUntilDone: (decodedAudio, ID) => {
-            const myTrack = coffeeEngine.audio.playDecoded(decodedAudio, ID);
+            const audioObject = coffeeEngine.audio.playDecoded(decodedAudio, ID);
+            audioObject.addEventListener("ended", ({ natural }) => {
+                if (natural) audioObject.discard();
+            })
         }
     }
 })();
