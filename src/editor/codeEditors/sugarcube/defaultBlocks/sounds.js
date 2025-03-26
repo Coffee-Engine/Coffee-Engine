@@ -100,7 +100,25 @@
                         opcode: "lastPlayedSound",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.sounds.block.lastPlayedSound"]
-                    }
+                    },
+                    "---",
+                    {
+                        opcode: "setPropertyOn",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sounds.block.setPropertyOn"],
+                        arguments: {
+                            property: {
+                                menu: "properties"
+                            },
+                            sound: {
+                                type: sugarcube.ArgumentType.HOLE
+                            },
+                            value: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 10
+                            },
+                        }
+                    },
                 ],
                 menus: {
                     properties: {
@@ -130,7 +148,7 @@
             pannerNode.positionY.value = y;
             pannerNode.positionZ.value = z;
 
-            if (target.AUDIO_DATA) pannerNode.maxDistance = target.AUDIO_DATA.maxDistance;
+            if (target.AUDIO_DATA) pannerNode.maxDistance.value = target.AUDIO_DATA.maxDistance;
 
             return pannerNode;
         }
@@ -191,27 +209,29 @@
                     effect.positionX.value = x;
                     effect.positionY.value = y;
                     effect.positionZ.value = 0;
+                    if (target.AUDIO_DATA) effect.maxDistance.value = target.AUDIO_DATA.maxDistance;
                 }
             });
         }
 
-        playAtXYZ({ sound, x, y, z }, { target }) {
+        playAtXYZ({ sound, x, y, z, distance }, { target }) {
             //Simple
             this.__simplePlayAudio(sound).then((audioObject) => {
                 //Set our parameters
                 if (target.AUDIO_DATA) audioObject.playbackRate = target.AUDIO_DATA.playbackRate / 100;
 
                 //Configure our gain and panner
+                if (!audioObject.hasAudioEffect("coffee-gain")) audioObject.addAudioEffect(this.__createGainNode(target), "coffee-gain");
+                else if (target.AUDIO_DATA) audioObject.getAudioEffect("coffee-gain").gain.value = target.AUDIO_DATA.gain;
+
                 if (!audioObject.hasAudioEffect("coffee-panner")) audioObject.addAudioEffect(this.__createPannerNodeAt(x, y, z, target), "coffee-panner");
                 else {
                     const effect = audioObject.getAudioEffect("coffee-panner")
                     effect.positionX.value = x;
                     effect.positionY.value = y;
                     effect.positionZ.value = z;
+                    if (target.AUDIO_DATA) effect.maxDistance.value = target.AUDIO_DATA.maxDistance;
                 }
-
-                if (!audioObject.hasAudioEffect("coffee-gain")) audioObject.addAudioEffect(this.__createGainNode(target), "coffee-gain");
-                else if (target.AUDIO_DATA) audioObject.getAudioEffect("coffee-gain").gain.value = target.AUDIO_DATA.gain;
             });
         }
 
@@ -228,6 +248,33 @@
 
             //Return 0 if property doesn't exist
             return 0;
+        }
+
+        //For existing sounds
+        setPropertyOn({ sound, property, value }, { target }) {
+            //Check for audio data and cast our value
+            if (!target.AUDIO_DATA) target.AUDIO_DATA = {...this.defaultAudioData};
+            value = sugarcube.cast.toNumber(value);
+
+            //Make sure sound exists
+            if (!(sound instanceof coffeeEngine.audio.audioObject)) return;
+
+            switch (property) {
+                case "gain":
+                    sound.getAudioEffect("coffee-gain").gain.value = value;
+                    break;
+
+                case "maxDistance":
+                    sound.getAudioEffect("coffee-panner").maxDistance.value = Math.abs(value);
+                    break;
+
+                case "playbackRate":
+                    sound.playbackRate = value / 100;
+                    break;
+            
+                default:
+                    break;
+            }
         }
 
         //Get the last played sound

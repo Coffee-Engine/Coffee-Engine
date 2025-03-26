@@ -250,6 +250,8 @@ editor.EnglishLang = {
     "sugarcube.sounds.block.playAtXYZ": "start sound [sound] at x: [x] y: [y] z: [z]",
     "sugarcube.sounds.block.setProperty": "set [property] to [value]",
     "sugarcube.sounds.block.getProperty": "get [property]",
+    "sugarcube.sounds.block.setPropertyOn": "set [property] for [sound] to [value]",
+    "sugarcube.sounds.block.currentTime": "current time of [sound]",
     "sugarcube.sounds.block.lastPlayedSound": "last played sound",
 
     "sugarcube.events": "Events",
