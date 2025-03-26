@@ -119,6 +119,11 @@
                             },
                         }
                     },
+                    {
+                        opcode: "currentTime",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sounds.block.currentTime"]
+                    },
                 ],
                 menus: {
                     properties: {
@@ -282,6 +287,10 @@
             return this.lastSound;
         }
 
+        currentTime({ sound }) {
+            if (!(sound instanceof coffeeEngine.audio.audioObject)) return 0;
+            return sugarcube.cast.toNumber(sound.currentTime);
+        }
 
         //Our fields
         file_Init(field) {
