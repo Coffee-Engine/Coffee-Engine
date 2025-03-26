@@ -540,6 +540,16 @@
                                                     //The difference between these two is we have to run one
                                                     case "object": {
                                                         argument = Object.assign({}, argument, argConstructor);
+
+                                                        if (argument.shadow) {
+                                                            if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
+
+                                                            //set the shadow values and stuff
+                                                            blockData.inputs[argumentKey].shadow = {
+                                                                type: argument.shadow,
+                                                                style: style,
+                                                            };
+                                                        }
                                                         break;
                                                     }
 

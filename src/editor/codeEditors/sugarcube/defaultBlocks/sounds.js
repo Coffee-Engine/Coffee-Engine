@@ -97,6 +97,11 @@
                     },
                     "---",
                     {
+                        opcode: "loadSound",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sounds.block.loadSound"]
+                    },
+                    {
                         opcode: "lastPlayedSound",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.sounds.block.lastPlayedSound"]
@@ -111,7 +116,8 @@
                                 menu: "properties"
                             },
                             sound: {
-                                type: sugarcube.ArgumentType.HOLE
+                                type: sugarcube.ArgumentType.HOLE,
+                                shadow: "sounds_lastPlayedSound"
                             },
                             value: {
                                 type: sugarcube.ArgumentType.NUMBER,
@@ -120,9 +126,48 @@
                         }
                     },
                     {
+                        opcode: "pause",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sounds.block.pause"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.HOLE,
+                                shadow: "sounds_lastPlayedSound"
+                            },
+                        }
+                    },
+                    {
+                        opcode: "resume",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sounds.block.resume"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.HOLE,
+                                shadow: "sounds_lastPlayedSound"
+                            },
+                        }
+                    },
+                    {
                         opcode: "currentTime",
                         type: sugarcube.BlockType.REPORTER,
-                        text: editor.language["sugarcube.sounds.block.currentTime"]
+                        text: editor.language["sugarcube.sounds.block.currentTime"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.HOLE,
+                                shadow: "sounds_lastPlayedSound"
+                            },
+                        }
+                    },
+                    {
+                        opcode: "isPaused",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.sounds.block.isPaused"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.HOLE,
+                                shadow: "sounds_lastPlayedSound"
+                            },
+                        }
                     },
                 ],
                 menus: {
@@ -255,6 +300,11 @@
             return 0;
         }
 
+        //Get the last played sound
+        lastPlayedSound() {
+            return this.lastSound;
+        }
+
         //For existing sounds
         setPropertyOn({ sound, property, value }, { target }) {
             //Check for audio data and cast our value
@@ -282,14 +332,24 @@
             }
         }
 
-        //Get the last played sound
-        lastPlayedSound() {
-            return this.lastSound;
+        pause({ sound }) {
+            if (!(sound instanceof coffeeEngine.audio.audioObject)) return;
+            sound.pause();
+        }
+
+        resume({ sound }) {
+            if (!(sound instanceof coffeeEngine.audio.audioObject)) return;
+            sound.resume();
         }
 
         currentTime({ sound }) {
             if (!(sound instanceof coffeeEngine.audio.audioObject)) return 0;
             return sugarcube.cast.toNumber(sound.currentTime);
+        }
+
+        isPaused({ sound }) {
+            if (!(sound instanceof coffeeEngine.audio.audioObject)) return false;
+            return sugarcube.cast.toBoolean(sound.paused);
         }
 
         //Our fields
