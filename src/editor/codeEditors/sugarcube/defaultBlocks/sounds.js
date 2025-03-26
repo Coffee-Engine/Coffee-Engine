@@ -45,7 +45,8 @@
                                 type: sugarcube.ArgumentType.NUMBER,
                                 defaultValue: 0
                             }
-                        }
+                        },
+                        filter: ["Node2D"],
                     },
                     {
                         opcode: "playAtXYZ",
@@ -68,7 +69,8 @@
                                 type: sugarcube.ArgumentType.NUMBER,
                                 defaultValue: 10
                             }
-                        }
+                        },
+                        filter: ["Node3D"],
                     },
                     "---",
                     {
