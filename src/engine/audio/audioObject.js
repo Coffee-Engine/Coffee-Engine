@@ -158,12 +158,18 @@
                 effect.next = this.context.destination;
             }
 
+            this.lastEffect = effect;
             effect.connect(this.context.destination);
         }
 
         hasAudioEffect(ID) {
             ID = ID || "NO-ID";
             return this.effects[ID] !== undefined;
+        }
+
+        getAudioEffect(ID) {
+            ID = ID || "NO-ID";
+            return this.effects[ID];
         }
 
         removeAudioEffect(ID) {
@@ -174,6 +180,16 @@
                 //Close the gap
                 effect.previous.next = effect.next;
                 effect.next.previous = effect.previous;
+
+
+                //Correct our first and last effects
+                if (this.lastEffect == effect) {
+                    this.lastEffect = effect.previous;
+                }
+
+                if (this.firstEffect == effect) {
+                    this.firstEffect = effect.next;
+                }
 
                 //Then reconnect
                 effect.disconnect();

@@ -35,6 +35,15 @@
             });
         },
 
+        __createPannerNodeAt(x, y, z) {
+            const pannerNode = new PannerNode(coffeeEngine.audio.context);
+            pannerNode.positionX.value = x;
+            pannerNode.positionY.value = y;
+            pannerNode.positionZ.value = z;
+
+            return pannerNode;
+        },
+        
         //Play functions
         playDecoded: (decodedAudio, ID) => {
             const audioObject = new coffeeEngine.audio.audioObject(decodedAudio);
@@ -59,6 +68,17 @@
                 coffeeEngine.audio.fromProjectFile(src).then((audio) => {
                     resolve(coffeeEngine.audio.playDecoded(audio, ID));
                 });
+            });
+        },
+
+        playFromFileSpatial: (src, ID, position, range) => {
+            coffeeEngine.audio.playFromProjectFile(src, ID).then((audioObject) => {
+                range = range || 10000;
+
+                const panner = coffeeEngine.audio.__createPannerNodeAt(position.x, position.y, position.z);
+                panner.maxDistance = range;
+
+                audioObject.addAudioEffect(panner, "coffee-panner");
             });
         }
     }

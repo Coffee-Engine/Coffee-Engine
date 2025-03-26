@@ -1,5 +1,12 @@
 (function () {
     class sounds {
+
+        defaultAudioData = {
+            maxDistance: 10000,
+            gain: 0,
+            playbackRate: 100,
+        }
+
         getInfo() {
             return {
                 id: "sounds",
@@ -65,11 +72,46 @@
                     },
                     "---",
                     {
+                        opcode: "setProperty",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.sounds.block.setProperty"],
+                        arguments: {
+                            property: {
+                                menu: "properties"
+                            },
+                            value: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 10
+                            },
+                        }
+                    },
+                    {
+                        opcode: "getProperty",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sounds.block.getProperty"],
+                        arguments: {
+                            property: {
+                                menu: "properties"
+                            },
+                        }
+                    },
+                    "---",
+                    {
                         opcode: "lastPlayedSound",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.sounds.block.lastPlayedSound"]
                     }
                 ],
+                menus: {
+                    properties: {
+                        items: [
+                            {text: "gain", value: "gain"},
+                            {text: "range", value: "maxDistance"},
+                            {text: "speed", value: "playbackRate"},
+                        ],
+                        acceptReporters: true
+                    }
+                },
                 fields: {
                     Audio: {
                         acceptReporters: true,
@@ -81,13 +123,23 @@
             };
         }
 
-        __createPannerNodeAt(x,y,z) {
+        //Helpers
+        __createPannerNodeAt(x, y, z, target) {
             const pannerNode = new PannerNode(coffeeEngine.audio.context);
             pannerNode.positionX.value = x;
             pannerNode.positionY.value = y;
             pannerNode.positionZ.value = z;
 
+            if (target.AUDIO_DATA) pannerNode.maxDistance = target.AUDIO_DATA.maxDistance;
+
             return pannerNode;
+        }
+
+        __createGainNode(target) {
+            const gainNode = new GainNode(coffeeEngine.audio.context);
+            if (target.AUDIO_DATA) gainNode.gain.value = target.AUDIO_DATA.gain;
+            
+            return target.AUDIO_DATA;
         }
 
         __simplePlayAudio(sound) {
@@ -111,34 +163,80 @@
             })
         }
 
-        playGlobal({ sound }) {
-            this.__simplePlayAudio(sound);
+        //Sound players (Simple)
+        playGlobal({ sound }, { target }) {
+            this.__simplePlayAudio(sound).then((audioObject) => {
+                if (target.AUDIO_DATA) audioObject.playbackRate = target.AUDIO_DATA.playbackRate / 100;
+                //Remove panner
+                if (!audioObject.hasAudioEffect("coffee-panner")) audioObject.removeAudioEffect("coffee-panner");
+
+                //Add/Set Gain
+                if (!audioObject.hasAudioEffect("coffee-gain")) audioObject.addAudioEffect(this.__createGainNode(target), "coffee-gain");
+                else if (target.AUDIO_DATA) audioObject.getAudioEffect("coffee-gain").gain.value = target.AUDIO_DATA.gain;
+            });
         }
 
-        playAtXY({ sound, x, y}) {
+        playAtXY({ sound, x, y}, { target }) {
             //Simple
             this.__simplePlayAudio(sound).then((audioObject) => {
-                if (!audioObject.hasAudioEffect("coffee-panner")) {
-                    //Create our pannerNode
-                    audioObject.addAudioEffect(this.__createPannerNodeAt(x,y,0), "coffee-panner");
+                //Set our parameters
+                if (target.AUDIO_DATA) audioObject.playbackRate = target.AUDIO_DATA.playbackRate / 100;
+                //Configure our gain and panner
+                if (!audioObject.hasAudioEffect("coffee-gain")) audioObject.addAudioEffect(this.__createGainNode(target), "coffee-gain");
+                else if (target.AUDIO_DATA) audioObject.getAudioEffect("coffee-gain").gain.value = target.AUDIO_DATA.gain;
+
+                if (!audioObject.hasAudioEffect("coffee-panner")) audioObject.addAudioEffect(this.__createPannerNodeAt(x, y, 0, target), "coffee-panner");
+                else {
+                    const effect = audioObject.getAudioEffect("coffee-panner")
+                    effect.positionX.value = x;
+                    effect.positionY.value = y;
+                    effect.positionZ.value = 0;
                 }
             });
         }
 
-        playAtXYZ({ sound, x, y, z }) {
+        playAtXYZ({ sound, x, y, z }, { target }) {
             //Simple
             this.__simplePlayAudio(sound).then((audioObject) => {
-                if (!audioObject.hasAudioEffect("coffee-panner")) {
-                    //Create our pannerNode
-                    audioObject.addAudioEffect(this.__createPannerNodeAt(x,y,z), "coffee-panner");
+                //Set our parameters
+                if (target.AUDIO_DATA) audioObject.playbackRate = target.AUDIO_DATA.playbackRate / 100;
+
+                //Configure our gain and panner
+                if (!audioObject.hasAudioEffect("coffee-panner")) audioObject.addAudioEffect(this.__createPannerNodeAt(x, y, z, target), "coffee-panner");
+                else {
+                    const effect = audioObject.getAudioEffect("coffee-panner")
+                    effect.positionX.value = x;
+                    effect.positionY.value = y;
+                    effect.positionZ.value = z;
                 }
+
+                if (!audioObject.hasAudioEffect("coffee-gain")) audioObject.addAudioEffect(this.__createGainNode(target), "coffee-gain");
+                else if (target.AUDIO_DATA) audioObject.getAudioEffect("coffee-gain").gain.value = target.AUDIO_DATA.gain;
             });
         }
 
+        //Our property blocks (Simple)
+        setProperty({ property, value }, { target }) {
+            //Set up audio data if we don't have it
+            if (!target.AUDIO_DATA) target.AUDIO_DATA = {...this.defaultAudioData};
+            if (target.AUDIO_DATA[property]) target.AUDIO_DATA[property] = sugarcube.cast.toNumber(value);
+        }
+
+        getProperty({ property }, {target}) {
+            if (!target.AUDIO_DATA) target.AUDIO_DATA = {...this.defaultAudioData};
+            if (target.AUDIO_DATA[property]) return sugarcube.cast.toNumber(target.AUDIO_DATA[property]);
+
+            //Return 0 if property doesn't exist
+            return 0;
+        }
+
+        //Get the last played sound
         lastPlayedSound() {
             return this.lastSound;
         }
 
+
+        //Our fields
         file_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
