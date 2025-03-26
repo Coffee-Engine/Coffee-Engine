@@ -99,7 +99,13 @@
                     {
                         opcode: "loadSound",
                         type: sugarcube.BlockType.REPORTER,
-                        text: editor.language["sugarcube.sounds.block.loadSound"]
+                        text: editor.language["sugarcube.sounds.block.loadSound"],
+                        arguments: {
+                            sound: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Audio",
+                            }
+                        }
                     },
                     {
                         opcode: "lastPlayedSound",
@@ -298,6 +304,24 @@
 
             //Return 0 if property doesn't exist
             return 0;
+        }
+
+        //Sound loading
+        loadSound({ sound }) {
+            return new Promise((resolve) => {
+                //If we have an audio object
+                if (sound instanceof coffeeEngine.audio.audioObject) {
+                    resolve(sound);
+                    return;
+                }
+
+                //If not
+                coffeeEngine.audio.fromProjectFile(sound).then(decoded => {
+                    resolve(new coffeeEngine.audio.audioObject(decoded));
+                }).catch(() => {
+                    resolve();
+                });
+            });
         }
 
         //Get the last played sound
