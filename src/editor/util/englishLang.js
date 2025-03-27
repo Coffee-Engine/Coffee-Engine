@@ -481,8 +481,17 @@ editor.EnglishLang = {
     "engine.nodeNames.scene": "Scene",
     "engine.nodeNames.Node": "Node",
     "engine.nodeNames.Node2D": "Node 2D",
+    "engine.nodeNames.PhysicalNode2D": "Physical Node 2D",
+    "engine.nodeNames.Collision2D": "Collision 2D",
+    "engine.nodeNames.CircleCollision": "Circle Collision",
+    "engine.nodeNames.RectangleCollision": "Rectangle Collision",
     "engine.nodeNames.Sprite": "Sprite",
     "engine.nodeNames.Node3D": "Node 3D",
+    "engine.nodeNames.PhysicalNode3D": "Physical Node 3D",
+    "engine.nodeNames.Collision3D": "Collision 3D",
+    "engine.nodeNames.MeshCollision": "Mesh Collision",
+    "engine.nodeNames.SphereCollision": "Sphere Collision",
+    "engine.nodeNames.BoxCollision": "Box Collision",
     "engine.nodeNames.SpotLight": "Spot Light",
     "engine.nodeNames.PointLight": "Point Light",
     "engine.nodeNames.Sun": "Sun",
@@ -504,13 +513,18 @@ editor.EnglishLang = {
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
     "engine.nodeProperties.MeshDisplay.material": "Material",
     "engine.nodeProperties.Camera.fov": "FOV",
-    "engine.nodeProperties.Camera.nearPlane": "nearPlane",
+    "engine.nodeProperties.Camera.nearPlane": "Near Plane",
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
     "engine.nodeProperties.Camera.active": "Active",
+    "engine.nodeProperties.Light.radius": "Radius",
+    "engine.nodeProperties.Light.color": "Color",
+    "engine.nodeProperties.SpotLight.falloff": "Falloff",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
     "engine.nodeProperties.scene.groundColor": "Ground Color",
-    "engine.nodeProperties.scene.centerColor": "Core Color"
+    "engine.nodeProperties.scene.centerColor": "Core Color",
+
+    "engine.fileProperties.Shader.shader" : "Shader"
 };
