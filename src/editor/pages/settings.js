@@ -115,41 +115,43 @@
             //When the sidebar button is clicked open that category
             button.onclick = () => {
                 //Clear elements and html
-                editor.settings.elements = {};
+                //editor.settings.elements = {};
                 settingsPanel.innerHTML = "";
 
+                settingsPanel.appendChild(CUGI.createList(category));
+
                 //Loop through settings in that category
-                Object.keys(category).forEach((settingKey) => {
-                    //Create our text for the editor element
-                    const settingSpan = document.createElement("p");
-                    settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
-                    settingSpan.style.fontSize = "Large";
-                    settingSpan.style.margin = "2px";
+                //Object.keys(category).forEach((settingKey) => {
+                //    //Create our text for the editor element
+                //    const settingSpan = document.createElement("p");
+                //    settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
+                //    settingSpan.style.fontSize = "Large";
+                //    settingSpan.style.margin = "2px";
 
-                    //This is where we get inputs for the setting
-                    let elementEditor = editor.settings.elementFromType(category[settingKey].type, category[settingKey], key, settingKey);
-                    editor.settings.elements[settingKey] = {
-                        span: settingSpan,
-                        input: elementEditor,
-                    };
+                //    //This is where we get inputs for the setting
+                //    let elementEditor = editor.settings.elementFromType(category[settingKey].type, category[settingKey], key, settingKey);
+                //    editor.settings.elements[settingKey] = {
+                //        span: settingSpan,
+                //        input: elementEditor,
+                //    };
 
-                    if (elementEditor) {
-                        //If we have an array we need to check for something
-                        if (Array.isArray(elementEditor)) {
-                            //Set our element to be proper
-                            if (elementEditor[1]) {
-                                settingSpan.innerHTML = "";
-                                elementEditor[0].innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]}`;
-                                elementEditor = elementEditor[0];
-                            }
-                        }
-                        settingSpan.appendChild(elementEditor);
-                    }
+                //    if (elementEditor) {
+                //        //If we have an array we need to check for something
+                //        if (Array.isArray(elementEditor)) {
+                //            //Set our element to be proper
+                //            if (elementEditor[1]) {
+                //                settingSpan.innerHTML = "";
+                //                elementEditor[0].innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]}`;
+                //                elementEditor = elementEditor[0];
+                //            }
+                //        }
+                //        settingSpan.appendChild(elementEditor);
+                //    }
 
-                    settingsPanel.appendChild(settingSpan);
+                //    settingsPanel.appendChild(settingSpan);
 
-                    if (category[settingKey].menuInit) category[settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
-                });
+                //    if (category[settingKey].menuInit) category[settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
+                //});
             };
         });
 

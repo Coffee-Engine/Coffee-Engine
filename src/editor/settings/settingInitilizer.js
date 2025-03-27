@@ -9,10 +9,11 @@
             const savedCategory = savedSettings[categoryKey];
             const definedCategory = editor.settingDefs[categoryKey];
 
-            for (let settingKey in editor.settingDefs[categoryKey]) {
-                let value = savedCategory ? savedCategory[settingKey] : definedCategory[settingKey].defaultValue;
-                category[settingKey] = value;
-                if (definedCategory[settingKey].onChange) definedCategory[settingKey].onChange(category[settingKey], true);
+            for (let settingKey in definedCategory) {
+                const key = definedCategory[settingKey].key;
+                let value = savedCategory ? savedCategory[key] : definedCategory[settingKey].defaultValue;
+                editor.settings.values[categoryKey][key] = value;
+                if (definedCategory[settingKey].onchange) definedCategory[settingKey].onchange(value, {}, true);
             }
         }
     };
