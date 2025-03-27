@@ -5,6 +5,7 @@
             this.title = editor.language["editor.window.codeEditor"];
             this.usingSugarCube = false;
             this.filePath = false;
+            this.closable = false;
 
             //This windows funny variables
             this.scriptShortcuts = [];
@@ -277,6 +278,17 @@
                 this.monacoArea.style.visibility = "hidden";
                 this.title = editor.language["editor.window.codeEditor"];
             };
+        }
+        
+        //Remove stuff
+        dispose() {
+            editor.removeOpenFileHook("txt", this.openFile, this);
+            editor.removeOpenFileHook("js", this.openFile, this);
+            editor.removeOpenFileHook("cjs", this.openFile, this);
+            editor.removeOpenFileHook("json", this.openFile, this);
+            editor.removeOpenFileHook("cappu", this.openFile, this);
+            editor.removeOpenFileHook("cescr", this.openFile, this);
+            editor.removeOpenFileHook("glsl", this.openFile, this);
         }
 
         openFile(path, extension) {
