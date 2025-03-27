@@ -53,5 +53,7 @@
         ARRAY: "array",
 
         REFERENCE: "reference",
+
+        HOLE: "hole",
     };
 })();

@@ -17,6 +17,7 @@
         angle: "__sugarcube_angle_reporter",
 
         dummy: { type: "input_dummy" },
+        hole: { type: "input_value"},
         reference: { type: "input_value", check: ["Reference", "ANY"] },
         array: { type: "input_value", check: ["Array", "ANY"] },
         object: { type: "input_value", check: ["Object", "ANY"] },

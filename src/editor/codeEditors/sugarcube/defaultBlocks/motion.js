@@ -379,10 +379,12 @@
             }
         }
 
-        lookAtXY(args, util) {
+        lookAtXY({ x, y }, util) {
             if (typeof util.target.rotation == "number") {
                 const myPosition = util.target.position;
-                const rotation = -Math.atan2(x - myPosition.x, z - myPosition.z);
+                const targetPosition = util.target.mixedMatrix.inverse().multiplyVector(new coffeeEngine.vector3(x,y,0));
+
+                const rotation = -Math.atan2(targetPosition.x - myPosition.x, targetPosition.y - myPosition.y);
                 util.target.rotation = sugarcube.cast.toNumber(rotation);
             }
         }
@@ -398,11 +400,16 @@
         //Why do it like this? Its so we don't have to do matrix to euler.
         lookAtXYZ({ x, y, z }, util) {
             if (util.target.position && util.target.rotation) {
+                //Get our relatives
                 const myPosition = util.target.position;
-                const distance = Math.sqrt(Math.pow(z - myPosition.z, 2) + Math.pow(x - myPosition.x, 2));
-                const yaw = -Math.atan2(x - myPosition.x, z - myPosition.z);
-                const pitch = -Math.atan2(y - myPosition.y, distance);
+                const targetPosition = util.target.mixedMatrix.inverse().multiplyVector(new coffeeEngine.vector3(x,y,z));
 
+                //Then rotate
+                const distance = Math.sqrt(Math.pow(targetPosition.z - myPosition.z, 2) + Math.pow(targetPosition.x - myPosition.x, 2));
+                const yaw = -Math.atan2(targetPosition.x - myPosition.x, targetPosition.z - myPosition.z);
+                const pitch = -Math.atan2(targetPosition.y - myPosition.y, distance);
+
+                //Then set our rotations
                 util.target.rotation.y = sugarcube.cast.toNumber(yaw);
                 util.target.rotation.x = sugarcube.cast.toNumber(pitch);
             }

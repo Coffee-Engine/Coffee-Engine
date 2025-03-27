@@ -1,4 +1,6 @@
 (function () {
+    const audioListener = coffeeEngine.audio.context.listener;
+
     class cameraNode extends coffeeEngine.getNode("Node3D") {
         activeCamera = false;
         fov = 90;
@@ -52,6 +54,23 @@
                     coffeeEngine.renderer.cameraData.cameraRotationEul.x = -this.rotation.y;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.z = -this.rotation.z;
+
+                    //Set audio data
+                    audioListener.positionX.value = -translatedWorld.x;
+                    audioListener.positionY.value = -translatedWorld.y;
+                    audioListener.positionZ.value = (this.orthographic) ? 0 : -translatedWorld.z;
+
+                    const rotationData = this.mixedMatrix.getRotation();
+
+                    //Now our rotations
+                    audioListener.forwardX.value = rotationData.contents[2][0];
+                    audioListener.forwardY.value = rotationData.contents[2][1];
+                    audioListener.forwardZ.value = rotationData.contents[2][2];
+
+                    //Now our rotations
+                    audioListener.upX.value = rotationData.contents[1][0];
+                    audioListener.upY.value = rotationData.contents[1][1];
+                    audioListener.upZ.value = rotationData.contents[1][2];
                 }
             }
         }

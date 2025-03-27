@@ -12,7 +12,7 @@
                 //Find outputs and push object out of trouble
                 for (let outputID in this.outputAxis) {
                     const outputObject = this.outputAxis[outputID];
-                    const pushVector = this.mixedMatrix.getRotation().multiplyVector(outputObject.pushVector).mul(outputObject.pushLength);
+                    const pushVector = this.mixedMatrix.inverse().getRotation().multiplyVector(outputObject.pushVector).mul(outputObject.pushLength);
                     this.position = this.position.add(pushVector);
                 }
             }

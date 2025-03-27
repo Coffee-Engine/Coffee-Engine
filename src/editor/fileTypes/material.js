@@ -42,7 +42,7 @@
                     });
                 }
 
-                return [{ name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
+                return [{ name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
             },
             onPropertyChange: (property, value, node) => {
                 if (property.name == "shader") {

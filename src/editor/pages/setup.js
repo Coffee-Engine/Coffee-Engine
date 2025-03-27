@@ -438,7 +438,7 @@
                 layout: [],
                 floating: [
                     {
-                        content: "viewport",
+                        content: ["viewport", "codeEditor"],
                         x: 37.5,
                         y: 37.5,
                         width: 25,
