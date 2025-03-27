@@ -8,10 +8,14 @@
         skyColor = [0.403921569, 0.639215686, 0.941176471];
         groundColor = [0.290196078, 0.22745098, 0.192156863];
         centerColor = [0.2, 0.105882353, 0.0549019608];
-        sunDirection = [0,0,0];
-        sunColor = [0,0,0];
-        ambientColor = [0,0,0];
+        sunDirection = [0, 0, 0];
+        sunColor = [0, 0, 0];
+        ambientColor = [0, 0, 0];
         lightCount = 0;
+        
+        //? And here is our matrix.
+        //? The humble matrix
+        mixedMatrix = coffeeEngine.matrix4.identity();
 
         constructor() {
             this.children = [];
@@ -34,7 +38,7 @@
 
                 //if it is deserialize it.
                 this.deserialize(parsed);
-            }
+            };
         }
 
         //Event listener stuff
@@ -82,16 +86,45 @@
         }
 
         update(deltaTime) {
-            this.castEvent("update", deltaTime);
+            this.children.forEach(child => {
+                child.update();
+            })
+            
+            //this.castEvent("update", deltaTime);
         }
 
+        //Collision stuff
+        isColliding(collidee, collisionList) {
+            //Make sure we are not the parent, or collider;
+            if (collidee == this) return [];
+
+            if (!collisionList) collisionList = new Array();
+
+            //Iterate collisions
+            for (const child in this.children) {
+                const collision = this.children[child].isColliding(collidee,collisionList);
+                if (typeof collision == "object") {
+                    //Use a sprawl to determine splicing
+                    if (Array.isArray(collision)) {
+                        collisionList.splice(0,0,...collision);
+                    }
+                    else {
+                        collisionList.push(collision);
+                    }
+                }
+            }
+            //Return our collision list
+            return collisionList;
+        }
+
+        //This big drawing stuff
         draw() {
-            const renderer = coffeeEngine.renderer
+            const renderer = coffeeEngine.renderer;
             const GL = renderer.daveshade.GL;
 
             //Clear the main renderers depth, and reset the sun
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            this.sunDirection = [0,0,0];
+            this.sunDirection = [0, 0, 0];
             this.lightCount = 0;
 
             //Use our draw buffer
@@ -105,7 +138,8 @@
 
             //Render it back to the main draw pass.
             renderer.daveshade.renderToCanvas();
-            this.__drawFinal(renderer,renderer.mainShaders.mainPass);
+            renderer.daveshade.cullFace();
+            this.__drawFinal(renderer, renderer.mainShaders.mainPass);
         }
 
         __drawSky(renderer) {
@@ -148,11 +182,11 @@
             //Now lets draw the objects
             for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
                 const node = this.drawList[drawItem];
-                node.draw();
+                node.draw(drawItem + 1);
             }
         }
 
-        __setLight(id,value) {
+        __setLight(id, value) {
             const mainPass = coffeeEngine.renderer.mainShaders.mainPass;
             if (mainPass.uniforms.u_lights && mainPass.uniforms.u_lights[id]) {
                 mainPass.uniforms.u_lights[id].value = value;
@@ -171,6 +205,7 @@
             mainPass.uniforms.u_sunColor.value = this.sunColor;
             mainPass.uniforms.u_ambientColor.value = this.ambientColor;
             mainPass.uniforms.u_lightCount.value = this.lightCount;
+            mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
             mainPass.drawFromBuffers(6);
         }
 
@@ -205,7 +240,7 @@
             if (node == this) return;
             //Remove them from events
             node.parent.removeChild(node);
-            node.dispose();
+            node._dispose();
             //Remove the child from memory, we have to rely on the garbage collector because this is 'strict' mode?
             node = null;
         }
@@ -242,7 +277,7 @@
 
             //Get our preloaded asset paths
             const keys = {};
-            Object.keys(coffeeEngine.preloadFunctions).forEach(key => {
+            Object.keys(coffeeEngine.preloadFunctions).forEach((key) => {
                 //Make sure we have a preload function
                 const preloadFunction = coffeeEngine.preloadFunctions[key];
                 if (preloadFunction) {
@@ -259,33 +294,33 @@
                 preload: keys,
 
                 //Serialize the sky
-                skyColor:this.skyColor,
-                horizonColor:this.horizonColor,
-                groundColor:this.groundColor,
-                centerColor:this.centerColor,
-                ambientColor:this.ambientColor,
+                skyColor: this.skyColor,
+                horizonColor: this.horizonColor,
+                groundColor: this.groundColor,
+                centerColor: this.centerColor,
+                ambientColor: this.ambientColor,
             };
         }
 
         deserialize(data) {
             //Set our colors from the file
-            this.skyColor = data.skyColor || [0,0,0];
-            this.horizonColor = data.horizonColor || [1,1,1];
-            this.groundColor = data.groundColor || [1,1,1];
-            this.centerColor = data.centerColor || [0,0,0];
-            this.ambientColor = data.ambientColor || [0.05,0.05,0.05];
+            this.skyColor = data.skyColor || [0, 0, 0];
+            this.horizonColor = data.horizonColor || [1, 1, 1];
+            this.groundColor = data.groundColor || [1, 1, 1];
+            this.centerColor = data.centerColor || [0, 0, 0];
+            this.ambientColor = data.ambientColor || [0.05, 0.05, 0.05];
 
             //Our function for actually loading the scene
             const loadNodes = () => {
                 //Clear out children from memory and registry
                 this.__clearChildren(this);
-    
+
                 //If we have no data assume this is a new scene
                 if (!data) data = { name: "scene", nodeType: "scene", children: [] };
-    
+
                 //Rename the scene
                 this.name = data.name;
-    
+
                 //Now we cycle through every child
                 const _loopThroughChildren = (parent, physicalParent) => {
                     parent.children.forEach((child) => {
@@ -294,7 +329,7 @@
                         const node = new nodeClass();
                         node.name = child.name;
                         node.parent = physicalParent;
-    
+
                         //Loop through the node's properties
                         Object.keys(child.properties).forEach((property) => {
                             //Make sure we aren't using a ""PROTOTYPE"" definition
@@ -307,14 +342,13 @@
                                 node[property] = propertyData;
                             }
                         });
-    
+
                         _loopThroughChildren(child, node);
                     });
                 };
-    
-                _loopThroughChildren(data, this);
 
-            }
+                _loopThroughChildren(data, this);
+            };
 
             //Check if preload exists
             if (!data.preload) {
@@ -327,50 +361,54 @@
             let preloadFinished = 0;
 
             //Then load them
-            Object.keys(data.preload).forEach(preloadCategory => {
+            Object.keys(data.preload).forEach((preloadCategory) => {
                 //Make sure the category has a preload function
                 const preloadFunction = coffeeEngine.preloadFunctions[preloadCategory];
                 //If it does preload the data
                 if (preloadFunction) {
-                    data.preload[preloadCategory].forEach(path => {
-                        preloadFunction.function(path).then(() => {
-                            //Increment our preload finished, and check if we are done
-                            preloadFinished++;
-                            if (preloadFinished == preloadCount) {
-                                loadNodes();
-                            };
-                        }).catch(() => {
-                            //!THIS "ERROR" SOMETIMES WORKS SOMETIMES DOESN'T
-                            //!FOR SOME REASON IT ERRORS AT 'default.material' AND ONLY 'default.material'
-                            //!EVEN THOUGH WE RESOLVE THE PROMISE BEFORE IT CAN EVEN CHECK FOR 'default.material' IN THE MAIN FILESYSTEM!
-                            //Increment our preload finished, and check if we are done
-                            preloadFinished++;
-                            if (preloadFinished == preloadCount) {
-                                loadNodes();
-                            };
-                        });
-                    })
+                    data.preload[preloadCategory].forEach((path) => {
+                        preloadFunction
+                            .function(path)
+                            .then(() => {
+                                //Increment our preload finished, and check if we are done
+                                preloadFinished++;
+                                if (preloadFinished == preloadCount) {
+                                    loadNodes();
+                                }
+                            })
+                            .catch(() => {
+                                //!THIS "ERROR" SOMETIMES WORKS SOMETIMES DOESN'T
+                                //!FOR SOME REASON IT ERRORS AT 'default.material' AND ONLY 'default.material'
+                                //!EVEN THOUGH WE RESOLVE THE PROMISE BEFORE IT CAN EVEN CHECK FOR 'default.material' IN THE MAIN FILESYSTEM!
+                                //Increment our preload finished, and check if we are done
+                                preloadFinished++;
+                                if (preloadFinished == preloadCount) {
+                                    loadNodes();
+                                }
+                            });
+                    });
                 }
-            })
+            });
         }
 
         openScene(path) {
-            project.getFile(path).then(file => {
+            project.getFile(path).then((file) => {
                 if (file) {
                     this.scenePath = path;
                     this.fileReader.readAsText(file);
                 }
-            })
+            });
         }
 
         getProperties() {
+            // prettier-ignore
             return [
-                {name: "skyColor", translationKey:"engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
-                {name: "horizonColor", translationKey:"engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
-                {name: "groundColor", translationKey:"engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
-                {name: "centerColor", translationKey:"engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
-                "---",
-                {name: "ambientColor", translationKey:"engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true},
+                { name: "skyColor", translationKey: "engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                { name: "horizonColor", translationKey: "engine.nodeProperties.scene.horizonColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                { name: "groundColor", translationKey: "engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                { name: "centerColor", translationKey: "engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
+                "---", 
+                { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }
             ];
 
             //Input Testing stuff

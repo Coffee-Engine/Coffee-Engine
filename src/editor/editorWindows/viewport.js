@@ -78,12 +78,10 @@
             this.projection = coffeeEngine.matrix4.projection(this.previewCamera.fov, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
-            this.wFactor[0] += (1 - this.wFactor[0]) * 0.125;
-            if (this.wFactor[0] > 0.9875) {
-                this.wFactor[0] = 1;
+            this.wFactor += (1 - this.wFactor) * 0.125;
+            if (this.wFactor > 0.9875) {
+                this.wFactor = 1;
             }
-
-            this.wFactor[1] += (1 - this.wFactor[1]) * 0.125;
         }
 
         viewportControlsOrtho() {
@@ -98,17 +96,15 @@
             this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
             this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, 0);
+            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, 1);
             this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
             //Smooth transition
-            this.wFactor[0] += (0 - this.wFactor[0]) * 0.125;
-            if (this.wFactor[0] < 0.0125) {
-                this.wFactor[0] = 0;
+            this.wFactor += (0 - this.wFactor) * 0.125;
+            if (this.wFactor < 0.0125) {
+                this.wFactor = 0;
             }
-
-            this.wFactor[1] += (this.previewCamera.zoom - this.wFactor[1]) * 0.125;
         }
 
         renderLoop() {
@@ -121,7 +117,7 @@
             coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
             coffeeEngine.renderer.cameraData.unflattenedTransform = this.matrix;
             coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
-            coffeeEngine.renderer.cameraData.wFactor = this.wFactor;
+            coffeeEngine.renderer.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
             coffeeEngine.renderer.cameraData.aspectRatio = this.aspectRatio;
             coffeeEngine.renderer.cameraData.position.x = -this.previewCamera.x;
             coffeeEngine.renderer.cameraData.position.y = -this.previewCamera.y;
@@ -137,10 +133,63 @@
         setupInput() {
             //Our controls and render time
             this.canvas.addEventListener("mousedown", (event) => {
-                if (event.button == 2) {
-                    this.canvas.requestPointerLock();
-                    
-                    this.controlling = true;
+                switch (event.button) {
+                    case 2: {
+                        this.canvas.requestPointerLock();
+
+                        this.controlling = true;
+                        break;
+                    }
+
+                    case 0: {
+                        let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
+                        hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
+                        hit = coffeeEngine.runtime.currentScene.drawList[hit];
+
+                        //Node dragging
+                        if (this.previouslySelectedNode == hit) {
+                            const moveEvent = (event) => {
+                                if (!this.previouslySelectedNode) return;
+                                
+                                if (!this.draggingNode) {
+                                    this.canvas.requestPointerLock();
+                                    this.draggingNode = true;
+                                }
+        
+                                if (hit instanceof coffeeEngine.getNode("Node2D")) {
+                                    hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
+                                    hit.position.y -= event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05;
+                                }
+                                else if (hit instanceof coffeeEngine.getNode("Node3D")) {
+                                    hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
+                                    hit.position.y += event.movementX * coffeeEngine.renderer.cameraData.transform[1] * 0.05;
+                                    hit.position.z += event.movementX * coffeeEngine.renderer.cameraData.transform[2] * 0.05;
+
+                                    hit.position.x += -event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05;
+                                    hit.position.y += -event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05;
+                                    hit.position.z += -event.movementY * coffeeEngine.renderer.cameraData.transform[6] * 0.05;
+                                }
+                            }
+
+                            document.addEventListener("mousemove", moveEvent);
+
+                            document.addEventListener("mouseup", () => {
+                                if (this.draggingNode) document.exitPointerLock();
+                                document.removeEventListener("mouseup",moveEvent); 
+                                document.removeEventListener("mousemove", moveEvent);
+                                this.draggingNode = false;
+                            });
+                        }
+
+                        this.previouslySelectedNode = hit;
+
+                        //Select the hit node
+                        if (hit) editor.sendEvent("nodeSelected", { target: hit, type: "node" });
+                        break;
+                    }
+                
+                    default:
+                        break;
                 }
             });
 
@@ -212,7 +261,7 @@
             this.controlling = false;
             this.orthographicMode = false;
             this.profilerToggle = false;
-            this.wFactor = [1, 1];
+            this.wFactor = 1;
             this.previewCamera = {
                 x: 0,
                 y: 0,
@@ -224,7 +273,7 @@
                 speed: 1,
             };
 
-            this.setupInput()
+            this.setupInput();
 
             setInterval(() => {
                 this.profiler.innerHTML = `
@@ -233,12 +282,12 @@
                 Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
                 Nodes:${coffeeEngine.renderer.nodesRendered}<br>
                 Lights:${coffeeEngine.runtime.currentScene.lightCount}`;
-            
+
                 coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
 
                 //Make sure the mouse movement goes unupdated in this.
                 coffeeEngine.runtime.frameStart(true);
-                this.renderLoop();
+                if (window.getComputedStyle(this.canvas).visibility == "visible") this.renderLoop();
                 //Now we update the mouse movement
                 coffeeEngine.inputs.mouse.movementX = 0;
                 coffeeEngine.inputs.mouse.movementY = 0;
@@ -287,7 +336,7 @@
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
-            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width,this.canvas.height);
+            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width, this.canvas.height);
         }
     };
 

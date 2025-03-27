@@ -1,5 +1,6 @@
 (function () {
     class sprite extends coffeeEngine.getNode("Node2D") {
+        //Sprite stuff
         #spritePath = "";
 
         set spritePath(value) {
@@ -8,10 +9,10 @@
                 this.texture = texture.texture;
                 this.textureWidth = texture.width;
                 this.textureHeight = texture.height;
-                console.log("sprite loaded")
-                console.log(this.textureWidth )
-                console.log(this.textureHeight)
-                console.log(this.texture)
+                console.log("sprite loaded");
+                console.log(this.textureWidth);
+                console.log(this.textureHeight);
+                console.log(this.texture);
                 this.updateMatrix();
             });
         }
@@ -20,6 +21,21 @@
             return this.#spritePath;
         }
 
+        //Shader stuff
+        #shaderPath = "coffee:/unlit";
+        #shader = coffeeEngine.renderer.mainShaders.unlit;
+
+        set shader(value) {
+            this.#shaderPath = value;
+            coffeeEngine.renderer.fileToShader(value).then((shader) => {
+                this.#shader = shader;
+            });
+        }
+        get shader() {
+            return this.#shaderPath;
+        }
+
+        //Color modulation
         #modulatedColorArr = [1, 1, 1, 1];
         #modulatedColor = "#ffffffff";
 
@@ -33,8 +49,6 @@
         get modulatedColor() {
             return this.#modulatedColor;
         }
-
-        shader = coffeeEngine.renderer.mainShaders.unlit;
 
         $scaleMultiplier = 1.0;
         set scaleMultiplier(value) {
@@ -53,36 +67,38 @@
             this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
         }
 
-        draw() {
+        draw(drawID) {
             super.draw();
 
             if (this.texture) {
-                this.shader.uniforms.u_model.value = this.matrix.webGLValue();
+                this.#shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
 
-                this.shader.setBuffersRaw(coffeeEngine.shapes.plane);
+                this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
-                if (this.shader.uniforms.u_texture) this.shader.uniforms.u_texture.value = this.texture;
-                if (this.shader.uniforms.u_colorMod) this.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture;
+                if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
 
-                this.shader.drawFromBuffers(6);
+                this.#shader.drawFromBuffers(6);
             }
         }
 
         getProperties() {
+            // prettier-ignore
             return [
-                { name: "name", translationKey:"engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "position", translationKey:"engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
-                { name: "layer", translationKey:"engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, 
-                { name: "rotation", translationKey:"engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, 
-                { name: "scale", translationKey:"engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
+                { name: "layer", translationKey: "engine.nodeProperties.Node2D.layer", type: coffeeEngine.PropertyTypes.INT }, 
+                { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, 
+                { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
                 "---", 
-                { name: "spritePath", translationKey:"engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
-                { name: "scaleMultiplier", translationKey:"engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT },
-                "---",
-                { name: "modulatedColor", translationKey:"engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, 
-                "---",
-                {name: "script", translationKey:"engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js"}
+                { name: "spritePath", translationKey: "engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
+                { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                "---", 
+                { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, 
+                "---", 
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];
         }
     }

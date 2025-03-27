@@ -18,6 +18,11 @@ class behavior {
         //${editor.language["editor.window.typed.updateMessage"]}
     }
 
+    //${editor.language["editor.window.typed.clickUncommentMessage"]}
+    //clicked(mousePosition) {
+    //    //${editor.language["editor.window.typed.clickMessage"]}
+    //}
+
     //${editor.language["editor.window.typed.drawUncommentMessage"]}
     //draw() {
     //    //${editor.language["editor.window.typed.drawMessage"]}
@@ -44,6 +49,11 @@ class behavior contains
     function update(delta)
         //${editor.language["editor.window.typed.updateMessage"]}
     end
+
+    //${editor.language["editor.window.typed.clickUncommentMessage"]}
+    //function clicked(mousePosition) 
+    //    //${editor.language["editor.window.typed.clickMessage"]}
+    //end
 
     //${editor.language["editor.window.typed.drawUncommentMessage"]}
     //function draw()
@@ -86,8 +96,51 @@ coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
             );
         },
         //So we know what to do with our code
-        compileFunction: (workspace) => {
-            return sugarcube.generator.workspaceToCode(workspace);
+        compileFunction: (workspace, path) => {
+            return `//This is not supposed to be edited manually!
+//Please refrain from editing this auto generated code!
+class behavior {
+    //Our main code
+    __ReadyFuncs = [];
+    __UpdateFuncs = [];
+    __ClickFuncs = [];
+    __DisposeFuncs = [];
+    constructor() {
+        ${sugarcube.buildCode(workspace)}
+    }
+
+    ready() {
+        for (const func in this.__ReadyFuncs) {
+            this.__ReadyFuncs[func]();
+        }
+    }
+
+    update(delta) {
+        for (const func in this.__UpdateFuncs) {
+            this.__UpdateFuncs[func](delta);
+        }
+    }
+
+    clicked(mousePosition) {
+        for (const func in this.__ClickFuncs) {
+            this.__ClickFuncs[func](mousePosition);
+        }
+    }
+
+    //Maybe someday later
+    //${editor.language["editor.window.typed.drawUncommentMessage"]}
+    //draw() {
+    //    //${editor.language["editor.window.typed.drawMessage"]}
+    //}
+
+    dispose() {
+        for (const func in this.__DisposeFuncs) {
+            this.__DisposeFuncs[func]();
+        }
+    }
+}
+    
+coffeeEngine.behaviorManager.register("${path}",behavior);`;
         },
     },
     {
@@ -110,6 +163,6 @@ void fragment() {
         compileFunction: (code, path) => {
             coffeeEngine.renderer.fileToShader(path, true);
             return code;
-        }
+        },
     },
 ];

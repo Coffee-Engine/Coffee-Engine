@@ -12,18 +12,19 @@
                 blocks: [
                     {
                         opcode: "onStart",
+                        compileFunc: "onStart",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.onStart"],
                     },
                     {
                         opcode: "onUpdate",
+                        compileFunc: "onUpdate",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.onUpdate"],
                     },
                     {
                         opcode: "whenKeyPressed",
-                        eventListenerName: "keydown",
-                        eventListenerTarget: "window",
+                        compileFunc: "whenKeyPressed",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.whenKeyPressed"],
                         arguments: {
@@ -34,15 +35,15 @@
                     },
                     {
                         opcode: "whenClicked",
-                        eventListenerName: "onClicked",
+                        compileFunc: "whenClicked",
                         type: sugarcube.BlockType.HAT,
                         text: editor.language["sugarcube.events.block.whenClicked"],
                     },
                     "---",
                     {
                         opcode: "broadcastRecieve",
+                        compileFunc: "broadcastRecieve",
                         type: sugarcube.BlockType.HAT,
-                        eventListenerName: "onGlobalBroadcast",
                         text: editor.language["sugarcube.events.block.broadcastRecieve"],
                         arguments: {
                             message: {
@@ -56,7 +57,7 @@
                         text: editor.language["sugarcube.events.block.broadcastSend"],
                         arguments: {
                             message: {
-                                menu: "messages",
+                                menu: "messagesReporter",
                             },
                         },
                     },
@@ -68,7 +69,7 @@
                     messages: {
                         items: "__getMessages",
                     },
-                    messages: {
+                    messagesReporter: {
                         acceptReporters: true,
                         items: "__getMessages",
                     },
@@ -78,11 +79,63 @@
 
         //Just for a menu
         __getMessages() {
-            return sugarcube.broadcasts;
+            return Object.keys(coffeeEngine.broadcasts);
         }
 
-        onStart() {
-            return true;
+        onStart(block, generator, manager) {
+            return `this.__ReadyFuncs.push(async () => {
+    ${manager.nextBlockToCode(block, generator)}
+});`;
+        }
+
+        onUpdate(block, generator, manager) {
+            return `this.__UpdateFuncs.push(async () => {
+    ${manager.nextBlockToCode(block, generator)}
+});`;
+        }
+
+        whenKeyPressed(block, generator, manager) {
+            //This one is a bit more complicated but I'll walk through it
+            //? First we isolate the context of the variables by wrapping them in a block using {};
+            //? After that we add our event and store the recieved function to use on the eventual disposal.
+            return `{
+    const sugarcubeInputEvent = async (event) => {
+        if (event && event.type == "key") {
+            if (event.key == "${block.getFieldValue("key")}") {
+                ${manager.nextBlockToCode(block, generator)}
+            }
+        }
+    };
+    coffeeEngine.addEventListener("desktopInput", sugarcubeInputEvent);
+
+    this.__DisposeFuncs.push(() => {
+        coffeeEngine.removeEventListener("desktopInput", sugarcubeInputEvent);
+    })
+}`;
+        }
+
+        whenClicked(block, generator, manager) {
+            return `this.__ClickFuncs.push(() => {
+    ${manager.nextBlockToCode(block, generator)}
+})`;
+        }
+
+        broadcastRecieve(block, generator, manager, blockData) {
+            const message = blockData.fieldData[0][1];
+            return `{
+    const sugarcubeBroadcastEvent = async () => {
+        ${manager.nextBlockToCode(block, generator)}
+    };
+    coffeeEngine.addBroadcast("${block.getFieldValue(message).replace('"','\\"')}", sugarcubeBroadcastEvent);
+
+    this.__DisposeFuncs.push(() => {
+        coffeeEngine.removeBroadcast("${block.getFieldValue(message).replace('"','\\"')}", sugarcubeBroadcastEvent);
+    })
+}`;
+        }
+
+        broadcastSend({ message }) {
+            coffeeEngine.sendBroadcast(message);
         }
     }
 

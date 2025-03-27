@@ -12,7 +12,6 @@
                 blocks: [
                     {
                         opcode: "wait",
-                        compileFunc: "wait",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.wait"],
                         arguments: {
@@ -25,6 +24,7 @@
                     "---",
                     {
                         opcode: "ifStatement",
+                        compileFunc: "ifStatement",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.ifStatement"],
                         arguments: {
@@ -41,6 +41,7 @@
                     },
                     {
                         opcode: "ifElse_Statement",
+                        compileFunc: "ifElse_Statement",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.ifElse_Statement"],
                         arguments: {
@@ -63,7 +64,47 @@
                     },
                     "---",
                     {
+                        opcode: "switch_Statement",
+                        compileFunc: "switch_Statement",
+                        type: sugarcube.BlockType.CONDITIONAL,
+                        text: editor.language["sugarcube.controls.block.switch_Statement"],
+                        arguments: {
+                            condition: {
+                                type: sugarcube.ArgumentType.STRING,
+                            },
+                            statement: {
+                                type: sugarcube.ArgumentType.STATEMENT,
+                                nextStatement: "branch"
+                            },
+                            dummy: {
+                                type: sugarcube.ArgumentType.DUMMY,
+                                nextStatement: "branch"
+                            },
+                            default: {
+                                type: sugarcube.ArgumentType.STATEMENT,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "branch_Statement",
+                        compileFunc: "branch_Statement",
+                        type: sugarcube.BlockType.CONDITIONAL,
+                        text: editor.language["sugarcube.controls.block.branch_Statement"],
+                        previousStatement:"branch",
+                        nextStatement:"branch",
+                        arguments: {
+                            condition: {
+                                type: sugarcube.ArgumentType.STRING,
+                            },
+                            statement: {
+                                type: sugarcube.ArgumentType.STATEMENT,
+                            },
+                        },
+                    },
+                    "---",
+                    {
                         opcode: "repeat",
+                        compileFunc: "repeat",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.repeat"],
                         arguments: {
@@ -81,6 +122,7 @@
                     },
                     {
                         opcode: "foreach",
+                        compileFunc: "foreach",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.foreach"],
                         arguments: {
@@ -97,6 +139,7 @@
                     },
                     {
                         opcode: "repeatUNT",
+                        compileFunc: "repeatUNT",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.repeatUNT"],
                         arguments: {
@@ -113,6 +156,7 @@
                     },
                     {
                         opcode: "while",
+                        compileFunc: "while",
                         type: sugarcube.BlockType.CONDITIONAL,
                         text: editor.language["sugarcube.controls.block.while"],
                         arguments: {
@@ -128,6 +172,31 @@
                         },
                     },
                     "---",
+                    //Further notice is now
+                    {
+                        opcode: "continue",
+                        compileFunc: "continue",
+                        type: sugarcube.BlockType.TERMINAL,
+                        text: editor.language["sugarcube.controls.block.continue"],
+                        arguments: {
+                            image: {
+                                type: sugarcube.ArgumentType.IMAGE,
+                                dataURI: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAAAXNSR0IArs4c6QAAAMxJREFUSEvtltENwyAMRGGbdIhml3SwZpd2iGabVEYyMZaBs/IRRYJv8+Q7Y+MYgPN7P/fH6xuB0NANIhiDEGgTKGEoFAJOyyds65yYvSxvDGT/SC4fRHZV8gAmG4eH5qxwPRvExwE8fLZa7zoPrcnMucppIzO03gwN39iC0SUPkOIzUF9EfjgZw32e3mGtAChUDo0CaEnsQfUEyp0ivUTlM0z+hkXreaAWLBVFS0KgNZgJlEXSnrZAnBj00WsVre3BtSydXkU4M8869wfziMuD3BVjeQAAAABJRU5ErkJggg=="
+                            }
+                        }
+                    },
+                    {
+                        opcode: "break",
+                        compileFunc: "break",
+                        type: sugarcube.BlockType.TERMINAL,
+                        text: editor.language["sugarcube.controls.block.break"],
+                        arguments: {
+                            image: {
+                                type: sugarcube.ArgumentType.IMAGE,
+                                dataURI: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAgCAYAAAASYli2AAAAAXNSR0IArs4c6QAAAMxJREFUSEvtltENwyAMRGGbdIhml3SwZpd2iGabVEYyMZaBs/IRRYJv8+Q7Y+MYgPN7P/fH6xuB0NANIhiDEGgTKGEoFAJOyyds65yYvSxvDGT/SC4fRHZV8gAmG4eH5qxwPRvExwE8fLZa7zoPrcnMucppIzO03gwN39iC0SUPkOIzUF9EfjgZw32e3mGtAChUDo0CaEnsQfUEyp0ivUTlM0z+hkXreaAWLBVFS0KgNZgJlEXSnrZAnBj00WsVre3BtSydXkU4M8869wfziMuD3BVjeQAAAABJRU5ErkJggg=="
+                            }
+                        }
+                    },
                     {
                         opcode: "call",
                         type: sugarcube.BlockType.COMMAND,
@@ -142,50 +211,86 @@
             };
         }
 
-        wait(block, generator, manager) {
-            return `setTimeout(() => {
-    ${manager.nextBlockToCode(block, generator)}
-}, ${generator.valueToCode(block, "seconds", 0) * 1000});`;
-        }
-
-        ifStatement(args) {
-            if (sugarcube.cast.toBoolean(args.condition) == true) {
-                args.statement();
-            }
-        }
-
-        ifElse_Statement(args) {
-            if (sugarcube.cast.toBoolean(args.condition) == true) {
-                args.statement();
-            } else {
-                args.statement2();
-            }
-        }
-
-        repeat(args) {
-            for (let index = 0; index < args.num; index++) {
-                args.statement();
-            }
-        }
-
-        foreach(args) {
-            if (!Array.isArray(args.array)) return;
-
-            args.array.forEach((item) => {
-                args.statement();
+        wait({ seconds }) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve();
+                }, sugarcube.cast.toNumber(seconds) * 1000);
             });
         }
 
-        repeatUNT(args, util) {
-            while (!sugarcube.cast.toBoolean(util.recalls.condition())) {
-                args.statement();
-            }
+        //! Beyond this point is compiled blocks beware!
+        ifStatement(block, generator, manager) {
+            return `if (${generator.valueToCode(block, "condition", 0) || false}) {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`
         }
 
-        while(args, util) {
-            while (sugarcube.cast.toBoolean(util.recalls.condition())) {
-                args.statement();
-            }
+        ifElse_Statement(block, generator, manager) {
+            return `if (${generator.valueToCode(block, "condition", 0) || false}) {
+    ${generator.statementToCode(block, "statement")}
+}
+else {
+    ${generator.statementToCode(block, "statement2")}
+}\n${manager.nextBlockToCode(block, generator)}`
+        }
+
+        switch_Statement(block, generator, manager) {
+            return `switch (${generator.valueToCode(block, "condition", 0)}) {
+    ${generator.statementToCode(block, "statement")}
+
+    default: {
+        ${generator.statementToCode(block, "default")}
+    }
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        branch_Statement(block, generator, manager) {
+            
+            return `case (${generator.valueToCode(block, "condition", 0)}): {
+    ${generator.statementToCode(block, "statement")}
+    break;
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        repeat(block, generator, manager) {
+            return `{
+    let num = ${generator.valueToCode(block, "num", 0)};
+    for (let index = 0; index < num; index++) {
+        ${generator.statementToCode(block, "statement")}
+    }
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        foreach(block, generator, manager) {
+            return `{
+    let val = ${generator.valueToCode(block, "array", 0) || "[]"};
+    if (Array.isArray(val)) {
+        for (let ArrayKey in val) {
+            ${generator.statementToCode(block, "statement")}
+        }
+    }
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        repeatUNT(block, generator, manager) {
+            return `while (!(${generator.valueToCode(block, "condition", 0) || false})) {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        while(block, generator, manager) {
+            return `while (${generator.valueToCode(block, "condition", 0) || false}) {
+    ${generator.statementToCode(block, "statement")}
+}\n${manager.nextBlockToCode(block, generator)}`;
+        }
+
+        continue() {
+            return `\ncontinue;\n`;
+        }
+
+        break() {
+            return `\nbreak;\n`
         }
 
         call(args) {

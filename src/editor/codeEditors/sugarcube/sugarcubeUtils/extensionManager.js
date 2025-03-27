@@ -1,72 +1,108 @@
 (function () {
     class extensionManager {
         constructor() {
-            this.addBlocklyBlock("__sugarcube_color_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "looks_Color",
-                        name: "VALUE",
-                        colour: "#0000ff",
-                    },
-                ],
-            });
+            //Don't load blockly stuff if we aren't available for blockly
+            if (coffeeEngine.isEditor) {
+                this.addBlocklyBlock("__sugarcube_color_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "looks_Color",
+                            name: "VALUE",
+                            colour: "#0000ff",
+                        },
+                    ],
+                });
 
-            sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
+                sugarcube.generator.forBlock["__sugarcube_color_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
 
-            this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "field_input",
-                        name: "VALUE",
-                        value: "Text Here",
-                        spellcheck: false,
-                    },
-                ],
-            });
+                this.addBlocklyBlock("__sugarcube_file_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "files_File",
+                            name: "VALUE",
+                            value: "hi",
+                        },
+                    ],
+                });
 
-            sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
+                sugarcube.generator.forBlock["__sugarcube_file_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
 
-            this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "field_number",
-                        name: "VALUE",
-                        value: 0,
-                        spellcheck: false,
-                    },
-                ],
-            });
+                this.addBlocklyBlock("__sugarcube_angle_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "motion_Angle",
+                            name: "VALUE",
+                        },
+                    ],
+                });
 
-            sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
+                sugarcube.generator.forBlock["__sugarcube_angle_reporter"] = (block, generator) => {
+                    return [block.getFieldValue("VALUE"), 0];
+                };
 
-            this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
-                message0: " %1 ",
-                mutator: "stupidLittleInputMutator",
-                args0: [
-                    {
-                        type: "field_multilinetext",
-                        name: "VALUE",
-                        text: "Hello\nWorld!",
-                        spellcheck: false,
-                    },
-                ],
-            });
+                this.addBlocklyBlock("__sugarcube_string_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "field_input",
+                            name: "VALUE",
+                            value: "Text Here",
+                            spellcheck: false,
+                        },
+                    ],
+                });
 
-            sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
-                return [block.getFieldValue("VALUE"), 0];
-            };
+                sugarcube.generator.forBlock["__sugarcube_string_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
+
+                this.addBlocklyBlock("__sugarcube_number_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "field_number",
+                            name: "VALUE",
+                            value: 0,
+                            spellcheck: false,
+                        },
+                    ],
+                });
+
+                sugarcube.generator.forBlock["__sugarcube_number_reporter"] = (block, generator) => {
+                    return [block.getFieldValue("VALUE") || 0, 0];
+                };
+
+                this.addBlocklyBlock("__sugarcube_multiline_string_reporter", "reporter", {
+                    message0: " %1 ",
+                    mutator: "stupidLittleInputMutator",
+                    args0: [
+                        {
+                            type: "field_multilinetext",
+                            name: "VALUE",
+                            text: "Hello\nWorld!",
+                            spellcheck: false,
+                        },
+                    ],
+                });
+
+                sugarcube.generator.forBlock["__sugarcube_multiline_string_reporter"] = (block, generator) => {
+                    return [`"${block.getFieldValue("VALUE").replace('"', `\\"`)}"`, 0];
+                };
+            }
+
+            this.defaultAction = "Action"
 
             sugarcube.extensionInstances = {};
         }
@@ -75,16 +111,12 @@
 
         updateFunctions = {};
 
-        //Block shape definer.
+        //A quick macro for making non-extension blocks, internally used for menus.
         addBlocklyBlock(blockName, type, BlockJson, inline) {
             inline = inline || true;
             switch (type) {
                 case sugarcube.BlockType.HAT:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
-                    break;
-
-                case sugarcube.BlockType.PROCEDURE_DEFINITION:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.REPORTER:
@@ -128,12 +160,12 @@
                     break;
 
                 case sugarcube.BlockType.COMMAND:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
-                    BlockJson.previousStatement = BlockJson.previousStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
+                    BlockJson.previousStatement = BlockJson.previousStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.TERMINAL:
-                    BlockJson.previousStatement = BlockJson.previousStatement || "Action";
+                    BlockJson.previousStatement = BlockJson.previousStatement || this.defaultAction;
                     break;
 
                 case sugarcube.BlockType.OBJECT:
@@ -161,8 +193,8 @@
                     break;
 
                 default:
-                    BlockJson.nextStatement = BlockJson.nextStatement || "Action";
-                    BlockJson.previousStatement = BlockJson.previousStatement || "Action";
+                    BlockJson.nextStatement = BlockJson.nextStatement || this.defaultAction;
+                    BlockJson.previousStatement = BlockJson.previousStatement || this.defaultAction;
                     break;
             }
 
@@ -191,10 +223,6 @@
             return "";
         }
 
-        fixifyTheArgs(args) {
-            return args.replaceAll('"____SUGAR__CUBE__FUNCTION____function anonymous(\\n', "(").replaceAll(") {", ") => {").replaceAll('\\n}"', "}").replaceAll('\\"', '"').replaceAll("\\n", "\n");
-        }
-
         //This just registers the compile code for the block.
         registerBlockCode(blockJSON, extensionID) {
             const blockType = blockJSON.type;
@@ -205,14 +233,25 @@
             //Custom compiler instructions.
             if (blockCompileFunc) {
                 sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator, this);
+                    const blockData = this.blockDefs[extensionID][blockOpcode];
+                    const code = sugarcube.extensionInstances[extensionID][blockCompileFunc](block, generator, this, blockData);
                     if (block.outputConnection) {
                         return [code, 0];
                     }
-                    return `${code}\n${this.nextBlockToCode(block, generator)}`;
+                    return `${code}\n`;
                 };
 
                 return;
+            }
+
+            //Check the block for async properties
+            let asynchronous = false;
+            const blockFunction = sugarcube.extensionInstances[extensionID][blockOpcode];
+            //Check for promises
+            if (blockFunction) {
+                const stringified = blockFunction.toString();
+                const matches = stringified.match(/new\s*Promise\s*\(/gm);
+                if (matches) asynchronous = matches.length > 0;
             }
 
             //Certain blocks handle differently.
@@ -220,32 +259,7 @@
                 //Hat blocks will be event listeners. No exceptions lol.
                 case sugarcube.BlockType.HAT:
                     sugarcube.generator.forBlock[blockID] = (block, generator) => {
-                        const args = {};
-
-                        if (block.inputList) {
-                            block.inputList.forEach((input) => {
-                                if (!input.connection) return;
-                                if (input.connection && input.connection.type == 3) {
-                                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                                    return;
-                                }
-                                args[input.name] = generator.valueToCode(block, input.name, 0);
-                            });
-                        }
-
-                        if (block.fieldRow) {
-                            block.fieldRow.forEach((field) => {
-                                args[input.name] = block.getFieldValue(input.name);
-                            });
-                        }
-
-                        //Just our block code builder... Should probably standardize this.
-                        const baseBlockCode = `${block.eventListenerTarget || "this"}.addEventListener("${block.eventListenerName || blockOpcode}",(event) => {
-              if (sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},this,event)) {`
-                            .replaceAll(',this);"', ",this)")
-                            .replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
-
-                        return `${baseBlockCode}\n${this.nextBlockToCode(block, generator)}}\n});\n`;
+                        return `(function(){})() // Hat ${blockID} needs custom compile code. please add this or the block will do NOTHING.\n`;
                     };
                     break;
 
@@ -255,44 +269,59 @@
                         const args = {};
                         const recalls = {};
 
+                        //Break down our block type real quick
+                        const split = block.type.split("_");
+                        const extension = split.splice(0, 1)[0];
+                        const opcode = split.join("_");
+                        const blockData = this.blockDefs[extension][opcode];
+
+                        let baseBlockCode = `${asynchronous ? "await " : ""}sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"]({\n`;
+
+                        //Loop through both sets of inputs AKA double check
                         if (block.inputList) {
                             block.inputList.forEach((input) => {
                                 if (!input.connection) return;
+                                //We will go through and make sure we async anything asynced
                                 if (input.connection && input.connection.type == Blockly.ConnectionType.NEXT_STATEMENT) {
-                                    args[input.name] = Function(generator.statementToCode(block, input.name));
-                                    recalls[input.name] = Function(generator.statementToCode(block, input.name));
+                                    const value = generator.statementToCode(block, input.name);
+                                    args[input.name] = `${value.includes("await") ? "async " : ""}() => {\n${value}\n}`;
+                                    recalls[input.name] = args[input.name];
                                     return;
                                 }
-                                args[input.name] = generator.valueToCode(block, input.name, 0);
-
-                                //Our recall for the rest of the types.
 
                                 const value = generator.valueToCode(block, input.name, 0);
-                                //Functionals are easy
-                                if (String(args[input.name]).startsWith("sugarcube.extensionInstances[")) {
-                                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                                }
-                                //Now we need to check the rest.
-                                else {
-                                    //Number
-                                    if (!isNaN(Number(value))) {
-                                        recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return ${value}\n}`;
-                                        return;
-                                    }
+                                args[input.name] = value || "0";
+                                recalls[input.name] = `${String(value).includes("await") ? "async " : ""}() => {\nreturn ${value}\n}`;
+                            });
+                        }
 
-                                    //String
-                                    recalls[input.name] = `____SUGAR__CUBE__FUNCTION____function anonymous(\n) {return "${value}"\n}`;
+                        if (blockData && blockData.fieldData) {
+                            //Field stuff we need to serperate dynamic and non dynamic
+                            blockData.fieldData.forEach((field) => {
+                                if (Array.isArray(field)) {
+                                    args[field[0]] = block.getFieldValue(field[1]);
+                                    if (isNaN(Number(args[field[0]]))) args[field[0]] = `"${args[field[0]]}"`;
+                                } else {
+                                    args[field] = block.getFieldValue(field);
+                                    if (isNaN(Number(args[field]))) args[field] = `"${args[field]}"`;
                                 }
                             });
                         }
 
-                        if (block.fieldRow) {
-                            block.fieldRow.forEach((field) => {
-                                args[field.name] = block.getFieldValue(field.name);
-                            });
+                        //Parse our inputs into code
+                        for (const arg in args) {
+                            baseBlockCode += `"${arg.replaceAll('"', '\\"')}": ${args[arg]},\n`;
                         }
 
-                        const baseBlockCode = `sugarcube.extensionInstances["${extensionID}"]["${blockOpcode}"](${this.fixifyTheArgs(JSON.stringify(args, this.stringifyFunction))},{target:this,recalls:${this.fixifyTheArgs(JSON.stringify(recalls, this.stringifyFunction))}});`.replaceAll(');"', ")").replaceAll('"sugarcube.extensionInstances', "sugarcube.extensionInstances");
+                        //Then we do the recalls in util
+                        baseBlockCode += "},{target:this.target,self:this,recalls:{\n";
+
+                        //Add our recalls
+                        for (const recall in recalls) {
+                            baseBlockCode += `"${recall.replaceAll('"', '\\"')}": ${recalls[recall]},\n`;
+                        }
+
+                        baseBlockCode += "}})";
 
                         if (block.outputConnection) {
                             return [baseBlockCode, 0];
@@ -305,6 +334,8 @@
 
         addBlock(block, extension) {
             const id = extension.id + "_";
+            const menus = sugarcube.menus;
+            const fields = sugarcube.fields.storage;
 
             let blockData = {};
             //Seperator Shorthand
@@ -318,71 +349,28 @@
             //if it is an object (Or anything else really)
             else {
                 //Get the type and text
-                const type = block.type || block.blockType;
+                const type = sugarcube.BlockTypeConstructors[block.type || block.blockType];
                 const style = block.style || id + "blocks";
-                let text = block.text;
+                let { text, opcode, isInline } = block;
 
-                const opcode = block.opcode;
-                switch (type) {
-                    case "label":
-                        blockData = {
-                            kind: "label",
-                            text: text,
-                        };
-                        break;
+                //Switch between block definition types
+                switch (typeof type) {
+                    case "object": {
+                        let {next, previous, output} = type;
 
-                    case "button":
-                        //Create button
-                        blockData = {
-                            kind: "button",
-                            text: text,
-                            callbackKey: id + opcode,
-                        };
+                        //Parse these properly
+                        if (previous) previous = (previous === true) ? (block.previousStatement || this.defaultAction) : previous;
+                        if (next) next = (next === true) ? (block.nextStatement || this.defaultAction) : next;
+                        if (output) output = (output === true) ? (block.output || "ANY") : output;
+                        //Make sure they are arrays
+                        if (previous && !Array.isArray(previous)) previous = [previous];
+                        if (next && !Array.isArray(next)) next = [next];
+                        if (output && !Array.isArray(output)) output = [output];
+                        
+                        //Then finally add ANY if any does not exist and any of the connections
+                        if (output && !output.includes("ANY")) output.push("ANY");
 
-                        //Register callback code for the button
-                        sugarcube.buttons[id + opcode] = () => {
-                            sugarcube.extensionInstances[extension.id][opcode]();
-                        };
-
-                        //If we have a workspace register the callback
-                        if (sugarcube.workspace) {
-                            sugarcube.workspace.registerButtonCallback(id + opcode, sugarcube.buttons[id + opcode]);
-                        }
-                        break;
-
-                    //For duplicating blocks in the toolbox
-                    case "duplicate":
-                        blockData = {
-                            kind: "block",
-                            type: block.extensionID ? block.extensionID + block.of : id + block.of,
-                        };
-                        if (!Blockly.Blocks[blockData.type]) return;
-
-                        if (block.extraState) {
-                            blockData.extraState = block.extraState;
-                        }
-
-                        //Wierd block hack
-                        //I wish blockly preserved block inputs inside the actual block itself instead of having
-                        //half in the actual block, half in an outside definition
-                        if (this.blockDefs[block.extensionID ? block.extensionID : extension.id][block.of].inputs) {
-                            blockData.inputs = this.blockDefs[block.extensionID ? block.extensionID : extension.id][block.of].inputs;
-                        }
-                        break;
-
-                    default:
-                        //Declare the conversion for the function
-                        //The this will be our object/scene
-                        //sugarcube.JS_GEN.forBlock[id + opcode] = `sugarcube.extensions.${extension.id}[${opcode}]({},this);`;
-
-                        //Define the arguments used in block creation
-                        let defArgs = {
-                            kind: "block",
-                            type: id + opcode,
-                            inputs: {},
-                        };
-
-                        //For the funny scratch styled branches
+                        //Scratch Styled Branches
                         if (typeof text == "object") {
                             //Joined variable
                             let joined = "";
@@ -419,7 +407,7 @@
                             text = joined;
                         }
 
-                        //And the toolbox definition
+                        //The actual block def
                         let blockDef = {
                             message0: text,
                             style: style,
@@ -428,9 +416,14 @@
                             extensions: [],
                         };
 
-                        //If it has arguments loop through those and add them to the args 0
-                        //Should probably add something for multiline things.
-                        //Maybe Arrays
+                        blockData = {
+                            kind: "block",
+                            type: id + opcode,
+                            inputs: {},
+                            fieldData: [],
+                        };
+                        
+                        //The arguments of the block
                         if (block.arguments) {
                             //Get keys and loop through arguments
                             const argumentKeys = Object.keys(block.arguments);
@@ -439,38 +432,42 @@
 
                                 //Check to see if the argument exists
                                 if (block.arguments[argumentKey]) {
-                                    const argument = block.arguments[argumentKey];
+                                    let argument = block.arguments[argumentKey];
 
                                     //Doing this for easier argument types
                                     if (argument.menu) {
                                         //Menu id
                                         const menuID = `${id}${argument.menu}`;
-                                        if (sugarcube.menus[menuID]) {
+                                        if (menus[menuID]) {
                                             //Dynamic blocks are not a problem for reporter based menus.
-                                            if (sugarcube.menus[menuID].isBlock) {
+                                            if (menus[menuID].isBlock) {
                                                 argument.type = "input_value";
 
                                                 //Define the arguments
-                                                if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
-                                                defArgs.inputs[argumentKey].shadow = {
+                                                if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
+                                                blockData.inputs[argumentKey].shadow = {
                                                     type: "__sugarcube_menu_" + menuID,
                                                 };
                                             }
 
                                             //Not as easy in field menus
                                             else {
+                                                //Field stuff
+
                                                 //Check to see if the menu is dynamic.
-                                                if (sugarcube.menus[menuID].isDynamic) {
+                                                if (menus[menuID].isDynamic) {
                                                     if (!blockDef.extensions.includes("dynamic_menu")) {
                                                         blockDef.extensions.push("dynamic_menu");
                                                     }
-                                                    argument.overrideName = `${menuID}_____${argumentKey}`;
+                                                    argument.overrideName = `scDynamicMenu_${menuID}_${argumentKey}`;
                                                     argument.type = "input_dummy";
+                                                    blockData.fieldData.push([argumentKey, argument.overrideName]);
                                                 }
                                                 //Check to see if it is real.
                                                 else {
                                                     argument.type = "field_dropdown";
-                                                    argument.options = sugarcube.menus[menuID].parsed;
+                                                    argument.options = menus[menuID].parsed;
+                                                    blockData.fieldData.push(argumentKey);
                                                 }
                                             }
                                         } else {
@@ -482,99 +479,90 @@
                                                 argument.type = "input_value";
                                                 if (argument.customType) {
                                                     //let it be global or local
-                                                    if (sugarcube.fields.storage[id + argument.customType]) {
+                                                    if (fields[id + argument.customType]) {
                                                         argument.type = id + argument.customType;
-                                                    } else if (sugarcube.fields.storage[argument.customType]) {
+                                                    } else if (fields[argument.customType]) {
                                                         argument.type = argument.customType;
                                                     }
 
                                                     //Accept reporters
-                                                    if (sugarcube.fields.storage[argument.type].acceptReporters) {
+                                                    if (fields[argument.type].acceptReporters) {
                                                         //Eww
-                                                        if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
-                                                        defArgs.inputs[argumentKey].shadow = {
-                                                            type: sugarcube.fields.storage[argument.type].blockName,
+                                                        if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
+                                                        blockData.inputs[argumentKey].shadow = {
+                                                            type: fields[argument.type].blockName,
                                                         };
 
                                                         if (argument.defaultValue) {
-                                                            defArgs.inputs[argumentKey].shadow.fields = { VALUE: argument.defaultValue };
+                                                            blockData.inputs[argumentKey].shadow.fields = { VALUE: argument.defaultValue };
                                                         }
 
                                                         //Ughhh
                                                         argument.type = "input_value";
+                                                    } else {
+                                                        blockData.fieldData.push(argumentKey);
                                                     }
                                                 }
 
                                                 argument.value = argument.defaultValue || "";
                                                 break;
 
-                                            case sugarcube.ArgumentType.BOOLEAN: {
-                                                argument.check = ["Boolean", "ANY"];
-                                                argument.type = "input_value";
-                                                break;
-                                            }
-
-                                            case sugarcube.ArgumentType.OBJECT: {
-                                                argument.check = ["Object", "ANY"];
-                                                argument.type = "input_value";
-                                                break;
-                                            }
-
-                                            case sugarcube.ArgumentType.ARRAY: {
-                                                argument.check = ["Array", "ANY"];
-                                                argument.type = "input_value";
-                                                break;
-                                            }
-
-                                            case sugarcube.ArgumentType.REFERENCE: {
-                                                argument.check = ["Reference", "ANY"];
-                                                argument.type = "input_value";
-                                                break;
-                                            }
-
-                                            case sugarcube.ArgumentType.DUMMY: {
-                                                argument.type = "input_dummy";
-                                                break;
-                                            }
-
-                                            case sugarcube.ArgumentType.STATEMENT: {
-                                                argument.type = "input_statement";
-                                                break;
-                                            }
-
-                                            case sugarcube.ArgumentType.IMAGE: {
-                                                argument.type = "field_image";
-                                                argument.src = argument.dataURI || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAsCAYAAABloJjNAAAFJ0lEQVRIS6WXeyzkVxTHf7OYMcN4GxKPXa/GY0lQK/5sokmD1QpKitB61CNiG/QRUs9Y4hlRJEITW1EhHkGpDWEjbSrbiIqu1GOjqPd7BzPM6PdOOpMZfrPmp7/k98fce+7nd+4933POHRbF7PGGuRtee7wv8Q5cX87SkPeJiYnJV1paWvf9/Pyk+/v7/LOzs/2lpaWpw8PDx8qM24B8Lpdbb25uHlhTU2McEhKi8n0LCwvJ9vb2pxh8Jp94G9ATsJ9iY2N5DQ0NBnQ7aWlpoTIzMwfhZdBtQE89Pb2x8vJydkpKCk/dscA7ytraWnxxccGFjZTY0XnoxePxRisqKt4Kk38kKSlJ1NHRMXd8fByMsfXrQLaBgcGfQUFBNm1tbWwNA0YVFxdTcODl0dGRjwoQZ9aOMwvBmXE0hcntjI2NRThLPwXQ1NQ018rK6snMzIwpUxixT01NFcGRPDnQUltb+2/AdFxdXdXyZmdnKXd3d9p5yIoqLS39XgZERJsTExOjqqur1W41Li5ODN2xy8rKaIF1dXVUYWFhKwHaIqqvNjc3eXw+X613OJJzXV1dyfr6uh6dUX5+PtXU1PQdAealpaV9gS8YqqP19PRQ8fHxryUSiQCRpAX6+/sfj46OfsYyNDT8LTc391FWVpZa77y8vA6np6e/0dfXrzw5OaEVOnZwihx3Y2Gby5OTk3YeHh60wMHBQSomJub1wcFBiL29/QsUhBtpuLq6SiGYb/DwWQjIFqInsLOzowVCX5fQVwImN318fFqnpqYE1w37+vqo9PT03wF+l4WytDQyMmLv7U1KnerT29tLJSQkrO3t7dlg5svk5OQcukIBhYi6u7ufYssFLA6HM9Dc3BwYFRV1AygQCEQ7OzuJmHhmZGTUC1l9CPncsEMcRMhlUniXSJQ/DwsLq+js7NRXtkRUxa2trSeXl5dmZBzAlbGxMVtPT08VYH9/PwUP57a2th6SCQLUQWD+Cg0NfVBQUECRkgRPxBMTE3PQXDj5Kl4Oi8U6BfweHhVgdHS0eHh4+Fsci0zx8tTzNjMzK0dd8wb8jVgsfg6w8t4eOTo6/rywsGCkTJNKpRQKygXsH2D8H2UgbYSVBuMjIyNr2tvbVY4FdZDKyMiYwnZ95ba39RS53VPUvK9zcnJUPhwQEHA4NDSUicEWRkBE+3ltba1/RESEAogUJIEiv0nKHjMCooovIMKOylqF1CgUhPG1tbX3lN3WaMs6Ojrn0CMHelOsDQ8PF3Z1dWVgoJkp0ApbW0Auk86meBwcHITLy8vkDAaZAj1sbW3HV1ZWjJUXuri4HMzPzwdi7FemQFf03l+Q+Cr1Mjg4WIgsiQesgynQCVEmWlOIWiQSUUiASyTCfbmgGUWZzWafYstcS0tL2brs7Oxz5Pkksun96xmhUZTREf9AAXCvr68nfYMA96DDdwDbvxMQiwJRaH9EpZGiFewi4iS65H5449HIw/9Wke2RftKPV3Yx+r9AdQyVcSYeKi8kRZHWSybAD3Ah+BiFNkAoFFqgDnbgWhx5p6Ag9fKvrq6yUL7uoWRxnZ2dZToE8E46fGJjY5OH3m2EFJQ5hN5Mubm5Qd8iXcYe4rawiTZrgdu/Yi1uWVRlZeUPu7u7MUyBAShZ3Wj0KrcyJyeno8XFxY8AG2cKfIh0e7GxsaGoNFVVVWclJSXr6HJOd9GhFhZdDAwMsHx9fanGxsbzoqIiCbqcD8Zf3QVI1jxGxe7Ev6grSGUaaReNsWV1Kv8X6XkOC2AliDsAAAAASUVORK5CYII=";
-                                                argument.flipRTL = argument.flipRTL || false;
-                                                argument.width = 20;
-                                                argument.height = 20;
-                                                break;
-                                            }
-
                                             default: {
-                                                //Check for a shadow conversion
-                                                if (sugarcube.ArgumentShadowConversions[argument.type]) {
-                                                    //If there is one add argument keys if they don't exist
-                                                    if (!defArgs.inputs[argumentKey]) defArgs.inputs[argumentKey] = {};
+                                                const argConstructor = sugarcube.ArgumentTypeConstructors[argument.type];
 
-                                                    //set the shadow values and stuff
-                                                    defArgs.inputs[argumentKey].shadow = {
-                                                        type: sugarcube.ArgumentShadowConversions[argument.type],
-                                                        fields: {
-                                                            VALUE: argument.defaultValue || sugarcube.ArgumentDefaultValues[argument.type] || "",
-                                                        },
-                                                        //Make sure the style matches
-                                                        style: style,
-                                                    };
+                                                //Determine construction based upon inputted type
+                                                switch (typeof argConstructor) {
+                                                    case "string": {
+                                                        //If there is one add argument keys if they don't exist
+                                                        if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
 
-                                                    //If we have a default value set it
-                                                    if (argument.defaultValue) {
-                                                        defArgs.inputs[argumentKey].shadow.value = argument.defaultValue;
+                                                        //set the shadow values and stuff
+                                                        blockData.inputs[argumentKey].shadow = {
+                                                            type: argConstructor,
+                                                            fields: {
+                                                                VALUE: argument.defaultValue || sugarcube.ArgumentDefaultValues[argument.type] || "",
+                                                            },
+                                                            //Make sure the style matches
+                                                            style: style,
+                                                        };
+
+                                                        //If we have a default value set it
+                                                        if (argument.defaultValue) {
+                                                            blockData.inputs[argumentKey].shadow.value = argument.defaultValue;
+                                                        }
+
+                                                        
+                                                        argument.type = "input_value";
+                                                        break;
                                                     }
+
+
+                                                    //The difference between these two is we have to run one
+                                                    case "object": {
+                                                        argument = Object.assign({}, argument, argConstructor);
+
+                                                        if (argument.shadow) {
+                                                            if (!blockData.inputs[argumentKey]) blockData.inputs[argumentKey] = {};
+
+                                                            //set the shadow values and stuff
+                                                            blockData.inputs[argumentKey].shadow = {
+                                                                type: argument.shadow,
+                                                                style: style,
+                                                            };
+                                                        }
+                                                        break;
+                                                    }
+
+                                                    case "function": {
+                                                        argument = Object.assign({}, argument, argConstructor(argument, this));
+                                                        break;
+                                                    }
+
+                                                
+                                                    default:
+                                                        break;
                                                 }
 
-                                                //set the type to input
-                                                argument.type = "input_value";
                                                 break;
                                             }
                                         }
@@ -590,19 +578,18 @@
                             }
                         }
 
-                        if (block.alignments) {
-                            blockDef["lastDummyAlign0"] = block.alignment;
-                        }
-
-                        //For the funni!
-                        if (block.filter) {
-                            defArgs.filter = block.filter;
-                        }
-
+                        //Cool stuff
                         //If there is an output or tooltip add them to the block definition
                         //Note that output only determines what the block puts out.
+                        if (block.alignments) blockDef["lastDummyAlign0"] = block.alignment;
+                        if (previous) blockDef.previousStatement = previous;
+                        if (next) blockDef.nextStatement = next;
+                        if (output) blockDef.output = output;
+                        if (block.filter) blockData.filter = block.filter;
+                        if (block.extraState) blockData.extraState = block.extraState;
+
+                        //The mutator
                         if (block.mutator) {
-                            //first we check to see if the mutator + extension ID exists.
                             if (Blockly.Extensions.TEST_ONLY.allExtensions[id + block.mutator]) {
                                 blockDef.mutator = id + block.mutator;
                             } else {
@@ -610,19 +597,29 @@
                             }
                         }
 
-                        if (block.extraState) {
-                            blockData.extraState = block.extraState;
-                        }
-
-                        if (block.output) {
-                            blockDef.output = block.output;
-                        }
-
-                        //Add the blockly block definition and register the block compiler
+                        //Register the block code
                         this.registerBlockCode(block, extension.id);
-                        this.addBlocklyBlock(id + opcode, block.isTerminal && type == "command" ? "terminal" : type, blockDef);
-                        blockData = defArgs;
+
+                        //Add the block to the registry
+                        Blockly.Blocks[id + opcode] = {
+                            init: function () {
+                                this.setInputsInline(!isInline);
+                                this.jsonInit(blockDef);
+                            },
+                        };
+
                         break;
+                    }
+
+                    case "function": {
+                        blockData = type(block, sugarcube.workspace, this, {id: extension.id, opcode: opcode});
+                        break;
+                    }
+
+                    default: {
+                        console.error(`error on\n${extension.id}_${opcode}\n`,block.type || block.blockType)
+                        blockData = { kind: "label", text: `error on\n${extension.id}_${opcode}\nBlocktype is ${block.type || block.blockType}` };
+                    }
                 }
             }
 
@@ -664,6 +661,7 @@
         addMenu(menuName, menuDat, extension, extensionClass) {
             if (!menuDat.items) return;
 
+            const extensionManager = this;
             const menuID = `${extension.id}_${menuName}`;
 
             if (typeof menuDat.items == "string") {
@@ -687,7 +685,7 @@
                             {
                                 type: "input_dummy",
                                 //Add this seperator to properly get the menu.
-                                name: `${menuID}_____VALUE`,
+                                name: `scDynamicMenu_${menuID}_____VALUE`,
                                 //We want to make this a function that derives from the extension's object.
                                 //Or else we will explode.
                                 function: function () {
@@ -703,7 +701,16 @@
                     });
 
                     sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                        return [`${block.getFieldValue(`${menuID}_____VALUE`)}`, 0];
+                        return [
+                            `${(() => {
+                                let value = block.getFieldValue(`scDynamicMenu_${menuID}_____VALUE`);
+                                if (isNaN(Number(value))) {
+                                    value = `"${value.replaceAll('"', '\\"')}"`;
+                                }
+                                return value;
+                            })()}`,
+                            0,
+                        ];
                     };
                 } else {
                     //Add the data
@@ -749,7 +756,16 @@
                 });
 
                 sugarcube.generator.forBlock["__sugarcube_menu_" + menuID] = (block, generator) => {
-                    return [`${block.getFieldValue("VALUE")}`, 0];
+                    return [
+                        `${(() => {
+                            let value = block.getFieldValue("VALUE");
+                            if (isNaN(Number(value))) {
+                                value = `"${value.replaceAll('"', '\\"')}"`;
+                            }
+                            return value;
+                        })()}`,
+                        0,
+                    ];
                 };
             }
             //Static menus with no reporters
@@ -843,147 +859,143 @@
         }
 
         registerExtension(extension) {
-            try {
-                const myInfo = extension.getInfo();
+            const myInfo = extension.getInfo();
+            extension.__precompile = myInfo.precompile;
 
-                if (sugarcube.extensionInstances[myInfo.id]) return;
+            if (sugarcube.extensionInstances[myInfo.id]) return;
 
-                sugarcube.extensionInstances[myInfo.id] = extension;
+            sugarcube.extensionInstances[myInfo.id] = extension;
 
-                //Snatch the extension's ID
-                const id = myInfo.id + "_";
+            //If we aren't in the editor stop here
+            if (!coffeeEngine.isEditor) return;
 
-                //Add the block styles for this category. Each block can have its own override.
-                const convertedColors = sugarcube.blockColorFunction(
-                    myInfo.color1 || "#0fbd8c", 
-                    myInfo.color2 || myInfo.color1 || "#0b8e69", 
-                    myInfo.color3 || myInfo.color1 || "#0b8e69",
-                    myInfo.color4,
-                    myInfo.color5
-                );
+            //Snatch the extension's ID
+            const id = myInfo.id + "_";
 
-                sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
-                    colourPrimary: convertedColors[0],
-                    colourSecondary: convertedColors[1],
-                    colourTertiary: convertedColors[2],
-                    colourQuaternary: convertedColors[3],
-                    colourQuinary: convertedColors[4],
-                    useBlackWhiteFields: convertedColors[5],
-                    colourIdentifier: convertedColors[6] || convertedColors[0],
-                    useEverywhere: convertedColors[7],
-                    hat: myInfo.hat || "cap",
-                };
+            //Add the block styles for this category. Each block can have its own override.
+            const convertedColors = sugarcube.blockColorFunction(myInfo.color1 || "#0fbd8c", myInfo.color2 || myInfo.color1 || "#0b8e69", myInfo.color3 || myInfo.color1 || "#0b8e69", myInfo.color4, myInfo.color5);
 
-                //Define the category definition here
-                let createdContentData = {
-                    kind: "category",
-                    name: myInfo.name,
-                    id: myInfo.id,
-                    colour: myInfo.color1 || "#0fbd8c",
-                    colour_secondary: myInfo.color3 || myInfo.color1 || "#0b8e69",
-                    menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
-                    showColor: myInfo.showColor,
-                    contents: [],
-                };
+            sugarcube.blocklyTheme.blockStyles[id + "blocks"] = {
+                colourPrimary: convertedColors[0],
+                colourSecondary: convertedColors[1],
+                colourTertiary: convertedColors[2],
+                colourQuaternary: convertedColors[3],
+                colourQuinary: convertedColors[4],
+                useBlackWhiteFields: convertedColors[5],
+                colourIdentifier: convertedColors[6] || convertedColors[0],
+                useEverywhere: convertedColors[7],
+                hat: myInfo.hat || "cap",
+            };
 
-                //Do the context menus
-                if (myInfo.contextMenus) {
-                    Object.keys(myInfo.contextMenus).forEach((contextMenu) => {
-                        this.addContextMenu(contextMenu, myInfo.contextMenus[contextMenu], myInfo, extension);
-                    });
-                }
+            //Define the category definition here
+            let createdContentData = {
+                kind: "category",
+                name: myInfo.name,
+                id: myInfo.id,
+                colour: myInfo.color1 || "#0fbd8c",
+                colour_secondary: myInfo.color3 || myInfo.color1 || "#0b8e69",
+                menuIconURI: myInfo.menuIconURI || myInfo.blockIconURI,
+                showColor: myInfo.showColor,
+                contents: [],
+            };
 
-                //Create the fields
-                if (myInfo.fields) {
-                    Object.keys(myInfo.fields).forEach((field) => {
-                        //colours
-                        if (!myInfo.fields[field].color1) {
-                            myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
-                        }
-                        if (!myInfo.fields[field].color2) {
-                            (myInfo.fields[field].color2 = myInfo.color3), myInfo.color2 || myInfo.color1 || "#0b8e69";
-                        }
-
-                        sugarcube.fields.makeFromFunction(myInfo.id, myInfo.fields[field], id + field);
-                    });
-                }
-
-                //Create the mutators
-                if (myInfo.mutators) {
-                    Object.keys(myInfo.mutators).forEach((mutator) => {
-                        sugarcube.mutators.makeFromFunction(myInfo.id, myInfo.mutators[mutator].serialize, myInfo.mutators[mutator].deserialize, id + mutator);
-                    });
-                }
-
-                //Loop Through Menus
-                if (myInfo.menus) {
-                    Object.keys(myInfo.menus).forEach((menu) => {
-                        this.addMenu(menu, myInfo.menus[menu], myInfo, extension);
-                    });
-                }
-
-                //Loop through each block deciding its fate!
-                extension.defaultBlockInfo = [];
-                this.blockDefs[myInfo.id] = {};
-                myInfo.blocks.forEach((block) => {
-                    let blockDat = this.addBlock(block, myInfo);
-
-                    //Context menu stuff
-                    if (block.contextMenu) {
-                        //Switch the types
-                        switch (typeof block.contextMenu) {
-                            case "string":
-                                if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`].push(`${myInfo.id}_${block.opcode}`);
-                                break;
-
-                            case "object":
-                                if (Array.isArray(block.contextMenu)) {
-                                    block.contextMenu.forEach((menu) => {
-                                        if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`].push(`${myInfo.id}_${block.opcode}`);
-                                    });
-                                }
-                                break;
-
-                            default:
-                                break;
-                        }
-                    }
-
-                    if (blockDat) {
-                        createdContentData.contents.push(blockDat);
-                    }
+            //Do the context menus
+            if (myInfo.contextMenus) {
+                Object.keys(myInfo.contextMenus).forEach((contextMenu) => {
+                    this.addContextMenu(contextMenu, myInfo.contextMenus[contextMenu], myInfo, extension);
                 });
+            }
 
-                extension.defaultBlockInfo = createdContentData.contents;
+            //Create the fields
+            if (myInfo.fields) {
+                Object.keys(myInfo.fields).forEach((field) => {
+                    //colours
+                    if (!myInfo.fields[field].color1) {
+                        myInfo.fields[field].color1 = myInfo.color1 || "#0fbd8c";
+                    }
+                    if (!myInfo.fields[field].color2) {
+                        myInfo.fields[field].color2 = myInfo.color3 || myInfo.color2 || myInfo.color1 || "#0b8e69";
+                    }
 
-                sugarcube.toolbox.contents.push(createdContentData);
+                    sugarcube.fields.makeFromFunction(myInfo.id, myInfo.fields[field], id + field);
+                });
+            }
 
-                if (myInfo.updateBlocks) {
-                    this.updateFunctions[myInfo.id] = () => {
-                        const generatedExtras = sugarcube.extensionInstances[myInfo.id][myInfo.updateBlocks]() || [];
+            //Create the mutators
+            if (myInfo.mutators) {
+                Object.keys(myInfo.mutators).forEach((mutator) => {
+                    sugarcube.mutators.makeFromFunction(myInfo.id, myInfo.mutators[mutator].serialize, myInfo.mutators[mutator].deserialize, id + mutator);
+                });
+            }
 
-                        //Make sure we are getting an array
-                        if (Array.isArray(generatedExtras)) {
-                            //If so parse each block.
-                            for (let genIndex = 0; genIndex < generatedExtras.length; genIndex++) {
-                                generatedExtras[genIndex] = this.addBlock(generatedExtras[genIndex], myInfo);
+            //Loop Through Menus
+            if (myInfo.menus) {
+                Object.keys(myInfo.menus).forEach((menu) => {
+                    this.addMenu(menu, myInfo.menus[menu], myInfo, extension);
+                });
+            }
+
+            //Loop through each block deciding its fate!
+            extension.defaultBlockInfo = [];
+            this.blockDefs[myInfo.id] = {};
+            myInfo.blocks.forEach((block) => {
+                let blockDat = this.addBlock(block, myInfo);
+
+                //Context menu stuff
+                if (block.contextMenu) {
+                    //Switch the types
+                    switch (typeof block.contextMenu) {
+                        case "string":
+                            if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${block.contextMenu}`].push(`${myInfo.id}_${block.opcode}`);
+                            break;
+
+                        case "object":
+                            if (Array.isArray(block.contextMenu)) {
+                                block.contextMenu.forEach((menu) => {
+                                    if (sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`]) sugarcube.contextMenuBlockCorrolations[`${myInfo.id}_${menu}`].push(`${myInfo.id}_${block.opcode}`);
+                                });
                             }
+                            break;
 
-                            //Then concat our two things into a freakish monstrosity, and update the toolbox.
-                            sugarcube.toolbox.contents[this.getExtensionIndex(myInfo.id)].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                        default:
+                            break;
+                    }
+                }
+
+                if (blockDat) {
+                    createdContentData.contents.push(blockDat);
+                }
+            });
+
+            extension.defaultBlockInfo = createdContentData.contents;
+
+            sugarcube.toolbox.contents.push(createdContentData);
+
+            if (myInfo.updateBlocks) {
+                this.updateFunctions[myInfo.id] = () => {
+                    const generatedExtras = sugarcube.extensionInstances[myInfo.id][myInfo.updateBlocks]() || [];
+
+                    //Make sure we are getting an array
+                    if (Array.isArray(generatedExtras)) {
+                        //If so parse each block.
+                        for (let genIndex = 0; genIndex < generatedExtras.length; genIndex++) {
+                            generatedExtras[genIndex] = this.addBlock(generatedExtras[genIndex], myInfo);
                         }
-                    };
-                }
 
-                if (sugarcube.workspace) {
-                    sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+                        //Then concat our two things into a freakish monstrosity, and update the toolbox.
+                        const extensionIndex = this.getExtensionToolboxIndex(myInfo.id);
+                        if (extensionIndex < 0) return;
+                        sugarcube.filtered.contents[extensionIndex].contents = extension.defaultBlockInfo.concat(generatedExtras);
+                    }
+                };
+            }
 
-                    sugarcube.workspace.getToolbox().refreshSelection();
+            if (sugarcube.workspace) {
+                sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
-                    sugarcube.refreshTheme();
-                }
-            } catch (error) {
-                console.error("Error while importing sugarcube extension : " + error);
+                sugarcube.workspace.getToolbox().refreshSelection();
+
+                sugarcube.refreshTheme();
             }
         }
 
@@ -992,6 +1004,16 @@
             return sugarcube.toolbox.contents.indexOf(
                 //Get the extension's def
                 sugarcube.toolbox.contents.find((item) => {
+                    return item.id == extensionID;
+                })
+            );
+        }
+
+        getExtensionToolboxIndex(extensionID) {
+            //Find its index
+            return sugarcube.filtered.contents.indexOf(
+                //Get the extension's def
+                sugarcube.filtered.contents.find((item) => {
                     return item.id == extensionID;
                 })
             );
@@ -1012,7 +1034,7 @@
                 delete this.updateFunctions[extensionID];
 
                 if (sugarcube.workspace) {
-                    sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+                    sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
                     sugarcube.workspace.getToolbox().refreshSelection();
                 }
@@ -1034,7 +1056,7 @@
                 this.updateFunctions[extensionID]();
             }
 
-            sugarcube.workspace.updateToolbox(sugarcube.toolbox);
+            sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
             sugarcube.workspace.getToolbox().refreshSelection();
         }

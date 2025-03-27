@@ -166,7 +166,7 @@
         const loadFolder = document.getElementById("loadFolder");
 
         //Our indexedDB store
-        const store = editor.indexedDB.getStore("recentprojects",false);
+        const store = editor.indexedDB.getStore("recentprojects", false);
 
         //For starting a new project
         newButton.onclick = () => {
@@ -239,7 +239,7 @@
             holder.onclick = () => {
                 console.log(projectJSON);
                 project.load(projectJSON.type, projectJSON.handle);
-            }
+            };
 
             recentProjectsPage.appendChild(holder);
 
@@ -250,13 +250,12 @@
         if (editor.safeties.filePermissions || editor.safeties.folderPerimissions) {
             store.getKey("projects").then((result) => {
                 if (result) {
-                    result.forEach(project => {
+                    result.forEach((project) => {
                         addRecentProject(project);
                     });
                 }
             });
-        }
-        else {
+        } else {
             recentProjectsPage.innerHTML = `<h2>${editor.language["engine.home.recentProjectsNotAvailable"]}</h2>`;
         }
     };

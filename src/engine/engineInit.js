@@ -3,17 +3,26 @@ window.coffeeEngine = {
         consoleUpdate: [],
         fileSystemUpdate: [],
         extensionDispose: [],
+        desktopInput: [],
     },
+    broadcasts: {},
     runtime: {},
     classes: {},
+    collisionTypes: {
+        SAT:false,
+        POINT:true,
+    },
     resources: {},
     renderer: {
         nodesRendered: 0,
-        sprites:{}
+        sprites: {},
     },
     preloadFunctions: {},
     nodeRegister: {},
-    isEditor:false,
+    collisionGroup: {
+        "default":{"default": true},
+    },
+    isEditor: false,
     //Just a simple node registrar thing
     registerNode: (node, name, parentNode) => {
         //Return if node already exists
@@ -55,7 +64,7 @@ window.coffeeEngine = {
         if (typeof coffeeEngine.events[event] != "object") return;
 
         if (coffeeEngine.events[event].includes(func)) {
-            coffeeEngine.events[event].slice(coffeeEngine.events[event].indexOf(func));
+            coffeeEngine.events[event].splice(coffeeEngine.events[event].indexOf(func), 1);
         }
     },
 
@@ -66,4 +75,28 @@ window.coffeeEngine = {
             coffeeEngine.events[event][eventFunc](data);
         }
     },
+
+    //Differences between broadcasts and events. Broadcasts are built specifically for sending signals between nodes. Broadcasts have NO arguments
+    addBroadcast: (broadcast, func) => {
+        if (!coffeeEngine.broadcasts[broadcast]) coffeeEngine.broadcasts[broadcast] = [];
+
+        coffeeEngine.broadcasts[broadcast].push(func);
+        return func;
+    },
+
+    removeBroadcast: (broadcast, func) => {
+        if (typeof coffeeEngine.broadcasts[broadcast] != "object") return;
+
+        if (coffeeEngine.broadcasts[broadcast].includes(func)) {
+            coffeeEngine.broadcasts[broadcast].splice(coffeeEngine.broadcasts[broadcast].indexOf(func), 1);
+        }
+    },
+
+    sendBroadcast: (broadcast) => {
+        if (typeof coffeeEngine.broadcasts[broadcast] != "object") return;
+
+        for (const broadcastFunc in coffeeEngine.broadcasts[broadcast]) {
+            coffeeEngine.broadcasts[broadcast][broadcastFunc]();
+        }
+    }
 };

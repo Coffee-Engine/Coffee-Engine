@@ -3,7 +3,6 @@
         REPORTER: "reporter",
 
         HAT: "hat",
-        PROCEDURE_DEFINITION: "procedure_def",
 
         BOOLEAN: "boolean",
 
@@ -46,7 +45,7 @@
 
         DUMMY: "dummy",
 
-        ANGLE: "__sugarcube_field_motion_Angle",
+        ANGLE: "angle",
 
         STATEMENT: "statement",
 
@@ -54,24 +53,7 @@
         ARRAY: "array",
 
         REFERENCE: "reference",
-    };
 
-    sugarcube.ArgumentDefaultValues = {
-        boolean: false,
-
-        multiline: "Hello\nWorld!",
-
-        number: 0,
-
-        color: "#ff0000",
-    };
-
-    sugarcube.ArgumentShadowConversions = {
-        string: "__sugarcube_string_reporter",
-        multiline: "__sugarcube_multiline_string_reporter",
-
-        number: "__sugarcube_number_reporter",
-
-        color: "__sugarcube_color_reporter",
+        HOLE: "hole",
     };
 })();

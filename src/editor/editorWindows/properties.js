@@ -12,7 +12,7 @@
         }
 
         //Gets the proper listing for object's properties
-        refreshListing(myself, {target, type, path, unique}) {
+        refreshListing(myself, { target, type, path, unique }, repeat) {
             myself.Content.innerHTML = "";
 
             //? Just hope to Zues this works
@@ -21,11 +21,11 @@
             //The two things we ?Maybe? need;
             let properties = target;
             let onchange;
-            
+
             //Allow for the property panel on files to refresh the parental listing
             let refreshListing = () => {
-                myself.refreshListing(myself,{target: target, type: type, path: path});
-            }
+                myself.refreshListing(myself, { target: target, type: type, path: path }, true);
+            };
 
             //If we are a file display our name in the property panel
             //If our file has an editor get the property
@@ -35,12 +35,11 @@
                 const extension = split[split.length - 1];
 
                 //Declare what file we are editing inside of the div
-                myself.Content.innerHTML = `<h2 style="text-align:center;">${target.name}</h2><h3 style="text-align:center;">${Math.floor(target.size / 100)/10}KB</h3>`;
-                
+                myself.Content.innerHTML = `<h2 style="text-align:center;">${target.name}</h2><h3 style="text-align:center;">${Math.floor(target.size / 100) / 10}KB</h3>`;
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    properties = editor.filePropertyEditors[extension]({panel:myself, refreshListing:refreshListing});
+                    properties = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing, path: path });
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyDef, propertyValue, node) => {
@@ -51,13 +50,13 @@
                     //Read and parse if nessasary? Necesary? needed... needed.
                     myself.fileReader.onload = () => {
                         myself.ParsedObject = JSON.parse(myself.fileReader.result) || {};
-                        this.displayProperties(myself, {read: myself.ParsedObject, target: target, properties: properties}, onchange);
-                    }
+                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange, !repeat);
+                    };
 
                     //Check to make sure we don't already have this parsed and read
                     if (myself.Current != target) myself.fileReader.readAsText(target);
                     else {
-                        this.displayProperties(myself, {read: myself.ParsedObject, target: target, properties: properties}, onchange);
+                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange, !repeat);
                     }
                     myself.Current = target;
                 }
@@ -66,11 +65,11 @@
             }
 
             //If we are a scene node just display our properties
-            this.displayProperties(myself, {read: target, properties: properties}, onchange);
+            this.displayProperties(myself, { read: target, properties: properties }, onchange, !repeat);
         }
 
         //Actually displays the properties of an object
-        displayProperties(myself, {read, target, properties}, onchange) {
+        displayProperties(myself, { read, target, properties }, onchange, initial) {
             target = target || read;
 
             //If there is no property editor for this thing
@@ -85,7 +84,7 @@
             }
 
             //Get properties from our node
-            properties.getProperties().forEach((property) => {
+            properties.getProperties(read, initial).forEach((property) => {
                 //Create our element
                 const element = document.createElement("div");
                 element.style.margin = "2px";
@@ -128,12 +127,25 @@
             input.style.minWidth = "0px";
             input.style.borderLeftColor = color;
 
-            input.value = nodeValue[partition];
-            input.onchange = () => {
-                node[property.name][partition] = input.value;
-                input.value = nodeValue[partition];
-                if (onchange) onchange(property, node[property.name], node);
-            };
+            //Convert it
+            input.value = Number(nodeValue[partition]);
+            if (isNaN(input.value)) input.value = 0;
+            //Turn it to degrees if it is in radians
+            if (property.isRadians) input.value = coffeeEngine.rad2Deg(input.value);
+            if (property.isRadians) {
+                input.onchange = () => {
+                    node[property.name][partition] = coffeeEngine.deg2Rad(input.value);
+                    input.value = coffeeEngine.rad2Deg(nodeValue[partition]);
+                    if (onchange) onchange(property, node[property.name], node);
+                };
+            }
+            else {
+                input.onchange = () => {
+                    node[property.name][partition] = input.value;
+                    input.value = nodeValue[partition];
+                    if (onchange) onchange(property, node[property.name], node);
+                };
+            }
 
             return input;
         }
@@ -141,14 +153,13 @@
         propertyDisplays = {
             boolean: (node, property, onchange) => {
                 const input = document.createElement("input");
-                input.type = "checkbox",
-                input.checked = node[property.name || "name"] || false;
+                (input.type = "checkbox"), (input.checked = node[property.name || "name"] || false);
 
                 input.onchange = () => {
                     node[property.name] = input.checked;
                     input.checked = node[property.name || "name"];
                     if (onchange) onchange(property, node[property.name], node);
-                }
+                };
 
                 return input;
             },
@@ -302,7 +313,7 @@
                 input.style.transform = "translate(0%,50%)";
 
                 //Check for small range and properly convert
-                if (property.smallRange) input.color = coffeeEngine.ColorMath.RGBtoHex({r:node[property.name || "name"][0] * 255, g:node[property.name || "name"][1] * 255, b:node[property.name || "name"][2] * 255} || {r:0,g:0, b:255});
+                if (property.smallRange) input.color = coffeeEngine.ColorMath.RGBtoHex({ r: node[property.name || "name"][0] * 255, g: node[property.name || "name"][1] * 255, b: node[property.name || "name"][2] * 255 } || { r: 0, g: 0, b: 255 });
                 else input.color = node[property.name || "name"] || "#0000ff";
 
                 input.onchange = () => {
@@ -310,8 +321,7 @@
                     if (property.smallRange) {
                         const split = coffeeEngine.ColorMath.HexToRGB(input.color);
                         node[property.name] = [split.r / 255, split.g / 255, split.b / 255];
-                    }
-                    else {
+                    } else {
                         node[property.name] = input.color;
                     }
 
@@ -329,7 +339,7 @@
                 input.translucency = true;
 
                 //Check for small range and properly convert
-                if (property.smallRange) input.color = coffeeEngine.ColorMath.RGBtoHex({r:node[property.name || "name"][0] * 255, g:node[property.name || "name"][1] * 255, b:node[property.name || "name"][2] * 255, b:node[property.name || "name"][3] * 255} || {r:0,g:0, b:255, a:255});
+                if (property.smallRange) input.color = coffeeEngine.ColorMath.RGBtoHex({ r: node[property.name || "name"][0] * 255, g: node[property.name || "name"][1] * 255, b: node[property.name || "name"][2] * 255, b: node[property.name || "name"][3] * 255 } || { r: 0, g: 0, b: 255, a: 255 });
                 else input.color = node[property.name || "name"] || "#0000ff";
 
                 input.onchange = () => {
@@ -337,8 +347,7 @@
                     if (property.smallRange) {
                         const split = coffeeEngine.ColorMath.HexToRGB(input.color);
                         node[property.name] = [split.r / 255, split.g / 255, split.b / 255, split.a / 255];
-                    }
-                    else {
+                    } else {
                         node[property.name] = input.color;
                     }
 

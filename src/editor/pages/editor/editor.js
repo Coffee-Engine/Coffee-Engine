@@ -251,7 +251,7 @@
                               `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
                     }
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}</dropdown-item>
-                    <dropdown-item class="dropdown-menu-fill-down"  value="settings">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down"  value="importFile">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
                 </dropdown-menu>
                 <dropdown-menu id="coffeeEngineWindowDropdown">
                     ${editor.language["editor.dropdown.window"]}
@@ -279,10 +279,10 @@
         editor.__setupDropdownFunctionality();
 
         //Our indexedDB store
-        const store = editor.indexedDB.getStore("recentprojects",false);
+        const store = editor.indexedDB.getStore("recentprojects", false);
 
         editor.updateProjectDB = () => {
-            project.getFile("project.json").then(result => {
+            project.getFile("project.json").then((result) => {
                 const fileReader = new FileReader();
 
                 //Load our projectJSON
@@ -290,36 +290,37 @@
                     //Get our declaration and JSON
                     const projectJSON = JSON.parse(fileReader.result);
                     const projectDeclaration = {
-                        handle: (project.isFolder) ? project.directoryHandle : project.fileHandle,
-                        type: (project.isFolder) ? "folder" : "file",
+                        handle: project.isFolder ? project.directoryHandle : project.fileHandle,
+                        type: project.isFolder ? "folder" : "file",
                         modified: Date.now(),
-                        Name:projectJSON.name,
-                        projectJSON:fileReader.result
+                        Name: projectJSON.name,
+                        projectJSON: fileReader.result,
                     };
 
                     //Then store it, detecting if the store exists or not
-                    store.getKey("projects").then(result => {
+                    store.getKey("projects").then((result) => {
                         if (result) {
                             //Delete any copies of this project
-                            const existing = result.find(item => {return item.projectJSON == fileReader.result;});
+                            const existing = result.find((item) => {
+                                return item.projectJSON == fileReader.result;
+                            });
                             if (existing) {
-                                result.splice(result.indexOf(existing),1);
+                                result.splice(result.indexOf(existing), 1);
                             }
 
                             //Add our project and update our key
                             result.unshift(projectDeclaration);
                             store.setKey("projects", result);
-                        }
-                        else {
+                        } else {
                             //Initilize our key
                             store.setKey("projects", [projectDeclaration]);
                         }
-                    })
-                }
+                    });
+                };
 
                 fileReader.readAsText(result);
-            })
-        }
+            });
+        };
 
         //Load sugarcube blocks
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/motion.js");
@@ -351,9 +352,9 @@
         );
 
         //Open the user into the defaultScene
-        project.getFile("scenes/default.scene").then(file => {
+        project.getFile("scenes/default.scene").then((file) => {
             if (!file) return;
-            coffeeEngine.runtime.currentScene.openScene("scenes/default.scene")
-        })
+            coffeeEngine.runtime.currentScene.openScene("scenes/default.scene");
+        });
     };
 })();

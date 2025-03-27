@@ -24,11 +24,142 @@
                         },
                         hideFromPalette: true,
                     },
+                    //General nodes
+                    {
+                        opcode: "setScale3D",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScale3D"],
+                        filter: ["Node3D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        },
+                    },
+                    {
+                        opcode: "setScale2D",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScale2D"],
+                        filter: ["Node2D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "setScaleX",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScaleX"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setScaleY",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScaleY"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setScaleZ",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScaleZ"],
+                        filter: ["Node3D"],
+                        arguments: {
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "changeScaleX",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.changeScaleX"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "changeScaleY",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.changeScaleY"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "changeScaleZ",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.changeScaleZ"],
+                        filter: ["Node3D"],
+                        arguments: {
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "getScaleX",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getScaleX"],
+                        filter: ["Node2D", "Node3D"],
+                    },
+                    {
+                        opcode: "getScaleY",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getScaleY"],
+                        filter: ["Node2D", "Node3D"],
+                    },
+                    {
+                        opcode: "getScaleZ",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getScaleZ"],
+                        filter: ["Node3D"],
+                    },
+                    //These durn dere actually rendered objects 😠
                     {
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setSprite"],
-                        filter: ["Sprite"],
+                        filter: ["Sprite", "Billboard"],
                         arguments: {
                             image: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -37,10 +168,90 @@
                         },
                     },
                     {
+                        opcode: "getSprite",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getSprite"],
+                        filter: ["Sprite", "Billboard"],
+                    },
+                    {
+                        opcode: "setMesh",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setMesh"],
+                        filter: ["MeshDisplay"],
+                        arguments: {
+                            mesh: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Mesh",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getMesh",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getMesh"],
+                        filter: ["MeshDisplay"],
+                    },
+                    //Lights
+                    {
+                        opcode: "setLightColor",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setLightColor"],
+                        filter: ["PointLight", "SpotLight"],
+                        arguments: {
+                            color: {
+                                type: sugarcube.ArgumentType.COLOR,
+                                defaultValue: "#0000ff",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getLightColor",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getLightColor"],
+                        filter: ["PointLight", "SpotLight"],
+                    },
+                    {
+                        opcode: "setRadius",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setRadius"],
+                        filter: ["PointLight", "SpotLight"],
+                        arguments: {
+                            radius: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 5,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getRadius",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getRadius"],
+                        filter: ["PointLight", "SpotLight"],
+                    },
+                    {
+                        opcode: "setFalloff",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setFalloff"],
+                        filter: ["SpotLight"],
+                        arguments: {
+                            falloff: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 7.5,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getFalloff",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getRadius"],
+                        filter: ["SpotLight"],
+                    },
+                    "---",
+                    {
                         opcode: "setTint",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setTint"],
-                        filter: ["Sprite"],
+                        filter: ["Sprite", "Billboard", "MeshDisplay"],
                         arguments: {
                             tint: {
                                 type: sugarcube.ArgumentType.COLOR,
@@ -61,10 +272,18 @@
                         //Stuff
                         initilize: "color_Init",
                         render: "color_Render",
+
+                        noQuoteString: true,
                     },
                     Image: {
                         acceptReporters: true,
-                        editor: "file_Editor",
+                        editor: "image_Editor",
+
+                        initilize: "file_Init",
+                    },
+                    Mesh: {
+                        acceptReporters: true,
+                        editor: "mesh_Editor",
 
                         initilize: "file_Init",
                     },
@@ -72,9 +291,138 @@
             };
         }
 
+        setScale3D({ x, y, z }, util) {
+            if (util.target.scale) {
+                util.target.scale.x = sugarcube.cast.toNumber(x);
+                util.target.scale.y = sugarcube.cast.toNumber(y);
+                util.target.scale.z = sugarcube.cast.toNumber(z);
+            }
+        }
+
+        setScale2D({ x, y }, util) {
+            if (util.target.scale) {
+                util.target.scale.x = sugarcube.cast.toNumber(x);
+                util.target.scale.y = sugarcube.cast.toNumber(y);
+            }
+        }
+
+        setScaleX({ x }, util) {
+            if (util.target.scale) {
+                util.target.scale.x = sugarcube.cast.toNumber(x);
+            }
+        }
+
+        setScaleY({ y }, util) {
+            if (util.target.scale) {
+                util.target.scale.y = sugarcube.cast.toNumber(y);
+            }
+        }
+
+        setScaleZ({ z }, util) {
+            if (util.target.scale) {
+                util.target.scale.z = sugarcube.cast.toNumber(z);
+            }
+        }
+
+        changeScaleX({ x }, util) {
+            if (util.target.scale) {
+                util.target.scale.x += sugarcube.cast.toNumber(x);
+            }
+        }
+
+        changeScaleY({ y }, util) {
+            if (util.target.scale) {
+                util.target.scale.y += sugarcube.cast.toNumber(y);
+            }
+        }
+
+        changeScaleZ({ z }, util) {
+            if (util.target.scale) {
+                util.target.scale.z += sugarcube.cast.toNumber(z);
+            }
+        }
+
+        getScaleX(args, util) {
+            if (util.target.scale) {
+                return util.target.scale.x;
+            }
+            return 0;
+        }
+
+        getScaleY(args, util) {
+            if (util.target.scale) {
+                return util.target.scale.y;
+            }
+            return 0;
+        }
+
+        getScaleZ(args, util) {
+            if (util.target.scale) {
+                return util.target.scale.z;
+            }
+            return 0;
+        }
+
+        //Renderable objects
         setSprite({ image }, util) {
             //Hope to god its an image
-            util.target.spritePath = image;
+            util.target.spritePath = sugarcube.cast.toString(image);
+        }
+
+        getSprite(args, util) {
+            return sugarcube.cast.toString(util.target.spritePath);
+        }
+
+        setMesh({ mesh }, util) {
+            //Hope to god its a mesh
+            util.target.meshPath = sugarcube.cast.toString(mesh);
+        }
+
+        getMesh(args, util) {
+            return sugarcube.cast.toString(util.target.meshPath);
+        }
+
+        //Lights
+        setLightColor({ color }, util) {
+            //Convert it to rgb
+            color = sugarcube.cast.toString(color);
+            const convertedColor = coffeeEngine.ColorMath.HexToRGB(color.startsWith("#") ? color : "#000000");
+
+            //then set it
+            if (util.target.color) {
+                util.target.color = [convertedColor.r / 255, convertedColor.g / 255, convertedColor.b / 255];
+            }
+        }
+
+        getLightColor(args, util) {
+            //If we have the color convert and return, if not return black
+            if (util.target.color) {
+                const convertedColor = coffeeEngine.ColorMath.RGBtoHex({
+                    r: util.target.color[0] * 255,
+                    g: util.target.color[1] * 255,
+                    b: util.target.color[2] * 255,
+                });
+
+                return convertedColor;
+            }
+
+            return "#000000";
+        }
+
+        setRadius({ radius }, util) {
+            util.target.radius = sugarcube.cast.toNumber(radius);
+        }
+
+        getRadius(args, util) {
+            return sugarcube.cast.toNumber(util.target.radius);
+        }
+
+        setFalloff({ falloff }, util) {
+            util.target.falloff = sugarcube.cast.toNumber(falloff);
+        }
+
+        getFalloff(args, util) {
+            return sugarcube.cast.toNumber(util.target.falloff);
         }
 
         color_Init(field) {
@@ -100,14 +448,11 @@
             field.createTextElement_();
         }
 
-        file_Editor(field) {
-            //Its like some sort of loading. :trol:
+        //Hmm its like some sort of loadal, heh loading model. get it?
+        callLoadal(field) {
             const newLoadal = new editor.windows.modalFileExplorer(400, 400);
 
             newLoadal.__moveToTop();
-
-            //Note that gifs will not be animated, they do come as non animated too. Like PNGs
-            newLoadal.acceptTypes = "png,jpeg,jpg,webp,bmp,gif,svg";
 
             const bounding = field.borderRect_.getBoundingClientRect();
             newLoadal.x = bounding.x + bounding.width / 2;
@@ -115,6 +460,22 @@
             newLoadal.onFileSelected = (path) => {
                 field.value = path;
             };
+
+            return newLoadal;
+        }
+
+        image_Editor(field) {
+            const loadal = this.callLoadal(field);
+
+            //Note that gifs will not be animated, they do come as non animated too. Like PNGs
+            loadal.acceptTypes = "png,jpeg,jpg,webp,bmp,gif,svg";
+        }
+
+        mesh_Editor(field) {
+            const loadal = this.callLoadal(field);
+
+            //Silly guys
+            loadal.acceptTypes = "obj,dae,glb";
         }
     }
 

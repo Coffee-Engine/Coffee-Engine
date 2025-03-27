@@ -130,7 +130,6 @@
                         },
                     },
                     "---",
-
                     {
                         opcode: "xposition",
                         type: sugarcube.BlockType.REPORTER,
@@ -276,9 +275,9 @@
                     direction: {
                         acceptReporters: true,
                         items: [
-                            { text: editor.language["sugarcube.motion.yaw"], value: "yaw" },
-                            { text: editor.language["sugarcube.motion.pitch"], value: "pitch" },
-                            { text: editor.language["sugarcube.motion.roll"], value: "roll" },
+                            { text: editor.language["sugarcube.motion.yaw"], value: "y" },
+                            { text: editor.language["sugarcube.motion.pitch"], value: "x" },
+                            { text: editor.language["sugarcube.motion.roll"], value: "z" },
                         ],
                     },
                 },
@@ -300,10 +299,142 @@
             };
         }
 
-        movesteps(args, util) {
-            util.x += util.forward.x * args.steps;
-            util.y += util.forward.y * args.steps;
-            util.z += util.forward.z * args.steps;
+        //General Movement
+        movesteps({ steps }, util) {
+            //Make sure we cast steps to a number and that the matrix for the object actually exists
+            const matrix = util.target.matrix;
+            steps = sugarcube.cast.toNumber(steps);
+            if (matrix) {
+                util.x += matrix[0][2] * sugarcube.cast.toNumber(steps);
+                util.y += matrix[1][2] * sugarcube.cast.toNumber(steps);
+                util.z += matrix[2][2] * sugarcube.cast.toNumber(steps);
+            }
+        }
+
+        gotoxy({ x, y }, util) {
+            if (util.target.position) {
+                util.target.position.x = sugarcube.cast.toNumber(x);
+                util.target.position.y = sugarcube.cast.toNumber(y);
+            }
+        }
+
+        gotoxyz({ x, y, z }, util) {
+            if (util.target.position) {
+                util.target.position.x = sugarcube.cast.toNumber(x);
+                util.target.position.y = sugarcube.cast.toNumber(y);
+                util.target.position.z = sugarcube.cast.toNumber(z);
+            }
+        }
+
+        setx({ x }, util) {
+            if (util.target.position) util.target.position.x = sugarcube.cast.toNumber(x) || 0;
+        }
+
+        sety({ y }, util) {
+            if (util.target.position) util.target.position.y = sugarcube.cast.toNumber(y) || 0;
+        }
+
+        setz({ z }, util) {
+            if (util.target.position) util.target.position.z = sugarcube.cast.toNumber(z) || 0;
+        }
+
+        changex({ x }, util) {
+            if (util.target.position) util.target.position.x += sugarcube.cast.toNumber(x) || 0;
+        }
+
+        changey({ y }, util) {
+            if (util.target.position) util.target.position.y += sugarcube.cast.toNumber(y) || 0;
+        }
+
+        changez({ z }, util) {
+            if (util.target.position) util.target.position.z += sugarcube.cast.toNumber(z) || 0;
+        }
+
+        //Position Getters
+        xposition(args, util) {
+            if (!util.target.position) return 0;
+            return sugarcube.cast.toNumber(util.target.position.x);
+        }
+
+        yposition(args, util) {
+            if (!util.target.position) return 0;
+            return sugarcube.cast.toNumber(util.target.position.y);
+        }
+
+        zposition(args, util) {
+            if (!util.target.position) return 0;
+            return sugarcube.cast.toNumber(util.target.position.z);
+        }
+
+        //General Rotation
+        turnAround2D({ degrees }, util) {
+            if (typeof util.target.rotation == "number") {
+                util.target.rotation += coffeeEngine.deg2Rad(sugarcube.cast.toNumber(degrees));
+            }
+        }
+
+        setrotation2D({ degrees }, util) {
+            if (typeof util.target.rotation == "number") {
+                util.target.rotation = coffeeEngine.deg2Rad(sugarcube.cast.toNumber(degrees));
+            }
+        }
+
+        lookAtXY({ x, y }, util) {
+            if (typeof util.target.rotation == "number") {
+                const myPosition = util.target.position;
+                const targetPosition = util.target.mixedMatrix.inverse().multiplyVector(new coffeeEngine.vector3(x,y,0));
+
+                const rotation = -Math.atan2(targetPosition.x - myPosition.x, targetPosition.y - myPosition.y);
+                util.target.rotation = sugarcube.cast.toNumber(rotation);
+            }
+        }
+
+        turnAround3D(args, util) {
+            if (util.target.rotation) util.target.rotation[args.axis] += coffeeEngine.deg2Rad(sugarcube.cast.toNumber(args.degrees));
+        }
+
+        setrotation3D(args, util) {
+            if (util.target.rotation) util.target.rotation[args.axis] = coffeeEngine.deg2Rad(sugarcube.cast.toNumber(args.degrees));
+        }
+
+        //Why do it like this? Its so we don't have to do matrix to euler.
+        lookAtXYZ({ x, y, z }, util) {
+            if (util.target.position && util.target.rotation) {
+                //Get our relatives
+                const myPosition = util.target.position;
+                const targetPosition = util.target.mixedMatrix.inverse().multiplyVector(new coffeeEngine.vector3(x,y,z));
+
+                //Then rotate
+                const distance = Math.sqrt(Math.pow(targetPosition.z - myPosition.z, 2) + Math.pow(targetPosition.x - myPosition.x, 2));
+                const yaw = -Math.atan2(targetPosition.x - myPosition.x, targetPosition.z - myPosition.z);
+                const pitch = -Math.atan2(targetPosition.y - myPosition.y, distance);
+
+                //Then set our rotations
+                util.target.rotation.y = sugarcube.cast.toNumber(yaw);
+                util.target.rotation.x = sugarcube.cast.toNumber(pitch);
+            }
+        }
+
+        //Also Rotation Getters
+        //Same principal. I'm too stubborn to do a conversion formula so we are using a constant
+        direction(args, util) {
+            if (util.target.rotation === undefined) return 0;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation));
+        }
+
+        yaw(args, util) {
+            if (!util.target.rotation) return 0;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation.y));
+        }
+
+        pitch(args, util) {
+            if (!util.target.rotation) return 0;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation.x));
+        }
+
+        roll(args, util) {
+            if (!util.target.rotation) return 0;
+            return coffeeEngine.rad2Deg(sugarcube.cast.toNumber(util.target.rotation.z));
         }
 
         //Custom Fields

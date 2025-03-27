@@ -10925,18 +10925,17 @@ ${b} to its parent, because: ${a}`);
 
             //If we have copy data duplicate it
             if (duplicated) {
-              duplicated = paste$$module$build$src$core$clipboard(duplicated, this.targetBlock.workspace);
+              duplicated = paste$$module$build$src$core$clipboard(duplicated, this.startWorkspace_);
+              this.targetBlock = duplicated;
               if (duplicated) {
                 duplicated._shouldDuplicate_ = false;
                 duplicated._isClone_ = true;
-                duplicated.editedState = this.targetBlock.editedState;
-
-                if (
-                  duplicated.outputConnection && 
-                  duplicated.outputConnection.check &&
-                  duplicated.outputConnection.check.includes("noClones")
-                ) {
-                  duplicated.outputConnection.check.splice(duplicated.outputConnection.check.indexOf("noClones"),1);
+                duplicated.editedState = JSON.parse(JSON.stringify(this.targetBlock.editedState || {}));
+                duplicated.editedState._isClone_ = true;
+                duplicated.editedState._shouldDuplicate_ = false;
+                if (duplicated._isClone_) {
+                  duplicated.outputConnection.check = JSON.parse(JSON.stringify(duplicated.outputConnection.check));
+                  duplicated.outputConnection.check[duplicated.outputConnection.check.indexOf("noClones")] = "clones";
                 }
 
                 //Set the block dragger to the duplicate
@@ -12365,11 +12364,7 @@ ${b} to its parent, because: ${a}`);
         ? (this.render_(), (this.isDirty_ = !1))
         : this.visible_ &&
           0 === this.size_.width &&
-          (this.render_(),
-          0 !== this.size_.width &&
-            console.warn(
-              "Deprecated use of setting size_.width to 0 to rerender a field. Set field.isDirty_ to true instead."
-            ));
+          (this.render_());
       return this.size_;
     }
     getScaledBBox() {
@@ -16264,8 +16259,10 @@ ${b} to its parent, because: ${a}`);
                 this.layoutField_(d);
       }
       layoutField_(a) {
+        if (!a) return;
         const b = a.centerline - a.height / 2;
         let c = a.xPos;
+        let e;
         var d = "";
         this.info_.RTL &&
           ((c = -(c + a.width)),
@@ -16276,9 +16273,12 @@ ${b} to its parent, because: ${a}`);
               new Coordinate$$module$build$src$core$utils$coordinate(c, b)
             ),
             this.info_.isInsertionMarker && d.hideForInsertionMarker())
-          : ((a = a.field.getSvgRoot()),
-            a.setAttribute("transform", "translate(" + c + "," + b + ")" + d),
-            this.info_.isInsertionMarker && a.setAttribute("display", "none"));
+          : ((e = a.field.getSvgRoot()));
+
+        if (e) {
+          e.setAttribute("transform", "translate(" + c + "," + b + ")" + d),
+          this.info_.isInsertionMarker && e.setAttribute("display", "none")
+        }
       }
       drawInlineInput_(a) {
         const b = a.width,
@@ -23299,8 +23299,8 @@ ${b} to its parent, because: ${a}`);
       this.applyColour();
     }
     setStyle(a) {
-      const b = this.workspace.getRenderer().getConstants().getBlockStyle(a);
-      this.styleName_ = a;
+      const b = (typeof a == "string") ? this.workspace.getRenderer().getConstants().getBlockStyle(a) : a;
+      this.styleName_ = (typeof a == "string") ? a : JSON.stringify(a);
       if (b)
         (this.hat = b.hat),
           this.pathObject.setStyle(b),

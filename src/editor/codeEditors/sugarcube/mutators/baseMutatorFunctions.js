@@ -87,11 +87,11 @@
                 return container;
             },
 
-            domToMutation: function() {
+            domToMutation: function () {
                 this.style = this.parentBlock_.style;
                 this.applyColour();
-            }
+            },
         },
         undefined
-    )
+    );
 })();

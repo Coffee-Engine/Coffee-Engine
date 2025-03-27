@@ -1,4 +1,4 @@
-(function() {
+(function () {
     editor.__deserializeLayout = () => {
         //Our grid layout
 
@@ -90,11 +90,11 @@
                     newWindow.title = overrideName;
                 }
 
-                newWindow.x = (floatData.x/100) * window.innerWidth;
-                newWindow.y = (floatData.y/100) * window.innerHeight;
+                newWindow.x = (floatData.x / 100) * window.innerWidth;
+                newWindow.y = (floatData.y / 100) * window.innerHeight;
 
-                newWindow.width = (floatData.width/100) * window.innerWidth;
-                newWindow.height = (floatData.height/100) * window.innerHeight;
+                newWindow.width = (floatData.width / 100) * window.innerWidth;
+                newWindow.height = (floatData.height / 100) * window.innerHeight;
                 newWindow.resized();
                 newWindow.__moveToTop();
 
@@ -124,18 +124,18 @@
                     }
                 }
 
-                hostWindow.x = (floatData.x/100) * window.innerWidth;
-                hostWindow.y = (floatData.y/100) * window.innerHeight;
+                hostWindow.x = (floatData.x / 100) * window.innerWidth;
+                hostWindow.y = (floatData.y / 100) * window.innerHeight;
 
-                hostWindow.width = (floatData.width/100) * window.innerWidth;
-                hostWindow.height = (floatData.height/100) * window.innerHeight;
+                hostWindow.width = (floatData.width / 100) * window.innerWidth;
+                hostWindow.height = (floatData.height / 100) * window.innerHeight;
                 hostWindow.resized();
                 hostWindow.__moveToTop();
 
                 floatData.content = hostWindow;
             }
         }
-    }
+    };
 
     editor.__serializeLayout = () => {
         let layout = editor.layout.layout;
@@ -147,7 +147,7 @@
         for (let X = 0; X < layout.length; X++) {
             const column = layout[X];
             //Of course we need to initilize this part
-            const serializedColumn = {size:column.size, contents:[]};
+            const serializedColumn = { size: column.size, contents: [] };
             for (let Y = 0; Y < column.contents.length; Y++) {
                 const row = column.contents[Y];
 
@@ -157,7 +157,7 @@
 
                 serializedColumn.contents.push({
                     content: serializedName,
-                    size:row.size
+                    size: row.size,
                 });
             }
             serialized.layout.push(serializedColumn);
@@ -167,25 +167,25 @@
         serialized.floating = [];
 
         //We don't directly access the layout due to stragglers
-        Object.keys(editor.windows.existing).forEach(windowKey => {
+        Object.keys(editor.windows.existing).forEach((windowKey) => {
             const windowType = editor.windows.existing[windowKey];
-            windowType.forEach(windowObj => {
+            windowType.forEach((windowObj) => {
                 if (windowObj.docked || windowObj.owner) return;
-                
-            //Make sure our window is valid when serialized
+
+                //Make sure our window is valid when serialized
                 const serializedName = editor.windows.__Serialization.find(windowObj);
                 if (!serializedName) return;
 
                 serialized.floating.push({
                     content: serializedName,
-                    x:(windowObj.x/window.innerWidth) * 100,
-                    y:(windowObj.y/window.innerHeight) * 100,
-                    width:(windowObj.width/window.innerWidth) * 100,
-                    height:(windowObj.height/window.innerHeight) * 100
-                })
-            })
-        })
+                    x: (windowObj.x / window.innerWidth) * 100,
+                    y: (windowObj.y / window.innerHeight) * 100,
+                    width: (windowObj.width / window.innerWidth) * 100,
+                    height: (windowObj.height / window.innerHeight) * 100,
+                });
+            });
+        });
 
         return serialized;
-    }
+    };
 })();

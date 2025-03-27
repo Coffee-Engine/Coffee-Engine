@@ -1,5 +1,5 @@
 (function () {
-    class objects {
+    class scene {
         getInfo() {
             return {
                 id: "scene",
@@ -49,6 +49,16 @@
                         },
                     },
                     {
+                        opcode: "getScript",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: editor.language["sugarcube.scene.block.getScript"],
+                        arguments: {
+                            object: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                        },
+                    },
+                    {
                         opcode: "getChildren",
                         type: sugarcube.BlockType.ARRAY,
                         text: editor.language["sugarcube.scene.block.getChildren"],
@@ -74,7 +84,7 @@
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.scene.block.setVariable"],
                         arguments: {
-                            var: {
+                            variable: {
                                 type: sugarcube.ArgumentType.STRING,
                                 defaultValue: "variable",
                             },
@@ -92,7 +102,7 @@
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.scene.block.getVariable"],
                         arguments: {
-                            var: {
+                            variable: {
                                 type: sugarcube.ArgumentType.STRING,
                                 defaultValue: "variable",
                             },
@@ -133,7 +143,49 @@
                 field.value = path;
             };
         }
+
+        loadScene({ scene }) {
+            coffeeEngine.runtime.currentScene.openScene(scene);
+        }
+
+        getParent(args, { target }) {
+            return target.parent;
+        }
+
+        getMyself(args, { target }) {
+            return target;
+        }
+
+        getRoot() {
+            return coffeeEngine.runtime.currentScene;
+        }
+
+        getName({ object }) {
+            return object ? object.name : "";
+        }
+
+        getScript({ object }) {
+            return object ? object.scriptObject : null;
+        }
+
+        getChildren({ object }) {
+            return object ? object.children : [];
+        }
+
+        getParentOf({ object }) {
+            return object ? object.parent : null;
+        }
+
+        setVariable({ variable, object, value }) {
+            if (!object) return;
+            object[variable] = value;
+        }
+
+        getVariable({ variable, object }) {
+            if (!object) return;
+            return object[variable];
+        }
     }
 
-    sugarcube.extensionManager.registerExtension(new objects());
+    sugarcube.extensionManager.registerExtension(new scene());
 })();

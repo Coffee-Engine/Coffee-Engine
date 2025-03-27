@@ -23,18 +23,18 @@
                             //Load the SVG
                             fileReader.onload = () => {
                                 const trackedImage = new Image();
-    
+
                                 trackedImage.onload = () => {
                                     coffeeEngine.renderer.textureStorage[src] = coffeeEngine.renderer.daveshade.createTexture(trackedImage);
                                     resolve(coffeeEngine.renderer.textureStorage[src]);
                                 };
-    
+
                                 trackedImage.onerror = () => {
                                     reject("error loading image");
                                 };
-    
-                                trackedImage.src = fileReader.result.replace("data:application/octet-stream","data:image/svg+xml;charset=utf-8");
-                            }
+
+                                trackedImage.src = fileReader.result.replace("data:application/octet-stream", "data:image/svg+xml;charset=utf-8");
+                            };
 
                             fileReader.readAsDataURL(file);
                         }
@@ -74,7 +74,7 @@
                 }
 
                 if (src.startsWith("coffee:/")) {
-                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.mainShaders[src.replace("coffee:/","").replace(".glsl","")];
+                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.mainShaders[src.replace("coffee:/", "").replace(".glsl", "")];
                     resolve(coffeeEngine.renderer.shaderStorage[src]);
                     return;
                 }
@@ -84,7 +84,7 @@
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
                     coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.compilePBRshader(fileReader.result);
-                    
+
                     resolve(coffeeEngine.renderer.shaderStorage[src]);
                 };
 
@@ -115,22 +115,21 @@
                     coffeeEngine.renderer.materialStorage[src] = coffeeEngine.renderer.defaultMaterial;
                     resolve(coffeeEngine.renderer.defaultMaterial);
                 } else {
-                    
                     const fileReader = new FileReader();
 
                     //When our file loads we get our shader to compile
                     fileReader.onload = () => {
-                        const materialData = JSON.parse(fileReader.result) || {shader:"coffee:/basis.glsl", params:{}};
+                        const materialData = JSON.parse(fileReader.result) || { shader: "coffee:/basis.glsl", params: {} };
 
                         coffeeEngine.renderer.materialStorage[src] = new coffeeEngine.renderer.material(materialData.shader || "coffee:/basis", materialData.params || {});
-                        
+
                         resolve(coffeeEngine.renderer.materialStorage[src]);
                     };
 
                     project
                         .getFile(src)
                         .then((file) => {
-                            fileReader.readAsText(file)
+                            fileReader.readAsText(file);
                         })
                         .catch(() => {
                             reject("File doesn't exist");
@@ -140,8 +139,8 @@
         };
 
         //Add our preloading function
-        coffeeEngine.preloadFunctions["shaders"] = {function:coffeeEngine.renderer.fileToShader, storage:coffeeEngine.renderer.shaderStorage};
-        coffeeEngine.preloadFunctions["materials"] = {function:coffeeEngine.renderer.fileToMaterial, storage:coffeeEngine.renderer.materialStorage};
-        coffeeEngine.preloadFunctions["textures"] = {function:coffeeEngine.renderer.fileToTexture, storage:coffeeEngine.renderer.textureStorage};
+        coffeeEngine.preloadFunctions["shaders"] = { function: coffeeEngine.renderer.fileToShader, storage: coffeeEngine.renderer.shaderStorage };
+        coffeeEngine.preloadFunctions["materials"] = { function: coffeeEngine.renderer.fileToMaterial, storage: coffeeEngine.renderer.materialStorage };
+        coffeeEngine.preloadFunctions["textures"] = { function: coffeeEngine.renderer.fileToTexture, storage: coffeeEngine.renderer.textureStorage };
     };
 })();

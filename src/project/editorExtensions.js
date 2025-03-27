@@ -76,7 +76,7 @@
 
                         this.fileReader.onerror = () => {
                             reject(`Something happened with file "${path}${scriptArray[index]}"`);
-                        }
+                        };
 
                         this.fileReader.readAsText(fileData);
                     });

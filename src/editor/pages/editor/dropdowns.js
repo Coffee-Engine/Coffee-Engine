@@ -1,4 +1,4 @@
-(function() {
+(function () {
     //Is this hacky? Maybe. check out the base editor file for the actual dropdowns
     editor.__setupDropdownFunctionality = () => {
         editor.dropdownBar = {
@@ -11,13 +11,23 @@
             switch (value) {
                 case "save":
                     if (editor.safeties.filePermissions) {
-                        editor.updateProjectDB();                        
+                        editor.updateProjectDB();
                     }
                     project.decaf.save();
                     break;
 
                 case "saveSeperate":
                     project.decaf.save(true);
+                    break;
+
+                //Open our project settings menu.
+                case "settings":
+                    if (!(editor.windows.existing.projectManager && editor.windows.existing.projectManager.length > 0)) {
+                        const popupWindow = new editor.windows.projectManager(window.innerWidth / 2, window.innerHeight / 2);
+                        popupWindow.x = window.innerWidth / 4;
+                        popupWindow.y = window.innerHeight / 4;
+                        popupWindow.__moveToTop();
+                    }
                     break;
 
                 default:
@@ -70,5 +80,5 @@
                     break;
             }
         };
-    }
+    };
 })();
