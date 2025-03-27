@@ -24,6 +24,136 @@
                         },
                         hideFromPalette: true,
                     },
+                    //General nodes
+                    {
+                        opcode: "setScale3D",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScale3D"],
+                        filter: ["Node3D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        },
+                    },
+                    {
+                        opcode: "setScale2D",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScale2D"],
+                        filter: ["Node2D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            }
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "setScaleX",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScaleX"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setScaleY",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScaleY"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setScaleZ",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setScaleZ"],
+                        filter: ["Node3D"],
+                        arguments: {
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "changeScaleX",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.changeScaleX"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            x: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "changeScaleY",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.changeScaleY"],
+                        filter: ["Node2D", "Node3D"],
+                        arguments: {
+                            y: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    {
+                        opcode: "changeScaleZ",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.changeScaleZ"],
+                        filter: ["Node3D"],
+                        arguments: {
+                            z: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 1
+                            },
+                        },
+                    },
+                    "---",
+                    {
+                        opcode: "getScaleX",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getScaleX"],
+                        filter: ["Node2D", "Node3D"],
+                    },
+                    {
+                        opcode: "getScaleY",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getScaleY"],
+                        filter: ["Node2D", "Node3D"],
+                    },
+                    {
+                        opcode: "getScaleZ",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getScaleZ"],
+                        filter: ["Node3D"],
+                    },
                     //These durn dere actually rendered objects 😠
                     {
                         opcode: "setSprite",
@@ -159,6 +289,78 @@
                     },
                 },
             };
+        }
+
+        setScale3D({ x, y, z }, util) {
+            if (util.target.scale) {
+                util.target.scale.x = sugarcube.cast.toNumber(x);
+                util.target.scale.y = sugarcube.cast.toNumber(y);
+                util.target.scale.z = sugarcube.cast.toNumber(z);
+            }
+        }
+
+        setScale2D({ x, y }, util) {
+            if (util.target.scale) {
+                util.target.scale.x = sugarcube.cast.toNumber(x);
+                util.target.scale.y = sugarcube.cast.toNumber(y);
+            }
+        }
+
+        setScaleX({ x }, util) {
+            if (util.target.scale) {
+                util.target.scale.x = sugarcube.cast.toNumber(x);
+            }
+        }
+
+        setScaleY({ y }, util) {
+            if (util.target.scale) {
+                util.target.scale.y = sugarcube.cast.toNumber(y);
+            }
+        }
+
+        setScaleZ({ z }, util) {
+            if (util.target.scale) {
+                util.target.scale.z = sugarcube.cast.toNumber(z);
+            }
+        }
+
+        changeScaleX({ x }, util) {
+            if (util.target.scale) {
+                util.target.scale.x += sugarcube.cast.toNumber(x);
+            }
+        }
+
+        changeScaleY({ y }, util) {
+            if (util.target.scale) {
+                util.target.scale.y += sugarcube.cast.toNumber(y);
+            }
+        }
+
+        changeScaleZ({ z }, util) {
+            if (util.target.scale) {
+                util.target.scale.z += sugarcube.cast.toNumber(z);
+            }
+        }
+
+        getScaleX(args, util) {
+            if (util.target.scale) {
+                return util.target.scale.x;
+            }
+            return 0;
+        }
+
+        getScaleY(args, util) {
+            if (util.target.scale) {
+                return util.target.scale.y;
+            }
+            return 0;
+        }
+
+        getScaleZ(args, util) {
+            if (util.target.scale) {
+                return util.target.scale.z;
+            }
+            return 0;
         }
 
         //Renderable objects
