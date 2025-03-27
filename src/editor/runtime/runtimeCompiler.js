@@ -14,7 +14,7 @@
             if (
                 src &&
                 //Depandancies
-                (src.startsWith("engine/") || src.startsWith("project/") || src.startsWith("editor/codeEditors/sugarcube/defaultBlocks") || src.startsWith("editor/codeEditors/sugarcube/sugarcubeUtils") || src.startsWith("editor/codeEditors/sugarcube/types.js")) &&
+                (src.startsWith("engine/") || src.startsWith("project/") || src.startsWith("editor/codeEditors/sugarcube/defaultBlocks") || src.startsWith("editor/codeEditors/sugarcube/sugarcubeUtils") || src.startsWith("editor/codeEditors/sugarcube/main.js") || src.startsWith("editor/codeEditors/sugarcube/types.js")) &&
                 //Exclude this one this one likes blockly
                 !src.startsWith("editor/codeEditors/sugarcube/sugarcubeUtils/zelosRenderOverrides.js")
             ) {
