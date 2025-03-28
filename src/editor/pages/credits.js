@@ -126,6 +126,8 @@
                     <div class="contributorDiv"><img style="height:48px;" src="https://microsoft.github.io/monaco-editor/9a60a3b3c5fcf6a9d2de2c28e5eaa986.svg"></img><p><a href="https://github.com/microsoft/monaco-editor">Monaco</a></p></div>
                     <!--Marked version 15--->
                     <div class="contributorDiv"><img style="height:48px;" src="https://avatars.githubusercontent.com/u/19886934?s=200&v=4"></img><p><a href="https://github.com/markedjs/marked">Marked</a></p></div>
+                    <!--JSZip version 3--->
+                    <div class="contributorDiv"><img style="height:48px;" src="https://icons.iconarchive.com/icons/babasse/bagg-and-boxs/128/Zip-Box-icon.png"></img><p><a href="https://github.com/Stuk/jszip">JSZip</a></p></div>
                 </div>
             </div>
         </div>
