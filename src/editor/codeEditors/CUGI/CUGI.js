@@ -42,7 +42,7 @@
 
                 return text;
             },
-            subMenu: (data) => {
+            subMenu: (data, parameters) => {
                 //Create the container
                 const container = document.createElement("div");
                 container.className = "CUGI-PropertyHolder CUGI-SubMenu";
@@ -50,7 +50,7 @@
                 if (!Array.isArray(data.items)) return container;
             
                 //Add the sub CUGI
-                container.appendChild(CUGI.createList(data.items));
+                container.appendChild(CUGI.createList(data.items, parameters));
 
                 //Return
                 return container;
@@ -354,11 +354,12 @@
                             //Our selection refresher
                             refreshSelection:() => {
                                 //Refresh it
-                                container.parentElement.insertBefore(CUGI.createList(items), container);
+                                container.parentElement.insertBefore(CUGI.createList(items, parameters), container);
                                 container.parentElement.removeChild(container);
                                 container.innerHTML = "";
                             }
-                        }));
+                        }, 
+                        parameters));
 
                         container.appendChild(propertyHolder);
                         return;
@@ -398,11 +399,12 @@
                         //Our selection refresher
                         refreshSelection:() => {
                             //Refresh it
-                            container.parentElement.insertBefore(CUGI.createList(items), container);
+                            container.parentElement.insertBefore(CUGI.createList(items, parameters), container);
                             container.parentElement.removeChild(container);
                             container.innerHTML = "";
                         }
-                    });
+                    }, 
+                    parameters);
 
                     propertyHolder.appendChild(label);
                     propertyHolder.appendChild(input);

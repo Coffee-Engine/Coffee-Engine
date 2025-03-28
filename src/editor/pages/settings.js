@@ -134,6 +134,7 @@
 
                                 //translate the keys
                                 for (let itemID in parsed) {
+                                    if (typeof parsed[itemID] == "object") continue;
                                     parsed[itemID] = {text: (editor.language[`${translationKey}.${parsed[itemID]}`] || parsed[itemID]), value: parsed[itemID]};
                                 }
 
