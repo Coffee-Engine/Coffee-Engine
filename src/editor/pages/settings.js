@@ -134,7 +134,7 @@
 
                                 //translate the keys
                                 for (let itemID in parsed) {
-                                    parsed[itemID] = {text: editor.language[`${translationKey}.${parsed[itemID]}`] || parsed[itemID], value: parsed[itemID]};
+                                    parsed[itemID] = {text: (editor.language[`${translationKey}.${parsed[itemID]}`] || parsed[itemID]), value: parsed[itemID]};
                                 }
 
                                 return parsed
