@@ -24,6 +24,7 @@
         return {
             Editor: [
                 {
+                    translationKey: "customLanguage",
                     type: "button",
                     onclick: () => {
                         const fileReader = new FileReader();
@@ -69,18 +70,21 @@
                     },
                 },
                 {
+                    translationKey: "changeLanguage",
                     type: "button",
                     onclick: () => {
                         editor.setup.initilizeLang(true);
                     },
                 },
                 {
+                    translationKey: "changeLayout",
                     type: "button",
                     onclick: () => {
                         editor.setup.initilizeLayout(true);
                     },
                 },
                 {
+                    translationKey: "clearLocalStorage",
                     type: "button",
                     onclick: (element) => {
                         element.innerHTML = editor.language[`engine.settings.category.Editor.clearLocalStorage.cleared`];
@@ -185,7 +189,7 @@
                 },
                 {
                     target: editor.settings.values.Viewport,
-                    key: "mouseSensitivity",
+                    key: "down",
                     defaultValue: "q",
                     type: "key",
                     onchange: (value) => {

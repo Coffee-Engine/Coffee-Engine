@@ -118,40 +118,32 @@
                 //editor.settings.elements = {};
                 settingsPanel.innerHTML = "";
 
-                settingsPanel.appendChild(CUGI.createList(category));
+                //Add our panel
+                settingsPanel.appendChild(CUGI.createList(category, {
+                    globalChange: () => {editor.Storage.setStorage("settingsValues", editor.settings.values);},
+                    //Provide translations
+                    preprocess: (item) => {
+                        const translationKey = `engine.settings.category.${key}.${item.translationKey || item.key}`;
+                        item.text = editor.language[translationKey] || (item.translationKey || item.key);
 
-                //Loop through settings in that category
-                //Object.keys(category).forEach((settingKey) => {
-                //    //Create our text for the editor element
-                //    const settingSpan = document.createElement("p");
-                //    settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
-                //    settingSpan.style.fontSize = "Large";
-                //    settingSpan.style.margin = "2px";
+                        //Intercept items call
+                        if (typeof item.items == "function") {
+                            const oldItems = item.items;
+                            item.items = (data) => {
+                                const parsed = oldItems(data);
 
-                //    //This is where we get inputs for the setting
-                //    let elementEditor = editor.settings.elementFromType(category[settingKey].type, category[settingKey], key, settingKey);
-                //    editor.settings.elements[settingKey] = {
-                //        span: settingSpan,
-                //        input: elementEditor,
-                //    };
+                                //translate the keys
+                                for (let itemID in parsed) {
+                                    parsed[itemID] = {text: editor.language[`${translationKey}.${parsed[itemID]}`] || parsed[itemID], value: parsed[itemID]};
+                                }
 
-                //    if (elementEditor) {
-                //        //If we have an array we need to check for something
-                //        if (Array.isArray(elementEditor)) {
-                //            //Set our element to be proper
-                //            if (elementEditor[1]) {
-                //                settingSpan.innerHTML = "";
-                //                elementEditor[0].innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]}`;
-                //                elementEditor = elementEditor[0];
-                //            }
-                //        }
-                //        settingSpan.appendChild(elementEditor);
-                //    }
+                                return parsed
+                            }
+                        };
 
-                //    settingsPanel.appendChild(settingSpan);
-
-                //    if (category[settingKey].menuInit) category[settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
-                //});
+                        return item;
+                    }
+                }));
             };
         });
 

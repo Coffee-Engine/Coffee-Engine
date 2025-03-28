@@ -541,7 +541,10 @@
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0 && u_fullBright == 0) {
+                        //Add the sun
                         lightColor += u_sunColor * lightDot(normal, u_sunDir);
+
+                        //Calculate F0
                         F0 = mix(vec3(0.04), gl_FragColor.xyz, matAttributes.y);
 
                         for (int i=0;i<64;i++) {
