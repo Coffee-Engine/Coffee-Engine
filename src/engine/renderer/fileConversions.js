@@ -83,7 +83,25 @@
 
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
-                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.compilePBRshader(fileReader.result);
+                    if (!override) {
+                        coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.compilePBRshader(fileReader.result);
+                    }
+                    else {
+                        const shader = coffeeEngine.renderer.compilePBRshader(fileReader.result);
+                        if (coffeeEngine.renderer.shaderStorage[src]) {
+                            //Check to make sure our status is good
+                            if (shader.status == 0) return;
+
+                            //If so dispose
+                            coffeeEngine.renderer.shaderStorage[src].dispose();
+
+                            //Replace the shader
+                            for (let key in shader) {
+                                coffeeEngine.renderer.shaderStorage[src][key] = shader[key];
+                            }
+                        }
+                        else coffeeEngine.renderer.shaderStorage[src] = shader;
+                    }
 
                     resolve(coffeeEngine.renderer.shaderStorage[src]);
                 };

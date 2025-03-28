@@ -586,6 +586,10 @@ window.DaveShade = {};
                 daveShadeInstance.triCount += triAmount;
             };
 
+            shader.dispose = () => {
+                daveShadeInstance.clearShaderFromMemory(shader);
+            };
+
             //*Add it to the list of shaders to dispose of when the instance no longer exists.
             daveShadeInstance.SHADERS.push(shader);
 
