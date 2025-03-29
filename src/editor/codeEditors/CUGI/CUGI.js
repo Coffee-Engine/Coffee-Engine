@@ -1,4 +1,7 @@
 (function() {
+    const radianMagicNumber = (Math.PI/180);
+    const degreeMagicNumber = (180/Math.PI);
+
     window.CUGI = {
         macros:{
             inputElement: (type, extra) => {
@@ -23,7 +26,11 @@
                     data.target[data.key] = (typeof passthrough == "function") ? passthrough(input[value]) : input[value];
                     if (data.onchange) data.onchange(data.target[data.key], data);
                 }
-            }
+            },
+
+            radToDeg: rad => rad * degreeMagicNumber,
+
+            degToRad: deg => deg * radianMagicNumber
         },
 
         //Custom Displays
@@ -73,9 +80,11 @@
             float: (data) => {
                 const { target, key } = data;
 
-                //Create our input
+                //Create our input, make sure it is in degrees if its radians
+                let value = Number(target[key]);
+                if (data.isRadians) value = CUGI.macros.radToDeg(value);
                 const input = CUGI.macros.inputElement("number", { 
-                    value: Number(target[key]), 
+                    value: value, 
                     className: `CUGI-Number CUGI-Float ${data.extraStyle}`,
                     min: data.min,
                     max: data.max,
@@ -84,7 +93,10 @@
                     disabled: (typeof data.disabled == "function") ? data.disabled() : data.disabled
                 });
 
-                input.onchange = CUGI.macros.onchange(data, input);
+                input.onchange = CUGI.macros.onchange(data, input, null, (value) => {
+                    if (data.isRadians) return CUGI.macros.degToRad(value);
+                    return value;
+                });
 
                 return input;
             },

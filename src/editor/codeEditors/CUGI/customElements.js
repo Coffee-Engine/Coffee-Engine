@@ -72,11 +72,9 @@
     };
 
     CUGI.types["node-name"] = (data) => {
-        const originalOnchange = data.onchange;
         data.onchange = (value, data) => {
             //Cheap hack like myself
             coffeeEngine.runtime.currentScene.castEvent("childAdded", data);
-            originalOnchange(value, data);
         }
 
         const input = CUGI.types.string(data);
