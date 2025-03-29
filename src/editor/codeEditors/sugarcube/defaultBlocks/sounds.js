@@ -215,7 +215,7 @@
             const gainNode = new GainNode(coffeeEngine.audio.context);
             if (target.AUDIO_DATA) gainNode.gain.value = target.AUDIO_DATA.gain;
             
-            return target.AUDIO_DATA;
+            return gainNode;
         }
 
         __simplePlayAudio(sound) {
