@@ -96,7 +96,9 @@
                 properties[propID].key = properties[propID].key || properties[propID].name;
             }
 
-            myself.Content.appendChild(CUGI.createList(properties));
+            myself.Content.appendChild(CUGI.createList(properties, {
+                globalChange: onchange
+            }));
         }
 
         resized() {}

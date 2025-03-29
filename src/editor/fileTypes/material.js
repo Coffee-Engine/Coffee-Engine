@@ -13,7 +13,7 @@
     };
 
     //To exclude or not to exclude
-    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID"];
+    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID", "u_time"];
 
     const matEditor = ({ panel, refreshListing, path }) => {
         return {
@@ -44,8 +44,9 @@
 
                 return [{ name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
             },
-            onPropertyChange: (property, value, node) => {
-                if (property.name == "shader") {
+            onPropertyChange: (value, data) => {
+                const { target, key } = data;
+                if (key == "shader") {
                     coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
                         shader = shaderOBJ;
                         
@@ -54,13 +55,13 @@
                         refreshListing();
                     });
                 } else {
-                    node.params = node.params || {};
-                    node.params[property.name] = [value, shader.uniforms[property.name].type];
+                    target.params = target.params || {};
+                    target.params[key] = [value, shader.uniforms[key].type];
 
                     const liveMaterial = coffeeEngine.renderer.materialStorage[path];
                     if (liveMaterial) {
-                        if (!liveMaterial.params[property.name]) [value, shader.uniforms[property.name].type];
-                        else liveMaterial.params[property.name][0] = value;
+                        if (!liveMaterial.params[key]) [value, shader.uniforms[key].type];
+                        else liveMaterial.params[key][0] = value;
                     }
 
                     return true;
