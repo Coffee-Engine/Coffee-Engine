@@ -61,11 +61,16 @@
                 height:100%;
                 background-color: var(--background-2);
                 border-right: 8px solid var(--background-4);
+
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             .settingsPanel {
                 height:100%;
                 flex-grow: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             @keyframes boot {
