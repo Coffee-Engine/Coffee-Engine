@@ -16,7 +16,7 @@ coffeeEngine.PropertyTypes = {
     NODE: "node",
     FILE: "file",
     STRING: "string",
-    NAME: "name",
+    NAME: "node-name",
 
     ARRAY: "array",
     OBJECT: "object",

@@ -19,7 +19,7 @@
             //if (target["/__coffeeEngine_CurrentlyParsing__/"]) target["/__coffeeEngine_CurrentlyParsing__/"] = null;
 
             //The two things we ?Maybe? need;
-            let properties = target;
+            let editorHost = target;
             let onchange;
 
             //Allow for the property panel on files to refresh the parental listing
@@ -39,24 +39,24 @@
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    properties = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing, path: path });
+                    editorHost = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing, path: path });
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyDef, propertyValue, node) => {
-                        properties.onPropertyChange(propertyDef, propertyValue, node);
+                        editorHost.onPropertyChange(propertyDef, propertyValue, node);
                         project.setFile(path, JSON.stringify(node));
                     };
 
                     //Read and parse if nessasary? Necesary? needed... needed.
                     myself.fileReader.onload = () => {
                         myself.ParsedObject = JSON.parse(myself.fileReader.result) || {};
-                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange, !repeat);
+                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, editorHost: editorHost }, onchange, !repeat);
                     };
 
                     //Check to make sure we don't already have this parsed and read
                     if (myself.Current != target) myself.fileReader.readAsText(target);
                     else {
-                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, properties: properties }, onchange, !repeat);
+                        this.displayProperties(myself, { read: myself.ParsedObject, target: target, editorHost: editorHost }, onchange, !repeat);
                     }
                     myself.Current = target;
                 }
@@ -65,15 +65,15 @@
             }
 
             //If we are a scene node just display our properties
-            this.displayProperties(myself, { read: target, properties: properties }, onchange, !repeat);
+            this.displayProperties(myself, { read: target, editorHost: editorHost }, onchange, !repeat);
         }
 
         //Actually displays the properties of an object
-        displayProperties(myself, { read, target, properties }, onchange, initial) {
+        displayProperties(myself, { read, target, editorHost }, onchange, initial) {
             target = target || read;
 
             //If there is no property editor for this thing
-            if (!properties.getProperties) {
+            if (!editorHost.getProperties) {
                 const notFound = document.createElement("h3");
                 notFound.innerText = editor.language["editor.window.properties.notFound"];
                 notFound.style.textAlign = "center";
@@ -84,33 +84,19 @@
             }
 
             //Get properties from our node
-            properties.getProperties(read, initial).forEach((property) => {
-                //Create our element
-                const element = document.createElement("div");
-                element.style.margin = "2px";
-                myself.Content.appendChild(element);
+            const properties = editorHost.getProperties(read, initial);
 
-                switch (typeof property) {
-                    case "string":
-                        if (property == "---") {
-                            element.innerHTML = "<br>";
-                        } else {
-                            element.innerText = editor.language[`engine.nodePropertyLabels.${property}`] || property;
-                        }
-                        break;
+            for (let propID in properties) {
+                //Make sure it is an object
+                if (typeof properties[propID] != "object") continue;
 
-                    case "object":
-                        //Define the property type
-                        element.innerText = `${editor.language[property.translationKey] || property.name || "unknown"} : `;
+                //Set our target unless one is specified
+                properties[propID].target = properties[propID].target || read;
+                //Accept old and new key syntax
+                properties[propID].key = properties[propID].key || properties[propID].name;
+            }
 
-                        //Get the property editor of each item
-                        if (myself.propertyDisplays[property.type]) element.appendChild(myself.propertyDisplays[property.type](read, property, onchange));
-                        break;
-
-                    default:
-                        break;
-                }
-            });
+            myself.Content.appendChild(CUGI.createList(properties));
         }
 
         resized() {}
