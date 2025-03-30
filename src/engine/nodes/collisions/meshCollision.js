@@ -10,6 +10,9 @@
             coffeeEngine.mesh.fromProjectFile(value).then((data) => {
                 this.meshData = data;
                 this.collision.mesh = data;
+            }).catch(() => {
+                this.meshData = null;
+                this.collision.mesh = null;
             });
         }
 

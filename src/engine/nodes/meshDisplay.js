@@ -7,6 +7,8 @@
             this.#meshPath = value;
             coffeeEngine.mesh.fromProjectFile(value).then((data) => {
                 this.meshData = data;
+            }).catch(() => {
+                this.meshData = null;
             });
         }
         get meshPath() {
@@ -20,6 +22,8 @@
             this.#materialPath = value;
             coffeeEngine.renderer.fileToMaterial(value).then((material) => {
                 this.#material = material;
+            }).catch(() => {
+                this.#material = null;
             });
         }
 

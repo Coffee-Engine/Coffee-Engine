@@ -116,6 +116,8 @@ editor.EnglishLang = {
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
 
+    "editor.fileButton.removeFile": "Remove File",
+
     "editor.dropdown.project": "Project",
     "editor.dropdown.project.save": "Save Project",
     "editor.dropdown.project.saveSeperate": "Save a Copy",

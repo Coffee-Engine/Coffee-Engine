@@ -112,11 +112,23 @@
             newLoadal.onFileSelected = (path) => {
                 target[key] = path;
                 button.innerText = path;
-                if (data.onchange) data.onchange(data.target[data.key], data);
+                if (data.onchange) data.onchange(target[key], data);
             };
         }})
 
         button.innerText = target[key] || editor.language["editor.window.properties.noFile"];
+
+        button.contextFunction = () => {
+            return [
+                { text: editor.language["editor.fileButton.removeFile"], value: "removeFile" },
+            ];
+        };
+
+        button.contentAnswer = (value) => {
+            target[key] = "";
+            button.innerText = editor.language["editor.window.properties.noFile"];
+            if (data.onchange) data.onchange(target[key], data);
+        }
 
         return button;
     }
