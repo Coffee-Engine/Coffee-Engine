@@ -93,7 +93,7 @@
                             if (shader.status == 0) return;
 
                             //If so dispose
-                            coffeeEngine.renderer.shaderStorage[src].dispose();
+                            if (coffeeEngine.renderer.shaderStorage[src].dispose) coffeeEngine.renderer.shaderStorage[src].dispose();
 
                             //Replace the shader
                             for (let key in shader) {
