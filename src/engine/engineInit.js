@@ -16,6 +16,7 @@ window.coffeeEngine = {
     renderer: {
         nodesRendered: 0,
         sprites: {},
+        viewport: {}
     },
     preloadFunctions: {},
     nodeRegister: {},

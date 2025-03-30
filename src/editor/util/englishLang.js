@@ -116,6 +116,10 @@ editor.EnglishLang = {
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
 
+    "engine.projectSettings.viewportType.screen": "Fill Screen",
+    "engine.projectSettings.viewportType.fixed": "Fixed",
+    "engine.projectSettings.viewportType.strech": "Stretch to Fit",
+
     "editor.fileButton.removeFile": "Remove File",
 
     "editor.dropdown.project": "Project",
