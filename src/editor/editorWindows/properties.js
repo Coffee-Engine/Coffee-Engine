@@ -97,7 +97,28 @@
             }
 
             myself.Content.appendChild(CUGI.createList(properties, {
-                globalChange: onchange
+                globalChange: onchange,
+                preprocess: (item) => {
+                    item.text = editor.language[item.translationKey] || (item.translationKey || item.key);
+
+                    //Intercept items call
+                    if (typeof item.items == "function") {
+                        const oldItems = item.items;
+                        item.items = (data) => {
+                            const parsed = oldItems(data);
+
+                            //translate the keys
+                            for (let itemID in parsed) {
+                                if (typeof parsed[itemID] == "object") continue;
+                                parsed[itemID] = {text: (editor.language[`${item.translationKey || item.key}.${parsed[itemID]}`] || parsed[itemID]), value: parsed[itemID]};
+                            }
+
+                            return parsed
+                        }
+                    };
+
+                    return item;
+                }
             }));
         }
 

@@ -166,3 +166,19 @@ input[type="range"]::-moz-range-track {
     background-color: var(--background-4);
     height: 16px;
 }
+
+.CUGI-X {
+    border-left-color: #ff0000;
+}
+
+.CUGI-Y {
+    border-left-color: #00ff00;
+}
+
+.CUGI-Z {
+    border-left-color: #0000ff;
+}
+
+.CUGI-W {
+    border-left-color: #ffff00;
+}

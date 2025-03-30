@@ -165,8 +165,8 @@
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec2";
 
                 //Create our input
-                const inputX = CUGI.types.float({...data, target: target[key], key: "x", extraStyle:"CUGI-Vec2 CUGI-X"});
-                const inputY = CUGI.types.float({...data, target: target[key], key: "y", extraStyle:"CUGI-Vec2 CUGI-Y"});
+                const inputX = CUGI.types.float({...data, target: target[key], key: data.isArray ? 0 : "x", extraStyle:"CUGI-Vec2 CUGI-X"});
+                const inputY = CUGI.types.float({...data, target: target[key], key: data.isArray ? 1 : "y", extraStyle:"CUGI-Vec2 CUGI-Y"});
 
                 containerDiv.appendChild(inputX);
                 containerDiv.appendChild(inputY);
@@ -181,9 +181,9 @@
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec3";
 
                 //Create our input
-                const inputX = CUGI.types.float({...data, target: target[key], key: "x", extraStyle:"CUGI-Vec3 CUGI-X"});
-                const inputY = CUGI.types.float({...data, target: target[key], key: "y", extraStyle:"CUGI-Vec3 CUGI-Y"});
-                const inputZ = CUGI.types.float({...data, target: target[key], key: "z", extraStyle:"CUGI-Vec3 CUGI-Z"});
+                const inputX = CUGI.types.float({...data, target: target[key], key: data.isArray ? 0 : "x", extraStyle:"CUGI-Vec3 CUGI-X"});
+                const inputY = CUGI.types.float({...data, target: target[key], key: data.isArray ? 1 : "y", extraStyle:"CUGI-Vec3 CUGI-Y"});
+                const inputZ = CUGI.types.float({...data, target: target[key], key: data.isArray ? 2 : "z", extraStyle:"CUGI-Vec3 CUGI-Z"});
 
                 containerDiv.appendChild(inputX);
                 containerDiv.appendChild(inputY);
@@ -199,10 +199,10 @@
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec4";
 
                 //Create our input
-                const inputX = CUGI.types.float({...data, target: target[key], key: "x", extraStyle:"CUGI-X"});
-                const inputY = CUGI.types.float({...data, target: target[key], key: "y", extraStyle:"CUGI-Y"});
-                const inputZ = CUGI.types.float({...data, target: target[key], key: "z", extraStyle:"CUGI-Z"});
-                const inputW = CUGI.types.float({...data, target: target[key], key: "w", extraStyle:"CUGI-W"});
+                const inputX = CUGI.types.float({...data, target: target[key], key: data.isArray ? 0 : "x", extraStyle:"CUGI-X"});
+                const inputY = CUGI.types.float({...data, target: target[key], key: data.isArray ? 1 : "y", extraStyle:"CUGI-Y"});
+                const inputZ = CUGI.types.float({...data, target: target[key], key: data.isArray ? 2 : "z", extraStyle:"CUGI-Z"});
+                const inputW = CUGI.types.float({...data, target: target[key], key: data.isArray ? 3 : "w", extraStyle:"CUGI-W"});
 
                 containerDiv.appendChild(inputX);
                 containerDiv.appendChild(inputY);
