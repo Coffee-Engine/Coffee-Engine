@@ -5,7 +5,7 @@
         #mesh = null;
         //The mesh octree
         octreeCollision = new coffeeEngine.SAT.OBB();
-        octreeMaxDepth = 4;
+        octreeMaxDepth = 3;
 
         set mesh(value) {
             if (!value || !(value instanceof coffeeEngine.mesh.class)) return;

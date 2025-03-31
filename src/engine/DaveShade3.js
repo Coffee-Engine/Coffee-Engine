@@ -550,13 +550,8 @@ window.DaveShade = {};
 
             //* The buffer setter! the Legacy ONE!
             shader.setBuffersRaw = (attributeJSON) => {
-                //* Attribute keys. Whoopee
-                const attributeKeys = Object.keys(attributeJSON);
-
                 //? Loop through the keys
-                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
-                    const key = attributeKeys[keyID];
-
+                for (let key in attributeJSON) {
                     //* if it exists set the attribute
                     if (shader.attributes[key]) {
                         shader.attributes[key].setRaw(attributeJSON[key]);
@@ -566,13 +561,8 @@ window.DaveShade = {};
 
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
-                //* Attribute keys. Whoopee
-                const attributeKeys = Object.keys(attributeJSON);
-
                 //? Loop through the keys
-                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
-                    const key = attributeKeys[keyID];
-
+                for (let key in attributeJSON) {
                     //* if it exists set the attribute
                     if (shader.attributes[key]) {
                         shader.attributes[key].set(attributeJSON[key]);

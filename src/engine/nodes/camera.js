@@ -1,5 +1,4 @@
 (function () {
-    const audioListener = coffeeEngine.audio.context.listener;
 
     class cameraNode extends coffeeEngine.getNode("Node3D") {
         activeCamera = false;
@@ -40,6 +39,7 @@
                     const translatedWorld = this.mixedMatrix.getTranslation();
                     const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
+                    const audioListener = coffeeEngine.audio.context.listener;
 
                     //Update our camera data
                     cameraData.transform = this.matrix.multiply(this.parent.mixedMatrix.inverse()).webGLValue();
@@ -56,21 +56,21 @@
                     coffeeEngine.renderer.cameraData.cameraRotationEul.z = -this.rotation.z;
 
                     //Set audio data
-                    audioListener.positionX.value = -translatedWorld.x;
-                    audioListener.positionY.value = -translatedWorld.y;
-                    audioListener.positionZ.value = (this.orthographic) ? 0 : -translatedWorld.z;
+                    if (audioListener.positionX) audioListener.positionX.value = -translatedWorld.x;
+                    if (audioListener.positionY) audioListener.positionY.value = -translatedWorld.y;
+                    if (audioListener.positionZ) audioListener.positionZ.value = (this.orthographic) ? 0 : -translatedWorld.z;
 
                     const rotationData = this.mixedMatrix.getRotation();
 
                     //Now our rotations
-                    audioListener.forwardX.value = rotationData.contents[2][0];
-                    audioListener.forwardY.value = rotationData.contents[2][1];
-                    audioListener.forwardZ.value = rotationData.contents[2][2];
+                    if (audioListener.forwardX) audioListener.forwardX.value = rotationData.contents[2][0];
+                    if (audioListener.forwardY) audioListener.forwardY.value = rotationData.contents[2][1];
+                    if (audioListener.forwardZ) audioListener.forwardZ.value = rotationData.contents[2][2];
 
                     //Now our rotations
-                    audioListener.upX.value = rotationData.contents[1][0];
-                    audioListener.upY.value = rotationData.contents[1][1];
-                    audioListener.upZ.value = rotationData.contents[1][2];
+                    if (audioListener.upX) audioListener.upX.value = rotationData.contents[1][0];
+                    if (audioListener.upY) audioListener.upY.value = rotationData.contents[1][1];
+                    if (audioListener.upZ) audioListener.upZ.value = rotationData.contents[1][2];
                 }
             }
         }
