@@ -120,6 +120,10 @@ editor.EnglishLang = {
     "engine.projectSettings.viewportType.fixed": "Fixed",
     "engine.projectSettings.viewportType.strech": "Stretch to Fit",
 
+    "engine.projectSettings.broadcasts": "Broadcasts",
+    "engine.projectSettings.broadcasts.add": "Add",
+    "engine.projectSettings.broadcasts.placeholder": "Broadcast",
+
     "editor.fileButton.removeFile": "Remove File",
 
     "editor.dropdown.project": "Project",

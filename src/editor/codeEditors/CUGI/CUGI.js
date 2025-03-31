@@ -353,6 +353,18 @@
                         item = preprocess(item);
                     }
 
+                    //If we have an globalChange add that
+                    if (item.onchange && globalChange) {
+                        const oldChange = item.onchange;
+                        item.onchange = (value, data) => {
+                            oldChange(value, data);
+                            globalChange(value, data);
+                        }
+                    }
+                    else if (globalChange) {
+                        item.onchange = globalChange;
+                    }
+
                     //Displays are just static most of the time
                     if (CUGI.displays[item.type]) {
                         const propertyHolder = document.createElement("div");
@@ -382,18 +394,6 @@
                     
                     //Also make sure it's type exists
                     if (!CUGI.types[item.type]) return;
-
-                    //If we have an globalChange add that
-                    if (item.onchange && globalChange) {
-                        const oldChange = item.onchange;
-                        item.onchange = (value, data) => {
-                            oldChange(value, data);
-                            globalChange(value, data);
-                        }
-                    }
-                    else if (globalChange) {
-                        item.onchange = globalChange;
-                    }
 
                     //Then assemble
                     const propertyHolder = document.createElement("div");

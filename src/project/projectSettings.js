@@ -1,7 +1,8 @@
 (function() {
     project.settingDefinitions = {
-        scene: [
-            {type: "file", target: coffeeEngine.runtime, key: "defaultScene", fileType: "scene", defaultValue: coffeeEngine.defaultScenePath}
+        project: [
+            {type: "file", target: coffeeEngine.runtime, key: "defaultScene", fileType: "scene", defaultValue: coffeeEngine.defaultScenePath},
+            {type: "broadcasts", target: coffeeEngine, key: "broadcasts", defaultValue: {}},
         ],
         collision: [],
         viewport: [
