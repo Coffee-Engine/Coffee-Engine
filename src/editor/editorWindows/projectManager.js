@@ -27,7 +27,28 @@
                 //functionality
                 button.onclick = () => {
                     this.configurationArea.innerHTML = "";
-                    this.configurationArea.appendChild(CUGI.createList(project.settingDefinitions[key]));
+                    this.configurationArea.appendChild(CUGI.createList(project.settingDefinitions[key], {
+                        globalChange: () => {
+                            //Save our project.json
+                            project.getFile("project.json").then((file) => {
+                                const fileReader = new FileReader();
+                                
+                                //Once read.
+                                fileReader.onload = () => {
+                                    //Get our parsed JSON
+                                    let parsed = JSON.parse(fileReader.result);
+                                    if (!parsed) parsed = {};
+                    
+                                    parsed.settings = project.saveSettings();
+
+                                    //Resave our file
+                                    project.setFile("project.json", JSON.stringify(parsed), "text/plain");
+                                };
+                    
+                                fileReader.readAsText(file);
+                            });
+                        }
+                    }));
                 }
 
                 this.sideBar.appendChild(button);

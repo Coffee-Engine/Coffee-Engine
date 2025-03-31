@@ -34,7 +34,6 @@
     coffeeEngine.addEventListener("fileSystemUpdate", (event) => {
         if (event.type == "FINISH_LOADING") {
             project.extensions.checkForExtensions();
-            
         }
     });
 
