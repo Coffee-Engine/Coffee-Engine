@@ -197,11 +197,12 @@
                 if (name.value.length == 0) return;
 
                 //Do not allow broadcasts with an existing name to be created
+                target[key] = target[key] || {};
                 const broadcasts = Object.keys(target[key]);
                 if (broadcasts.includes(name.value)) return;
 
                 //If we pass both checks create our broadcast
-                target[key] = {};
+                target[key][name.value] = [];
                 container.insertBefore(createBroadcastElement(data, name.value), creationContainer);
 
                 name.value = "";
