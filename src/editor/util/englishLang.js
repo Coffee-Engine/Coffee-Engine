@@ -124,6 +124,10 @@ editor.EnglishLang = {
     "engine.projectSettings.broadcasts.add": "Add",
     "engine.projectSettings.broadcasts.placeholder": "Broadcast",
 
+    "engine.projectSettings.collisionGroups": "Collision Groups",
+    "engine.projectSettings.collisionGroups.add": "Add",
+    "engine.projectSettings.collisionGroups.placeholder": "Group",
+
     "editor.fileButton.removeFile": "Remove File",
 
     "editor.dropdown.project": "Project",

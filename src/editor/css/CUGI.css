@@ -54,7 +54,6 @@
 
 .CUGI-BroadcastName {
     margin-left: 8px;
-    
 }
 
 .CUGI-BroadcastCreation-Container {
@@ -62,13 +61,57 @@
     grid-template-columns: auto 64px;
 }
 
-.CUGI-CollisionMatrixContainer {
+.CUGI-CollisionGroupContainer {
+    flex-direction: column;
+
+    background-color: var(--background-1);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+    text-align: center;
+    width: 100%;
+}
+
+.CUGI-CollisionGroupCreation-Container {
     display: grid;
-    grid-template-columns: var(--grid);
+    grid-template-columns: auto 64px;
+    border-bottom-color: var(--background-4);
+    border-bottom-style: solid;
+    border-bottom-width: 4px;
+    
+    margin-bottom: 8px;
+}
+
+.CUGI-CollisionGroup {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--background-2);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+}
+
+.CUGI-CollisionGroupRemove {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    margin: 0px;
+    padding: 0px;
 }
 
 .CUGI-CollisionGroupName {
-    background-color: var(--background-1);
+    margin-left: 8px;
+}
+
+.CUGI-CollisionMatrixContainer {
+    display: grid;
+    grid-template-columns: var(--grid);
+    width: 100%;
+}
+
+.CUGI-CollisionMatrix-GroupName {
+    background-color: var(--background-2);
     min-width: 64px;
     min-height: 16px;
     padding: 4px;

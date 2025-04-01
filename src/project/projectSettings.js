@@ -5,7 +5,7 @@
             {type: "broadcasts", target: coffeeEngine, key: "broadcasts", defaultValue: []},
         ],
         collision: [
-            {type: "collisionMatrix", target: coffeeEngine, key: "collisionGroup", defaultValue: { default: { default: true } }},
+            {type: "collisionGroups", target: coffeeEngine, key: "collisionGroup", defaultValue: { default: { default: true } }},
         ],
         viewport: [
             //Silly little thingy
