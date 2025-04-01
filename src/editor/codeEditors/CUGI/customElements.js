@@ -227,15 +227,59 @@
         return container;
     }
 
-    CUGI.displays["collisionMatrix"] = () => {
+    CUGI.displays["collisionMatrix"] = (data) => {
         const { target, key } = data;
         target[key] = target[key] || { default: { default: true } };
+
+        //Track our rows
+        const rows = {};
 
         //Create the broadcast container
         const container = document.createElement("div");
         container.className = "CUGI-PropertyHolder CUGI-CollisionMatrixContainer";
 
-        const keys = Object.keys(target[key]);
-        container.style.setProperty("--grid", ("auto").repeat(keys.length + 1));
+        let keys = Object.keys(target[key]);
+        container.style.setProperty("--grid", (" auto").repeat(keys.length + 1));
+
+        //Generate initial layout
+        for (let i=-1; i<keys.length; i++) {
+            //Now the inner part
+            const keyV = keys[i];
+
+            const starterElement = document.createElement("div");
+            starterElement.className = "CUGI-CollisionGroupName CUGI-CollisionRightBorder";
+
+            //Make the bottom border if we are the corner piece
+            if (i == -1) starterElement.className += " CUGI-CollisionBottomBorder";
+            else starterElement.innerText = keyV;
+
+            container.appendChild(starterElement);
+
+            //Now for the contents if -1 just use the key names
+            for (let keyH in target[key]) {
+                //If we are on the top row use the namespace
+                if (i == -1) {
+                    //Create the namespace element
+                    const myElement = document.createElement("div");
+                    myElement.className = "CUGI-CollisionGroupName CUGI-CollisionGroupNameTop CUGI-CollisionBottomBorder";
+                    myElement.innerText = keyH;
+                    container.appendChild(myElement);
+                }
+                //If not build the checkbox
+                else {
+                    //Create our elements
+                    const checkboxContainer = document.createElement("div");
+                    const myElement = CUGI.types.boolean({...data, target:target[key][keyH], key: keyV});
+
+                    //Style
+                    checkboxContainer.className = "CUGI-CollisionGroupCheckboxContainer";
+                    myElement.className += " CUGI-CollisionGroupCheckbox";
+                    checkboxContainer.appendChild(myElement);
+                    container.appendChild(checkboxContainer);
+                }
+            }
+        }
+
+        return container;
     }
 })();
