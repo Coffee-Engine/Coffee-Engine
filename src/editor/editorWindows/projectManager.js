@@ -6,6 +6,9 @@
 
             this.sideBar = document.createElement("div");
             this.configurationArea = document.createElement("div");
+
+            this.configurationArea.style.overflowY = "auto";
+            this.sideBar.style.overflowY = "auto"
             
             //Style our container and add our areas
             container.style.display = "grid";

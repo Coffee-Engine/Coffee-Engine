@@ -21,6 +21,8 @@ coffeeEngine.PropertyTypes = {
     ARRAY: "array",
     OBJECT: "object",
 
+    DROPDOWN: "dropdown",
+
     //Silly fella
     BOOLEAN: "boolean",
 };

@@ -352,7 +352,7 @@
 
         //Create the broadcast container
         const container = document.createElement("div");
-        container.className = "CUGI-PropertyHolder CUGI-CollisionMatrixContainer";
+        container.className = "CUGI-PropertyHolder CUGI-CollisionMatrix";
 
         let keys = Object.keys(target[key]);
         container.style.setProperty("--grid", (" auto").repeat(keys.length + 1));

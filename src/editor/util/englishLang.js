@@ -534,6 +534,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.Light.radius": "Radius",
     "engine.nodeProperties.Light.color": "Color",
     "engine.nodeProperties.SpotLight.falloff": "Falloff",
+    "engine.nodeProperties.Collision.group": "Collision Group",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
