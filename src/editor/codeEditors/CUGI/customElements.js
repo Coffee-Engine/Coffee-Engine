@@ -324,7 +324,7 @@
 
         //Add the default groups
         for (let collisionGroup in target[key]) {
-            container.insertBefore(createCollisionGroupElement(data, collisionGroup), creationContainer);
+            if (collisionGroup != "default") container.insertBefore(createCollisionGroupElement(data, collisionGroup), creationContainer);
         }
 
         //Override our onchange
