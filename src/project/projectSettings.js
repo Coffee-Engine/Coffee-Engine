@@ -2,9 +2,11 @@
     project.settingDefinitions = {
         project: [
             {type: "file", target: coffeeEngine.runtime, key: "defaultScene", fileType: "scene", defaultValue: coffeeEngine.defaultScenePath},
-            {type: "broadcasts", target: coffeeEngine, key: "broadcasts", defaultValue: {}},
+            {type: "broadcasts", target: coffeeEngine, key: "broadcasts", defaultValue: []},
         ],
-        collision: [],
+        collision: [
+            {type: "collisionMatrix", target: coffeeEngine, key: "collisionGroup", defaultValue: { default: { default: true } }},
+        ],
         viewport: [
             //Silly little thingy
             {type: "dropdown", target: coffeeEngine.renderer.viewport, key: "viewportType", items:[

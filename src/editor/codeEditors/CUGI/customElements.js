@@ -226,4 +226,16 @@
 
         return container;
     }
+
+    CUGI.displays["collisionMatrix"] = () => {
+        const { target, key } = data;
+        target[key] = target[key] || { default: { default: true } };
+
+        //Create the broadcast container
+        const container = document.createElement("div");
+        container.className = "CUGI-PropertyHolder CUGI-CollisionMatrixContainer";
+
+        const keys = Object.keys(target[key]);
+        container.style.setProperty("--grid", ("auto").repeat(keys.length + 1));
+    }
 })();
