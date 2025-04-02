@@ -42,9 +42,9 @@
                     editorHost = editor.filePropertyEditors[extension]({ panel: myself, refreshListing: refreshListing, path: path });
 
                     //Special properties for this aka Saving the file
-                    onchange = (propertyDef, propertyValue, node) => {
-                        editorHost.onPropertyChange(propertyDef, propertyValue, node);
-                        project.setFile(path, JSON.stringify(node));
+                    onchange = (propertyValue, propertyDef) => {
+                        editorHost.onPropertyChange(propertyValue, propertyDef);
+                        project.setFile(path, JSON.stringify(propertyDef.target));
                     };
 
                     //Read and parse if nessasary? Necesary? needed... needed.

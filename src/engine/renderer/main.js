@@ -549,7 +549,7 @@
                             mat4 sunAAL = mat4(
                                 position.x + u_sunDir.x,position.y + u_sunDir.y,position.z + u_sunDir.z,3,
                                 u_sunColor.x,u_sunColor.y,u_sunColor.z,1,
-                                -u_sunDir.x,-u_sunDir.y,-u_sunDir.z,1,
+                                -u_sunDir.x,-u_sunDir.y,-u_sunDir.z,0,
                                 0,0,0,0
                             );
                             lightColor += calculateLightPBR(sunAAL, gl_FragColor.xyz, position, normal, matAttributes.xyz);
