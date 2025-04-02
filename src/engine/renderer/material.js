@@ -35,7 +35,7 @@
                 //Loop through our params and set the keys
                 if (this.shader) {
                     const filledKeys = Object.keys(this.params);
-                    const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => !filledKeys.includes(key));
+                    const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
 
                     for (const key in this.params) {
                         if (typeof this.params[key][0] === "string") typeConversions[this.params[key][1]](this.params[key]);

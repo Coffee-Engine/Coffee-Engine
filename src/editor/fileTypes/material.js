@@ -46,6 +46,7 @@
             },
             onPropertyChange: (value, data) => {
                 const { target, key } = data;
+                console.log(value == "");
                 if (key == "shader") {
                     coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
                         shader = shaderOBJ;
