@@ -545,16 +545,7 @@
                         F0 = mix(vec3(0.04), gl_FragColor.xyz, matAttributes.y);
 
                         //Add the sun
-                        if (matAttributes.z > 1.0) {
-                            mat4 sunAAL = mat4(
-                                position.x + u_sunDir.x,position.y + u_sunDir.y,position.z + u_sunDir.z,3,
-                                u_sunColor.x,u_sunColor.y,u_sunColor.z,1,
-                                -u_sunDir.x,-u_sunDir.y,-u_sunDir.z,0,
-                                0,0,0,0
-                            );
-                            lightColor += calculateLightPBR(sunAAL, gl_FragColor.xyz, position, normal, matAttributes.xyz);
-                        }
-                        else {lightColor += u_sunColor * lightDot(normal, u_sunDir);}
+                        lightColor += u_sunColor * lightDot(normal, u_sunDir);
 
                         for (int i=0;i<64;i++) {
                             if (i >= u_lightCount) {
