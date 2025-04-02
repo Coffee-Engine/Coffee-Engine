@@ -71,24 +71,31 @@ project.load("base64",
     //Initilize the renderer
     const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
     coffeeEngine.renderer.create(coffeeDrawCanvas);
-
-    coffeeDrawCanvas.width = window.innerWidth;
-    coffeeDrawCanvas.height = window.innerHeight;
-    coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
     
     //Scene Stuff
     const currentScene = coffeeEngine.runtime.currentScene;
     currentScene.openScene("scenes/default.scene");
-    window.addEventListener("resize",() => {
-        coffeeDrawCanvas.width = window.innerWidth;
-        coffeeDrawCanvas.height = window.innerHeight;
-        coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
-    });
+
+    coffeeEngine.renderer.resizeToProject();
+
+    //resizing
+    coffeeEngine.addEventListener("projectSettingsLoaded", coffeeEngine.renderer.resizeToProject);
+    window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
 
     //Start the frameloop
     coffeeEngine.runtime.startFrameLoop(60);
 });
 </script>
+<style>
+canvas {
+    image-rendering: optimizeSpeed;             // Older versions of FF
+    image-rendering: -moz-crisp-edges;          // FF 6.0+
+    image-rendering: -webkit-optimize-contrast; // Webkit
+                                                //  (Safari now, Chrome soon)
+    image-rendering: optimize-contrast;         // Possible future browsers.
+    -ms-interpolation-mode: nearest-neighbor;   // IE
+}
+</style>
                     `.split("\n")
                         )
                     );

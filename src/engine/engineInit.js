@@ -4,6 +4,7 @@ window.coffeeEngine = {
         fileSystemUpdate: [],
         extensionDispose: [],
         desktopInput: [],
+        projectSettingsLoaded: [],
     },
     broadcasts: {},
     runtime: {},

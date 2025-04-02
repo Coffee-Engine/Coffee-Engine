@@ -347,9 +347,6 @@
         const { target, key } = data;
         target[key] = target[key] || { default: { default: true } };
 
-        //Track our rows
-        const rows = {};
-
         //Create the broadcast container
         const container = document.createElement("div");
         container.className = "CUGI-PropertyHolder CUGI-CollisionMatrix";

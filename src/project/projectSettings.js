@@ -13,7 +13,9 @@
                 {text: editor.language["engine.projectSettings.viewportType.screen"], value: "screen"},
                 {text: editor.language["engine.projectSettings.viewportType.fixed"], value: "fixed"},
                 {text: editor.language["engine.projectSettings.viewportType.strech"], value: "stretch"},
-            ], defaultValue: "screen"}
+            ], defaultValue: "screen"},
+
+            {type: "vec2", target: coffeeEngine.renderer.viewport, key: "resolution", defaultValue: [480, 360], isArray: true},
         ]
     }
     
@@ -32,7 +34,7 @@
     
                     //Now load the settings
                     project.loadSettings(parsed.settings || {});
-                    console.log("Project settings loaded");
+                    coffeeEngine.sendEvent("projectSettingsLoaded");
                 };
     
                 fileReader.readAsText(file);

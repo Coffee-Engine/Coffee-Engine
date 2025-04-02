@@ -624,6 +624,57 @@
         return renderer;
     };
 
+    coffeeEngine.renderer.resizeToProject = () => {
+        const renderer = coffeeEngine.renderer;
+        if (!(renderer.canvas && renderer.drawBuffer)) return;
+
+        const resolution = coffeeEngine.renderer.viewport.resolution;
+        renderer.canvas.style.position = "absolute";
+
+        switch (coffeeEngine.renderer.viewport.viewportType) {
+            case "fixed":
+                renderer.canvas.width = resolution[0];
+                renderer.canvas.height = resolution[1];
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `${resolution[0]}/${resolution[1]}`;
+                renderer.canvas.style.width = "auto";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "50%";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(-50%, 0%)";
+                break;
+
+            case "stretch":
+                renderer.canvas.width = resolution[0];
+                renderer.canvas.height = resolution[1];
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `0`;
+                renderer.canvas.style.width = "100%";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "0px";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(0%, 0%)";
+                break;
+        
+            default:
+                renderer.canvas.width = window.innerWidth;
+                renderer.canvas.height = window.innerHeight;
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `auto`;
+                renderer.canvas.style.width = "100%";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "0px";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(0%, 0%)";
+                break;
+        }
+
+        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
+    }
+
     coffeeEngine.renderer.dispose = () => {
         if (!coffeeEngine.renderer.canvas) return;
         coffeeEngine.renderer.canvas.parentElement.removeChild(coffeeEngine.renderer.canvas);
