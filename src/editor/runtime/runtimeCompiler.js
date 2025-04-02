@@ -76,14 +76,15 @@ project.load("base64",
     const currentScene = coffeeEngine.runtime.currentScene;
     currentScene.openScene("scenes/default.scene");
 
-    coffeeEngine.renderer.resizeToProject();
-
     //resizing
-    coffeeEngine.addEventListener("projectSettingsLoaded", coffeeEngine.renderer.resizeToProject);
+    coffeeEngine.renderer.resizeToProject();
     window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
 
-    //Start the frameloop
-    coffeeEngine.runtime.startFrameLoop(60);
+    //Start the frameloop when the settings are loaded
+    coffeeEngine.addEventListener("projectSettingsLoaded", () => {
+        coffeeEngine.renderer.resizeToProject();
+        coffeeEngine.runtime.startFrameLoop(60);
+    });
 });
 </script>
 <style>
