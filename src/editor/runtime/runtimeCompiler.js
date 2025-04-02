@@ -96,6 +96,10 @@ canvas {
     image-rendering: optimize-contrast;         // Possible future browsers.
     -ms-interpolation-mode: nearest-neighbor;   // IE
 }
+
+body {
+    background-color: #000000;
+}
 </style>
                     `.split("\n")
                         )

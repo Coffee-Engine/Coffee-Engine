@@ -657,6 +657,21 @@
                 renderer.canvas.style.top = "0px";
                 renderer.canvas.style.transform = "translate(0%, 0%)";
                 break;
+
+            //We need some special math for this
+            case "integer": {
+                renderer.canvas.width = resolution[0];
+                renderer.canvas.height = resolution[1];
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `${resolution[0]}/${resolution[1]}`;
+                renderer.canvas.style.width = "auto";
+                renderer.canvas.style.height = `${resolution[1] * Math.max(1, Math.floor(window.innerHeight / resolution[1]))}px`;
+                renderer.canvas.style.left = "50%";
+                renderer.canvas.style.top = "50%";
+                renderer.canvas.style.transform = "translate(-50%, -50%)";
+                break;
+            }
         
             default:
                 renderer.canvas.width = window.innerWidth;

@@ -119,6 +119,7 @@ editor.EnglishLang = {
     "engine.projectSettings.viewportType.screen": "Fill Screen",
     "engine.projectSettings.viewportType.fixed": "Fixed",
     "engine.projectSettings.viewportType.strech": "Stretch to Fit",
+    "engine.projectSettings.viewportType.integer": "Nearest Integer",
 
     "engine.projectSettings.broadcasts": "Broadcasts",
     "engine.projectSettings.broadcasts.add": "Add",
