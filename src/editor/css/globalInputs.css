@@ -5,7 +5,7 @@ input {
 
     color: var(--text-1);
 
-    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 input[type="checkbox"] {
