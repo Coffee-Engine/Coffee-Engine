@@ -1,6 +1,6 @@
 (function () {
     //Just set up the renderer. Not much to do here.
-    coffeeEngine.renderer.create = (canvas) => {
+    coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
         renderer.canvas = canvas;
 
@@ -11,6 +11,7 @@
             premultipliedAlpha: true,
             blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
             powerPreference: "high-performance",
+            antialias: antialias == true,
         });
         const daveshadeInstance = renderer.daveshade;
 

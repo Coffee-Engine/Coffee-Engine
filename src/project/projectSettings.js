@@ -17,6 +17,8 @@
             ], defaultValue: "screen"},
 
             {type: "vec2", target: coffeeEngine.renderer.viewport, key: "resolution", defaultValue: [480, 360], isArray: true},
+
+            {type: "boolean", target: coffeeEngine.renderer.viewport, key: "antiAlias", defaultValue: true},
         ]
     }
     

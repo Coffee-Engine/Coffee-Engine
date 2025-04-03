@@ -68,20 +68,20 @@
 project.load("base64",
 "${base64}"
 ).then(() => {
-    //Initilize the renderer
-    const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
-    coffeeEngine.renderer.create(coffeeDrawCanvas);
-    
-    //Scene Stuff
-    const currentScene = coffeeEngine.runtime.currentScene;
-    currentScene.openScene("scenes/default.scene");
-
-    //resizing
-    coffeeEngine.renderer.resizeToProject();
-    window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
-
-    //Start the frameloop when the settings are loaded
+    //Start the engine when settings are loaded
     coffeeEngine.addEventListener("projectSettingsLoaded", () => {
+        //Initilize the renderer
+        const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
+        coffeeEngine.renderer.create(coffeeDrawCanvas, coffeeEngine.renderer.viewport.antiAlias);
+        
+        //Scene Stuff
+        const currentScene = coffeeEngine.runtime.currentScene;
+        currentScene.openScene(coffeeEngine.runtime.defaultScene || "scenes/default.scene");
+
+        //resizing
+        coffeeEngine.renderer.resizeToProject();
+        window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
+
         coffeeEngine.renderer.resizeToProject();
         coffeeEngine.runtime.startFrameLoop(60);
     });
