@@ -133,7 +133,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         const programmers = document.getElementById("coffeeProgrammers");
         const porters = document.getElementById("coffeePorters");

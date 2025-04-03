@@ -5,6 +5,8 @@ editor.defaultThemes = {
         "--background-3": "#2b1c12",
         "--background-4": "#1a110b",
 
+        "--accent": "#261100",
+
         "--text-1": "#e7cab7",
         "--text-2": "#d6ae93",
         "--text-3": "#bb8d6e",
@@ -47,6 +49,8 @@ editor.defaultThemes = {
         "--background-2": "#161617",
         "--background-3": "#141415",
         "--background-4": "#0a0a0b",
+
+        "--accent": "#151532",
 
         "--text-1": "#c4cdff",
         "--text-2": "#868ebb",
@@ -91,6 +95,8 @@ editor.defaultThemes = {
         "--background-3": "#d9bdaa",
         "--background-4": "#ceaf9a",
 
+        "--accent": "#f2b891",
+
         "--text-1": "#46352a",
         "--text-2": "#3d2c21",
         "--text-3": "#291a10",
@@ -133,6 +139,8 @@ editor.defaultThemes = {
         "--background-2": "#0c0c1c",
         "--background-3": "#08081e",
         "--background-4": "#040411",
+
+        "--accent": "#260c32",
 
         "--text-1": "#6d83ff",
         "--text-2": "#4458c1",
@@ -177,6 +185,8 @@ editor.defaultThemes = {
         "--background-3": "#1a1a1a",
         "--background-4": "#131112",
 
+        "--accent": "#343434",
+
         "--text-1": "#ffffff",
         "--text-2": "#e6e6e6",
         "--text-3": "#c6c6c6",
@@ -219,6 +229,9 @@ editor.defaultThemes = {
         "--background-2": "#121216",
         "--background-3": "#101013",
         "--background-4": "#0d0d10",
+
+        "--accent": "#2e0c2e",
+
         "--text-1": "#b62781",
         "--text-2": "#911f67",
         "--text-3": "#7f1b5a",
@@ -256,9 +269,4 @@ editor.defaultThemes = {
         "--comment-doc-keyword": "#62c7ff",
         "--comment-doc-type": "#b6e1f5",
     },
-};
-
-editor.taskbarStyles = {
-    Flat: "var(--background-1)",
-    Aero: "linear-gradient(0deg, var(--background-4) 0%, var(--background-2) 25%, var(--background-1) 100%);",
 };

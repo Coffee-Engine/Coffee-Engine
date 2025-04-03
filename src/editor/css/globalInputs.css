@@ -46,6 +46,14 @@ input[type="checkbox"]:checked:hover {
     border-color: var(--text-1);
 }
 
+textarea {
+    background-color: var(--background-2);
+    border-color: var(--background-1);
+    border-style: solid;
+
+    color: var(--text-1);
+}
+
 select {
     background-color: var(--background-2);
     border-color: var(--background-1);

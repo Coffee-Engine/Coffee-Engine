@@ -98,7 +98,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();

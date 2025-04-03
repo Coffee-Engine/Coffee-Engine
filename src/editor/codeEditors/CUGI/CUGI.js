@@ -245,6 +245,9 @@
                 input.spellcheck = (typeof data.spellcheck != "undefined") ? data.spellcheck : true;
                 input.disabled = (typeof data.disabled == "function") ? data.disabled() : data.disabled;
 
+                input.rows = data.rows;
+                input.columns = data.columns;
+
                 if (data.min) input.minlength = Math.floor(data.min);
                 if (data.max) input.maxlength = Math.floor(data.max);
 

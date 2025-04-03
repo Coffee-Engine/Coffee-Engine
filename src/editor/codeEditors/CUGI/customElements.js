@@ -85,6 +85,7 @@
 
         return input;
     }
+
     CUGI.types["color3"] = (data) => {
         return CUGI.types.color(data);
     }
@@ -116,6 +117,8 @@
                 if (data.onchange) data.onchange(target[key], data);
             };
         }})
+
+        button.className += " CUGI-FileButton"
 
         button.innerText = target[key] || editor.language["editor.window.properties.noFile"];
 
@@ -186,6 +189,10 @@
             //Create our needed elements
             const name = CUGI.macros.inputElement("text");
             const createButton = document.createElement("button");
+
+            //Add classes
+            name.className += " CUGI-BroadcastNameInput";
+            createButton.className += "CUGI-AddBroadcast";
 
             //Add our text to the inputs
             name.placeholder = editor.language["engine.projectSettings.broadcasts.placeholder"];
@@ -283,6 +290,10 @@
             const name = CUGI.macros.inputElement("text");
             const createButton = document.createElement("button");
 
+            //Add classes
+            name.className += " CUGI-CollisionGroupNameInput";
+            createButton.className += "CUGI-CollisionGroupAdd";
+
             //Add our text to the inputs
             name.placeholder = editor.language["engine.projectSettings.collisionGroups.placeholder"];
             createButton.innerText = editor.language["engine.projectSettings.collisionGroups.add"];
@@ -360,7 +371,7 @@
             const keyV = keys[i];
 
             const starterElement = document.createElement("div");
-            starterElement.className = "CUGI-CollisionMatrix-GroupName CUGI-CollisionRightBorder";
+            starterElement.className = "CUGI-CollisionMatrixGroupName CUGI-CollisionRightBorder";
 
             //Make the bottom border if we are the corner piece
             if (i == -1) starterElement.className += " CUGI-CollisionBottomBorder";
@@ -374,7 +385,7 @@
                 if (i == -1) {
                     //Create the namespace element
                     const myElement = document.createElement("div");
-                    myElement.className = "CUGI-CollisionMatrix-GroupName CUGI-CollisionMatrix-GroupNameTop CUGI-CollisionBottomBorder";
+                    myElement.className = "CUGI-CollisionMatrix-GroupName CUGI-CollisionMatrixGroupNameTop CUGI-CollisionBottomBorder";
                     myElement.innerText = keyH;
                     container.appendChild(myElement);
                 }

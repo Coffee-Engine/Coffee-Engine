@@ -116,7 +116,7 @@
     width: 100%;
 }
 
-.CUGI-CollisionMatrix-GroupName {
+.CUGI-CollisionMatrixGroupName {
     background-color: var(--background-2);
     min-width: 64px;
     min-height: 16px;

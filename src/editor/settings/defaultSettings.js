@@ -20,6 +20,9 @@
         };
     };
 
+    const customCSSTheme = document.createElement("style");
+    document.body.appendChild(customCSSTheme);
+
     editor = { ...editor, get settingDefs() {
         return {
             Editor: [
@@ -113,18 +116,6 @@
                     max: "64",
                     onchange: (value) => {
                         editor.taskbarHeight = value;
-                    },
-                },
-                {
-                    target: editor.settings.values.Window,
-                    key: "barStyle",
-                    defaultValue: "Flat",
-                    type: "dropdown",
-                    items: () => {
-                        return Object.keys(editor.taskbarStyles);
-                    },
-                    onchange: (value) => {
-                        editor.taskbarStyle = value;
                     },
                 },
             ],
@@ -236,12 +227,13 @@
                             const settingDefs = editor.settingDefs;
 
                             settingDefs.Theme[1].onchange(editor.settings.values.Theme.backgroundColor);
-                            settingDefs.Theme[2].onchange(editor.settings.values.Theme.textColor);
-                            settingDefs.Theme[3].onchange(editor.settings.values.Theme.warnColor);
-                            settingDefs.Theme[4].onchange(editor.settings.values.Theme.errorColor);
-                            settingDefs.Theme[5].onchange(editor.settings.values.Theme.warnTextColor);
-                            settingDefs.Theme[6].onchange(editor.settings.values.Theme.errorTextColor);
-                            settingDefs.Theme[7].onchange(editor.settings.values.Theme.linkColor);
+                            settingDefs.Theme[2].onchange(editor.settings.values.Theme.accentColor);
+                            settingDefs.Theme[3].onchange(editor.settings.values.Theme.textColor);
+                            settingDefs.Theme[4].onchange(editor.settings.values.Theme.warnColor);
+                            settingDefs.Theme[5].onchange(editor.settings.values.Theme.errorColor);
+                            settingDefs.Theme[6].onchange(editor.settings.values.Theme.warnTextColor);
+                            settingDefs.Theme[7].onchange(editor.settings.values.Theme.errorTextColor);
+                            settingDefs.Theme[8].onchange(editor.settings.values.Theme.linkColor);
                             settingDefs.Monaco[3].onchange(editor.settings.values.Monaco.defaultText);
                             settingDefs.Monaco[4].onchange(editor.settings.values.Monaco.colorKeyword);
                             settingDefs.Monaco[5].onchange(editor.settings.values.Monaco.colorClassname);
@@ -333,6 +325,18 @@
                             sugarcube.blocklyTheme.componentStyles.flyoutBackgroundColour = document.body.style.getPropertyValue("--background-2");
                             sugarcube.blocklyTheme.componentStyles.toolboxBackgroundColour = document.body.style.getPropertyValue("--background-1");
                             sugarcube.blocklyTheme.componentStyles.scrollbarColour = document.body.style.getPropertyValue("--background-4");
+                        }
+                    },
+                    disabled: () => {return editor.settings.values.Theme.themeColor != "Custom"}
+                },
+                {
+                    target: editor.settings.values.Theme,
+                    key: "accentColor",
+                    defaultValue: "#261100",
+                    type: "color",
+                    onchange: (value, ) => {
+                        if (editor.settings.values.Theme.themeColor == "Custom") {
+                            document.body.style.setProperty("--accent", value);
                         }
                     },
                     disabled: () => {return editor.settings.values.Theme.themeColor != "Custom"}
@@ -490,6 +494,36 @@
                     },
                     disabled: () => {return editor.settings.values.Theme.themeColor != "Custom"}
                 },
+                {
+                    target: editor.settings.values.Theme,
+                    key: "customCSS",
+                    defaultValue: false,
+                    type: "boolean",
+                    onchange: (value) => {
+                        if (value) {
+                            customCSSTheme.innerText = editor.settings.values.Theme.customCSSCode;
+                        }
+                        else {
+                            customCSSTheme.innerText = "";
+                        }
+                    }
+                },
+                {
+                    target: editor.settings.values.Theme,
+                    key: "customCSSCode",
+                    defaultValue: "",
+                    type: "multiline",
+                    rows: 10,
+                    spellcheck: false,
+                    onchange: (value) => {
+                        if (editor.settings.values.Theme.customCSS) {
+                            customCSSTheme.innerText = value;
+                        }
+                        else {
+                            customCSSTheme.innerText = "";
+                        }
+                    }
+                }
             ],
             SugarCube: [
                 {
@@ -629,4 +663,8 @@
             ],
         }
     }};
+
+    editor.HELP_MY_CSS_BROKE = () => {
+        customCSSTheme.innerText = "";
+    }
 })();

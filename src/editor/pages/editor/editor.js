@@ -59,7 +59,7 @@
 
                 margin:0px;
 
-                background:${editor.taskbarStyles[editor.taskbarStyle]};
+                background: var(--background-1);
 
                 display:grid;
                 grid-template-columns: auto ${editor.taskbarHeight}px ${editor.taskbarHeight}px;
@@ -268,7 +268,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         editor.dock.element = document.getElementById("coffeeEngineDock");
         editor.dock.overlayElement = document.getElementById("coffeeEngineDockoverlay");
