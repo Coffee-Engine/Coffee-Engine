@@ -2,6 +2,8 @@
     project.settingDefinitions = {
         project: [
             {type: "file", target: coffeeEngine.runtime, key: "defaultScene", fileType: "scene", defaultValue: coffeeEngine.defaultScenePath},
+            {type: "float", target: coffeeEngine.runtime, key: "targetFramerate", defaultValue: 60},
+            {type: "boolean", target: coffeeEngine.runtime, key: "VSync", defaultValue: false},
             {type: "broadcasts", target: coffeeEngine, key: "broadcasts", defaultValue: []},
         ],
         collision: [

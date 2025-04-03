@@ -7,7 +7,37 @@ window.coffeeEngine = {
         projectSettingsLoaded: [],
     },
     broadcasts: {},
-    runtime: {},
+    runtime: {
+        TVsync: false,
+        TTF: 60,
+
+        set VSync(value) {
+            coffeeEngine.runtime.TVsync = value;
+
+            if (coffeeEngine.isEditor) return;
+
+            //Make sure our loop conforms
+            if (value) coffeeEngine.runtime.startVSyncLoop();
+            else coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
+        },
+
+        get VSync() {
+            return coffeeEngine.runtime.TVsync;
+        },
+
+        set targetFramerate(value) {
+            coffeeEngine.runtime.TTF = value;
+
+            if (coffeeEngine.isEditor) return;
+
+            //Make sure our loop conforms
+            if (!coffeeEngine.runtime.VSync) coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
+        },
+
+        get targetFramerate() {
+            return coffeeEngine.runtime.TTF;
+        }
+    },
     classes: {},
     collisionTypes: {
         SAT:false,

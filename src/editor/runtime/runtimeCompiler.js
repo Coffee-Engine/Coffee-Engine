@@ -83,7 +83,8 @@ project.load("base64",
         window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
 
         coffeeEngine.renderer.resizeToProject();
-        coffeeEngine.runtime.startFrameLoop(60);
+        if (coffeeEngine.runtime.VSync) coffeeEngine.runtime.startVSyncLoop();
+        else coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
     });
 });
 </script>
