@@ -11,9 +11,9 @@ editor.defaultThemes = {
         "--text-2": "#d6ae93",
         "--text-3": "#bb8d6e",
 
-        "--link-1": "#ffb400",
-        "--link-2": "#d09400",
-        "--link-3": "#a43e00",
+        "--link-1": "#C69E6D",
+        "--link-2": "#997D5B",
+        "--link-3": "#99725A",
 
         "--warn": "#ffd078",
         "--error": "#ff7878",
