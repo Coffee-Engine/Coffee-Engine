@@ -273,11 +273,6 @@
         editor.dock.element = document.getElementById("coffeeEngineDock");
         editor.dock.overlayElement = document.getElementById("coffeeEngineDockoverlay");
 
-        //Deserialize our windows
-        editor.dock.refreshLayout(true);
-        editor.__deserializeLayout();
-        editor.__setupDropdownFunctionality();
-
         //Our indexedDB store
         const store = editor.indexedDB.getStore("recentprojects", false);
 
@@ -340,8 +335,6 @@
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
         //sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
 
-        const fileReader = new FileReader();
-
         //Add our scene file hook
         editor.addFileOpenHook(
             "scene",
@@ -351,10 +344,18 @@
             this
         );
 
-        //Open the user into the defaultScene
-        project.getFile("scenes/default.scene").then((file) => {
-            if (!file) return;
-            coffeeEngine.runtime.currentScene.openScene("scenes/default.scene");
+        //Open the user into the defaultScene (once the project config is loaded)
+        coffeeEngine.addEventListener("projectSettingsLoaded", () => {
+            //Deserialize our windows
+            editor.dock.refreshLayout(true);
+            editor.__deserializeLayout();
+            editor.__setupDropdownFunctionality();
+
+            //Then load default scene
+            project.getFile(coffeeEngine.runtime.defaultScene).then((file) => {
+                if (!file) return;
+                coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.defaultScene);
+            }).catch(() => {});
         });
     };
 })();

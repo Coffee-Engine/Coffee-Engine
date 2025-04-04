@@ -226,6 +226,7 @@
                         else if (!fromBoot) {
                             const settingDefs = editor.settingDefs;
 
+                            //Make the other settings change their values
                             settingDefs.Theme[1].onchange(editor.settings.values.Theme.backgroundColor);
                             settingDefs.Theme[2].onchange(editor.settings.values.Theme.accentColor);
                             settingDefs.Theme[3].onchange(editor.settings.values.Theme.textColor);
