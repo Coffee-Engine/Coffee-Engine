@@ -35,7 +35,7 @@
                             const properties = coffeeEngine.behaviorManager.parseProperties(fileReader.result.match(coffeeEngine.behaviorManager.CUGIPropertyRegex) || []);
 
                             //Set the inner text and add the element.
-                            script.innerHTML = `(function() {\n${fileReader.result}\n})();`;
+                            script.innerHTML = `(function() {\n${fileReader.result.replaceAll(coffeeEngine.behaviorManager.CUGIPropertyRegex, "")}\n})();`;
                             document.body.appendChild(script);
 
                             //Save it
