@@ -53,9 +53,9 @@
             }
 
             //Refresh stuff
-            if (this.#scriptObject) {
-                this.#scriptObject.target = value;
-            }
+            //if (this.#scriptObject) {
+            //    this.#scriptObject.target = value;
+            //}
 
             coffeeEngine.runtime.currentScene.castEvent("childMoved", this);
         }
@@ -73,8 +73,8 @@
 
             this.#scriptPath = value;
             if (!coffeeEngine.isEditor) {
-                coffeeEngine.behaviorManager.behaviorFromFile(value).then((classObj) => {
-                    this.#scriptObject = new classObj();
+                coffeeEngine.behaviorManager.behaviorFromFile(value).then(({ behavior }) => {
+                    this.#scriptObject = new behavior();
                     this.#scriptObject.target = this;
 
                     if (this.#scriptObject.ready) {
