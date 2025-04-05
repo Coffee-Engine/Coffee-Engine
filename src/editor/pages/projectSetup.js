@@ -126,7 +126,7 @@
 
                 display:grid;
 
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: auto auto;
             }
             
             .fileDiv {
@@ -141,7 +141,7 @@
 
                 display:grid;
 
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: auto auto;
             }
 
             .buttonDiv {
@@ -196,13 +196,13 @@
                     </div>
                 </div>
                 <div class="buttonDiv">
-                    <button style="padding:16px;" id="createProject">Create Project</button>
+                    <button style="padding:16px;" id="createProject"> ${editor.language["engine.projectSetup.create"]}</button>
                 </div>
             </div>
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();

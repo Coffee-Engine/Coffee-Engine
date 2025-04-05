@@ -11,7 +11,10 @@
         isColliding(collidee) {
             if (collidee == this || (!collidee instanceof node)) return;
             //Make sure we are in a compatible collision grouping
+            if (!coffeeEngine.collisionGroup[collidee.collisionGroup]) return;
             if (!coffeeEngine.collisionGroup[collidee.collisionGroup][this.collisionGroup]) return;
+
+            //Resolve our collisions
             if (this.collision && collidee.collision) {
                 const result = this.collision.solve(collidee.collision);
                 if (result.successful) return result;
@@ -25,6 +28,21 @@
             coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
 
             return collisionList.length > 0;
+        }
+
+        getProperties() {
+            // prettier-ignore
+            return [
+                { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---",
+                { name: "collisionGroup", translationKey: "engine.nodeProperties.Collision.group", items: () => {return Object.keys(coffeeEngine.collisionGroup)}, type: coffeeEngine.PropertyTypes.DROPDOWN},
+                "---", 
+                { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
+                { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
+                "---", 
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+            ];
         }
     }
 

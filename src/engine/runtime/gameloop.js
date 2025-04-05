@@ -9,14 +9,32 @@
     };
 
     coffeeEngine.runtime.startFrameLoop = (framerate) => {
-        if (coffeeEngine.runtime.frameloop) {
+        if (coffeeEngine.runtime.frameloop !== undefined && typeof coffeeEngine.runtime.frameLoop != "string") {
             clearInterval(coffeeEngine.runtime.frameloop);
         }
 
         coffeeEngine.runtime.framerate = framerate;
         coffeeEngine.runtime.stepMS = (1 / framerate) * 1000;
-        coffeeEngine.runtime.frameloop = setInterval(coffeeEngine.runtime.frameloopFunction, (1 / framerate) * 1000);
+        coffeeEngine.runtime.frameloop = setInterval(coffeeEngine.runtime.frameloopFunction, coffeeEngine.runtime.stepMS);
     };
+
+    coffeeEngine.runtime.startVSyncLoop = () => {
+        if (typeof coffeeEngine.runtime.frameLoop == "string") return;
+
+        if (coffeeEngine.runtime.frameloop !== undefined) {
+            clearInterval(coffeeEngine.runtime.frameloop);
+        }
+
+        coffeeEngine.runtime.frameLoop = "VSync";
+
+        const frameLoop = () => {
+            if (!coffeeEngine.runtime.VSync) return;
+            coffeeEngine.runtime.frameloopFunction();
+            requestAnimationFrame(frameLoop);
+        }
+
+        requestAnimationFrame(frameLoop);
+    }
 
     coffeeEngine.runtime.frameStart = (unupdatedMouse) => {
         coffeeEngine.runtime.updateDelta();

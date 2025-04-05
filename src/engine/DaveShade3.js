@@ -550,13 +550,8 @@ window.DaveShade = {};
 
             //* The buffer setter! the Legacy ONE!
             shader.setBuffersRaw = (attributeJSON) => {
-                //* Attribute keys. Whoopee
-                const attributeKeys = Object.keys(attributeJSON);
-
                 //? Loop through the keys
-                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
-                    const key = attributeKeys[keyID];
-
+                for (let key in attributeJSON) {
                     //* if it exists set the attribute
                     if (shader.attributes[key]) {
                         shader.attributes[key].setRaw(attributeJSON[key]);
@@ -566,13 +561,8 @@ window.DaveShade = {};
 
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
-                //* Attribute keys. Whoopee
-                const attributeKeys = Object.keys(attributeJSON);
-
                 //? Loop through the keys
-                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
-                    const key = attributeKeys[keyID];
-
+                for (let key in attributeJSON) {
                     //* if it exists set the attribute
                     if (shader.attributes[key]) {
                         shader.attributes[key].set(attributeJSON[key]);
@@ -584,6 +574,10 @@ window.DaveShade = {};
                 GL.useProgram(shader.program);
                 GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
                 daveShadeInstance.triCount += triAmount;
+            };
+
+            shader.dispose = () => {
+                daveShadeInstance.clearShaderFromMemory(shader);
             };
 
             //*Add it to the list of shaders to dispose of when the instance no longer exists.

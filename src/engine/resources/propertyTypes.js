@@ -16,10 +16,12 @@ coffeeEngine.PropertyTypes = {
     NODE: "node",
     FILE: "file",
     STRING: "string",
-    NAME: "name",
+    NAME: "node-name",
 
     ARRAY: "array",
     OBJECT: "object",
+
+    DROPDOWN: "dropdown",
 
     //Silly fella
     BOOLEAN: "boolean",

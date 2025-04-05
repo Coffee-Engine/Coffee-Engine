@@ -4,6 +4,7 @@ editor.EnglishLang = {
     "engine.setup.layoutSelect": "Layout",
 
     "engine.projectSetup.title": "Project Setup",
+    "engine.projectSetup.create": "Create Project",
 
     "engine.home.welcome": "Welcome to Coffee Engine",
     "engine.home.splashAuthor": "Splash by [AUTHOR]",
@@ -115,6 +116,21 @@ editor.EnglishLang = {
 
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
+
+    "engine.projectSettings.viewportType.screen": "Fill Screen",
+    "engine.projectSettings.viewportType.fixed": "Fixed",
+    "engine.projectSettings.viewportType.strech": "Stretch to Fit",
+    "engine.projectSettings.viewportType.integer": "Nearest Integer",
+
+    "engine.projectSettings.broadcasts": "Broadcasts",
+    "engine.projectSettings.broadcasts.add": "Add",
+    "engine.projectSettings.broadcasts.placeholder": "Broadcast",
+
+    "engine.projectSettings.collisionGroups": "Collision Groups",
+    "engine.projectSettings.collisionGroups.add": "Add",
+    "engine.projectSettings.collisionGroups.placeholder": "Group",
+
+    "editor.fileButton.removeFile": "Remove File",
 
     "editor.dropdown.project": "Project",
     "editor.dropdown.project.save": "Save Project",
@@ -520,11 +536,13 @@ editor.EnglishLang = {
     "engine.nodeProperties.Light.radius": "Radius",
     "engine.nodeProperties.Light.color": "Color",
     "engine.nodeProperties.SpotLight.falloff": "Falloff",
+    "engine.nodeProperties.Collision.group": "Collision Group",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
     "engine.nodeProperties.scene.groundColor": "Ground Color",
     "engine.nodeProperties.scene.centerColor": "Core Color",
+    "engine.nodeProperties.scene.ambientColor": "Ambient Color",
 
     "engine.fileProperties.Shader.shader" : "Shader"
 };

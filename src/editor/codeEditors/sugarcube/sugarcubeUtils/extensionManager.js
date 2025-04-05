@@ -366,9 +366,6 @@
                         if (previous && !Array.isArray(previous)) previous = [previous];
                         if (next && !Array.isArray(next)) next = [next];
                         if (output && !Array.isArray(output)) output = [output];
-                        
-                        //Then finally add ANY if any does not exist and any of the connections
-                        if (output && !output.includes("ANY")) output.push("ANY");
 
                         //Scratch Styled Branches
                         if (typeof text == "object") {

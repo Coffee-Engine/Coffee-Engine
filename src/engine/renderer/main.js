@@ -1,6 +1,6 @@
 (function () {
     //Just set up the renderer. Not much to do here.
-    coffeeEngine.renderer.create = (canvas) => {
+    coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
         renderer.canvas = canvas;
 
@@ -11,6 +11,7 @@
             premultipliedAlpha: true,
             blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
             powerPreference: "high-performance",
+            antialias: antialias == true,
         });
         const daveshadeInstance = renderer.daveshade;
 
@@ -541,8 +542,11 @@
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0 && u_fullBright == 0) {
-                        lightColor += u_sunColor * lightDot(normal, u_sunDir);
+                        //Calculate F0
                         F0 = mix(vec3(0.04), gl_FragColor.xyz, matAttributes.y);
+
+                        //Add the sun
+                        lightColor += u_sunColor * lightDot(normal, u_sunDir);
 
                         for (int i=0;i<64;i++) {
                             if (i >= u_lightCount) {
@@ -620,6 +624,72 @@
 
         return renderer;
     };
+
+    coffeeEngine.renderer.resizeToProject = () => {
+        const renderer = coffeeEngine.renderer;
+        if (!(renderer.canvas && renderer.drawBuffer)) return;
+
+        const resolution = coffeeEngine.renderer.viewport.resolution;
+        renderer.canvas.style.position = "absolute";
+
+        switch (coffeeEngine.renderer.viewport.viewportType) {
+            case "fixed":
+                renderer.canvas.width = resolution[0];
+                renderer.canvas.height = resolution[1];
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `${resolution[0]}/${resolution[1]}`;
+                renderer.canvas.style.width = "auto";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "50%";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(-50%, 0%)";
+                break;
+
+            case "stretch":
+                renderer.canvas.width = resolution[0];
+                renderer.canvas.height = resolution[1];
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `0`;
+                renderer.canvas.style.width = "100%";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "0px";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(0%, 0%)";
+                break;
+
+            //We need some special math for this
+            case "integer": {
+                renderer.canvas.width = resolution[0];
+                renderer.canvas.height = resolution[1];
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `${resolution[0]}/${resolution[1]}`;
+                renderer.canvas.style.width = "auto";
+                renderer.canvas.style.height = `${resolution[1] * Math.max(1, Math.floor(window.innerHeight / resolution[1]))}px`;
+                renderer.canvas.style.left = "50%";
+                renderer.canvas.style.top = "50%";
+                renderer.canvas.style.transform = "translate(-50%, -50%)";
+                break;
+            }
+        
+            default:
+                renderer.canvas.width = window.innerWidth;
+                renderer.canvas.height = window.innerHeight;
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `auto`;
+                renderer.canvas.style.width = "100%";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "0px";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(0%, 0%)";
+                break;
+        }
+
+        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
+    }
 
     coffeeEngine.renderer.dispose = () => {
         if (!coffeeEngine.renderer.canvas) return;

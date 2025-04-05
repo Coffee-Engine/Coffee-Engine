@@ -68,27 +68,40 @@
 project.load("base64",
 "${base64}"
 ).then(() => {
-    //Initilize the renderer
-    const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
-    coffeeEngine.renderer.create(coffeeDrawCanvas);
+    //Start the engine when settings are loaded
+    coffeeEngine.addEventListener("projectSettingsLoaded", () => {
+        //Initilize the renderer
+        const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
+        coffeeEngine.renderer.create(coffeeDrawCanvas, coffeeEngine.renderer.viewport.antiAlias);
+        
+        //Scene Stuff
+        const currentScene = coffeeEngine.runtime.currentScene;
+        currentScene.openScene(coffeeEngine.runtime.defaultScene || "scenes/default.scene");
 
-    coffeeDrawCanvas.width = window.innerWidth;
-    coffeeDrawCanvas.height = window.innerHeight;
-    coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
-    
-    //Scene Stuff
-    const currentScene = coffeeEngine.runtime.currentScene;
-    currentScene.openScene("scenes/default.scene");
-    window.addEventListener("resize",() => {
-        coffeeDrawCanvas.width = window.innerWidth;
-        coffeeDrawCanvas.height = window.innerHeight;
-        coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
+        //resizing
+        coffeeEngine.renderer.resizeToProject();
+        window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
+
+        coffeeEngine.renderer.resizeToProject();
+        if (coffeeEngine.runtime.VSync) coffeeEngine.runtime.startVSyncLoop();
+        else coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
     });
-
-    //Start the frameloop
-    coffeeEngine.runtime.startFrameLoop(60);
 });
 </script>
+<style>
+canvas {
+    image-rendering: optimizeSpeed;             // Older versions of FF
+    image-rendering: -moz-crisp-edges;          // FF 6.0+
+    image-rendering: -webkit-optimize-contrast; // Webkit
+                                                //  (Safari now, Chrome soon)
+    image-rendering: optimize-contrast;         // Possible future browsers.
+    -ms-interpolation-mode: nearest-neighbor;   // IE
+}
+
+body {
+    background-color: #000000;
+}
+</style>
                     `.split("\n")
                         )
                     );

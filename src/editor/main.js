@@ -153,4 +153,20 @@ editor.windows.__Serialization = {
     data: {},
 };
 
+
+//Page root for making page management easier
+editor.pageRoot = document.createElement("div");
+editor.pageRoot.style.position = "absolute";
+editor.pageRoot.style.left = "0px";
+editor.pageRoot.style.top = "0px";
+editor.pageRoot.style.margin = "0px";
+editor.pageRoot.style.padding = "0px";
+editor.pageRoot.style.width = "100%";
+editor.pageRoot.style.height = "100%";
+editor.pageRoot.style.overflow = "hidden";
+
+document.body.appendChild(editor.pageRoot);
+
+
+//Tell coffee we are the editor
 coffeeEngine.isEditor = true;

@@ -2,23 +2,17 @@
     //Oblique bounding box
     coffeeEngine.SAT.OBB = class extends coffeeEngine.SAT.BaseClass {
         get axis() {
-            //Uniformly scale our matrix real quick
-            const axis = [
-                new coffeeEngine.vector3(this.matrix.contents[0][0], this.matrix.contents[0][1], this.matrix.contents[0][2]),
-                new coffeeEngine.vector3(this.matrix.contents[1][0], this.matrix.contents[1][1], this.matrix.contents[1][2]),
-                new coffeeEngine.vector3(this.matrix.contents[2][0], this.matrix.contents[2][1], this.matrix.contents[2][2])
-            ];
-
-            //Get each column's scale
-            const scale = this.matrix.getScale();
-
-            //Normalize rows to get rotation
-            axis[0] = axis[0].div(scale).normalize();
-            axis[1] = axis[1].div(scale).normalize();
-            axis[2] = axis[2].div(scale).normalize();
-
             //Return our axis
-            return axis;
+            return this.axisCalculated;
+        }
+
+        onMatrixChange(newMatrix) {
+            const newRotation = newMatrix.getRotation();
+            this.axisCalculated = [
+                new coffeeEngine.vector3(newRotation.contents[0][0], newRotation.contents[0][1], newRotation.contents[0][2]),
+                new coffeeEngine.vector3(newRotation.contents[1][0], newRotation.contents[1][1], newRotation.contents[1][2]),
+                new coffeeEngine.vector3(newRotation.contents[2][0], newRotation.contents[2][1], newRotation.contents[2][2])
+            ];
         }
         
         constructor() {

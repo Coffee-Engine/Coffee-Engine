@@ -182,7 +182,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         const languageContainer = document.getElementById("languages");
 
@@ -340,7 +340,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         const onSelect = () => {
             if (!goToOptions) editor.home.initilize();

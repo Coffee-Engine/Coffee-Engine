@@ -9,11 +9,9 @@
                 this.texture = texture.texture;
                 this.textureWidth = texture.width;
                 this.textureHeight = texture.height;
-                console.log("sprite loaded");
-                console.log(this.textureWidth);
-                console.log(this.textureHeight);
-                console.log(this.texture);
                 this.updateMatrix();
+            }).catch(() => {
+                this.texture = null;
             });
         }
 
@@ -29,6 +27,9 @@
             this.#shaderPath = value;
             coffeeEngine.renderer.fileToShader(value).then((shader) => {
                 this.#shader = shader;
+            }).catch(() => {
+                this.#shader = null;
+                this.#shaderPath = "";
             });
         }
         get shader() {
@@ -70,7 +71,7 @@
         draw(drawID) {
             super.draw();
 
-            if (this.texture) {
+            if (this.texture && this.#shader) {
                 this.#shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
 
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);

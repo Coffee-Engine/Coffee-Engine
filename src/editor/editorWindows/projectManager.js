@@ -1,35 +1,14 @@
-(function() {
-    const settingDisplays = {
-        label: (container, data) => {
-            const label = document.createElement("p");
-            label.innerText = data.text;
-            console.log("hello label world")
-            container.appendChild(label);
-        }
-    };
-
-    
+(function() {    
     editor.windows.projectManager = class extends editor.windows.base {
-        //For list types
-        content_list(container, data, refresh) {
-            //Loop through our items in our list
-            for (let itemID in data.contents) {
-                //Get our item and add a container
-                const item = data.contents[itemID];
-                const itemContainer = document.createElement("div");
-
-                //Then add our inner data and append the child
-                if (settingDisplays[item.type]) settingDisplays[item.type](itemContainer, item);
-                container.appendChild(itemContainer);
-            }
-        }
-
         init (container) {
             //Make title bar
             this.title = editor.language["editor.window.projectManager"];
 
             this.sideBar = document.createElement("div");
             this.configurationArea = document.createElement("div");
+
+            this.configurationArea.style.overflowY = "auto";
+            this.sideBar.style.overflowY = "auto"
             
             //Style our container and add our areas
             container.style.display = "grid";
@@ -50,15 +29,29 @@
 
                 //functionality
                 button.onclick = () => {
-                    //Clear the configuration area
                     this.configurationArea.innerHTML = "";
+                    this.configurationArea.appendChild(CUGI.createList(project.settingDefinitions[key], {
+                        globalChange: () => {
+                            //Save our project.json
+                            project.getFile("project.json").then((file) => {
+                                const fileReader = new FileReader();
+                                
+                                //Once read.
+                                fileReader.onload = () => {
+                                    //Get our parsed JSON
+                                    let parsed = JSON.parse(fileReader.result);
+                                    if (!parsed) parsed = {};
+                    
+                                    parsed.settings = project.saveSettings();
 
-                    //run our content button
-                    const menuType = project.settingDefinitions[key].type;
-                    if (this[`content_${menuType}`]) {
-                        const refresh = () => {this[`content_${menuType}`](this.configurationArea, project.settingDefinitions[key], refresh)}
-                        refresh(this.configurationArea);
-                    }
+                                    //Resave our file
+                                    project.setFile("project.json", JSON.stringify(parsed), "text/plain");
+                                };
+                    
+                                fileReader.readAsText(file);
+                            });
+                        }
+                    }));
                 }
 
                 this.sideBar.appendChild(button);

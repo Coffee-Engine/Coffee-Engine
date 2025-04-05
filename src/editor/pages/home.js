@@ -151,7 +151,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         document.getElementById("openSettings").onclick = () => {
             editor.settings.initilize();
