@@ -542,6 +542,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
     "engine.nodeProperties.scene.groundColor": "Ground Color",
     "engine.nodeProperties.scene.centerColor": "Core Color",
+    "engine.nodeProperties.scene.ambientColor": "Ambient Color",
 
     "engine.fileProperties.Shader.shader" : "Shader"
 };
