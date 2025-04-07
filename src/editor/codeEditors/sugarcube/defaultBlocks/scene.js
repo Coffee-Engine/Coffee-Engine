@@ -80,6 +80,18 @@
                     },
                     "---",
                     {
+                        opcode: "instansiateNode",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: editor.language["sugarcube.scene.block.instansiateNode"],
+                        arguments: {
+                            object: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "NodeMenu",
+                            },
+                        },
+                    },
+                    "---",
+                    {
                         opcode: "setVariable",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.scene.block.setVariable"],
@@ -117,13 +129,19 @@
                         acceptReporters: true,
                         editor: "file_Editor",
 
-                        initilize: "file_Init",
+                        initilize: "generic_Init",
+                    },
+                    NodeMenu: {
+                        acceptReporters: true,
+                        editor: "node_Editor",
+
+                        initilize: "generic_Init",
                     },
                 },
             };
         }
 
-        file_Init(field) {
+        generic_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
         }
@@ -141,6 +159,20 @@
             newLoadal.y = bounding.y + bounding.height;
             newLoadal.onFileSelected = (path) => {
                 field.value = path;
+            };
+        }
+
+        node_Editor(field) {
+            const newNodal = new editor.windows.nodeMaker(400,400);
+
+            newNodal.__moveToTop();
+
+            const bounding = field.borderRect_.getBoundingClientRect();
+            newNodal.x = bounding.x + bounding.width / 2;
+            newNodal.y = bounding.y + bounding.height;
+            newNodal.onNodeClicked = (nodeType) => {
+                field.value = nodeType;
+                newNodal._dispose();
             };
         }
 
