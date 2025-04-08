@@ -117,6 +117,14 @@ editor.EnglishLang = {
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
 
+    "engine.projectSettings.project.defaultScene": "Default Scene",
+    "engine.projectSettings.project.targetFramerate": "Target FPS",
+    "engine.projectSettings.project.VSync": "VSync Enabled",
+
+    "engine.projectSettings.viewport.viewportType": "Viewport Type",
+    "engine.projectSettings.viewport.resolution": "Viewport Resolution",
+    "engine.projectSettings.viewport.antiAlias": "Anti-Aliasing",
+
     "engine.projectSettings.viewportType.screen": "Fill Screen",
     "engine.projectSettings.viewportType.fixed": "Fixed",
     "engine.projectSettings.viewportType.strech": "Stretch to Fit",

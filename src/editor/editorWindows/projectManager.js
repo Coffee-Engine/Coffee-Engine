@@ -50,6 +50,12 @@
                     
                                 fileReader.readAsText(file);
                             });
+                        },
+
+                        preprocess: (item) => {
+                            item.text = editor.language[`engine.projectSettings.${key}.${item.key}`] || (item.translationKey || item.key);
+        
+                            return item;
                         }
                     }));
                 }
