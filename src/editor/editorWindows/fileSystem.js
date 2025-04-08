@@ -15,10 +15,40 @@
             return this.currentSystemRoot;
         }
 
+        makeFileDAD(element, path) {
+            //Prevent file opening in the browser
+            element.ondragover = (event) => {
+                event.preventDefault();
+            }
+
+            //file drag and drop
+            element.ondrop = (event) => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                //Get items in the list
+                if (event.dataTransfer.items) {
+                    const items = [...event.dataTransfer.items];
+
+                    //Make sure each item is a file and then add it if possible
+                    items.forEach(item => {
+                        if (item.kind == "file") {
+                            const file = item.getAsFile();
+                            project.setFile(`${path}${file.name}`, file, file.type);
+                        }
+                    });
+                };
+            }
+        }
+
         init(container) {
             this.currentSystemRoot = project.fileSystem;
             this.title = editor.language["editor.window.fileExplorer"];
             container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+            
+            //Drag and drop stuff
+            this.makeFileDAD(container, "");
+
             //Our display function
             this.displayDirectory = (directory, parentDiv, even, path) => {
                 path = path || "";
@@ -109,6 +139,8 @@
                     //For folders we do something similar but with another div inside and create a sub directory basin
                     else {
                         element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
+
+                        this.makeFileDAD(element, `${path}${key}/`);
 
                         //Our folder dropdown
                         //Notice the sleek difference.
