@@ -70,6 +70,13 @@
             if (!coffeeEngine.runtime.currentScene) return;
 
             switch (value) {
+                case "new":
+                    const sceneModal = new editor.windows.newScene(400, 150);
+                    sceneModal.x = (window.innerWidth / 2) - 200;
+                    sceneModal.y = (window.innerHeight / 2) - 75;
+                    sceneModal.__moveToTop();
+                    break;
+
                 case "save":
                     //Its actually that easy
                     project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
