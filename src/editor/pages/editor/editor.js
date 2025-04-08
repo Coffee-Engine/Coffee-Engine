@@ -251,7 +251,6 @@
                               `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
                     }
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}</dropdown-item>
-                    <dropdown-item class="dropdown-menu-fill-down"  value="importFile">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
                 </dropdown-menu>
                 <dropdown-menu id="coffeeEngineWindowDropdown">
                     ${editor.language["editor.dropdown.window"]}

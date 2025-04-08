@@ -145,7 +145,6 @@ editor.EnglishLang = {
     "editor.dropdown.project.saveSeperate": "Save a Copy",
     "editor.dropdown.project.saveDecaf": "Save Project as .decaf",
     "editor.dropdown.project.projectSettings": "Project Settings",
-    "editor.dropdown.project.importFile": "Import File",
 
     "editor.dropdown.window": "Windows",
 
