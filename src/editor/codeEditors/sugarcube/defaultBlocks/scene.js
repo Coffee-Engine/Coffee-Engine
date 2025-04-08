@@ -85,8 +85,7 @@
                         text: editor.language["sugarcube.scene.block.instansiateNode"],
                         arguments: {
                             object: {
-                                type: sugarcube.ArgumentType.CUSTOM,
-                                customType: "NodeMenu",
+                                menu: "NodeMenu"
                             },
                         },
                     },
@@ -124,6 +123,12 @@
                         },
                     },
                 ],
+                menus: {
+                    NodeMenu: {
+                        items: "nodeMenu",
+                        acceptReporters: true
+                    }
+                },
                 fields: {
                     Scene: {
                         acceptReporters: true,
@@ -131,14 +136,29 @@
 
                         initilize: "generic_Init",
                     },
-                    NodeMenu: {
-                        acceptReporters: true,
-                        editor: "node_Editor",
-
-                        initilize: "generic_Init",
-                    },
                 },
             };
+        }
+
+        nodeMenu() {
+            const returned = [];
+
+            for (let key in coffeeEngine.nodeRegister) {
+                //Get our menu definition for the node
+                const nodeDef = {
+                    text: editor.language[`engine.nodeNames.${key}`] || key,
+                    value: key
+                };
+
+                //Get our parent and our index for it if possible
+                const nodeParent = coffeeEngine.nodeRegister[key][1];
+                const foundIndex = returned.findIndex((element) => element.value == nodeParent);
+
+                if (foundIndex == -1) returned.push(nodeDef)
+                else returned.splice(foundIndex + 1, 0, nodeDef);
+            }
+
+            return returned;
         }
 
         generic_Init(field) {
@@ -159,20 +179,6 @@
             newLoadal.y = bounding.y + bounding.height;
             newLoadal.onFileSelected = (path) => {
                 field.value = path;
-            };
-        }
-
-        node_Editor(field) {
-            const newNodal = new editor.windows.nodeMaker(400,400);
-
-            newNodal.__moveToTop();
-
-            const bounding = field.borderRect_.getBoundingClientRect();
-            newNodal.x = bounding.x + bounding.width / 2;
-            newNodal.y = bounding.y + bounding.height;
-            newNodal.onNodeClicked = (nodeType) => {
-                field.value = nodeType;
-                newNodal._dispose();
             };
         }
 
