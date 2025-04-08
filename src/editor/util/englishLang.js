@@ -381,7 +381,9 @@ editor.EnglishLang = {
     "sugarcube.scene.block.getScript": "script of [object]",
     "sugarcube.scene.block.getChildren": "children of [object]",
     "sugarcube.scene.block.getParentOf": "parent of [object]",
-    "sugarcube.scene.block.instansiateNode": "create [object]",
+    "sugarcube.scene.block.instansiateNode": "create [node]",
+    "sugarcube.scene.block.setParentOf": "set parent of [node] to [parent]",
+    "sugarcube.scene.block.unparent": "unparent [node]",
     "sugarcube.scene.block.setVariable": "set variable [variable] of [object] to [value]",
     "sugarcube.scene.block.getVariable": "variable [variable] of [object]",
 

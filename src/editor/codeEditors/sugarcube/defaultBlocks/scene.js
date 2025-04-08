@@ -84,9 +84,32 @@
                         type: sugarcube.BlockType.OBJECT,
                         text: editor.language["sugarcube.scene.block.instansiateNode"],
                         arguments: {
-                            object: {
+                            node: {
                                 menu: "NodeMenu"
                             },
+                        },
+                    },
+                    {
+                        opcode: "setParentOf",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.scene.block.setParentOf"],
+                        arguments: {
+                            node: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                            parent: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "unparent",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.scene.block.unparent"],
+                        arguments: {
+                            node: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            }
                         },
                     },
                     "---",
@@ -204,6 +227,19 @@
 
         getScript({ object }) {
             return object ? object.scriptObject : null;
+        }
+
+        instansiateNode({ node }) {
+            if (!coffeeEngine.nodeRegister[node]) return;
+            return new coffeeEngine.nodeRegister[node][0]();
+        }
+
+        setParentOf({ node, parent }) {
+            node.parent = parent;
+        }
+
+        unparent({ node }) {
+            node.parent = null;
         }
 
         getChildren({ object }) {
