@@ -6,7 +6,7 @@
         init(container) {
             this.resizable = false;
             this.dockable = false;
-            this.title = editor.language["editor.window.createScript"];
+            this.title = editor.language["editor.window.createScene"];
 
             container.style.display = "grid";
             container.style.gridTemplateRows = "75px 75px";

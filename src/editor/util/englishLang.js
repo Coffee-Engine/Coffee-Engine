@@ -197,6 +197,8 @@ editor.EnglishLang = {
     "editor.window.cappuccino": "Cappuccino",
     "editor.window.glslShader": "Shader",
 
+    "editor.window.createScene": "New Scene",
+
     "editor.window.typed.commentMessage": "This is a default behavior!",
     "editor.window.typed.initMessage": "Code for initilization goes here.",
     "editor.window.typed.updateMessage": "Code for each frame goes here.",

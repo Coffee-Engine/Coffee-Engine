@@ -83,6 +83,19 @@
                     console.log(editor.language["editor.notification.saveScene"].replace("[path]", coffeeEngine.runtime.currentScene.scenePath));
                     break;
 
+                case "load":
+                    //Its like some sort of loading. :trol:
+                    const sceneLoadal = new editor.windows.modalFileExplorer(400, 400);
+                    sceneLoadal.x = (window.innerWidth / 2) - 200;
+                    sceneLoadal.y = (window.innerHeight / 2) - 200;
+                    sceneLoadal.__moveToTop();
+                    sceneLoadal.acceptTypes = "scene";
+
+                    sceneLoadal.onFileSelected = (path) => {
+                        editor.sendFileHook(path.split(".")[1], path);
+                    };
+                    break
+
                 default:
                     break;
             }
