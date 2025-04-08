@@ -14,6 +14,7 @@
 
             sugarcube.BlockShapes.Object = this.makeObject();
             sugarcube.BlockShapes.Reference = this.makeCoolShape();
+            sugarcube.BlockShapes.branch = this.makeSwitchNotch();
             sugarcube.BlockShapes.Array = this.SQUARED;
             sugarcube.BlockShapes.Field_ReporterAcceptance = this.SQUARED;
         }
@@ -155,31 +156,62 @@
             };
         }
 
+        makeFunkyNotch() {
+            const nW = this.NOTCH_WIDTH / 36;
+            const nW2 = nW * 2;
+            const nW3 = nW * 3;
+            const nW4 = nW * 4;
+            const nW12 = nW * 12;
+
+            const nH = this.NOTCH_HEIGHT / 8;
+            const nH2 = nH * 2;
+            const nH4 = nH * 4;
+            const nH12 = nH * 12;
+            return {
+                type: 5,
+                width: this.NOTCH_WIDTH,
+                height: this.NOTCH_HEIGHT,
+                pathLeft: ` c ${nW2} 0 ${nW3} ${nH} ${nW4} ${nH2} l ${nW4} ${nH4} c ${nW} ${nH} ${nW4} -${nH12} ${nW4} ${nH2} h ${nW12} c 0 -${nH12} ${nW3} -${nH} ${nW4} -${nH2} l ${nW4} -${nH4} c ${nW} -${nH} ${nW2} -${nH2} ${nW4} -${nH2} `,
+                pathRight: ` c -${nW2} 0 -${nW3} ${nH} -${nW4} ${nH2} l -${nW4} ${nH4} c -${nW} ${nH} -${nW4} -${nH12} -${nW4} ${nH2} h -${nW12} c 0 -${nH12} -${nW3} -${nH} -${nW4} -${nH2} l -${nW4} -${nH4} c -${nW} -${nH} -${nW2} -${nH2} -${nW4} -${nH2} `,
+            }
+        }
+
+        makeSwitchNotch() {
+            const nW = this.NOTCH_WIDTH / 36;
+            const nH = this.NOTCH_HEIGHT / 8;
+
+            const nW0_5 = nW * 0.5;
+            const nW0_6 = nW * 0.6667;
+            const nW1_3 = nW * 1.3333;
+            const nW1_5 = nW * 1.5;
+            const nW2 = nW * 2;
+            const nW6 = nW * 6;
+
+            const nH1_3 = nH * 1.3333;
+            const nH2_6 = nH * 2.6667;
+            const nH2 = nH * 2;
+            const nH4 = nH * 4;
+
+            return {
+                type: 5,
+                width: nW * 32,
+                height: this.NOTCH_HEIGHT,
+                pathLeft: `c ${nW} 0 ${nW1_5} ${nH} ${nW2} ${nH2} l ${nW2} ${nH4} c ${nW0_5} ${nH} ${nW} ${nH2} ${nW2} ${nH2} h ${nW6} c ${nW} 0 ${nW1_5} -${nH} ${nW2} -${nH2} c ${nW0_6} -${nH1_3} ${nW} -${nH4} ${nW2} -${nH4} c ${nW} 0 ${nW1_3} ${nH2_6} ${nW2} ${nH4} c ${nW0_5} ${nH} ${nW} ${nH2} ${nW2} ${nH2} h ${nW6} c ${nW} 0 ${nW1_5} -${nH} ${nW2} -${nH2} l ${nW2} -${nH4} c ${nW0_5} -${nH} ${nW} -${nH2} ${nW2} -${nH2}`,
+                pathRight: `c -${nW} 0 -${nW1_5} ${nH} -${nW2} ${nH2} l -${nW2} ${nH4} c -${nW0_5} ${nH} -${nW} ${nH2} -${nW2} ${nH2} h -${nW6} c -${nW} 0 -${nW1_5} -${nH} -${nW2} -${nH2} c -${nW0_6} -${nH1_3} -${nW} -${nH4} -${nW2} -${nH4} c -${nW} 0 -${nW1_3} ${nH2_6} -${nW2} ${nH4} c -${nW0_5} ${nH} -${nW} ${nH2} -${nW2} ${nH2} h -${nW6} c ${nW} 0 -${nW1_5} -${nH} -${nW2} -${nH2} l -${nW2} -${nH4} c -${nW0_5} -${nH} -${nW} -${nH2} -${nW2} -${nH2}`,
+            }
+        }
+
         shapeFor(connection) {
             let check = connection.getCheck();
             !check && connection.targetConnection && (check = connection.targetConnection.getCheck());
-            switch (connection.type) {
-                case Blockly.ConnectionType.OUTPUT_VALUE: {
-                    if (!check) return super.shapeFor(connection);
-                    if (sugarcube.BlockShapes[check[0]]) {
-                        return sugarcube.BlockShapes[check[0]]
-                    }
-                    else {
-                        return super.shapeFor(connection);
-                    }
-                }
-                case Blockly.ConnectionType.INPUT_VALUE: {
-                    if (!check) return super.shapeFor(connection);
-                    if (sugarcube.BlockShapes[check[0]]) {
-                        return sugarcube.BlockShapes[check[0]]
-                    }
-                    else {
-                        return super.shapeFor(connection);
-                    }
-                }
-                default: {
-                    return super.shapeFor(connection);
-                }
+
+            //The N E T H E R
+            if (!check) return super.shapeFor(connection);
+            if (sugarcube.BlockShapes[check[0]]) {
+                return sugarcube.BlockShapes[check[0]]
+            }
+            else {
+                return super.shapeFor(connection);
             }
         }
     };
