@@ -261,6 +261,11 @@
                     <dropdown-item class="dropdown-menu-fill-down"  value="save">${editor.language["editor.dropdown.scene.save"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="load">${editor.language["editor.dropdown.scene.load"]}</dropdown-item>
                 </dropdown-menu>
+                <dropdown-menu id="coffeeEngineRuntimeDropdown">
+                    ${editor.language["editor.dropdown.runtime"]}
+                    <dropdown-item class="dropdown-menu-fill-down"  value="startHere">${editor.language["editor.dropdown.runtime.startHere"]}</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down"  value="startDefault">${editor.language["editor.dropdown.runtime.startDefault"]}</dropdown-item>
+                </dropdown-menu>
             </div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
             <div class="dockOverlay" id="coffeeEngineDockoverlay"></div>

@@ -153,6 +153,10 @@ editor.EnglishLang = {
     "editor.dropdown.scene.save": "Save Scene",
     "editor.dropdown.scene.load": "Load Scene",
 
+    "editor.dropdown.runtime": "Game",
+    "editor.dropdown.runtime.startHere": "Start",
+    "editor.dropdown.runtime.startDefault": "Start in default scene",
+
     "editor.notification.saveScene": "Scene saved to \"[path]\"",
     "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
     "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",

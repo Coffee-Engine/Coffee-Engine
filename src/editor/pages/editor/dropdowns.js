@@ -5,6 +5,7 @@
             file: document.getElementById("coffeeEngineProjectDropdown"),
             window: document.getElementById("coffeeEngineWindowDropdown"),
             scene: document.getElementById("coffeeEngineSceneDropdown"),
+            runtime: document.getElementById("coffeeEngineRuntimeDropdown")
         };
 
         editor.dropdownBar.file.onchange = (value) => {
@@ -100,5 +101,21 @@
                     break;
             }
         };
+
+        //Now for the runtime starting
+        editor.dropdownBar.runtime.onchange = (value) => {
+            switch (value) {
+                case "startHere":
+                    editor.runtime.startWindowed(coffeeEngine.runtime.currentScene.scenePath);
+                    break;
+
+                case "startDefault":
+                    editor.runtime.startWindowed();
+                    break;
+            
+                default:
+                    break;
+            }
+        }
     };
 })();

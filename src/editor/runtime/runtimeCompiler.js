@@ -44,13 +44,17 @@
         });
     };
 
-    editor.runtime.compileWithDecaf = () => {
+    editor.runtime.compileWithDecaf = (scene) => {
         const zipInstance = new JSZip();
 
         return new Promise((resolve, reject) => {
             project.decaf.loopThroughSave("", project.fileSystem, zipInstance, () => {
                 zipInstance.generateAsync({ type: "base64" }).then((base64) => {
                     //base64 = "data:application/zip;base64," + base64;
+
+                    let targetScene = scene || coffeeEngine.runtime.defaultScene;
+                    if (targetScene) targetScene = `"${targetScene}"`;
+                    else targetScene = `undefined`;
 
                     resolve(
                         editor.runtime.compile(
@@ -76,7 +80,7 @@ project.load("base64",
         
         //Scene Stuff
         const currentScene = coffeeEngine.runtime.currentScene;
-        currentScene.openScene(coffeeEngine.runtime.defaultScene || "scenes/default.scene");
+        currentScene.openScene(${targetScene} || "scenes/default.scene");
 
         //resizing
         coffeeEngine.renderer.resizeToProject();
