@@ -413,6 +413,8 @@ editor.EnglishLang = {
     "sugarcube.operators.block.or": "[A] or [B]",
     "sugarcube.operators.block.xor": "either [A] or [B]",
     "sugarcube.operators.block.not": "not [A]",
+    "sugarcube.operators.block.true": "true",
+    "sugarcube.operators.block.false": "false",
     "sugarcube.operators.menu.operations.abs": "abs",
     "sugarcube.operators.menu.operations.floor": "floor",
     "sugarcube.operators.menu.operations.ceiling": "ceiling",

@@ -260,6 +260,19 @@
                     },
                     "---",
                     {
+                        opcode: "true",
+                        compileFunc: "true",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.true"]
+                    },
+                    {
+                        opcode: "false",
+                        compileFunc: "false",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.false"]
+                    },
+                    "---",
+                    {
                         opcode: "modulo",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.operators.block.modulo"],
@@ -384,6 +397,14 @@
         xor({ A, B }) {
             //Yes JS has a XOR operator... I know its bitwise so we have to convert
             return sugarcube.cast.toBoolean(sugarcube.cast.toBoolean(A) ^ sugarcube.cast.toBoolean(B));
+        }
+
+        true() {
+            return "true";
+        }
+
+        false() {
+            return "false";
         }
 
         not({ A }) {
