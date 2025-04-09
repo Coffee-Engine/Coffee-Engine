@@ -133,7 +133,7 @@
                     },
                     {
                         opcode: "getVariable",
-                        type: sugarcube.BlockType.REPORTER,
+                        type: sugarcube.BlockType.REPORTER_ANY,
                         text: editor.language["sugarcube.scene.block.getVariable"],
                         arguments: {
                             variable: {
