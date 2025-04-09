@@ -371,11 +371,11 @@
                                 content: "viewport",
                             },
                             {
-                                size: 20,
+                                size: 30,
                                 content: "properties",
                             },
                             {
-                                size: 30,
+                                size: 20,
                                 content: "sceneTree",
                             },
                         ],
