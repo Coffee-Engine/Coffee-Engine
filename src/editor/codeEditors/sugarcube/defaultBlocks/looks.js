@@ -159,7 +159,7 @@
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setSprite"],
-                        filter: ["Sprite", "Billboard"],
+                        filter: ["Sprite", "Sprite3D", "Billboard"],
                         arguments: {
                             image: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -171,7 +171,7 @@
                         opcode: "getSprite",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.looks.block.getSprite"],
-                        filter: ["Sprite", "Billboard"],
+                        filter: ["Sprite", "Sprite3D", "Billboard"],
                     },
                     {
                         opcode: "setMesh",
@@ -251,7 +251,7 @@
                         opcode: "setTint",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setTint"],
-                        filter: ["Sprite", "Billboard", "MeshDisplay"],
+                        filter: ["Sprite", "Sprite3D", "Billboard", "MeshDisplay"],
                         arguments: {
                             tint: {
                                 type: sugarcube.ArgumentType.COLOR,

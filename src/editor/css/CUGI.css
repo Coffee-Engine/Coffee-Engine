@@ -11,6 +11,10 @@
     width: 64px;
 }
 
+.CUGI-String {
+    min-width: 128px;
+}
+
 .CUGI-X {
     border-left-color: #ff0000;
 }

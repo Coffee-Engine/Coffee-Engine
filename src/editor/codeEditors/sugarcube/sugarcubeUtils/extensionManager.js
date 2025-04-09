@@ -578,7 +578,7 @@
                         //Cool stuff
                         //If there is an output or tooltip add them to the block definition
                         //Note that output only determines what the block puts out.
-                        if (block.alignments) blockDef["lastDummyAlign0"] = block.alignment;
+                        if (block.alignment) blockDef["lastDummyAlign0"] = block.alignment;
                         if (previous) blockDef.previousStatement = previous;
                         if (next) blockDef.nextStatement = next;
                         if (output) blockDef.output = output;
