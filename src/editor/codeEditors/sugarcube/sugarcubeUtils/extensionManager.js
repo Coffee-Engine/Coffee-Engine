@@ -427,6 +427,13 @@
                             for (let argumentID = 0; argumentID < argumentKeys.length; argumentID++) {
                                 const argumentKey = argumentKeys[argumentID];
 
+                                //Make sure the argument exists if not remove it
+                                if (!text.includes([`[${argumentKey}]`])) {
+                                    block.arguments.splice(argumentID, 1);
+                                    argumentID--;
+                                    continue;
+                                }
+
                                 //Check to see if the argument exists
                                 if (block.arguments[argumentKey]) {
                                     let argument = block.arguments[argumentKey];
