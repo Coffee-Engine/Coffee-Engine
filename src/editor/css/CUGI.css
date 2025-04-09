@@ -7,6 +7,10 @@
     font-weight: bold;
 }
 
+.CUGI-Number {
+    width: 64px;
+}
+
 .CUGI-X {
     border-left-color: #ff0000;
 }
