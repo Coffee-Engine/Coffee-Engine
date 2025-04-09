@@ -104,7 +104,7 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-Credits">
             <h1 class="centerText" style="margin:2px; margin-top:4px;">
                 <button id="goBack">${editor.language["engine.generic.back"]}</button>
                 ${editor.language["engine.credits.welome"]}

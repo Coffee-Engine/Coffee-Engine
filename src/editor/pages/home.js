@@ -125,7 +125,7 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-Home">
             <div class="fullWidth">
                 <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
             </div>

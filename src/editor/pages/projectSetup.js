@@ -104,6 +104,7 @@
             .nameBox {
                 font-size:larger;
                 margin:8px;
+                min-width:0px;
                 text-align: center;
             }
 
@@ -172,7 +173,7 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-ProjectSetup">
             <h1 class="leftText" style="margin:2px; margin-top:4px;">
                 <button id="goBack">${editor.language["engine.generic.back"]}</button>
                 ${editor.language["engine.projectSetup.title"]}
