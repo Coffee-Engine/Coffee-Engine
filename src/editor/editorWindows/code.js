@@ -256,14 +256,14 @@
                 const { useBlocklyEditor } = editor.getLanguageDefFromExtension(this.readType);
                 //Swap 'em
                 if (!useBlocklyEditor) {
-                    this.monacoArea.style.visibility = "visible";
+                    this.monacoArea.style.visibility = "inherit";
                     this.blocklyArea.style.visibility = "hidden";
                     this.usingSugarCube = false;
 
                     monacoManager.setScript(this.fileReader.result, editor.languageRedirects[this.readType] || this.readType);
                 } else {
                     this.monacoArea.style.visibility = "hidden";
-                    this.blocklyArea.style.visibility = "visible";
+                    this.blocklyArea.style.visibility = "inherit";
                     this.usingSugarCube = true;
 
                     sugarcube.deserialize(JSON.parse(this.fileReader.result));
