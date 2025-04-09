@@ -441,13 +441,13 @@
                     return Math.tan(sugarcube.cast.toNumber(B) * this.deg2Rad);
 
                 case "asin":
-                    return Math.asin(sugarcube.cast.toNumber(B) * this.rad2Deg);
+                    return Math.asin(sugarcube.cast.toNumber(B)) * this.rad2Deg;
 
                 case "acos":
-                    return Math.acos(sugarcube.cast.toNumber(B) * this.rad2Deg);
+                    return Math.acos(sugarcube.cast.toNumber(B)) * this.rad2Deg;
 
                 case "atan":
-                    return Math.atan(sugarcube.cast.toNumber(B) * this.rad2Deg);
+                    return Math.atan(sugarcube.cast.toNumber(B)) * this.rad2Deg;
 
                 default:
                     return Math[A](sugarcube.cast.toNumber(B));
