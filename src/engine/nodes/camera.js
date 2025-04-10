@@ -47,9 +47,9 @@
                     cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     cameraData.aspectRatio = canvas.width / canvas.height;
-                    cameraData.position.x = -translatedWorld.x;
-                    cameraData.position.y = -translatedWorld.y;
-                    cameraData.position.z = -translatedWorld.z;
+                    cameraData.position.x = translatedWorld.x;
+                    cameraData.position.y = translatedWorld.y;
+                    cameraData.position.z = translatedWorld.z;
 
                     coffeeEngine.renderer.cameraData.cameraRotationEul.x = -this.rotation.y;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;
