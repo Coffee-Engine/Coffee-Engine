@@ -310,6 +310,7 @@
                 groundColor: this.groundColor,
                 centerColor: this.centerColor,
                 ambientColor: this.ambientColor,
+                fogData: this.fogData,
             };
         }
 
@@ -320,6 +321,11 @@
             this.groundColor = data.groundColor || [1, 1, 1];
             this.centerColor = data.centerColor || [0, 0, 0];
             this.ambientColor = data.ambientColor || [0.05, 0.05, 0.05];
+            this.fogData = data.fogData || [
+                0, 0.125, 5,
+                [1, 1, 1],
+                8, 0, 0
+            ];
 
             //Our function for actually loading the scene
             const loadNodes = () => {
@@ -422,14 +428,18 @@
                 { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true },
                 "---",
                 { name: "0", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogType", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
-                    {text: "None", value: 0},
-                    {text: "Simple", value: 1},
-                    {text: "Sun affected", value: 2},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.none"], value: 0},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.retro"], value: 3},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.simple"], value: 1},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.sunAffected"], value: 2},
                 ]},
                 { name: "2", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogStart", type: coffeeEngine.PropertyTypes.FLOAT },
-                { name: "1", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogFalloff", type: coffeeEngine.PropertyTypes.SLIDER, min:0, max: 10.0 },
+                { name: "1", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogFalloff", type: coffeeEngine.PropertyTypes.SLIDER, min:0, max: 10 },
                 "---",
                 { name: "3", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true },
+                "---",
+                { name: "5", target: this.fogData, translationKey: "engine.nodeProperties.scene.skyEffect", type: coffeeEngine.PropertyTypes.SLIDER, min:0, max: 1 },
+                { name: "4", target: this.fogData, translationKey: "engine.nodeProperties.scene.sunMultiplier", type: coffeeEngine.PropertyTypes.SLIDER, min:1, max: 10 },
             ];
         }
     };

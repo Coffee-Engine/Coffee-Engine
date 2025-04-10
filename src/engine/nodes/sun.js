@@ -59,7 +59,7 @@
                 { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
                 "---", 
-                { name: "lightColor", translationKey: "engine.nodeProperties.Lighting.lightColor", type: coffeeEngine.PropertyTypes.COLOR3 }, 
+                { name: "lightColor", translationKey: "engine.nodeProperties.Light.color", type: coffeeEngine.PropertyTypes.COLOR3 }, 
                 "---", 
                 { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];

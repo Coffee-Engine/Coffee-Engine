@@ -474,6 +474,7 @@
                         vec3 fogColour = vec3(0);
                         if (fogType == 1) { fogColour = fogDefault(distance, viewToFrag, u_fogData); }
                         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
+                        else if (fogType == 3) { fogColour = fogDefault((vec4(position,1) * u_camera).z, viewToFrag, u_fogData); }
 
                         if (matAttributes.x < 0.0) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
                         else { gl_FragColor.xyz = fogColour; }

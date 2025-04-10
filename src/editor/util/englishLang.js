@@ -564,5 +564,17 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.centerColor": "Core Color",
     "engine.nodeProperties.scene.ambientColor": "Ambient Color",
 
+    "engine.nodeProperties.scene.fogType": "Fog Type",
+    "engine.nodeProperties.scene.fogType.none": "No fog",
+    "engine.nodeProperties.scene.fogType.retro": "Retro",
+    "engine.nodeProperties.scene.fogType.simple": "Simple",
+    "engine.nodeProperties.scene.fogType.sunAffected": "Sun Affected",
+    
+    "engine.nodeProperties.scene.fogStart": "Fog Start",
+    "engine.nodeProperties.scene.fogFalloff": "Fog Falloff",
+    "engine.nodeProperties.scene.fogColor": "Fog Color",
+    "engine.nodeProperties.scene.skyEffect": "Fog Sky Mix",
+    "engine.nodeProperties.scene.sunMultiplier": "Fog Sun Affectiveness",
+
     "engine.fileProperties.Shader.shader" : "Shader"
 };
