@@ -464,7 +464,7 @@
 
                     int fogType = int(u_fogData[0][0]);
                     //Handle sky plane
-                    if (matAttributes.x < 0.0) { 
+                    if (matAttributes.x < -0.1) { 
                         position = (position * 1000.0) + u_cameraPosition;
                         viewToFrag = normalize(u_cameraPosition - position);
                     }
@@ -476,7 +476,7 @@
                         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
                         else if (fogType == 3) { fogColour = fogDefault((vec4(position,1) * u_camera).z, viewToFrag, u_fogData); }
 
-                        if (matAttributes.x < 0.0) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
+                        if (matAttributes.x < -0.1) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
                         else { gl_FragColor.xyz = fogColour; }
                     }
                 }

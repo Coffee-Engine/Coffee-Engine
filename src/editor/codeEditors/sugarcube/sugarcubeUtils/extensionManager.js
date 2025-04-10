@@ -429,7 +429,8 @@
 
                                 //Make sure the argument exists if not remove it
                                 if (!text.includes([`[${argumentKey}]`])) {
-                                    block.arguments.splice(argumentID, 1);
+                                    delete block.arguments[argumentKey];
+                                    argumentKeys.splice(argumentID, 1);
                                     argumentID--;
                                     continue;
                                 }
