@@ -19,7 +19,7 @@
         //* Sun Multiplier, Sky Effect, NU 
         fogData = [
             1, 1/128, 0,
-            1, 1, 1,
+            [1, 1, 1],
             8, 0.5, 0
         ]
         
@@ -216,7 +216,7 @@
             mainPass.uniforms.u_ambientColor.value = this.ambientColor;
             mainPass.uniforms.u_lightCount.value = this.lightCount;
             mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
-            mainPass.uniforms.u_fogData.value = this.fogData;
+            mainPass.uniforms.u_fogData.value = this.fogData.flat();
             mainPass.drawFromBuffers(6);
         }
 
@@ -419,7 +419,17 @@
                 { name: "groundColor", translationKey: "engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
                 { name: "centerColor", translationKey: "engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
                 "---", 
-                { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }
+                { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true },
+                "---",
+                { name: "0", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogType", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+                    {text: "None", value: 0},
+                    {text: "Simple", value: 1},
+                    {text: "Sun affected", value: 2},
+                ]},
+                { name: "2", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogStart", type: coffeeEngine.PropertyTypes.FLOAT },
+                { name: "1", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogFalloff", type: coffeeEngine.PropertyTypes.SLIDER, min:0, max: 10.0 },
+                "---",
+                { name: "3", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true },
             ];
         }
     };

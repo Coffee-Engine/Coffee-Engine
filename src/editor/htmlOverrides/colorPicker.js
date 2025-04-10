@@ -46,8 +46,8 @@
 
         //Move the positions
         current.style.position = "absolute";
-        current.style.left = `${x}px`;
-        current.style.top = `${y}px`;
+        current.style.left = `min(${x}px, calc(99vw - ${current.style.width}))`;
+        current.style.top = `min(${y}px, calc(99vh - ${22.5}vh))`;
 
         //And then the background and border
         current.style.backgroundColor = "var(--background-1)";

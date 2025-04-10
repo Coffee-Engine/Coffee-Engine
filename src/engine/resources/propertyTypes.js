@@ -7,6 +7,7 @@ coffeeEngine.PropertyTypes = {
     VEC2: "vec2",
     VEC3: "vec3",
     VEC4: "vec4",
+    SLIDER: "slider",
 
     //Colors
     COLOR3: "color3",
