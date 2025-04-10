@@ -13,6 +13,16 @@
         ambientColor = [0, 0, 0];
         lightCount = 0;
         
+        //The layout
+        //* TYPE          , FALLOFF   , START
+        //* RED           , GREEN     , BLUE
+        //* Sun Multiplier, Sky Effect, NU 
+        fogData = [
+            1, 1/128, 0,
+            1, 1, 1,
+            8, 0.5, 0
+        ]
+        
         //? And here is our matrix.
         //? The humble matrix
         mixedMatrix = coffeeEngine.matrix4.identity();
@@ -206,6 +216,7 @@
             mainPass.uniforms.u_ambientColor.value = this.ambientColor;
             mainPass.uniforms.u_lightCount.value = this.lightCount;
             mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
+            mainPass.uniforms.u_fogData.value = this.fogData;
             mainPass.drawFromBuffers(6);
         }
 

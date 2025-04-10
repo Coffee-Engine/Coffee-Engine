@@ -223,6 +223,9 @@
                         //Inverse the Y
                         SkySphere.y = -SkySphere.y;
                         o_color = vec4(mix(groundColor,centerColor,SkySphere.y),1);
+
+                        //Inverse it back
+                        SkySphere.y = -SkySphere.y;
                     }
                     else {
                         o_color = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
@@ -268,6 +271,7 @@
 
                 uniform vec3 u_sunDir;
                 uniform vec3 u_sunColor;
+                uniform mat3 u_fogData;
                 uniform vec3 u_ambientColor;
                 uniform mat4 u_camera;
                 uniform vec3 u_cameraPosition;
@@ -391,6 +395,28 @@
 
                     return calculated;
                 }
+
+                //Default fog
+                vec3 fogDefault(float distance, vec3 toPoint, mat3 fogData) {
+                    float mixAmount = min(1.0, //Make it clamp
+                        max(0.0, distance - fogData[0][2]) * //distance 
+                        fogData[0][1] //Falloff
+                    );
+
+                    return mix(gl_FragColor.xyz, fogData[1], mixAmount);
+                }
+
+                vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
+                    float mixAmount = min(1.0, //Make it clamp
+                        max(0.0, distance - fogData[0][2]) * //distance 
+                        fogData[0][1] //Falloff
+                    );
+
+                    float sunAmount = max(dot(toPoint, -u_sunDir), 0.0);
+                    vec3 sunEffection = mix(u_ambientColor, u_sunColor, pow(sunAmount, fogData[2][0]));
+
+                    return mix(gl_FragColor.xyz, fogData[1] * sunEffection, mixAmount);
+                }
                 
                 void main()
                 {
@@ -435,6 +461,23 @@
                     }
 
                     gl_FragColor += texture2D(u_emission,screenUV);
+
+                    int fogType = int(u_fogData[0][0]);
+                    //Handle sky plane
+                    if (matAttributes.x < 0.0) { 
+                        position = (position * 1000.0) + u_cameraPosition;
+                        viewToFrag = normalize(u_cameraPosition - position);
+                    }
+
+                    if (fogType > 0) {
+                        float distance = length(position - u_cameraPosition);
+                        vec3 fogColour = vec3(0);
+                        if (fogType == 1) { fogColour = fogDefault(distance, viewToFrag, u_fogData); }
+                        else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
+
+                        if (matAttributes.x < 0.0) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
+                        else { gl_FragColor.xyz = fogColour; }
+                    }
                 }
                 `
             ),
