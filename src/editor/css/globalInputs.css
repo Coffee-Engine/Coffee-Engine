@@ -204,3 +204,26 @@ button:disabled {
     background-color: var(--background-4);
     border-color: var(--background-4);
 }
+
+.blocklyFlyoutButton {
+    fill: transparent;
+    stroke: var(--text-1);
+    stroke-width: 1px;
+    transition: all 250ms;
+}
+
+.blocklyFlyoutButton:hover {
+    fill: var(--text-3);
+    stroke: var(--text-1);
+    stroke-width: 1px;
+}
+
+.blocklyFlyoutButtonShadow {
+    fill: transparent;
+}
+
+.blocklyFlyoutButton>.blocklyText {
+    fill: var(--text-1);
+    font: 500 16pt helvetica;
+    stroke: transparent;
+}
