@@ -163,6 +163,24 @@ editor.EnglishLang = {
 
     "editor.window.projectManager": "Project Settings",
     "editor.window.extensionWizard": "Extension Wizard",
+    "editor.window.extensionWizard.previous": "previous",
+    "editor.window.extensionWizard.next": "next",
+    
+    "editor.window.extensionWizard.firstPage": "Welcome to the Coffee Engine extension wizard! This is a tool that will help you quickly set up the skeleton for an extension. To continue press \"Next\"",
+
+    "editor.window.extensionWizard.secondPage.extensionName": "Extension Name",
+    "editor.window.extensionWizard.secondPage.extensionName.placeholder": "Cool Extension",
+    "editor.window.extensionWizard.secondPage.authorName": "Your Name",
+    "editor.window.extensionWizard.secondPage.authorName.placeholder": "Barista",
+    "editor.window.extensionWizard.secondPage.version": "Version",
+    "editor.window.extensionWizard.secondPage.version.placeholder": "1.0.0",
+
+    "editor.window.extensionWizard.thirdPage": "What would you like to be automatically generated for you?",
+    "editor.window.extensionWizard.thirdPage.hasScript": "Engine Script",
+    "editor.window.extensionWizard.thirdPage.hasEditorScript": "Editor Script",
+    "editor.window.extensionWizard.thirdPage.hasNode": "Custom Node",
+    "editor.window.extensionWizard.thirdPage.hasSugarcubeBlocks": "Sugarcube Blocks",
+    "editor.window.extensionWizard.thirdPage.hasWindow": "Custom Window",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
