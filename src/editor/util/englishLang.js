@@ -117,10 +117,12 @@ editor.EnglishLang = {
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
 
+    "engine.projectSettings.project": "Project",
     "engine.projectSettings.project.defaultScene": "Default Scene",
     "engine.projectSettings.project.targetFramerate": "Target FPS",
     "engine.projectSettings.project.VSync": "VSync Enabled",
 
+    "engine.projectSettings.viewport": "Viewport",
     "engine.projectSettings.viewport.viewportType": "Viewport Type",
     "engine.projectSettings.viewport.resolution": "Viewport Resolution",
     "engine.projectSettings.viewport.antiAlias": "Anti-Aliasing",
@@ -134,9 +136,12 @@ editor.EnglishLang = {
     "engine.projectSettings.broadcasts.add": "Add",
     "engine.projectSettings.broadcasts.placeholder": "Broadcast",
 
+    "engine.projectSettings.collision": "Collision",
     "engine.projectSettings.collisionGroups": "Collision Groups",
     "engine.projectSettings.collisionGroups.add": "Add",
     "engine.projectSettings.collisionGroups.placeholder": "Group",
+
+    "engine.projectSettings.extensions": "Extensions",
 
     "editor.fileButton.removeFile": "Remove File",
 

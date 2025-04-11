@@ -12,7 +12,7 @@
             
             //Style our container and add our areas
             container.style.display = "grid";
-            container.style.gridTemplateColumns = "10% auto";
+            container.style.gridTemplateColumns = "12.5% auto";
 
             container.appendChild(this.sideBar);
             container.appendChild(this.configurationArea);
@@ -24,7 +24,7 @@
 
             Object.keys(project.settingDefinitions).forEach(key => {
                 const button = document.createElement("button");
-                button.innerText = key;
+                button.innerText = editor.language[`engine.projectSettings.${key}`] || key;
                 button.style.width = "100%";
 
                 //functionality
