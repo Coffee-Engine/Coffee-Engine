@@ -3,6 +3,8 @@
         minWidth = 400;
         minHeight = 400;
 
+        nameRegex = /([^A-Za-z_123456789\-])/g
+
         extensionData = {
             extensionName: "",
             authorName: "",
@@ -94,9 +96,12 @@
             this.infoContainer.appendChild(this.ourWizard);
 
             this.progressBar = document.createElement("div");
-            this.progressBar.style.width = "100%";
-            this.progressBar.style.backgroundColor = "var(--background-4)";
+            this.progressBar.className = "progressBar";
             this.topArea.appendChild(this.progressBar);
+
+            this.progressBarInner = document.createElement("div");
+            this.progressBarInner.className = "progressBar-inner";
+            this.progressBar.appendChild(this.progressBarInner);
 
             this.inputContainer = document.createElement("div");
             contents.appendChild(this.inputContainer);
@@ -113,9 +118,7 @@
             this.nextButton.innerText = editor.language["editor.window.extensionWizard.next"];
             this.nextButton.onclick = () => {
                 if (this.pages[this.progress + 1]) {
-                    this.inputContainer.innerHTML = "";
-                    this.progress++;
-                    this.pages[this.progress](this.inputContainer);
+                    this.progressMenu(1);
                 }
                 else this.createExtension();
             }
@@ -124,40 +127,109 @@
             this.previousButton = document.createElement("button");
             this.previousButton.style.height = "100%";
             this.previousButton.innerText = editor.language["editor.window.extensionWizard.previous"];
-            this.previousButton.onclick = () => {
-                if (this.pages[this.progress - 1]) {
-                    this.inputContainer.innerHTML = "";
-                    this.progress--;
-                    this.pages[this.progress](this.inputContainer);
-                }
-            }
+            this.previousButton.onclick = () => {this.progressMenu(-1)}
 
             //Add the buttons to the control container
             this.controlContainer.appendChild(this.nextButton);
             this.controlContainer.appendChild(this.previousButton);
 
-            //Open the first page
-            this.pages[this.progress](this.inputContainer);
+            this.progressMenu(0);
+        }
+
+        progressMenu(value) {
+            if (this.pages[this.progress + value]) {
+                this.inputContainer.innerHTML = "";
+                this.progress += value;
+                this.pages[this.progress](this.inputContainer);
+                this.progressBarInner.style.setProperty("--progress", `${((this.progress + 1) / this.pages.length) * 100}%`);
+            }
         }
 
         //The actual creation stuff
-        createExtension() {
+        async createExtension() {
             const extensionJSON = {
-                "author": this.extensionData.authorName,
-                "name": this.extensionData.extensionName,
-                "version": this.extensionData.version
+                "author": this.extensionData.authorName || "author",
+                "name": this.extensionData.extensionName || "extension",
+                "version": this.extensionData.version || "1.0.0",
+                "scripts": [],
+                "editorScripts": [],
             }
 
-            /* use later /(^[A-Za-z_123456789\-])/g */
+            const fsName = extensionJSON.name.replaceAll(this.nameRegex, "_");
+            const loadedText = editor.language["editor.window.extensionWizard.engineText"].replace("[name]", extensionJSON.name)
 
-            //generate our stuff
+            //If we have an engine script generate it
             if (this.extensionData.hasScript) {
-                extensionJSON.scripts = [ "engine.js" ];
-                project.setFile(`extensions/${}/`)
+                extensionJSON.scripts.push("engine.js");
+                await project.setFile(
+                    `extensions/${fsName}/engine.js`, 
+                    `//${editor.language["editor.window.extensionWizard.engineText"]}\nconsole.log("${loadedText}")`, 
+                    "application/text"
+                );
             }
             
+            //If we have an editor script generate it
+            if (this.extensionData.hasEditorScript) {
+                extensionJSON.editorScripts.push("editor.js");
+                await project.setFile(
+                    `extensions/${fsName}/editor.js`, 
+                    `//${editor.language["editor.window.extensionWizard.editorText"]}\nconsole.log("${loadedText}")`, 
+                    "application/text"
+                );
+            }
             
-            if (this.extensionData.hasEditorScript) extensionJSON.editorScripts = [ "editor.js" ];
+            //If we have a node
+            if (this.extensionData.hasNode) {
+                extensionJSON.scripts.push("node.js");
+                await project.setFile(
+                    `extensions/${fsName}/node.js`, 
+                    `class node extends coffeeEngine.getNode("Node") {\n\tready() {}\n\tupdate(deltaTime) {}\n\tdraw(drawID) {}\n}\ncoffeeEngine.registerNode(node, "MyNode");`, 
+                    "application/text"
+                );
+            }
+            
+            //If we have sugarcube blocks add the script
+            if (this.extensionData.hasSugarcubeBlocks) {
+                extensionJSON.editorScripts.push("sugarcubeExt.js");
+                await project.setFile(
+                    `extensions/${fsName}/sugarcubeExt.js`, 
+                    `class files {
+    getInfo() {
+        return {
+                id: "${extensionJSON.author.replaceAll(this.nameRegex, "_")}_${fsName}",
+                name: ${extensionJSON.name},
+                blocks: [],
+                menus: {},
+                fields: {},
+                mutators: {},
+                contextMenus: {}
+        }
+    }
+}`, 
+                    "application/text"
+                );
+            }
+            
+            //If we have an editor script generate it
+            if (this.extensionData.hasWindow) {
+                extensionJSON.editorScripts.push("window.js");
+                await project.setFile(
+                    `extensions/${fsName}/window.js`, 
+                    `class window extends editor.windows.base {\n\tinit(Content) {}\n\tdispose() {}\n\tresized() {}\n\tmerged(origin) {}\n}\neditor.windows.__Serialization.register(window, "MyWindow");`, 
+                    "application/text"
+                );
+            }
+
+            await project.setFile(
+                `extensions/${fsName}/extension.json`, 
+                JSON.stringify(extensionJSON)
+                .replaceAll(",", ",\n")
+                .replaceAll("{", "{\n")
+                .replaceAll("}", "\n}") 
+                .replaceAll("[", "[\n") 
+                .replaceAll("]", "\n]"), 
+                "application/text"
+            );
 
             this._dispose();
         }

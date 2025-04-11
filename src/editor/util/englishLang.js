@@ -181,6 +181,10 @@ editor.EnglishLang = {
     "editor.window.extensionWizard.thirdPage.hasNode": "Custom Node",
     "editor.window.extensionWizard.thirdPage.hasSugarcubeBlocks": "Sugarcube Blocks",
     "editor.window.extensionWizard.thirdPage.hasWindow": "Custom Window",
+    
+    "editor.window.extensionWizard.engineText": "This script will run in both the engine and editor.",
+    "editor.window.extensionWizard.editorText": "This script will run in the editor.",
+    "editor.window.extensionWizard.engineText": "Extension [name] loaded!",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",

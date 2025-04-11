@@ -222,6 +222,18 @@
                 background-color: var(--background-4);
             }
 
+            .progressBar {
+                width: 100%;
+                background-color: var(--background-4);
+            }
+
+            .progressBar-inner {
+                width: var(--progress);
+                height: 100%;
+                background-color: var(--text-1);
+                transition: all 250ms;
+            }
+
             @keyframes closeWindow {
                 0% {
                     min-height:0px;
