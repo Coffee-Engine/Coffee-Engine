@@ -27,7 +27,7 @@ sugarcube.customBlocks = {
     blockFromDefinition: (jsonDef) => {
         const swagStyledBuisness = {};
 
-        let conjugatedName = "";
+        let conjugatedName = `${jsonDef.returns}`;
 
         jsonDef.parameters.forEach((param) => {
             delete param.element;
@@ -36,7 +36,7 @@ sugarcube.customBlocks = {
 
             swagStyledBuisness[param.name] += 1;
 
-            param.id = `${param.type}_${param.name}_${swagStyledBuisness[param.name]}`;
+            param.id = `_${param.type}_${param.name}_${swagStyledBuisness[param.name]}`;
 
             conjugatedName += param.id;
         });

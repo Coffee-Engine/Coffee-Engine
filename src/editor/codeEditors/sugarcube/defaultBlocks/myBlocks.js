@@ -412,31 +412,30 @@
             createdWindow.y = window.innerHeight / 2 - 175;
         }
 
-        declaration(block, generator, manager) {
+        getCustomBlockID(block) {
             const { parameters, returns } = block.editedState;
             let functionName = returns;
 
             parameters.forEach((param) => {
-                functionName += `_${param.id}`;
+                functionName += `${param.id}`;
             });
 
+            return functionName;
+        }
+
+        declaration(block, generator, manager) {
             const innerCode = manager.nextBlockToCode(block, generator);
 
-            return `this["${functionName.replaceAll('"', '\\"')}"] = ${innerCode.includes("await") ? "async " : ""}(args) => {\n${innerCode}\n}`;
+            return `this["${this.getCustomBlockID(block).replaceAll('"', '\\"')}"] = ${innerCode.includes("await") ? "async " : ""}(args) => {\n${innerCode}\n}`;
         }
 
         execute(block, generator, manager) {
             const { parameters, returns } = block.editedState;
-            let functionName = returns;
-
-            parameters.forEach((param) => {
-                functionName += `_${param.id}`;
-            });
 
             const args = {};
             const recalls = {};
 
-            let baseBlockCode = `this["${functionName.replaceAll('"', '\\"')}"]({\n`;
+            let baseBlockCode = `this["${this.getCustomBlockID(block).replaceAll('"', '\\"')}"]({\n`;
 
             //Compile this like a block
             if (block.inputList) {
@@ -478,6 +477,22 @@
 
         return(block, generator) {
             return `return ${generator.valueToCode(block, "value", 0)}`;
+        }
+
+        //our context buttons
+        removeCustomBlock(block) {
+            const targetID = this.getCustomBlockID(block);
+            delete sugarcube.customBlocks.storage[this.getCustomBlockID(block)];
+            block.dispose();
+
+            sugarcube.extensionManager.updateExtensionBlocks("myblocks");
+
+            //Remove all executions of this block
+            sugarcube.workspace.blockDB.forEach(item => {
+                if (item.type == "myblocks_execute_reporter" || item.type == "myblocks_execute_command") {
+                    if (this.getCustomBlockID(item) == targetID) item.dispose();
+                }
+            });
         }
     }
 
