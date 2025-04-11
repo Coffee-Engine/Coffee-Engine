@@ -162,6 +162,7 @@ editor.EnglishLang = {
     "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
 
     "editor.window.projectManager": "Project Settings",
+    "editor.window.extensionWizard": "Extension Wizard",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
