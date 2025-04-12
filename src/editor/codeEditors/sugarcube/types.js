@@ -3,6 +3,7 @@
         REPORTER: "reporter",
 
         HAT: "hat",
+        EVENT: "hat",
 
         BOOLEAN: "boolean",
 
