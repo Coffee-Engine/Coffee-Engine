@@ -1,5 +1,5 @@
 //Thin compatibility layer for scratch extensions. Most will probably not work. Api's like cloudlink most likely will though
-const Scratch = {
+window.Scratch = {
     isCoffeeEngine: true,
     vm: {
         runtime: coffeeEngine.runtime,
