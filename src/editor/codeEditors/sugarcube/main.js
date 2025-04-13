@@ -20,6 +20,8 @@ sugarcube.variables = {
     },
 };
 
+sugarcube.currentFilter = [];
+
 //For custom blocks
 sugarcube.customBlocks = {
     fieldTypes: [],

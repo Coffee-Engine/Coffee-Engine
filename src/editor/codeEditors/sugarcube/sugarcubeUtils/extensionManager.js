@@ -997,6 +997,8 @@
             }
 
             if (sugarcube.workspace) {
+                sugarcube.setToolboxBasedOnFilter(sugarcube.currentFilter);
+                
                 sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
                 sugarcube.workspace.getToolbox().refreshSelection();
@@ -1078,9 +1080,13 @@
                 delete this.updateFunctions[extensionID];
 
                 if (sugarcube.workspace) {
-                    sugarcube.workspace.updateToolbox(sugarcube.filtered);
+                    sugarcube.setToolboxBasedOnFilter(sugarcube.currentFilter);
 
+                    sugarcube.workspace.updateToolbox(sugarcube.filtered);
+    
                     sugarcube.workspace.getToolbox().refreshSelection();
+    
+                    sugarcube.refreshTheme();
                 }
             }
         }

@@ -209,7 +209,7 @@ button:disabled {
     fill: transparent;
     stroke: var(--text-1);
     stroke-width: 1px;
-    transition: all 250ms;
+    transition: fill 250ms;
 }
 
 .blocklyFlyoutButton:hover {
