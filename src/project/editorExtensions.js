@@ -39,18 +39,22 @@
 
     //Doing this so management and reading is slightly easier
     project.extensions.parser = class {
+        scriptElements = [];
+
         constructor(extensionID, file) {
             this.fileReader = new FileReader();
             this.id = extensionID;
+            this.path = `extensions/${extensionID}/`;
 
             //Read our extension.json
             this.fileReader.onload = async () => {
                 project.extensions.storage[extensionID] = JSON.parse(this.fileReader.result);
+                this.myStorage = project.extensions.storage[extensionID];
+                this.myStorage.object = this;
 
                 //Go through needed script directories
-                const myStorage = project.extensions.storage[extensionID];
-                await this.loadScripts(`extensions/${extensionID}/`, myStorage.scripts);
-                if (coffeeEngine.isEditor) await this.loadScripts(`extensions/${extensionID}/`, myStorage.editorScripts);
+                await this.loadScripts(this.path, this.myStorage.scripts);
+                if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
             };
 
             this.fileReader.readAsText(file);
@@ -69,21 +73,45 @@
                             //Get our script contents
                             const scriptContents = this.fileReader.result;
                             const scriptElement = document.createElement("script");
-                            //Isolate the context;
-                            scriptElement.innerHTML = `(function() {\n${scriptContents}\n})();`;
+
+                            //Append our script element! This is a tool that may come in handy later
+                            this.scriptElements.push(scriptElement);
+
+                            //Isolate the context; Pass in EXT_ID and EXT_PATH
+                            scriptElement.innerHTML = `(function(EXT_ID, EXT_PATH) {\n${scriptContents}\n})("${this.id}", "${path}");`;
                             document.body.appendChild(scriptElement);
 
                             resolve();
                         };
 
-                        this.fileReader.onerror = () => {
-                            reject(`Something happened with file "${path}${scriptArray[index]}"`);
+                        this.fileReader.onerror = (error) => {
+                            reject(`Something happened with file "${path}${scriptArray[index]}\n: ERROR :\n${error}"`);
                         };
 
                         this.fileReader.readAsText(fileData);
                     });
                 });
             }
+        }
+
+        async reloadExtension() {
+            await this.disposeExtension();
+
+            await this.loadScripts(this.path, this.myStorage.scripts);
+            if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
+
+            console.log(editor.language["editor.notification.extensionReloaded"].replace("[extension]", this.id));
+        }
+
+        async disposeExtension() {
+            coffeeEngine.sendEvent("extensionDispose", { ID: this.id, type: "RELOAD" });
+
+            for (let scriptID in this.scriptElements) {
+                let script = this.scriptElements[scriptID];
+                script.parentElement.removeChild(script);
+            }
+
+            this.scriptElements = [];
         }
     };
 })();

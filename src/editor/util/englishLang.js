@@ -165,6 +165,7 @@ editor.EnglishLang = {
     "editor.notification.saveScene": "Scene saved to \"[path]\"",
     "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
     "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
+    "editor.notification.extensionReloaded": "Reloaded \"[extension]\" sucessfully",
 
     "editor.window.projectManager": "Project Settings",
     "editor.window.extensionWizard": "Extension Wizard",
