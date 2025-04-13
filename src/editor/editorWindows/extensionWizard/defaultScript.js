@@ -64,7 +64,7 @@ coffeeEngine.extensionRemovalListener(EXT_ID, () => {
     if (sugarcube.extensionManager.hasExtension("${sanitizedID}")) sugarcube.extensionManager.removeExtension("${sanitizedID}");
 });
     
-sugarcube.extensionManager.registerExtension(myExtension)`;
+sugarcube.extensionManager.registerExtension(new myExtension());`;
         },
 
         Window: () => {
