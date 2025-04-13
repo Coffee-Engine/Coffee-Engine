@@ -143,6 +143,7 @@ editor.EnglishLang = {
 
     "engine.projectSettings.extensions": "Extensions",
     "engine.projectSettings.extensions.createExtension": "Create Extension",
+    "engine.projectSettings.extensions.extensionInfo": "Author: [Author] | Version: [Version]",
 
     "editor.fileButton.removeFile": "Remove File",
 

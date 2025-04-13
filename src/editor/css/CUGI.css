@@ -56,6 +56,7 @@
     border-right-style: solid;
     border-right-width: 3px;
     aspect-ratio: 1;
+    height: 100%;
     margin: 0px;
     padding: 0px;
 }
@@ -106,6 +107,7 @@
     border-right-style: solid;
     border-right-width: 3px;
     aspect-ratio: 1;
+    height: 100%;
     margin: 0px;
     padding: 0px;
 }
@@ -181,8 +183,13 @@
     border-right-style: solid;
     border-right-width: 3px;
     aspect-ratio: 1;
+    height: 100%;
     margin: 0px;
     padding: 0px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .CUGI-ExtensionRemove {
@@ -190,10 +197,18 @@
     border-right-style: solid;
     border-right-width: 3px;
     aspect-ratio: 1;
+    height: 100%;
     margin: 0px;
     padding: 0px;
 }
 
+.CUGI-ExtensionDetail {
+    display: grid;
+    grid-template-rows: 50% 50%;
+}
+
 .CUGI-ExtensionName {
+    text-align: left;
+    margin:2px;
     margin-left: 8px;
 }

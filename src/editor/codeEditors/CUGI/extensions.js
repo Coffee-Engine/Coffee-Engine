@@ -20,18 +20,27 @@
     const createExtensionElement = (data, internalName) => {
         //Create our needed elements
         const container = document.createElement("div");
-        const name = document.createElement("p");
+
+        const infoContainer = document.createElement("div");
+        const extName = document.createElement("p");
+        const extExtra = document.createElement("p");
+
         const reload = document.createElement("button");
         const remove = document.createElement("button");
 
         //Add our classes
         container.className = "CUGI-Extension";
-        name.className = "CUGI-ExtensionName";
         reload.className = "CUGI-ExtensionReload";
         remove.className = "CUGI-ExtensionRemove";
 
+        infoContainer.className = "CUGI-ExtensionDetail";
+        extName.className = "CUGI-ExtensionName";
+        extExtra.className = "CUGI-ExtensionName CUGI-ExtensionAuthor";
+
         //Add our text
-        name.innerText = data.name;
+        extName.innerText = data.name;
+        extExtra.innerText = editor.language["engine.projectSettings.extensions.extensionInfo"].replace("[Author]", data.author).replace("[Version]", data.version);
+
         reload.innerHTML = reloadImage;
         remove.innerText = "X";
 
@@ -50,7 +59,10 @@
         //Append our child elements
         container.appendChild(remove);
         container.appendChild(reload);
-        container.appendChild(name);
+        container.appendChild(infoContainer);
+
+        infoContainer.append(extName);
+        infoContainer.append(extExtra);
 
         return container;
     }
