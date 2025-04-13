@@ -190,7 +190,9 @@ editor.EnglishLang = {
     
     "editor.window.extensionWizard.engineText": "This script will run in both the engine and editor.",
     "editor.window.extensionWizard.editorText": "This script will run in the editor.",
-    "editor.window.extensionWizard.engineText": "Extension [name] loaded!",
+    "editor.window.extensionWizard.logText": "Extension [name] loaded!",
+    "editor.window.extensionWizard.defaultBlock": "log timer",
+    "editor.window.extensionWizard.defaultWindow": "The \"Content\" argument in \"init\" is an HTML div",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",

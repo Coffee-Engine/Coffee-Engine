@@ -156,14 +156,14 @@
             }
 
             const fsName = extensionJSON.name.replaceAll(this.nameRegex, "_");
-            const loadedText = editor.language["editor.window.extensionWizard.engineText"].replace("[name]", extensionJSON.name)
+            const loadedText = editor.language["editor.window.extensionWizard.logText"].replace("[name]", extensionJSON.name)
 
             //If we have an engine script generate it
             if (this.extensionData.hasScript) {
                 extensionJSON.scripts.push("engine.js");
                 await project.setFile(
                     `extensions/${fsName}/engine.js`, 
-                    `//${editor.language["editor.window.extensionWizard.engineText"]}\nconsole.log("${loadedText}")`, 
+                    editor.extensionTemplates.EngineScript(extensionJSON.name, loadedText), 
                     "application/text"
                 );
             }
@@ -173,7 +173,7 @@
                 extensionJSON.editorScripts.push("editor.js");
                 await project.setFile(
                     `extensions/${fsName}/editor.js`, 
-                    `//${editor.language["editor.window.extensionWizard.editorText"]}\nconsole.log("${loadedText}")`, 
+                    editor.extensionTemplates.EditorScript(extensionJSON.name, loadedText), 
                     "application/text"
                 );
             }
@@ -183,7 +183,7 @@
                 extensionJSON.scripts.push("node.js");
                 await project.setFile(
                     `extensions/${fsName}/node.js`, 
-                    `class node extends coffeeEngine.getNode("Node") {\n\tready() {}\n\tupdate(deltaTime) {}\n\tdraw(drawID) {}\n}\ncoffeeEngine.registerNode(node, "MyNode");`, 
+                    editor.extensionTemplates.Node(), 
                     "application/text"
                 );
             }
@@ -193,19 +193,7 @@
                 extensionJSON.editorScripts.push("sugarcubeExt.js");
                 await project.setFile(
                     `extensions/${fsName}/sugarcubeExt.js`, 
-                    `class files {
-    getInfo() {
-        return {
-                id: "${extensionJSON.author.replaceAll(this.nameRegex, "_")}_${fsName}",
-                name: ${extensionJSON.name},
-                blocks: [],
-                menus: {},
-                fields: {},
-                mutators: {},
-                contextMenus: {}
-        }
-    }
-}`, 
+                    editor.extensionTemplates.SugarcubeBlocks(`${extensionJSON.author.replaceAll(this.nameRegex, "_")}_${fsName}`, extensionJSON.name), 
                     "application/text"
                 );
             }
@@ -215,7 +203,7 @@
                 extensionJSON.editorScripts.push("window.js");
                 await project.setFile(
                     `extensions/${fsName}/window.js`, 
-                    `class window extends editor.windows.base {\n\tinit(Content) {}\n\tdispose() {}\n\tresized() {}\n\tmerged(origin) {}\n}\neditor.windows.__Serialization.register(window, "MyWindow");`, 
+                    editor.extensionTemplates.Window(), 
                     "application/text"
                 );
             }
@@ -230,6 +218,9 @@
                 .replaceAll("]", "\n]"), 
                 "application/text"
             );
+
+            //Make sure we load the extension
+            await project.extensions.checkForExtensions();
 
             this._dispose();
         }
