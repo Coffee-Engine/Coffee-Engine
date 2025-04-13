@@ -146,7 +146,10 @@
                         //Notice the sleek difference.
                         //If somebody would take the time to add folder renaming I will give you a hug.
                         element.contextFunction = () => {
-                            return [{ text: editor.language["editor.window.fileExplorer.delete"], value: "delete" }];
+                            return [
+                                { text: editor.language["editor.window.fileExplorer.delete"], value: "delete" },
+                                { text: editor.language["editor.window.fileExplorer.package"], value: "package" },
+                            ];
                         };
 
                         element.contentAnswer = (value) => {
@@ -154,6 +157,10 @@
                                 case "delete":
                                     //Die
                                     project.deleteFile(`${path}${key}`);
+                                    break;
+
+                                case "package":
+                                    project.latte.saveLatteFrom(path);
                                     break;
 
                                 default:

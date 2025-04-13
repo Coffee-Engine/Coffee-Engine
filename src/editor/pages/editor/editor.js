@@ -254,6 +254,7 @@
             <div class="dropdownsTopbar">
                 <dropdown-menu id="coffeeEngineProjectDropdown">
                     ${editor.language["editor.dropdown.project"]}
+                    <dropdown-item class="dropdown-menu-fill-down" value="openLatte">${editor.language["editor.dropdown.project.importLatte"]}</dropdown-item>
                     ${
                         !project.isFolder && editor.safeties.filePermissions
                             ? //If we do have the ability to save directly to the same file

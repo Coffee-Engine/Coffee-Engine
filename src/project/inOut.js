@@ -148,4 +148,37 @@
             delete zipInstance;
         },
     };
+
+    //latte storing and retrieving code
+    project.latte = {
+        saveLatteFrom: async (fileRoot) => {
+            //Get our JSzip instance
+            const zipInstance = new JSZip();
+
+            const folderRoot = await project.getFile(fileRoot.replaceAll(/\/$/g, ""));
+
+            project.decaf.loopThroughSave(fileRoot, folderRoot, zipInstance, () => {
+                zipInstance.generateAsync({ type: "blob" }).then((blob) => {
+                    //Create a blob, link it then click and revoke the blob
+                    const blobURL = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = blobURL;
+                    link.download = `project.${coffeeEngine.packageFormat}`;
+                    link.click();
+                    URL.revokeObjectURL(blobURL);
+                });
+            });
+            //Make sure we dispose of our instance.
+            delete zipInstance;
+        },
+
+        loadLatteFrom: async (latte) => {
+            let zipInstace = new JSZip();
+            zipInstace = await project.zipObject.loadAsync(latte);
+
+            await project.scanZip(zipInstace);
+
+            project.extensions.checkForExtensions();
+        }
+    };
 })();

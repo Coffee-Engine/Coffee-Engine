@@ -10,6 +10,7 @@ coffeeEngine.wizardImage = "editor/editorWindows/extensionWizard/Salem.svg";
 coffeeEngine.defaultScenePath = "scenes/default.scene";
 
 coffeeEngine.projectFormat = "decaf";
+coffeeEngine.packageFormat = "latte";
 
 coffeeEngine.recentProjectDB = "coffeeProjects";
 coffeeEngine.recentProjectDBVersion = 6;

@@ -148,6 +148,7 @@ editor.EnglishLang = {
     "editor.fileButton.removeFile": "Remove File",
 
     "editor.dropdown.project": "Project",
+    "editor.dropdown.project.importLatte": "Import .latte",
     "editor.dropdown.project.save": "Save Project",
     "editor.dropdown.project.saveSeperate": "Save a Copy",
     "editor.dropdown.project.saveDecaf": "Save Project as .decaf",
@@ -215,6 +216,7 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.reading": "Reading Files",
     "editor.window.fileExplorer.delete": "Delete",
     "editor.window.fileExplorer.rename": "Rename",
+    "editor.window.fileExplorer.package": "Package",
     "editor.window.fileExplorer.openInCode": "Open in Code Editor",
 
     "editor.window.viewport": "Viewport",

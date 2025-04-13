@@ -10,6 +10,18 @@
 
         editor.dropdownBar.file.onchange = (value) => {
             switch (value) {
+                case "openLatte":
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = `.${coffeeEngine.packageFormat}`;
+
+                    fileInput.onchange = () => {
+                        project.latte.loadLatteFrom(fileInput.files[0]);
+                    };
+
+                    fileInput.click();
+                    break;
+
                 case "save":
                     if (editor.safeties.filePermissions) {
                         editor.updateProjectDB();
