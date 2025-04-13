@@ -142,6 +142,7 @@ editor.EnglishLang = {
     "engine.projectSettings.collisionGroups.placeholder": "Group",
 
     "engine.projectSettings.extensions": "Extensions",
+    "engine.projectSettings.extensions.createExtension": "Create Extension",
 
     "editor.fileButton.removeFile": "Remove File",
 

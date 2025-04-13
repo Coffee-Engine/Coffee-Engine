@@ -61,6 +61,10 @@ window.coffeeEngine = {
         if (coffeeEngine.nodeRegister[name]) return;
         coffeeEngine.nodeRegister[name] = [node, parentNode];
     },
+    deregisterNode: (name) => {
+        if (!coffeeEngine.nodeRegister[name]) return;
+        delete coffeeEngine.nodeRegister[name];
+    },
     getNode: (name) => {
         if (!coffeeEngine.nodeRegister[name]) return;
         return coffeeEngine.nodeRegister[name][0];
@@ -98,6 +102,19 @@ window.coffeeEngine = {
         if (coffeeEngine.events[event].includes(func)) {
             coffeeEngine.events[event].splice(coffeeEngine.events[event].indexOf(func), 1);
         }
+    },
+
+    extensionRemovalListener: (extension, func) => {
+        const eventListener = (event) => {
+            if (event.ID == extension) {
+                func(event);
+                coffeeEngine.removeEventListener("extensionDispose", eventListener);
+            }
+        }
+
+        coffeeEngine.addEventListener("extensionDispose", eventListener);
+
+        return eventListener;
     },
 
     sendEvent: (event, data) => {

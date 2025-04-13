@@ -95,15 +95,18 @@
         }
 
         async reloadExtension() {
-            await this.disposeExtension();
+            await this.disposeExtension(true);
 
             await this.loadScripts(this.path, this.myStorage.scripts);
             if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
 
             console.log(editor.language["editor.notification.extensionReloaded"].replace("[extension]", this.id));
+
+            //Reload the scene
+            coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.currentScene.scenePath);
         }
 
-        async disposeExtension() {
+        async disposeExtension(noSceneRefresh) {
             coffeeEngine.sendEvent("extensionDispose", { ID: this.id, type: "RELOAD" });
 
             for (let scriptID in this.scriptElements) {
@@ -112,6 +115,9 @@
             }
 
             this.scriptElements = [];
+
+            //Reload the scene if needed
+            if (!noSceneRefresh) coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.currentScene.scenePath);
         }
     };
 })();

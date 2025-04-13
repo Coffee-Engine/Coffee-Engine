@@ -7,7 +7,12 @@
     update(deltaTime) {}
     draw(drawID) {}
 }
-coffeeEngine.registerNode(node, "MyNode");`
+
+coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    coffeeEngine.deregisterNode("MyNode");
+});
+
+coffeeEngine.registerNode(node, "MyNode", "Node");`
         },
 
         EngineScript: (extensionID, loadedText) => {
@@ -42,6 +47,10 @@ coffeeEngine.registerNode(node, "MyNode");`
         console.log(coffeeEngine.timer);
     }
 }
+
+coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    if (sugarcube.extensionManager.hasExtension("${sanitizedID}")) sugarcube.extensionManager.removeExtension("${sanitizedID}");
+});
     
 sugarcube.extensionManager.registerExtension(myExtension)`;
         },
@@ -54,6 +63,10 @@ class window extends editor.windows.base {
     resized() {}
     merged(origin) {}
 }
+
+coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    editor.windows.__Serialization.deregister("MyWindow");
+});
 
 editor.windows.__Serialization.register(window, "MyWindow");`;
         }

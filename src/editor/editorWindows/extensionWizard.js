@@ -190,7 +190,7 @@
             
             //If we have sugarcube blocks add the script
             if (this.extensionData.hasSugarcubeBlocks) {
-                extensionJSON.editorScripts.push("sugarcubeExt.js");
+                extensionJSON.scripts.push("sugarcubeExt.js");
                 await project.setFile(
                     `extensions/${fsName}/sugarcubeExt.js`, 
                     editor.extensionTemplates.SugarcubeBlocks(`${extensionJSON.author.replaceAll(this.nameRegex, "_")}_${fsName}`, extensionJSON.name), 
@@ -209,7 +209,8 @@
             }
 
             await project.setFile(
-                `extensions/${fsName}/extension.json`, 
+                `extensions/${fsName}/extension.json`,
+                //The quickest dirtiest format ever made
                 JSON.stringify(extensionJSON)
                 .replaceAll(",", ",\n")
                 .replaceAll("{", "{\n")

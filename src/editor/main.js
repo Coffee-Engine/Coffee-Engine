@@ -123,6 +123,18 @@ editor.windows.__Serialization = {
         editor.windows.__Serialization.data[id] = jsonData || {};
     },
 
+    deregister: (id) => {
+        if (!editor.windows.__Serialization[id]) return;
+
+        if (editor.windows.existing[id]) {
+            editor.windows.existing[id].forEach(window => {
+                window._dispose();
+            })
+        }
+        delete editor.windows.__Serialization.all[id];
+        delete editor.windows.__Serialization.data[id];
+    },
+
     find: (windowOBJ) => {
         //Check to make sure the window has tabs. if it does serialize those too.
         if (windowOBJ.tabs && windowOBJ.tabs.length > 1) {

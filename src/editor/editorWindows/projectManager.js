@@ -53,7 +53,7 @@
                         },
 
                         preprocess: (item) => {
-                            item.text = editor.language[`engine.projectSettings.${key}.${item.key}`] || (item.translationKey || item.key);
+                            item.text = editor.language[`engine.projectSettings.${key}.${item.key}`] || (item.translationKey || item.key) || item.text;
         
                             return item;
                         }
