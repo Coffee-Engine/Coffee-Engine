@@ -17,7 +17,6 @@
 
                     fileInput.onchange = () => {
                         Array.from(fileInput.files).forEach(file => {
-                            console.log(file);
                             project.setFile(file.name, file, file.type);
                         });
                     };
