@@ -867,8 +867,9 @@
             const myInfo = extension.getInfo();
             extension.__precompile = myInfo.precompile;
 
-            if (sugarcube.extensionInstances[myInfo.id]) { console.log("already instanced"); return;}
+            if (sugarcube.extensionInstances[myInfo.id]) return;
 
+            extension.__info = myInfo;
             sugarcube.extensionInstances[myInfo.id] = extension;
 
             //If we aren't in the editor stop here
@@ -1033,6 +1034,44 @@
 
                 //Remove the extension's toolbox contents
                 sugarcube.toolbox.contents.splice(this.getExtensionToolboxIndex(extensionID), 1);
+
+                const instance = sugarcube.extensionInstances[extensionID];
+
+                //Remove blockly data
+
+                //blocks
+                instance.__info.blocks.forEach(block => {
+                    delete Blockly.Blocks[`${extensionID}_${block.opcode}`];
+                })
+
+                //menus
+                for (let menu in instance.__info.menus) {
+                    const menuData = instance.__info.menus[menu];
+                    let menuID = `${extensionID}_${menu}`;
+
+                    //Delete the block if needed
+                    if (menuData.acceptReporters) delete Blockly.Blocks[`__sugarcube_menu_${menuID}`];
+                    delete sugarcube.menus[menuID];
+                };
+
+                //fields
+                for (let field in instance.__info.fields) {
+                    const fieldData = instance.__info.fields[field];
+                    let fieldID = `${extensionID}_${menu}`;
+
+                    if (fieldData.acceptReporters) delete Blockly.Blocks[`__sugarcube_field_${fieldID}`]
+                    Blockly.fieldRegistry.unregister(fieldID);
+                };
+
+                //mutators
+                for (let mutator in instance.__info.mutators) {
+                    Blockly.Extensions.unregister(`${extensionID}_${contextMenu}`);
+                };
+
+                //context menus
+                for (let contextMenu in instance.__info.contextMenus) {
+                    Blockly.ContextMenuRegistry.registry.unregister(`${extensionID}_${contextMenu}`);
+                };
 
                 //Delete the instance.
                 delete sugarcube.extensionInstances[extensionID];
