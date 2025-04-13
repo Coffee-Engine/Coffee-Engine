@@ -613,5 +613,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.skyEffect": "Fog Sky Mix",
     "engine.nodeProperties.scene.sunMultiplier": "Fog Sun Affectiveness",
 
-    "engine.fileProperties.Shader.shader" : "Shader"
+    "engine.fileProperties.Shader.shader" : "Shader",
+
+    "runtime.debugText": "Press shift + i to open the debug console"
 };

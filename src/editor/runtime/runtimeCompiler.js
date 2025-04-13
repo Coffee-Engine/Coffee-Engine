@@ -44,17 +44,19 @@
         });
     };
 
-    editor.runtime.compileWithDecaf = (scene) => {
+    editor.runtime.compileWithDecaf = (scene, noDebugger) => {
         const zipInstance = new JSZip();
 
         return new Promise((resolve, reject) => {
             project.decaf.loopThroughSave("", project.fileSystem, zipInstance, () => {
-                zipInstance.generateAsync({ type: "base64" }).then((base64) => {
+                zipInstance.generateAsync({ type: "base64" }).then(async (base64) => {
                     //base64 = "data:application/zip;base64," + base64;
 
                     let targetScene = scene || coffeeEngine.runtime.defaultScene;
                     if (targetScene) targetScene = `"${targetScene}"`;
                     else targetScene = `undefined`;
+
+                    const debuggerScript = (noDebugger) ? "" : await (await fetch("editor/runtime/debugger.js")).text(); 
 
                     resolve(
                         editor.runtime.compile(
@@ -63,7 +65,9 @@
     //editor.language is a strange requirement of sugarcube.
 (function(){
     window.editor = {
-        language: {}
+        language: {
+            "runtime.debugText": "${editor.language["runtime.debugText"] || "SHIFT+I"}"
+        }
     };
 })()
 </script>`.split("\n"),
@@ -91,6 +95,9 @@ project.load("base64",
         else coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
     });
 });
+</script>
+<script>
+${debuggerScript}
 </script>
 <style>
 canvas {
