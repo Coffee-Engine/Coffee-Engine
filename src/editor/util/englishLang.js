@@ -148,6 +148,7 @@ editor.EnglishLang = {
     "editor.fileButton.removeFile": "Remove File",
 
     "editor.dropdown.project": "Project",
+    "editor.dropdown.project.importFiles": "Import file(s)",
     "editor.dropdown.project.importLatte": "Import .latte",
     "editor.dropdown.project.save": "Save Project",
     "editor.dropdown.project.saveSeperate": "Save a Copy",

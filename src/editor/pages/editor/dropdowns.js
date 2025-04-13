@@ -10,7 +10,23 @@
 
         editor.dropdownBar.file.onchange = (value) => {
             switch (value) {
-                case "openLatte":
+                case "importFiles": {
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.multiple = true;
+
+                    fileInput.onchange = () => {
+                        Array.from(fileInput.files).forEach(file => {
+                            console.log(file);
+                            project.setFile(file.name, file, file.type);
+                        });
+                    };
+
+                    fileInput.click();
+                    break;
+                }
+
+                case "openLatte": {
                     const fileInput = document.createElement("input");
                     fileInput.type = "file";
                     fileInput.accept = `.${coffeeEngine.packageFormat}`;
@@ -21,6 +37,7 @@
 
                     fileInput.click();
                     break;
+                }
 
                 case "save":
                     if (editor.safeties.filePermissions) {
