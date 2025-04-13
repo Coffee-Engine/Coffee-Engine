@@ -867,7 +867,7 @@
             const myInfo = extension.getInfo();
             extension.__precompile = myInfo.precompile;
 
-            if (sugarcube.extensionInstances[myInfo.id]) return;
+            if (sugarcube.extensionInstances[myInfo.id]) { console.log("already instanced"); return;}
 
             sugarcube.extensionInstances[myInfo.id] = extension;
 
@@ -1032,7 +1032,7 @@
                 }
 
                 //Remove the extension's toolbox contents
-                sugarcube.toolbox.contents.splice(getExtensionIndex(extensionID), 1);
+                sugarcube.toolbox.contents.splice(this.getExtensionToolboxIndex(extensionID), 1);
 
                 //Delete the instance.
                 delete sugarcube.extensionInstances[extensionID];
