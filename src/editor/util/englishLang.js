@@ -194,6 +194,7 @@ editor.EnglishLang = {
     "editor.window.extensionWizard.logText": "Extension [name] loaded!",
     "editor.window.extensionWizard.defaultBlock": "log timer",
     "editor.window.extensionWizard.defaultWindow": "The \"Content\" argument in \"init\" is an HTML div",
+    "editor.window.extensionWizard.cleanupComment": "extension cleanup code",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",

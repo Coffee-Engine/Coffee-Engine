@@ -4,8 +4,24 @@
         readingExtID: 0,
     };
 
-    project.extensions.checkForExtensions = async () => {
+    project.extensions.checkForExtensions = async (deliberate) => {
         console.log("looking for extensions");
+
+        //If we need to deliberately load one extension
+        if (deliberate) {
+            const extPath = `extensions/${deliberate}/`;
+
+            const extensionJson = await project.getFile(`${extPath}extension.json`);
+            
+            //Make sure it exists then parse
+            if (!extensionJson) return;
+
+            project.extensions.storage[deliberate] = new project.extensions.parser(deliberate);
+            await project.extensions.storage[deliberate].parseBase(extensionJson);
+
+            return;
+        }
+
         //Get our extension directory
         project
             .getFile("extensions")
@@ -21,7 +37,8 @@
                         //Make sure it exists then parse
                         if (!extensionJson) return;
 
-                        project.extensions.storage[extID] = new project.extensions.parser(extID, extensionJson);
+                        project.extensions.storage[extID] = new project.extensions.parser(extID);
+                        project.extensions.storage[extID].parseBase(extensionJson);
                     });
                 });
             })
@@ -41,23 +58,33 @@
     project.extensions.parser = class {
         scriptElements = [];
 
-        constructor(extensionID, file) {
+        constructor(extensionID) {
             this.fileReader = new FileReader();
             this.id = extensionID;
             this.path = `extensions/${extensionID}/`;
+        }
 
-            //Read our extension.json
-            this.fileReader.onload = async () => {
-                project.extensions.storage[extensionID] = JSON.parse(this.fileReader.result);
-                this.myStorage = project.extensions.storage[extensionID];
-                this.myStorage.object = this;
+        async parseBase(file) {
+            return new Promise(async (resolve, reject) => {
+                //Read our extension.json
+                this.fileReader.onload = async () => {
+                    project.extensions.storage[this.id] = JSON.parse(this.fileReader.result);
+                    this.myStorage = project.extensions.storage[this.id];
+                    this.myStorage.object = this;
 
-                //Go through needed script directories
-                await this.loadScripts(this.path, this.myStorage.scripts);
-                if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
-            };
+                    //Go through needed script directories
+                    await this.loadScripts(this.path, this.myStorage.scripts);
+                    if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
 
-            this.fileReader.readAsText(file);
+                    resolve();
+                };
+
+                this.fileReader.onerror = () => {
+                    reject("extension not valid?");
+                }
+
+                this.fileReader.readAsText(file);
+            })
         }
 
         async loadScripts(path, scriptArray) {

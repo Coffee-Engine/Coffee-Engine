@@ -221,9 +221,13 @@
             );
 
             //Make sure we load the extension
-            await project.extensions.checkForExtensions();
+            await project.extensions.checkForExtensions(fsName);
+
+            this.onFinish();
 
             this._dispose();
         }
+
+        onFinish() {}
     }
 })()

@@ -9,6 +9,7 @@
 }
 
 coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    //${editor.language["editor.window.extensionWizard.cleanupComment"]}
     coffeeEngine.deregisterNode("MyNode");
 });
 
@@ -16,11 +17,21 @@ coffeeEngine.registerNode(node, "MyNode", "Node");`
         },
 
         EngineScript: (extensionID, loadedText) => {
-            return `//${editor.language["editor.window.extensionWizard.engineText"]}\nconsole.log("${loadedText}")`;
+            return `//${editor.language["editor.window.extensionWizard.engineText"]}
+console.log("${loadedText}");
+
+coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    //${editor.language["editor.window.extensionWizard.cleanupComment"]}
+});`;
         },
 
         EditorScript: (extensionID, loadedText) => {
-            return `//${editor.language["editor.window.extensionWizard.editorText"]}\nconsole.log("${loadedText}")`;
+            return `//${editor.language["editor.window.extensionWizard.editorText"]}
+console.log("${loadedText}")
+
+coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    //${editor.language["editor.window.extensionWizard.cleanupComment"]}
+});`;
         },
 
         SugarcubeBlocks: (sanitizedID, name) => {
@@ -49,6 +60,7 @@ coffeeEngine.registerNode(node, "MyNode", "Node");`
 }
 
 coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    //${editor.language["editor.window.extensionWizard.cleanupComment"]}
     if (sugarcube.extensionManager.hasExtension("${sanitizedID}")) sugarcube.extensionManager.removeExtension("${sanitizedID}");
 });
     
@@ -65,6 +77,7 @@ class window extends editor.windows.base {
 }
 
 coffeeEngine.extensionRemovalListener(EXT_ID, () => {
+    //${editor.language["editor.window.extensionWizard.cleanupComment"]}
     editor.windows.__Serialization.deregister("MyWindow");
 });
 

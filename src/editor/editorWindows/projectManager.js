@@ -21,6 +21,7 @@
             this.sideBar.style.background = "var(--background-2)";
             this.sideBar.style.borderRight = "4px solid var(--background-4)";
             this.configurationArea.style.borderLeft = "4px solid var(--background-4)";
+            this.sideBar.style.overflowX = "hidden";
 
             Object.keys(project.settingDefinitions).forEach(key => {
                 const button = document.createElement("button");

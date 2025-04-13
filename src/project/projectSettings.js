@@ -23,13 +23,18 @@
             {type: "boolean", target: coffeeEngine.renderer.viewport, key: "antiAlias", defaultValue: true},
         ],
         extensions: [
-            {type: "button", text: editor.language["engine.projectSettings.extensions.createExtension"], onclick: () => {
+            {type: "button", text: editor.language["engine.projectSettings.extensions.createExtension"], onclick: (button, event, { refreshSelection }) => {
                 const extensionWizard = new editor.windows.extensionWizard(400,400);
 
                 //position window
                 extensionWizard.__moveToTop();
                 extensionWizard.x = (window.innerWidth / 2) - 200;
                 extensionWizard.y = (window.innerHeight / 2) - 200;
+
+                //Refresh cugi page once finished
+                extensionWizard.onFinish = () => {
+                    refreshSelection();
+                }
             }},
             {type: "extensions"},
         ]
