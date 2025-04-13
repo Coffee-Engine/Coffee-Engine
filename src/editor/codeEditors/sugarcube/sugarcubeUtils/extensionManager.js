@@ -1040,12 +1040,12 @@
                 //Remove blockly data
 
                 //blocks
-                instance.__info.blocks.forEach(block => {
+                if (instance.__info.blocks) instance.__info.blocks.forEach(block => {
                     delete Blockly.Blocks[`${extensionID}_${block.opcode}`];
                 })
 
                 //menus
-                for (let menu in instance.__info.menus) {
+                if (instance.__info.menus) for (let menu in instance.__info.menus) {
                     const menuData = instance.__info.menus[menu];
                     let menuID = `${extensionID}_${menu}`;
 
@@ -1055,7 +1055,7 @@
                 };
 
                 //fields
-                for (let field in instance.__info.fields) {
+                if (instance.__info.fields) for (let field in instance.__info.fields) {
                     const fieldData = instance.__info.fields[field];
                     let fieldID = `${extensionID}_${menu}`;
 
@@ -1064,12 +1064,12 @@
                 };
 
                 //mutators
-                for (let mutator in instance.__info.mutators) {
+                if (instance.__info.mutators) for (let mutator in instance.__info.mutators) {
                     Blockly.Extensions.unregister(`${extensionID}_${contextMenu}`);
                 };
 
                 //context menus
-                for (let contextMenu in instance.__info.contextMenus) {
+                if (instance.__info.contextMenus) for (let contextMenu in instance.__info.contextMenus) {
                     Blockly.ContextMenuRegistry.registry.unregister(`${extensionID}_${contextMenu}`);
                 };
 
