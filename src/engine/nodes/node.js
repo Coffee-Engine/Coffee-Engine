@@ -78,6 +78,13 @@
                     this.#scriptObject = new behavior();
                     this.#scriptObject.target = this;
 
+                    //load our startup props then call ready!
+                    if (this.__scriptStartupProps) {
+                        for (let key in this.__scriptStartupProps) {
+                            this.#scriptObject[key] = this.__scriptStartupProps[key];
+                        }
+                    }
+
                     if (this.#scriptObject.ready) {
                         this.#scriptObject.ready();
                     }

@@ -275,6 +275,15 @@
             node.forEach((child) => {
                 const properties = {};
 
+                //Do script startup props first so ensure they load first
+
+                //Less precious but still needed to be stored
+                child.extraSerialize().forEach((property) => {
+                    //Safeties
+                    if (!child[property]) return;
+                    properties[property] = this.__serializeValue(child[property]);
+                })
+
                 //Loop through child properties and validate/add each one
                 child.getProperties().forEach((property) => {
                     //Make sure its a property and not a label
@@ -284,13 +293,6 @@
                     if (!child[property.name]) return;
                     properties[property.name] = this.__serializeValue(child[property.name]);
                 });
-
-                //Less precious but still needed to be stored
-                child.extraSerialize().forEach((property) => {
-                    //Safeties
-                    if (!child[property]) return;
-                    properties[property] = this.__serializeValue(child[property]);
-                })
 
                 //Push the child to the returned object array
                 returnedObject.push({
