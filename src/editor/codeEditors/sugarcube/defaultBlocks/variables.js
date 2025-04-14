@@ -93,14 +93,15 @@
             };
         }
 
-        getVars() {
+        getVars(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "variable") return;
 
-                returned.push(variable.name);
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
             });
 
             return returned;
@@ -122,6 +123,23 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
+                //If public add icon
+                if (state.varData.public) {
+                    //create Text
+                    block.inputFromJson_({
+                        type: "input_dummy",
+                        name: `text`,
+                    });
+                    block.inputList[block.inputList.length - 1].appendField(
+                        block.fieldFromJson_({
+                            type: "field_image",
+                            src: sugarcube.earthIcon,
+                            width: 24,
+                            height: 24,
+                        })
+                    );
+                }
+
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
@@ -158,6 +176,7 @@
                         varData: {
                             color: variable.color,
                             name: variable.name,
+                            public: variable.public,
                         },
                     },
                 });
@@ -185,8 +204,9 @@
 
         precompile_func() {
             let generated = "";
-            this.getVars().forEach((list) => {
-                generated += `this["${list.replaceAll('"', '\\"')}"] = "";\n`;
+            this.getVars(true).forEach((variable) => {
+                if (variable.public) generated += `@editor(string) "${variable.name.replaceAll('"', '\\"')}";\n`;
+                generated += `this["${variable.name.replaceAll('"', '\\"')}"] = "";\n`;
             });
 
             return generated;

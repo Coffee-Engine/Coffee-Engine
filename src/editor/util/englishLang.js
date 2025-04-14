@@ -256,6 +256,7 @@ editor.EnglishLang = {
     "editor.window.createVar.variable": "Variable",
     "editor.window.createVar.list": "List",
     "editor.window.createVar.object": "Table",
+    "editor.window.createVar.isPublic": "Public",
 
     "editor.window.createBlock": "Create a Block",
     "editor.window.createBlock.textInput": "Text",

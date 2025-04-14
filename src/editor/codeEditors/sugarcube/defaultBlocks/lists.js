@@ -210,14 +210,15 @@
             };
         }
 
-        getLists() {
+        getLists(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "list") return;
 
-                returned.push(variable.name);
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
             });
 
             return returned;
@@ -239,6 +240,23 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
+                //If public add icon
+                if (state.varData.public) {
+                    //create Text
+                    block.inputFromJson_({
+                        type: "input_dummy",
+                        name: `text`,
+                    });
+                    block.inputList[block.inputList.length - 1].appendField(
+                        block.fieldFromJson_({
+                            type: "field_image",
+                            src: sugarcube.earthIcon,
+                            width: 24,
+                            height: 24,
+                        })
+                    );
+                }
+
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
@@ -276,6 +294,7 @@
                         varData: {
                             color: variable.color,
                             name: variable.name,
+                            public: variable.public,
                         },
                     },
                 });
@@ -338,8 +357,9 @@
 
         precompile_func() {
             let generated = "";
-            this.getLists().forEach((list) => {
-                generated += `this["${list.replaceAll('"', '\\"')}"] = [];\n`;
+            this.getLists(true).forEach((list) => {
+                if (list.public) generated += `@editor(array) "${list.name.replaceAll('"', '\\"')}";\n`;
+                generated += `this["${list.name.replaceAll('"', '\\"')}"] = [];\n`;
             });
 
             return generated;

@@ -135,14 +135,15 @@
             };
         }
 
-        getTables() {
+        getTables(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "object") return;
 
-                returned.push(variable.name);
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
             });
 
             return returned;
@@ -175,6 +176,7 @@
                         varData: {
                             color: variable.color,
                             name: variable.name,
+                            public: variable.public,
                         },
                     },
                 });
@@ -216,8 +218,9 @@
 
         precompile_func() {
             let generated = "";
-            this.getTables().forEach((list) => {
-                generated += `this["${list.replaceAll('"', '\\"')}"] = {};\n`;
+            this.getTables(true).forEach((table) => {
+                if (table.public) generated += `@editor(array) "${table.name.replaceAll('"', '\\"')}";\n`;
+                generated += `this["${table.name.replaceAll('"', '\\"')}"] = {};\n`;
             });
 
             return generated;
@@ -229,6 +232,23 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
+                //If public add icon
+                if (state.varData.public) {
+                    //create Text
+                    block.inputFromJson_({
+                        type: "input_dummy",
+                        name: `text`,
+                    });
+                    block.inputList[block.inputList.length - 1].appendField(
+                        block.fieldFromJson_({
+                            type: "field_image",
+                            src: sugarcube.earthIcon,
+                            width: 24,
+                            height: 24,
+                        })
+                    );
+                }
+
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
