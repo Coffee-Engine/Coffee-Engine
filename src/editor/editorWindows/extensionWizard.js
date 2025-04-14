@@ -153,10 +153,10 @@
                 "version": this.extensionData.version || "1.0.0",
                 "scripts": [],
                 "editorScripts": [],
-            }
+            };
 
             const fsName = extensionJSON.name.replaceAll(this.nameRegex, "_");
-            const loadedText = editor.language["editor.window.extensionWizard.logText"].replace("[name]", extensionJSON.name)
+            const loadedText = editor.language["editor.window.extensionWizard.logText"].replace("[name]", extensionJSON.name);
 
             //If we have an engine script generate it
             if (this.extensionData.hasScript) {

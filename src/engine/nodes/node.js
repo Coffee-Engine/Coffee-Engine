@@ -3,6 +3,7 @@
         #parent;
         //We store our update event in here
         __storedUpdate = null;
+        __scriptStartupProps = {}; // < this one stores the properties for the script's onReady!
 
         //? And here is our matrix.
         //? The humble matrix

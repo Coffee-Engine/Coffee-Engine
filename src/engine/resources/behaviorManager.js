@@ -52,13 +52,13 @@
         },
 
         //The not as impressive younger cousin of behavior from file.
-        behaviorPropertiesFromFile: (filePath) => {
+        behaviorPropertiesFromFile: (filePath, force) => {
             //We might as well return the actual behavior if we do have it
             if (!coffeeEngine.isEditor) return coffeeEngine.behaviorManager.behaviorFromFile();
 
             return new Promise((resolve, reject) => {
                 //check if its loaded
-                if (coffeeEngine.behaviorManager.loadedFiles[filePath]) resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
+                if (coffeeEngine.behaviorManager.loadedFiles[filePath] && !force) resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
 
                 //if not load it
                 project
