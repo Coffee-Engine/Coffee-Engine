@@ -219,7 +219,7 @@
         precompile_func() {
             let generated = "";
             this.getTables(true).forEach((table) => {
-                if (table.public) generated += `@editor(array) "${table.name.replaceAll('"', '\\"')}";\n`;
+                if (table.public) generated += `@editor(object) "${table.name.replaceAll('"', '\\"')}";\n`;
                 generated += `this["${table.name.replaceAll('"', '\\"')}"] = {};\n`;
             });
 
