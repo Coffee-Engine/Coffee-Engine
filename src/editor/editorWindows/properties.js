@@ -73,7 +73,7 @@
             const readScript = async (scriptPath) => {
                 //Reset our extra properties
                 extraProperties = [];
-                
+
                 if (!scriptPath) {
                     this.display(target, [...baseProperties, ...extraProperties], onchange);
                     return;
@@ -141,62 +141,6 @@
 
             //Display the CUGI properties
             this.Content.appendChild(CUGI.createList(properties, {
-                globalChange: onchange,
-                preprocess: (item) => {
-                    item.text = editor.language[item.translationKey] || (item.translationKey || item.key);
-
-                    //Intercept items call
-                    if (typeof item.items == "function") {
-                        const oldItems = item.items;
-                        item.items = (data) => {
-                            const parsed = oldItems(data);
-
-                            //translate the keys
-                            for (let itemID in parsed) {
-                                if (typeof parsed[itemID] == "object") continue;
-                                parsed[itemID] = {text: (editor.language[`${item.translationKey || item.key}.${parsed[itemID]}`] || parsed[itemID]), value: parsed[itemID]};
-                            }
-
-                            return parsed;
-                        }
-                    };
-
-                    return item;
-                }
-            }));
-        }
-
-        //Actually displays the properties of an object
-        displayProperties(myself, { read, target, editorHost, extraProperties }, onchange, initial) {
-            target = target || read;
-
-            //If there is no property editor for this thing
-            if (!editorHost.getProperties) {
-                const notFound = document.createElement("h3");
-                notFound.innerText = editor.language["editor.window.properties.notFound"];
-                notFound.style.textAlign = "center";
-                myself.Content.appendChild(notFound);
-
-                //Halt the train here
-                return;
-            }
-
-            //Get properties from our node
-            const properties = editorHost.getProperties(read, initial);
-
-            if (Array.isArray(extraProperties)) properties.push(...extraProperties);
-
-            for (let propID in properties) {
-                //Make sure it is an object
-                if (typeof properties[propID] != "object") continue;
-
-                //Set our target unless one is specified
-                properties[propID].target = properties[propID].target || read;
-                //Accept old and new key syntax
-                properties[propID].key = properties[propID].key || properties[propID].name;
-            }
-
-            myself.Content.appendChild(CUGI.createList(properties, {
                 globalChange: onchange,
                 preprocess: (item) => {
                     item.text = editor.language[item.translationKey] || (item.translationKey || item.key);
