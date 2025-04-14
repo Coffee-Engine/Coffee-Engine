@@ -96,6 +96,10 @@
             for (let settingID in defCategory) {
                 //Put our setting value into the output object
                 const setting = defCategory[settingID];
+
+                //Skip if we don't have a target or a property
+                if ((!setting.target) || (!setting.key)) continue;
+
                 output[categoryKey][setting.key] = setting.target[setting.key];
             }
         }
