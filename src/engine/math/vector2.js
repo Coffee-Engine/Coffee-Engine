@@ -100,8 +100,9 @@
     };
 
     coffeeEngine.vector2.deserialize = (property, data) => {
-        if ((!property) instanceof coffeeEngine.vector2) property = new coffeeEngine.vector2(0, 0);
+        if (!(property instanceof coffeeEngine.vector2)) property = new coffeeEngine.vector2(0, 0);
         property.x = Number(data[0]);
         property.y = Number(data[1]);
+        return property;
     };
 })();

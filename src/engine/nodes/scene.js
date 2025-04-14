@@ -97,7 +97,7 @@
 
         update(deltaTime) {
             this.children.forEach(child => {
-                child.update();
+                child.update(deltaTime);
             })
             
             //this.castEvent("update", deltaTime);
@@ -337,8 +337,10 @@
         __deserializeValue(value) {
             //Prototype property
             if (typeof value == "object" && value["/-_-PROTOTYPE-_-/"]) {
-                if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
-                    return coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
+                if (coffeeEngine[value["/-_-PROTOTYPE-_-/"]] && coffeeEngine[value["/-_-PROTOTYPE-_-/"]].deserialize) {
+                    let returned;
+                    returned = coffeeEngine[value["/-_-PROTOTYPE-_-/"]].deserialize(returned, value.value);
+                    return returned;
                 }
             }
 
