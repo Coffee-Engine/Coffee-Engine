@@ -18,10 +18,10 @@
         //* RED           , GREEN     , BLUE
         //* Sun Multiplier, Sky Effect, NU 
         fogData = [
-            1, 1/128, 0,
+            0, 0.125, 5,
             [1, 1, 1],
-            8, 0.5, 0
-        ]
+            8, 0, 0
+        ];
         
         //? And here is our matrix.
         //? The humble matrix
@@ -256,36 +256,55 @@
             node = null;
         }
 
+        __serializeValue(value) {
+            let returned = value;
+            if (value.serialize && typeof value.serialize == "function") returned = value.serialize();
+            
+            if (typeof returned == "object") {
+                for (let key in returned) {
+                    returned[key] = this.__serializeValue(returned[key]);
+                }
+            }
+
+            return returned;
+        }
+
+        //We want to recursively go downwards and get the properties and types of each child
+        __serializeChildren(node) {
+            const returnedObject = [];
+            node.forEach((child) => {
+                const properties = {};
+
+                //Loop through child properties and validate/add each one
+                child.getProperties().forEach((property) => {
+                    //Make sure its a property and not a label
+                    if (typeof property != "object") return;
+
+                    //Safeties
+                    if (!child[property.name]) return;
+                    properties[property.name] = this.__serializeValue(child[property.name]);
+                });
+
+                //Less precious but still needed to be stored
+                child.extraSerialize().forEach((property) => {
+                    //Safeties
+                    if (!child[property]) return;
+                    properties[property] = this.__serializeValue(child[property]);
+                })
+
+                //Push the child to the returned object array
+                returnedObject.push({
+                    name: child.name,
+                    nodeType: coffeeEngine.getNodeName(child),
+                    children: this.__serializeChildren(child.children),
+                    properties: properties,
+                });
+            });
+            return returnedObject;
+        }
+
         //Scene serialization and stuff
         serialize() {
-            //We want to recursively go downwards and get the properties and types of each child
-            const goDown = (children) => {
-                const returnedObject = [];
-                children.forEach((child) => {
-                    const properties = {};
-
-                    //Loop through child properties and validate/add each one
-                    child.getProperties().forEach((property) => {
-                        //Make sure its a property and not a label
-                        if (typeof property != "object") return;
-
-                        //Safeties
-                        if (!child[property.name]) return;
-                        if (child[property.name].serialize) properties[property.name] = child[property.name].serialize();
-                        else properties[property.name] = child[property.name];
-                    });
-
-                    //Push the child to the returned object array
-                    returnedObject.push({
-                        name: child.name,
-                        nodeType: coffeeEngine.getNodeName(child),
-                        children: goDown(child.children),
-                        properties: properties,
-                    });
-                });
-                return returnedObject;
-            };
-
             //Get our preloaded asset paths
             const keys = {};
             Object.keys(coffeeEngine.preloadFunctions).forEach((key) => {
@@ -301,7 +320,7 @@
             return {
                 name: this.name,
                 nodeType: "scene",
-                children: goDown(coffeeEngine.runtime.currentScene.children),
+                children: this.__serializeChildren(coffeeEngine.runtime.currentScene.children),
                 preload: keys,
 
                 //Serialize the sky
@@ -312,6 +331,46 @@
                 ambientColor: this.ambientColor,
                 fogData: this.fogData,
             };
+        }
+
+        //Scene deserialization and stuff
+        __deserializeValue(value) {
+            //Prototype property
+            if (typeof value == "object" && value["/-_-PROTOTYPE-_-/"]) {
+                if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
+                    return coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
+                }
+            }
+
+            //if not do our typical
+            let returned = value;
+            if (typeof returned == "object") {
+                for (let key in value) {
+                    returned[key] = this.__deserializeValue(returned[key]);
+                }
+            }
+
+            return returned;
+        }
+
+        //recursive child looping
+        __deserializeChildren(parent, physicalParent) {
+            parent.children.forEach((child) => {
+                //Get our node class
+                const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
+                const node = new nodeClass();
+                node.name = child.name;
+                node.parent = physicalParent;
+
+                //Loop through the node's properties
+                if (child.properties) {
+                    for (let key in child.properties) {
+                        node[key] = this.__deserializeValue(child.properties[key]);
+                    }
+                }
+
+                this.__deserializeChildren(child, node);
+            });
         }
 
         deserialize(data) {
@@ -339,32 +398,7 @@
                 this.name = data.name;
 
                 //Now we cycle through every child
-                const _loopThroughChildren = (parent, physicalParent) => {
-                    parent.children.forEach((child) => {
-                        //Get our node class
-                        const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
-                        const node = new nodeClass();
-                        node.name = child.name;
-                        node.parent = physicalParent;
-
-                        //Loop through the node's properties
-                        Object.keys(child.properties).forEach((property) => {
-                            //Make sure we aren't using a ""PROTOTYPE"" definition
-                            const propertyData = child.properties[property];
-                            if (typeof propertyData == "object" && propertyData["/-_-PROTOTYPE-_-/"]) {
-                                if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
-                                    coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
-                                }
-                            } else {
-                                node[property] = propertyData;
-                            }
-                        });
-
-                        _loopThroughChildren(child, node);
-                    });
-                };
-
-                _loopThroughChildren(data, this);
+                this.__deserializeChildren(data, this);
             };
 
             //Check if preload exists

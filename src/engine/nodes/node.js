@@ -211,7 +211,13 @@
             return [
                 { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" },
+            ];
+        }
+
+        extraSerialize() {
+            return [
+                "__scriptStartupProps"
             ];
         }
     }
