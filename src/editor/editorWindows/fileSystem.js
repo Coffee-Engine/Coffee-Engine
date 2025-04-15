@@ -68,7 +68,10 @@
                 addFile.innerText = editor.language["editor.window.fileExplorer.createFile"];
 
                 addFile.onclick = () => {
-                    
+                    const createdWindow = new editor.windows.fileCreator(400,150);
+                    createdWindow.__moveToTop();
+                    createdWindow.x = (window.innerWidth / 2) - 200;
+                    createdWindow.y = (window.innerHeight / 2) - 100;
                 }
                 
                 buttonHolder.appendChild(addFile);

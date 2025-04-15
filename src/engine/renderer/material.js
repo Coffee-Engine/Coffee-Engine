@@ -24,7 +24,7 @@
                     //Get it from the path
                     coffeeEngine.renderer.fileToShader(shader).then((shader) => {
                         this.shader = shader;
-                    });
+                    }).catch(() => {});
                 }
                 this.shaderPath = shader;
                 this.params = params;

@@ -39,23 +39,29 @@
                     coffeeEngine.renderer.fileToShader(material.shader).then((shaderOBJ) => {
                         shader = shaderOBJ;
                         refreshListing();
-                    });
+                    }).catch(() => {});
                 }
 
                 return [{ name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
             },
             onPropertyChange: (value, data) => {
                 const { target, key } = data;
-                console.log(value == "");
                 if (key == "shader") {
+                    //If its the shader that changes change the shader
                     coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
                         shader = shaderOBJ;
                         
                         const liveMaterial = coffeeEngine.renderer.materialStorage[path];
                         if (liveMaterial) liveMaterial.shader = shaderOBJ;
                         refreshListing();
+                    })
+                    //Make empty if no shader
+                    .catch(() => {
+                        shader = { uniforms: {} };
+                        refreshListing();
                     });
                 } else {
+                    //Just set the parameters for everything else
                     target.params = target.params || {};
                     target.params[key] = [value, shader.uniforms[key].type];
 

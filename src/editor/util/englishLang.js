@@ -223,6 +223,10 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.createFile": "New file",
     "editor.window.fileExplorer.importFiles": "Import file(s)",
 
+    "editor.window.createFile" : "Create File",
+    "editor.window.createFile.blank" : "blank",
+    "editor.window.createFile.material" : "material",
+
     "editor.window.viewport": "Viewport",
 
     "editor.window.codeEditor": "Code Editor",

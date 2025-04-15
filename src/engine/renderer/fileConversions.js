@@ -4,6 +4,11 @@
         coffeeEngine.renderer.fileToTexture = (src) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+                
                 if (coffeeEngine.renderer.textureStorage[src]) {
                     resolve(coffeeEngine.renderer.textureStorage[src]);
                     return;
@@ -63,6 +68,11 @@
         coffeeEngine.renderer.fileToShader = (src, override) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+
                 //If we want to override the shader override.
                 if (!override) {
                     //Make sure we allocate this in storage first
@@ -121,6 +131,11 @@
         coffeeEngine.renderer.fileToMaterial = (src) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+                
                 //Make sure we allocate this in storage first
                 if (coffeeEngine.renderer.materialStorage[src]) {
                     resolve(coffeeEngine.renderer.materialStorage[src]);

@@ -37,8 +37,8 @@
                 //Fix for folder fs
                 let fileSize = target.size;
                 if (target instanceof FileSystemFileHandle) {
-                    const tempFile = await target.getFile();
-                    fileSize = tempFile.size;
+                    target = await target.getFile();
+                    fileSize = target.size;
                 }
 
                 //Declare what file we are editing inside of the div
