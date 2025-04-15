@@ -234,6 +234,7 @@
                         //If somebody would take the time to add folder renaming I will give you a hug.
                         element.contextFunction = () => {
                             return [
+                                { text: editor.language["editor.window.fileExplorer.createFile"], value: "newFile" },
                                 { text: editor.language["editor.window.fileExplorer.delete"], value: "delete" },
                                 { text: editor.language["editor.window.fileExplorer.package"], value: "package" },
                             ];
@@ -241,6 +242,16 @@
 
                         element.contentAnswer = (value) => {
                             switch (value) {
+                                case "newFile": {
+                                    const createdWindow = new editor.windows.fileCreator(400,150);
+                                    createdWindow.__moveToTop();
+                                    createdWindow.x = (window.innerWidth / 2) - 200;
+                                    createdWindow.y = (window.innerHeight / 2) - 100;
+
+                                    createdWindow.path.value = `${path}${key}/newFile.txt`;
+                                    break;
+                                }
+
                                 case "delete":
                                     //Die
                                     project.deleteFile(`${path}${key}`);
