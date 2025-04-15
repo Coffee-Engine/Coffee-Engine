@@ -81,6 +81,16 @@ project.load("base64",
         //Initilize the renderer
         const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
         coffeeEngine.renderer.create(coffeeDrawCanvas, coffeeEngine.renderer.viewport.antiAlias);
+
+        //Setup backup emergency camera
+        const cameraData = coffeeEngine.renderer.cameraData
+        cameraData.transform = coffeeEngine.matrix4.identity().webGLValue();
+        cameraData.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000).webGLValue();
+        cameraData.wFactor = [1, 1, 0.1];
+        cameraData.aspectRatio = coffeeDrawCanvas.width / coffeeDrawCanvas.height;
+        cameraData.position.x = 0;
+        cameraData.position.y = 0;
+        cameraData.position.z = 0;
         
         //Scene Stuff
         const currentScene = coffeeEngine.runtime.currentScene;
