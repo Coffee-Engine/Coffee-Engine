@@ -44,19 +44,35 @@
         init(container) {
             this.currentSystemRoot = project.fileSystem;
             this.title = editor.language["editor.window.fileExplorer"];
-            let mainContainer = container;
+
+            //Style our container
+            container.style.overflow = "hidden";
+            container.style.height = "100%";
+            container.style.width = "100%";
+
+            //Add the split button/container holder
+            const splitHolder = document.createElement("div");
+            splitHolder.style.height = "100%";
+            splitHolder.style.width = "100%";
+            splitHolder.style.display = "grid";
+            splitHolder.style.gridTemplateRows = "24px auto";
+
+            //The button holder, holds various controls
+            const buttonHolder = document.createElement("div");
+            buttonHolder.style.display = "flex";
+
+            //The main container for the fs
+            let mainContainer = document.createElement("div");
+            mainContainer.style.overflowY = "scroll";
+
+            splitHolder.appendChild(buttonHolder);
+            splitHolder.appendChild(mainContainer);
+
+            //Add the split holder
+            container.appendChild(splitHolder);
             
             //If we are a folder add a refresh button
             if (project.isFolder) {
-                container.style.overflow = "hidden";
-                container.style.height = "100%";
-                container.style.width = "100%";
-
-                const buttonHolder = document.createElement("div");
-                buttonHolder.style.height = "100%";
-                buttonHolder.style.width = "100%";
-                buttonHolder.style.display = "grid";
-                buttonHolder.style.gridTemplateRows = "24px auto";
                 
                 const refreshButton = document.createElement("button");
                 refreshButton.innerText = editor.language["editor.window.fileExplorer.refresh"];
@@ -74,13 +90,7 @@
                     })
                 }
 
-                mainContainer = document.createElement("div");
-                mainContainer.style.overflowY = "scroll";
-
                 buttonHolder.appendChild(refreshButton);
-                buttonHolder.appendChild(mainContainer);
-
-                container.appendChild(buttonHolder);
             }
 
             //Add our reading text
