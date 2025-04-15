@@ -221,6 +221,7 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.openInCode": "Open in Code Editor",
     "editor.window.fileExplorer.refresh": "Refresh files",
     "editor.window.fileExplorer.createFile": "New file",
+    "editor.window.fileExplorer.importFiles": "Import file(s)",
 
     "editor.window.viewport": "Viewport",
 

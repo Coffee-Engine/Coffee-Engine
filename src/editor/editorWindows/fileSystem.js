@@ -61,6 +61,40 @@
             const buttonHolder = document.createElement("div");
             buttonHolder.style.display = "flex";
 
+            //Default buttons
+            {
+                //Creation
+                const addFile = document.createElement("button");
+                addFile.innerText = editor.language["editor.window.fileExplorer.createFile"];
+
+                addFile.onclick = () => {
+                    
+                }
+                
+                buttonHolder.appendChild(addFile);
+
+                //Importing (without having to go through project)
+                const importFile = document.createElement("button");
+                importFile.innerText = editor.language["editor.window.fileExplorer.importFiles"];
+
+                //Just the same as the other file importer
+                importFile.onclick = () => {
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.multiple = true;
+
+                    fileInput.onchange = () => {
+                        Array.from(fileInput.files).forEach(file => {
+                            project.setFile(file.name, file, file.type);
+                        });
+                    };
+
+                    fileInput.click();
+                }
+                
+                buttonHolder.appendChild(importFile);
+            }
+
             //The main container for the fs
             let mainContainer = document.createElement("div");
             mainContainer.style.overflowY = "scroll";

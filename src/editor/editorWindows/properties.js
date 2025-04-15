@@ -12,7 +12,7 @@
         }
 
         //Gets the proper listing for object's properties
-        refreshListing({ target, type, path }, repeat) {
+        async refreshListing({ target, type, path }, repeat) {
             this.Content.innerHTML = "";
 
             //? Just hope to Zues this works
@@ -34,8 +34,15 @@
                     this.refreshListing({ target: target, type: type, path: path }, true);
                 }
 
+                //Fix for folder fs
+                let fileSize = target.size;
+                if (target instanceof FileSystemFileHandle) {
+                    const tempFile = await target.getFile();
+                    fileSize = tempFile.size;
+                }
+
                 //Declare what file we are editing inside of the div
-                this.Content.innerHTML = `<h2 style="text-align:center;">${target.name}</h2><h3 style="text-align:center;">${Math.floor(target.size / 100) / 10}KB</h3>`;
+                this.Content.innerHTML = `<h2 style="text-align:center;">${target.name}</h2><h3 style="text-align:center;">${Math.floor(fileSize / 100) / 10}KB</h3>`;
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
