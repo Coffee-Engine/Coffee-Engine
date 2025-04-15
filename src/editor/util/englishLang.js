@@ -219,6 +219,7 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.rename": "Rename",
     "editor.window.fileExplorer.package": "Package",
     "editor.window.fileExplorer.openInCode": "Open in Code Editor",
+    "editor.window.fileExplorer.refresh": "Refresh files",
 
     "editor.window.viewport": "Viewport",
 

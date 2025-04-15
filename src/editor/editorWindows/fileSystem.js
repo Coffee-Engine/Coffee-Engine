@@ -44,10 +44,50 @@
         init(container) {
             this.currentSystemRoot = project.fileSystem;
             this.title = editor.language["editor.window.fileExplorer"];
-            container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+            let mainContainer = container;
+            
+            //If we are a folder add a refresh button
+            if (project.isFolder) {
+                container.style.overflow = "hidden";
+                container.style.height = "100%";
+                container.style.width = "100%";
+
+                const buttonHolder = document.createElement("div");
+                buttonHolder.style.height = "100%";
+                buttonHolder.style.width = "100%";
+                buttonHolder.style.display = "grid";
+                buttonHolder.style.gridTemplateRows = "24px auto";
+                
+                const refreshButton = document.createElement("button");
+                refreshButton.innerText = editor.language["editor.window.fileExplorer.refresh"];
+
+                refreshButton.onclick = () => {
+                    project.fileSystem = {};
+                    mainContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+
+                    //Rescan
+                    project.scanFolder(project.directoryHandle, false, project.fileSystem).then(() => {
+                        this.currentSystemRoot = project.fileSystem;
+                        
+                        mainContainer.innerHTML = "";
+                        this.displayDirectory(this.systemRoot, mainContainer, false);
+                    })
+                }
+
+                mainContainer = document.createElement("div");
+                mainContainer.style.overflowY = "scroll";
+
+                buttonHolder.appendChild(refreshButton);
+                buttonHolder.appendChild(mainContainer);
+
+                container.appendChild(buttonHolder);
+            }
+
+            //Add our reading text
+            mainContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             
             //Drag and drop stuff
-            this.makeFileDAD(container, "");
+            this.makeFileDAD(mainContainer, "");
 
             //Our display function
             this.displayDirectory = (directory, parentDiv, even, path) => {
@@ -205,16 +245,16 @@
                 if (!event) event = { type: "ALL", src: "COFFEE_ALL" };
                 switch (event.type) {
                     case "ALL": {
-                        container.innerHTML = "";
-                        this.displayDirectory(this.systemRoot, container, false);
+                        mainContainer.innerHTML = "";
+                        this.displayDirectory(this.systemRoot, mainContainer, false);
                         break;
                     }
 
                     //There is probably a way better way of doing this
                     case "FILE_ADDED": {
-                        container.innerHTML = "";
+                        mainContainer.innerHTML = "";
 
-                        this.displayDirectory(this.systemRoot, container, false);
+                        this.displayDirectory(this.systemRoot, mainContainer, false);
                         break;
                     }
 
@@ -231,7 +271,9 @@
 
         resized() {}
 
-        dispose() {}
+        dispose() {
+            coffeeEngine.removeEventListener("fileSystemUpdate", this.updateFunction);
+        }
     };
 
     editor.windows.__Serialization.register(editor.windows.fileExplorer, "fileExplorer");
