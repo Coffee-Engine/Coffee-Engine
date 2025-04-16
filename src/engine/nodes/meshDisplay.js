@@ -10,6 +10,8 @@
             }).catch(() => {
                 this.meshData = null;
             });
+
+            console.log(this.meshData);
         }
         get meshPath() {
             return this.#meshPath;
@@ -76,6 +78,28 @@
                 { name: "material", translationKey: "engine.nodeProperties.MeshDisplay.material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } }, 
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];
+        }
+
+        //We sort on two different principals
+        // 1. Where are we relative to the camera?
+        // 2. where is the furthest point infront of the camera?
+        sortValue(drawID) {
+            if (this.meshData) {
+                const low = this.mixedMatrix.multiplyVector(this.meshData.lowestBound);
+                const high = this.mixedMatrix.multiplyVector(this.meshData.highestBound);
+                const camForward = coffeeEngine.renderer.cameraData.unflattenedTransform.contents[2];
+
+                //Just like a really far vector.
+                const cameraPosition = coffeeEngine.renderer.cameraData.position;
+                const farVec = cameraPosition.add({ x: camForward[0] * 9999, y: camForward[1] * 9999, z: camForward[2] * 9999 });
+
+                farVec.x = Math.min(Math.max(farVec.x, low.x), high.x);
+                farVec.y = Math.min(Math.max(farVec.y, low.y), high.y);
+                farVec.z = Math.min(Math.max(farVec.z, low.z), high.z);
+                
+                return farVec.sub(cameraPosition).length();
+            }
+            return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
         }
     }
 
