@@ -462,6 +462,7 @@ editor.EnglishLang = {
     "sugarcube.operators.block.not": "not [A]",
     "sugarcube.operators.block.true": "true",
     "sugarcube.operators.block.false": "false",
+    "sugarcube.operators.block.exists": "does [value] exist?",
     "sugarcube.operators.menu.operations.abs": "abs",
     "sugarcube.operators.menu.operations.floor": "floor",
     "sugarcube.operators.menu.operations.ceiling": "ceiling",

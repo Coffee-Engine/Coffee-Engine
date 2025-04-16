@@ -273,6 +273,17 @@
                     },
                     "---",
                     {
+                        opcode: "exists",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.exists"],
+                        arguments: {
+                            value: {
+                                type: sugarcube.ArgumentType.HOLE
+                            }
+                        }
+                    },
+                    "---",
+                    {
                         opcode: "modulo",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.operators.block.modulo"],
@@ -405,6 +416,11 @@
 
         false() {
             return "false";
+        }
+
+        //yeah a silly block
+        exists({ value }) {
+            return !(value === undefined || value === null || value === "");
         }
 
         not({ A }) {
