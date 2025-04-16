@@ -39,7 +39,7 @@
         parseMeshProperties() {
             //Doing "this" in the getters and setters is invalid
             const meshDisplayObj = this;
-            
+
             //Define material setters
             for (let subMeshIndex in this.meshData.pointCount) {
                 console.log(`${subMeshIndex} parsed`);
@@ -58,29 +58,13 @@
                         if (meshDisplayObj.__materials[subMeshIndex]) return meshDisplayObj.__materials[subMeshIndex][0];
                         return "";
                     },
-
+                    
                     enumerable: true,
                     configurable: true,
                 });
 
                 if (!meshDisplayObj.__materials[subMeshIndex]) meshDisplayObj.__materials[subMeshIndex] = ["", null];
             }
-        }
-
-        #materialPath = "";
-        #material = "";
-
-        set material(value) {
-            this.#materialPath = value;
-            coffeeEngine.renderer.fileToMaterial(value).then((material) => {
-                this.#material = material;
-            }).catch(() => {
-                this.#material = null;
-            });
-        }
-
-        get material() {
-            return this.#materialPath;
         }
 
         #modulatedColorArr = [1, 1, 1, 1];
@@ -107,16 +91,17 @@
                     if (!this.__materials[subMeshIndex][1]) continue;
 
                     //Use our material
-                    this.__materials[subMeshIndex][1].use();
+                    const myMaterial = this.__materials[subMeshIndex][1];
+                    myMaterial.use();
 
                     const data = this.meshData.data[subMeshIndex];
                     const pointCount = this.meshData.pointCount[subMeshIndex];
 
-                    this.#material.shader.setBuffers(data);
-                    this.#material.shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
-                    if (this.#material.shader.uniforms.u_colorMod) this.#material.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-                    if (this.#material.shader.uniforms.u_objectID) this.#material.shader.uniforms.u_objectID.value = drawID;
-                    this.#material.shader.drawFromBuffers(pointCount);
+                    myMaterial.shader.setBuffers(data);
+                    myMaterial.shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
+                    if (myMaterial.shader.uniforms.u_colorMod) myMaterial.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
+                    if (myMaterial.shader.uniforms.u_objectID) myMaterial.shader.uniforms.u_objectID.value = drawID;
+                    myMaterial.shader.drawFromBuffers(pointCount);
                 }
             }
         }
@@ -155,6 +140,10 @@
                 ...extraProperties,
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];
+        }
+
+        extraSerialize() {
+            return ["materials"];
         }
 
         //We sort on two different principals
