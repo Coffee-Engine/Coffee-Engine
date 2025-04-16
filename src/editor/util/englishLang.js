@@ -310,6 +310,8 @@ editor.EnglishLang = {
     "sugarcube.looks.block.getSprite": "current sprite",
     "sugarcube.looks.block.setMesh": "set mesh to [mesh]",
     "sugarcube.looks.block.getMesh": "current mesh",
+    "sugarcube.looks.block.setMaterial": "set material [id] to [material]",
+    "sugarcube.looks.block.getMaterial": "material [id]",
     "sugarcube.looks.block.setLightColor": "set light color to [color]",
     "sugarcube.looks.block.getLightColor": "light color",
     "sugarcube.looks.block.setRadius": "set light radius to [radius]",
