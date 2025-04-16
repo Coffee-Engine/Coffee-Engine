@@ -32,7 +32,23 @@
         }
 
         //Define our materials
-        materials = {};
+        set materials(value) {
+            if (typeof value != "object") return;
+            for (let key in value) {
+                //Set materials
+                coffeeEngine.renderer.fileToMaterial(value[key]).then((material) => {
+                    this.__materials[key] = [value[key], material];
+                }).catch(() => {
+                    this.__materials[key] = ["", null];
+                });
+            }
+        }
+        get materials() {
+            return this.#materials;
+        };
+        #materials = {};
+
+        //Storage
         __materials = {};
 
         //Just to add our material setters right now
@@ -42,7 +58,6 @@
 
             //Define material setters
             for (let subMeshIndex in this.meshData.pointCount) {
-                console.log(`${subMeshIndex} parsed`);
                 //Define our property if needed
                 if (!this.materials.hasOwnProperty(subMeshIndex)) Object.defineProperty(this.materials, subMeshIndex, {
                     set(value) {
@@ -58,7 +73,7 @@
                         if (meshDisplayObj.__materials[subMeshIndex]) return meshDisplayObj.__materials[subMeshIndex][0];
                         return "";
                     },
-                    
+
                     enumerable: true,
                     configurable: true,
                 });
@@ -143,7 +158,10 @@
         }
 
         extraSerialize() {
-            return ["materials"];
+            return {
+                after: true,
+                data: ["materials"]
+            };
         }
 
         //We sort on two different principals

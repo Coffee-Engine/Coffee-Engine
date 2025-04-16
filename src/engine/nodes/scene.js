@@ -278,7 +278,18 @@
                 //Do script startup props first so ensure they load first
 
                 //Less precious but still needed to be stored
-                child.extraSerialize().forEach((property) => {
+                let extraSerialize = (child.extraSerialize) ? child.extraSerialize() : [];
+                let extraAfter = false;
+                if (typeof extraSerialize != "object") extraSerialize = [];
+
+                //Now we check for after
+                if (!Array.isArray(extraSerialize)) {
+                    extraAfter = extraSerialize.after;
+                    extraSerialize = extraSerialize.data;
+                }
+
+                //If we are before
+                if (extraSerialize && !extraAfter) extraSerialize.forEach((property) => {
                     //Safeties
                     if (!child[property]) return;
                     properties[property] = this.__serializeValue(child[property]);
@@ -292,6 +303,13 @@
                     //Safeties
                     if (!child[property.name]) return;
                     properties[property.name] = this.__serializeValue(child[property.name]);
+                });
+
+                //If we are after
+                if (extraSerialize && extraAfter) extraSerialize.forEach((property) => {
+                    //Safeties
+                    if (!child[property]) return;
+                    properties[property] = this.__serializeValue(child[property]);
                 });
 
                 //Push the child to the returned object array
