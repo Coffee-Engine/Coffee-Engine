@@ -33,17 +33,20 @@
         //* Loop through every geometries
         const geometries = Array.from(geometryLib.getElementsByTagName("geometry"));
         geometries.forEach((geometry) => {
+            console.log(geometry);
             //Get our meshes and start conversion
             const meshes = Array.from(geometry.getElementsByTagName("mesh"));
             meshes.forEach((mesh) => {
                 //Get contents
                 const pullTable = {
-                    a_position: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-positions`)),
-                    a_normal: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-normals`)),
-                    a_texCoord: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-map-0`)),
+                    a_position: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-positions`) || DOM.getElementById(`${geometry.id}-positions-array`)),
+                    a_normal: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-normals`) || DOM.getElementById(`${geometry.id}-normals-array`)),
+                    a_texCoord: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-map-0`) || DOM.getElementById(`${geometry.id}-map-0-array`)),
                     //? Maybe this is the right way? just an estimation.
-                    a_color: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-color`)),
+                    a_color: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-color`) || DOM.getElementById(`${geometry.id}-color-array`)),
                 };
+
+                console.log(pullTable);
 
                 parsedSubMeshes.data[`#${geometry.id}`] = [];
                 parsedSubMeshes.pointCount[`#${geometry.id}`] = [];
@@ -52,10 +55,13 @@
                 const currentPointCount = parsedSubMeshes.pointCount[`#${geometry.id}`];
 
                 const triangles = Array.from(mesh.getElementsByTagName("triangles"));
+
+                console.log(triangles);
                 triangles.forEach((triangleElement) => {
                     //Expect a silly little error if possible
                     const readPointCount = Number(triangleElement.getAttribute("count")) || 0;
 
+                    console.log(readPointCount);
                     if (readPointCount > 2) {
                         //Just add the point count
                         currentPointCount.push(readPointCount * 3);
