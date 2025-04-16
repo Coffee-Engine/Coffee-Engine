@@ -22,17 +22,17 @@
             let editorHost = target;
             let onchange;
 
+            //Specifically for these file types
+            const refreshListing = () => {
+                this.refreshListing({ target: target, type: type, path: path }, true);
+            }
+
             //If we are a file display our name in the property panel
             //If our file has an editor get the property
             if (type == "file") {
                 //Split the filename and get the file extension
                 const split = target.name.split(".");
                 const extension = split[split.length - 1];
-
-                //Specifically for these file types
-                const refreshListing = () => {
-                    this.refreshListing({ target: target, type: type, path: path }, true);
-                }
 
                 //Fix for folder fs
                 let fileSize = target.size;
@@ -74,7 +74,7 @@
 
             //If we are a node do our basic node things
             const myself = this;
-            const baseProperties = editorHost.getProperties();
+            const baseProperties = editorHost.getProperties(refreshListing, false);
             let extraProperties = [];
 
             const readScript = async (scriptPath) => {
@@ -150,7 +150,7 @@
             this.Content.appendChild(CUGI.createList(properties, {
                 globalChange: onchange,
                 preprocess: (item) => {
-                    item.text = editor.language[item.translationKey] || (item.translationKey || item.key);
+                    item.text = item.text || editor.language[item.translationKey] || (item.translationKey || item.key);
 
                     //Intercept items call
                     if (typeof item.items == "function") {

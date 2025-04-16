@@ -592,7 +592,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
     "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
-    "engine.nodeProperties.MeshDisplay.material": "Material",
+    "engine.nodeProperties.MeshDisplay.material": "Material [number]",
     "engine.nodeProperties.Camera.fov": "FOV",
     "engine.nodeProperties.Camera.nearPlane": "Near Plane",
     "engine.nodeProperties.Camera.flatten": "Orthographic",

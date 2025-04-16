@@ -14,6 +14,8 @@
                 a_color: [],
                 a_normal: [],
             });
+
+            pointCount.push(0);
         }
 
         const dataHolder = {

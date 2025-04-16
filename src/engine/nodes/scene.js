@@ -282,10 +282,10 @@
                     //Safeties
                     if (!child[property]) return;
                     properties[property] = this.__serializeValue(child[property]);
-                })
+                });
 
                 //Loop through child properties and validate/add each one
-                child.getProperties().forEach((property) => {
+                child.getProperties(() => {}, true).forEach((property) => {
                     //Make sure its a property and not a label
                     if (typeof property != "object") return;
 

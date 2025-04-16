@@ -7,14 +7,64 @@
             this.#meshPath = value;
             coffeeEngine.mesh.fromProjectFile(value).then((data) => {
                 this.meshData = data;
+                this.parseMeshProperties();
             }).catch(() => {
                 this.meshData = null;
             });
-
-            console.log(this.meshData);
         }
+
         get meshPath() {
             return this.#meshPath;
+        }
+
+        setMeshPath(value) {
+            return new Promise((resolve, reject) => {
+                this.#meshPath = value;
+                coffeeEngine.mesh.fromProjectFile(value).then((data) => {
+                    this.meshData = data;
+                    this.parseMeshProperties();
+                    resolve(data);
+                }).catch((error) => {
+                    this.meshData = null;
+                    reject(error);
+                });
+            });
+        }
+
+        //Define our materials
+        materials = {};
+        __materials = {};
+
+        //Just to add our material setters right now
+        parseMeshProperties() {
+            //Doing "this" in the getters and setters is invalid
+            const meshDisplayObj = this;
+            
+            //Define material setters
+            for (let subMeshIndex in this.meshData.pointCount) {
+                console.log(`${subMeshIndex} parsed`);
+                //Define our property if needed
+                if (!this.materials.hasOwnProperty(subMeshIndex)) Object.defineProperty(this.materials, subMeshIndex, {
+                    set(value) {
+                        //Set our material once we call our setter
+                        coffeeEngine.renderer.fileToMaterial(value).then((material) => {
+                            meshDisplayObj.__materials[subMeshIndex] = [value, material];
+                        }).catch(() => {
+                            meshDisplayObj.__materials[subMeshIndex] = ["", null];
+                        });
+                    },
+
+                    get() {
+                        if (meshDisplayObj.__materials[subMeshIndex]) return meshDisplayObj.__materials[subMeshIndex][0];
+                        return "";
+                    },
+
+                    enumerable: true,
+                    configurable: true,
+                });
+
+                if (!meshDisplayObj.__materials[subMeshIndex]) meshDisplayObj.__materials[subMeshIndex] = ["", null];
+            }
         }
 
         #materialPath = "";
@@ -50,9 +100,15 @@
         draw(drawID) {
             super.draw();
 
-            if (this.meshData && this.#material && this.meshData instanceof coffeeEngine.mesh.class) {
-                this.#material.use();
-                for (let subMeshIndex = 0; subMeshIndex < this.meshData.pointCount.length; subMeshIndex++) {
+            if (this.meshData && this.meshData instanceof coffeeEngine.mesh.class) {
+                for (let subMeshIndex in this.meshData.pointCount) {
+                    //Make sure our material is active
+                    if (this.materials[subMeshIndex] == undefined || this.materials[subMeshIndex] == "") continue;
+                    if (!this.__materials[subMeshIndex][1]) continue;
+
+                    //Use our material
+                    this.__materials[subMeshIndex][1].use();
+
                     const data = this.meshData.data[subMeshIndex];
                     const pointCount = this.meshData.pointCount[subMeshIndex];
 
@@ -65,7 +121,24 @@
             }
         }
 
-        getProperties() {
+        getProperties(refreshListing, serializationCall) {
+            //If we have a mesh, and this is not a serialization call
+            //Add our material properties
+            const extraProperties = [];
+            if (this.meshData && !serializationCall) {
+                for (let subMeshIndex in this.meshData.pointCount) {
+                    //Create our material slot
+                    extraProperties.push({ 
+                        text: editor.language["engine.nodeProperties.MeshDisplay.material"].replace("[number]", subMeshIndex), 
+                        key: subMeshIndex, 
+                        target: this.materials, 
+                        type: coffeeEngine.PropertyTypes.FILE, 
+                        fileType: "material", 
+                        systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } 
+                    });
+                }
+            }
+
             // prettier-ignore
             return [
                 { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
@@ -73,9 +146,13 @@
                 { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
                 { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
-                "---", 
-                { name: "meshPath", translationKey: "engine.nodeProperties.MeshDisplay.meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,glb" }, 
-                { name: "material", translationKey: "engine.nodeProperties.MeshDisplay.material", type: coffeeEngine.PropertyTypes.FILE, fileType: "material", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": { "default.material": "defaultMaterial" }, "project:": project.fileSystem } }, 
+                "---",
+                { name: "meshPath", translationKey: "engine.nodeProperties.MeshDisplay.meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,glb", onchange: (value) => {
+                    this.setMeshPath(value).then(() => {
+                        refreshListing();
+                    })
+                }}, 
+                ...extraProperties,
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];
         }
