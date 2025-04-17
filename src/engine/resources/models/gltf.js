@@ -3,9 +3,21 @@
         useBytes: true,
     };
 
+    const GLSizes = {
+        SCALAR: 1,
+        VEC2: 2,
+        VEC3: 3,
+        VEC4: 4,
+    }
+
     const GLTypes = {
-        5123: [coffeeEngine.byteReader.Read2Bytes, 2],
-        5126: [coffeeEngine.byteReader.ReadFloat32, 4],
+        5120: [coffeeEngine.byteReader.ReadByte, 1, true],
+        5121: [coffeeEngine.byteReader.ReadByte, 1, false],
+        5122: [coffeeEngine.byteReader.Read2Bytes, 2, true],
+        5123: [coffeeEngine.byteReader.Read2Bytes, 2, false],
+        5124: [coffeeEngine.byteReader.Read4Bytes, 4, true],
+        5125: [coffeeEngine.byteReader.Read4Bytes, 4, false],
+        5126: [coffeeEngine.byteReader.ReadFloat32, 4, false],
     };
 
     //I'm doing this because I'm tortured
@@ -14,21 +26,23 @@
         //We are going to get every standard item
         if (attributes[name] !== undefined) {
             const accessor = accessors[attributes[name]];
+            defaultSize = GLSizes[accessor.type];
             const bufferView = bufferViews[accessor.bufferView];
             const type = GLTypes[accessor.componentType];
             const stepSize = defaultSize * type[1];
+            const byteOffset = bufferView.byteOffset || 0;
 
             //Loop through the bytes of the positions
-            for (let byteID = bufferView.byteOffset; byteID < bufferView.byteOffset + bufferView.byteLength; byteID += stepSize) {
+            for (let byteID = byteOffset; byteID < byteOffset + bufferView.byteLength; byteID += stepSize) {
                 //Coordinites
                 if (defaultSize > 1) {
                     const conjoined = [];
                     for (let x = 0; x < defaultSize; x++) {
-                        conjoined.push(type[0](BINPartition, byteID + x * type[1], false));
+                        conjoined.push(type[0](BINPartition, byteID + x * type[1], type[2]));
                     }
                     returner.push(conjoined);
                 } else {
-                    returner.push(type[0](BINPartition, byteID, false));
+                    returner.push(type[0](BINPartition, byteID, type[2]));
                 }
             }
         } else {
@@ -78,6 +92,7 @@
                 primitiveGeo.a_texCoord = getAttributeData("TEXCOORD_0", attributes, accessors, bufferViews, standard, BINPartition, 2);
                 primitiveGeo.a_normal = getAttributeData("NORMAL", attributes, accessors, bufferViews, standard, BINPartition, 3);
                 primitiveGeo.a_color = getAttributeData("COLOR_n", attributes, accessors, bufferViews, standard, BINPartition, 4);
+                console.log(primitiveGeo);
 
                 //GLB support is working
                 for (let id = 0; id < primitiveGeo.a_position.length; id++) {
@@ -93,7 +108,22 @@
                     primitiveGeo.a_position[id][2] = transformed.z;
                 }
 
+                //GLB support is working
+                for (let id = 0; id < primitiveGeo.a_normal.length; id++) {
+                    const transformed = transform.multiplyVector({
+                        x: primitiveGeo.a_normal[id][0],
+                        y: primitiveGeo.a_normal[id][1],
+                        z: primitiveGeo.a_normal[id][2],
+                        w: 1,
+                    });
+
+                    primitiveGeo.a_normal[id][0] = transformed.x;
+                    primitiveGeo.a_normal[id][1] = transformed.y;
+                    primitiveGeo.a_normal[id][2] = transformed.z;
+                }
+
                 const indicies = getAttributeData("indices", primitive, accessors, bufferViews, standard, BINPartition, 1);
+                console.log(indicies);
 
                 const constructedSubmesh = {
                     a_position: [],
@@ -127,10 +157,17 @@
                 const node = JSONPartition.nodes[nodeID];
 
                 let localMatrix = coffeeEngine.matrix4.identity();
-                console.log(node);
-                if (node.scale) localMatrix = localMatrix.scale(node.scale[0], node.scale[1], node.scale[2]);
-                if (node.rotation) localMatrix = localMatrix.rotateQuaternion(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
                 if (node.translation) localMatrix = localMatrix.translate(node.translation[0], node.translation[1], node.translation[2]);
+                if (node.rotation) localMatrix = localMatrix.rotateQuaternion(node.rotation[0], node.rotation[1], node.rotation[2], node.rotation[3]);
+                if (node.scale) localMatrix = localMatrix.scale(node.scale[0], node.scale[1], node.scale[2]);
+
+                const nM = node.matrix;
+                if (nM) localMatrix.contents = [
+                    [nM[0], nM[1], nM[2], nM[3]],
+                    [nM[4], nM[5], nM[6], nM[7]],
+                    [nM[8], nM[9], nM[10], nM[11]],
+                    [nM[12], nM[13], nM[14], nM[15]],
+                ]
 
                 const multipliedMatrix = matrix.multiply(localMatrix);
 
