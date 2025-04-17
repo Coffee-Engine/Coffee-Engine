@@ -92,7 +92,6 @@
                 primitiveGeo.a_texCoord = getAttributeData("TEXCOORD_0", attributes, accessors, bufferViews, standard, BINPartition, 2);
                 primitiveGeo.a_normal = getAttributeData("NORMAL", attributes, accessors, bufferViews, standard, BINPartition, 3);
                 primitiveGeo.a_color = getAttributeData("COLOR_n", attributes, accessors, bufferViews, standard, BINPartition, 4);
-                console.log(primitiveGeo);
 
                 //GLB support is working
                 for (let id = 0; id < primitiveGeo.a_position.length; id++) {
@@ -114,8 +113,8 @@
                         x: primitiveGeo.a_normal[id][0],
                         y: primitiveGeo.a_normal[id][1],
                         z: primitiveGeo.a_normal[id][2],
-                        w: 1,
-                    });
+                        w: 0,
+                    }).toVector3().normalize();
 
                     primitiveGeo.a_normal[id][0] = transformed.x;
                     primitiveGeo.a_normal[id][1] = transformed.y;
@@ -123,7 +122,6 @@
                 }
 
                 const indicies = getAttributeData("indices", primitive, accessors, bufferViews, standard, BINPartition, 1);
-                console.log(indicies);
 
                 const constructedSubmesh = {
                     a_position: [],
