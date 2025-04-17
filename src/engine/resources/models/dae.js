@@ -23,45 +23,44 @@
         meshData.pointCount = [];
         const data = meshData.data;
         const pointCount = meshData.pointCount;
-
-        const parsedSubMeshes = { data: {}, pointCount: {} };
+        //                       Serious     serious         silly! :3
+        const parsedSubMeshes = { data: {}, pointCount: {}, controllers: {}, materials: {} };
         const DOM = domParser.parseFromString(contents, "text/xml");
         //* Get our geometry
         const geometryLib = DOM.getElementsByTagName("library_geometries")[0];
+        const controllerLib = DOM.getElementsByTagName("library_controllers")[0];
         const sceneLib = DOM.getElementsByTagName("library_visual_scenes")[0];
+        const materialToSubmesh = {};
 
-        //* Loop through every geometries
+        //* Loop through every geometry
         const geometries = Array.from(geometryLib.getElementsByTagName("geometry"));
         geometries.forEach((geometry) => {
-            console.log(geometry);
             //Get our meshes and start conversion
             const meshes = Array.from(geometry.getElementsByTagName("mesh"));
             meshes.forEach((mesh) => {
                 //Get contents
                 const pullTable = {
-                    a_position: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-positions`) || DOM.getElementById(`${geometry.id}-positions-array`)),
-                    a_normal: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-normals`) || DOM.getElementById(`${geometry.id}-normals-array`)),
-                    a_texCoord: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-map-0`) || DOM.getElementById(`${geometry.id}-map-0-array`)),
+                    a_position: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-positions`)),
+                    a_normal: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-normals`)),
+                    a_texCoord: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-map-0`)),
                     //? Maybe this is the right way? just an estimation.
-                    a_color: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-color`) || DOM.getElementById(`${geometry.id}-color-array`)),
+                    a_color: getFlArrFromSourceEl(DOM.getElementById(`${geometry.id}-color`)),
                 };
-
-                console.log(pullTable);
 
                 parsedSubMeshes.data[`#${geometry.id}`] = [];
                 parsedSubMeshes.pointCount[`#${geometry.id}`] = [];
+                parsedSubMeshes.materials[`#${geometry.id}`] = [];
 
                 const currentData = parsedSubMeshes.data[`#${geometry.id}`];
                 const currentPointCount = parsedSubMeshes.pointCount[`#${geometry.id}`];
+                const currentMaterials = parsedSubMeshes.materials[`#${geometry.id}`];
 
                 const triangles = Array.from(mesh.getElementsByTagName("triangles"));
 
-                console.log(triangles);
                 triangles.forEach((triangleElement) => {
                     //Expect a silly little error if possible
                     const readPointCount = Number(triangleElement.getAttribute("count")) || 0;
 
-                    console.log(readPointCount);
                     if (readPointCount > 2) {
                         //Just add the point count
                         currentPointCount.push(readPointCount * 3);
@@ -107,10 +106,93 @@
                                 }
                             }
                         }
+
+                        //Now we add the material
+                        currentMaterials.push(triangleElement.getAttribute("material") || "");
                     }
                 });
             });
         });
+
+        //* if we have controllers loop through those too
+        let controllers = [];
+        if (controllerLib) controllers = Array.from(controllerLib.getElementsByTagName("controller"));
+        controllers.forEach((controller) => {
+            const skin = controller.getElementsByTagName("skin")[0];
+            if (skin) {
+                //We will initilize it with meshID
+                parsedSubMeshes.controllers[controller.getAttribute("id")] = { meshID: skin.getAttribute("source") };
+            }
+        })
+
+        //* create a general purpose mesh parsing function
+        const parseMeshFromInstance = (meshID, matrix) => {
+            //Loop through sub meshes
+            for (const subMesh in parsedSubMeshes.pointCount[meshID]) {
+                const materialName = parsedSubMeshes.materials[meshID][subMesh];
+                if (!materialToSubmesh[materialName]) {
+                    materialToSubmesh[materialName] = data.length;
+                    //Add our parsedStuff
+                    data.push({
+                        a_position: [],
+                        a_texCoord: [],
+                        a_normal: [],
+                        a_color: [],
+                    });
+                    pointCount.push(0);
+                }
+
+                let subMeshIndex = materialToSubmesh[materialName];
+    
+                //Now we parse our data
+                const currentData = parsedSubMeshes.data[meshID][subMesh];
+                const currentPositionData = [...currentData.a_position];
+                const currentNormalData = [...currentData.a_normal];
+                for (let index = 0; index < currentPositionData.length; index += 4) {
+                    //Construct a "vector"
+                    const vector = {
+                        x: currentPositionData[index],
+                        y: currentPositionData[index + 1],
+                        z: currentPositionData[index + 2],
+                        w: currentPositionData[index + 3],
+                    };
+    
+                    //Multiply it
+                    const constructed = matrix.multiplyVector(vector);
+                    currentPositionData[index] = constructed.x;
+                    currentPositionData[index + 1] = constructed.y;
+                    currentPositionData[index + 2] = constructed.z;
+                    currentPositionData[index + 3] = constructed.w;
+                }
+    
+                for (let index = 0; index < currentNormalData.length; index += 3) {
+                    //Construct a "vector"
+                    const vector = {
+                        x: currentNormalData[index],
+                        y: currentNormalData[index + 1],
+                        z: currentNormalData[index + 2],
+                        w: 0,
+                    };
+    
+                    //Multiply it
+                    const constructed = matrix.multiplyVector(vector);
+                    currentNormalData[index] = constructed.x;
+                    currentNormalData[index + 1] = constructed.y;
+                    currentNormalData[index + 2] = constructed.z;
+                }
+    
+                //Convert to float32 arrays
+                data[subMeshIndex].a_position.push(...currentPositionData);
+                data[subMeshIndex].a_texCoord.push(...currentData.a_texCoord.flat(4));
+                data[subMeshIndex].a_normal.push(...currentNormalData);
+                data[subMeshIndex].a_color.push(...currentData.a_color.flat(4));
+                pointCount[subMeshIndex] += parsedSubMeshes.pointCount[meshID][subMesh];
+                //if (currentData.a_position.flat) currentData.a_position = new Float32Array(currentData.a_position.flat(4));
+                //if (currentData.a_texCoord.flat) currentData.a_texCoord = new Float32Array();
+                //if (currentData.a_normal.flat) currentData.a_normal = new Float32Array(currentData.a_normal.flat(4));
+                //if (currentData.a_color.flat) currentData.a_color = new Float32Array();
+            }
+        }
 
         //* We are just going to add every scene :troll:
         const scenes = Array.from(sceneLib.getElementsByTagName("visual_scene"));
@@ -130,58 +212,28 @@
                 const instanceGeos = Array.from(node.getElementsByTagName("instance_geometry"));
                 instanceGeos.forEach((instanceGeo) => {
                     const meshID = instanceGeo.getAttribute("url");
-
-                    //Loop through sub meshes
-                    for (const subMesh in parsedSubMeshes.pointCount[meshID]) {
-                        const dataIndex = data.length;
-                        data.push(parsedSubMeshes.data[meshID][subMesh]);
-                        pointCount.push(parsedSubMeshes.pointCount[meshID][subMesh]);
-
-                        //Now we parse our data
-                        const currentData = data[dataIndex];
-                        const currentPositionData = currentData.a_position;
-                        const currentNormalData = currentData.a_normal;
-                        for (let index = 0; index < currentPositionData.length; index += 4) {
-                            //Construct a "vector"
-                            const vector = {
-                                x: currentPositionData[index],
-                                y: currentPositionData[index + 1],
-                                z: currentPositionData[index + 2],
-                                w: currentPositionData[index + 3],
-                            };
-
-                            //Multiply it
-                            const constructed = matrix.multiplyVector(vector);
-                            currentPositionData[index] = constructed.x;
-                            currentPositionData[index + 1] = constructed.y;
-                            currentPositionData[index + 2] = constructed.z;
-                            currentPositionData[index + 3] = constructed.w;
-                        }
-
-                        for (let index = 0; index < currentNormalData.length; index += 3) {
-                            //Construct a "vector"
-                            const vector = {
-                                x: currentNormalData[index],
-                                y: currentNormalData[index + 1],
-                                z: currentNormalData[index + 2],
-                                w: 0,
-                            };
-
-                            //Multiply it
-                            const constructed = matrix.multiplyVector(vector);
-                            currentNormalData[index] = constructed.x;
-                            currentNormalData[index + 1] = constructed.y;
-                            currentNormalData[index + 2] = constructed.z;
-                        }
-
-                        //Convert to float32 arrays
-                        currentData.a_position = new Float32Array(currentData.a_position.flat(4));
-                        currentData.a_texCoord = new Float32Array(currentData.a_texCoord.flat(4));
-                        currentData.a_normal = new Float32Array(currentData.a_normal.flat(4));
-                        currentData.a_color = new Float32Array(currentData.a_color.flat(4));
-                    }
+                    parseMeshFromInstance(meshID, matrix);
                 });
+
+                //Instantiate armature controllers
+                const instanceControllers = Array.from(node.getElementsByTagName("instance_controller"));
+                instanceControllers.forEach((instanceController) => {
+                    const controllerURL = instanceController.getAttribute("url").replaceAll(/^#/g, "");
+                    const controllerData = parsedSubMeshes.controllers[controllerURL];
+                    if (controllerData && controllerData.meshID) {
+                        //Finally add our mesh (encountered this from plumberfella 64)
+                        parseMeshFromInstance(controllerData.meshID, matrix);
+                    }
+                })
             });
+        });
+
+        //Do the final pass
+        data.forEach(subMesh => {
+            subMesh.a_position = new Float32Array(subMesh.a_position);
+            subMesh.a_texCoord = new Float32Array(subMesh.a_texCoord);
+            subMesh.a_normal = new Float32Array(subMesh.a_normal);
+            subMesh.a_color = new Float32Array(subMesh.a_color);
         });
     };
 })();
