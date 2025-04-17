@@ -29,11 +29,12 @@
             defaultSize = GLSizes[accessor.type];
             const bufferView = bufferViews[accessor.bufferView];
             const type = GLTypes[accessor.componentType];
-            const stepSize = defaultSize * type[1];
+            const stepSize = bufferView.byteStride || (defaultSize * type[1]);
             const byteOffset = bufferView.byteOffset || 0;
+            const end = byteOffset + ((accessor.count) ? (accessor.count * stepSize) : bufferView.byteLength);
 
             //Loop through the bytes of the positions
-            for (let byteID = byteOffset; byteID < byteOffset + bufferView.byteLength; byteID += stepSize) {
+            for (let byteID = byteOffset; byteID < end; byteID += stepSize) {
                 //Coordinites
                 if (defaultSize > 1) {
                     const conjoined = [];
