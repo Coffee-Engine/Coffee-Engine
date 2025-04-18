@@ -10,13 +10,13 @@
                 //Make sure the theme isn't custom
                 if (editor.settings.values.Theme.themeColor == "Custom") {
                     document.body.style.setProperty(cssName, value);
-                } else if (editor.settings.values.Monaco.themeOverride) {
+                } else if (editor.settings.values.CodeMirror.themeOverride) {
                     document.body.style.setProperty(cssName, value);
                 } else {
                     document.body.style.setProperty(cssName, editor.defaultThemes[editor.settings.values.Theme.themeColor][cssName]);
                 }
             },
-            disabled: () => {return !(editor.settings.values.Theme.themeColor == "Custom" || editor.settings.values.Monaco.themeOverride)}
+            disabled: () => {return !(editor.settings.values.Theme.themeColor == "Custom" || editor.settings.values.CodeMirror.themeOverride)}
         };
     };
 
@@ -235,23 +235,18 @@
                             settingDefs.Theme[6].onchange(editor.settings.values.Theme.warnTextColor);
                             settingDefs.Theme[7].onchange(editor.settings.values.Theme.errorTextColor);
                             settingDefs.Theme[8].onchange(editor.settings.values.Theme.linkColor);
-                            settingDefs.Monaco[3].onchange(editor.settings.values.Monaco.defaultText);
-                            settingDefs.Monaco[4].onchange(editor.settings.values.Monaco.colorKeyword);
-                            settingDefs.Monaco[5].onchange(editor.settings.values.Monaco.colorClassname);
-                            settingDefs.Monaco[6].onchange(editor.settings.values.Monaco.colorDelimiter);
-                            settingDefs.Monaco[7].onchange(editor.settings.values.Monaco.colorDelimiterBracket);
-                            settingDefs.Monaco[8].onchange(editor.settings.values.Monaco.colorNumber);
-                            settingDefs.Monaco[9].onchange(editor.settings.values.Monaco.colorNumberUnusual);
-                            settingDefs.Monaco[10].onchange(editor.settings.values.Monaco.colorString);
-                            settingDefs.Monaco[11].onchange(editor.settings.values.Monaco.colorStringEscape);
-                            settingDefs.Monaco[12].onchange(editor.settings.values.Monaco.colorStringError);
-                            settingDefs.Monaco[13].onchange(editor.settings.values.Monaco.colorRegexp);
-                            settingDefs.Monaco[14].onchange(editor.settings.values.Monaco.colorRegexpInvalid);
-                            settingDefs.Monaco[15].onchange(editor.settings.values.Monaco.colorRegexpEscape);
-                            settingDefs.Monaco[16].onchange(editor.settings.values.Monaco.colorComment);
-                            settingDefs.Monaco[17].onchange(editor.settings.values.Monaco.colorCommentDoc);
-                            settingDefs.Monaco[18].onchange(editor.settings.values.Monaco.colorCommentDocKeyword);
-                            settingDefs.Monaco[19].onchange(editor.settings.values.Monaco.colorCommentDocType);
+                            settingDefs.CodeMirror[3].onchange(editor.settings.values.CodeMirror.defaultText);
+                            settingDefs.CodeMirror[4].onchange(editor.settings.values.CodeMirror.colorKeyword);
+                            settingDefs.CodeMirror[5].onchange(editor.settings.values.CodeMirror.colorClassname);
+                            settingDefs.CodeMirror[6].onchange(editor.settings.values.CodeMirror.colorDelimiterBracket);
+                            settingDefs.CodeMirror[7].onchange(editor.settings.values.CodeMirror.colorNumber);
+                            settingDefs.CodeMirror[8].onchange(editor.settings.values.CodeMirror.colorString);
+                            settingDefs.CodeMirror[9].onchange(editor.settings.values.CodeMirror.colorAttribute);
+                            settingDefs.CodeMirror[10].onchange(editor.settings.values.CodeMirror.colorVariable);
+                            settingDefs.CodeMirror[11].onchange(editor.settings.values.CodeMirror.colorComment);
+                            settingDefs.CodeMirror[12].onchange(editor.settings.values.CodeMirror.colorCodeTag);
+                            settingDefs.CodeMirror[13].onchange(editor.settings.values.CodeMirror.colorCodeHeader);
+                            settingDefs.CodeMirror[14].onchange(editor.settings.values.CodeMirror.colorCodeLink);
 
                             refreshSelection();
                         }
@@ -595,72 +590,64 @@
                     },
                 },
             ],
-            Monaco: [
+            CodeMirror: [
                 {
-                    target: editor.settings.values.Monaco,
+                    target: editor.settings.values.CodeMirror,
                     key: "fontSize",
                     defaultValue: 12,
                     onchange: (value) => {
-                        monacoManager.fontSize = Number(value);
+                        document.body.style.setProperty("--code-fontSize", `${value}px`);
                     },
                     type: "int",
                     min: "8",
                     max: "32",
                 },
                 {
-                    target: editor.settings.values.Monaco,
+                    target: editor.settings.values.CodeMirror,
                     key: "fontStyle",
                     defaultValue: "Monospace",
                     type: "dropdown",
                     items: ["Serif", "Sans-serif", "Monospace", "Cursive", "Fantasy"],
                     onchange: (value) => {
-                        monacoManager.fontStyle = value;
+                        document.body.style.setProperty("--code-fontFamily", value);
                     },
                 },
                 {
-                    target: editor.settings.values.Monaco,
+                    target: editor.settings.values.CodeMirror,
                     key: "themeOverride",
                     defaultValue: false,
                     type: "boolean",
                     onchange: (value, { refreshSelection }, fromBoot) => {
-                        editor.settingDefs.Monaco[3].onchange(editor.settings.values.Monaco.defaultText);
-                        editor.settingDefs.Monaco[4].onchange(editor.settings.values.Monaco.colorKeyword);
-                        editor.settingDefs.Monaco[5].onchange(editor.settings.values.Monaco.colorClassname);
-                        editor.settingDefs.Monaco[6].onchange(editor.settings.values.Monaco.colorDelimiter);
-                        editor.settingDefs.Monaco[7].onchange(editor.settings.values.Monaco.colorDelimiterBracket);
-                        editor.settingDefs.Monaco[8].onchange(editor.settings.values.Monaco.colorNumber);
-                        editor.settingDefs.Monaco[9].onchange(editor.settings.values.Monaco.colorNumberUnusual);
-                        editor.settingDefs.Monaco[10].onchange(editor.settings.values.Monaco.colorString);
-                        editor.settingDefs.Monaco[11].onchange(editor.settings.values.Monaco.colorStringEscape);
-                        editor.settingDefs.Monaco[12].onchange(editor.settings.values.Monaco.colorStringError);
-                        editor.settingDefs.Monaco[13].onchange(editor.settings.values.Monaco.colorRegexp);
-                        editor.settingDefs.Monaco[14].onchange(editor.settings.values.Monaco.colorRegexpInvalid);
-                        editor.settingDefs.Monaco[15].onchange(editor.settings.values.Monaco.colorRegexpEscape);
-                        editor.settingDefs.Monaco[16].onchange(editor.settings.values.Monaco.colorComment);
-                        editor.settingDefs.Monaco[17].onchange(editor.settings.values.Monaco.colorCommentDoc);
-                        editor.settingDefs.Monaco[18].onchange(editor.settings.values.Monaco.colorCommentDocKeyword);
-                        editor.settingDefs.Monaco[19].onchange(editor.settings.values.Monaco.colorCommentDocType);
+                        const settingDefs = editor.settingDefs;
+
+                        settingDefs.CodeMirror[3].onchange(editor.settings.values.CodeMirror.defaultText);
+                        settingDefs.CodeMirror[4].onchange(editor.settings.values.CodeMirror.colorKeyword);
+                        settingDefs.CodeMirror[5].onchange(editor.settings.values.CodeMirror.colorClassname);
+                        settingDefs.CodeMirror[6].onchange(editor.settings.values.CodeMirror.colorDelimiterBracket);
+                        settingDefs.CodeMirror[7].onchange(editor.settings.values.CodeMirror.colorNumber);
+                        settingDefs.CodeMirror[8].onchange(editor.settings.values.CodeMirror.colorString);
+                        settingDefs.CodeMirror[9].onchange(editor.settings.values.CodeMirror.colorAttribute);
+                        settingDefs.CodeMirror[10].onchange(editor.settings.values.CodeMirror.colorVariable);
+                        settingDefs.CodeMirror[11].onchange(editor.settings.values.CodeMirror.colorComment);
+                        settingDefs.CodeMirror[12].onchange(editor.settings.values.CodeMirror.colorCodeTag);
+                        settingDefs.CodeMirror[13].onchange(editor.settings.values.CodeMirror.colorCodeHeader);
+                        settingDefs.CodeMirror[14].onchange(editor.settings.values.CodeMirror.colorCodeLink);
 
                         if (!fromBoot) refreshSelection();
                     },
                 },
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "defaultText", "--code-text", "#e7cab7"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorKeyword", "--keyword", "#d76f2b"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorClassname", "--class-name", "#e5823f"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorDelimiter", "--delimiter", "#e38d55"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorDelimiterBracket", "--delimiter-bracket", "#e7b252"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorNumber", "--number-color", "#bce579"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorNumberUnusual", "--number-color-unusual", "#5bb498"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorString", "--string", "#d6ae93"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorStringEscape", "--string-escape", "#ff7878"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorStringError", "--string-error", "#e7cab7"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorRegexp", "--regexp", "#eba2ce"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorRegexpInvalid", "--regexp-invalid", "#ff7878"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorRegexpEscape", "--regexp-escape", "#e7cab7"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorComment", "--comment", "#bb8d6e"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorCommentDoc", "--comment-doc", "#958072"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorCommentDocKeyword", "--comment-doc-keyword", "#bce579"),
-                quickSettingCSSThemeColor(editor.settings.values.Monaco, "colorCommentDocType", "--comment-doc-type", "#5bb498"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "defaultText", "--code-text", "#e7cab7"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorKeyword", "--keyword", "#d76f2b"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorClassname", "--class-name", "#e5823f"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorDelimiterBracket", "--delimiter-bracket", "#e7b252"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorNumber", "--number-color", "#bce579"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorString", "--string", "#d6ae93"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorAttribute", "--attribute", "#eba2ce"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorVariable", "--variable", "#ff7878"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorComment", "--comment", "#bb8d6e"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorCodeTag", "--code-tag", "#958072"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorCodeHeader", "--code-header", "#bce579"),
+                quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorCodeLink", "--code-link", "#ff893a"),
             ],
         }
     }};

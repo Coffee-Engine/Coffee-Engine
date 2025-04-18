@@ -122,8 +122,8 @@
                 <h2>${editor.language["engine.credits.resources"]}</h2>
                 <div class="contributorContainerDiv">
                     <div class="contributorDiv"><img style="height:48px;" src="https://developers.google.com/static/blockly/images/logos/logo_only.png"></img><p><a href="https://github.com/google/blockly">Blockly</a></p></div>
-                    <!--The only monaco logo I could find--->
-                    <div class="contributorDiv"><img style="height:48px;" src="https://microsoft.github.io/monaco-editor/9a60a3b3c5fcf6a9d2de2c28e5eaa986.svg"></img><p><a href="https://github.com/microsoft/monaco-editor">Monaco</a></p></div>
+                    <!--Code Mirror logo--->
+                    <div class="contributorDiv"><img style="height:48px;" src="https://codemirror.net/5/doc/logo.png"></img><p><a href="https://codemirror.net/5/index.html">Code Mirror</a></p></div>
                     <!--Marked version 15--->
                     <div class="contributorDiv"><img style="height:48px;" src="https://avatars.githubusercontent.com/u/19886934?s=200&v=4"></img><p><a href="https://github.com/markedjs/marked">Marked</a></p></div>
                     <!--JSZip version 3--->

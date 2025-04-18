@@ -15,6 +15,9 @@ body {
     --warn-text: #323546;
     --error-text: #323546;
 
+    --code-fontFamily: monospace;
+    --code-fontSize: 12px;
+
     background-color: var(--background-4);
     color: var(--text-1);
 
