@@ -13,10 +13,8 @@
 
                 //Join it back and make sure its lowercase
                 lang = lang.join("-").toLowerCase();
-
-                monaco.editor.colorize(codeElement.innerText, editor.languageRedirects[lang] || lang).then((html) => {
-                    codeElement.innerHTML = `${html}`;
-                });
+                CodeMirror.colorize([codeElement], editor.languageRedirects[lang] || lang);
+                codeElement.className = "cm-s-coffee-engine";
             });
 
             //Then we do the same for images but use the local FS to fetch
