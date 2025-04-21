@@ -285,6 +285,7 @@ window.DaveShade = {};
             CANVAS: CANVAS,
             SHADERS: [],
             FRAMEBUFFERS: [],
+            oldAttributes: {}
         };
 
         if (SETTINGS.blendFunc) {
@@ -511,6 +512,7 @@ window.DaveShade = {};
 
                 //* The setter legacy (DS2)
                 shader.attributes[attributeDef.name].setRaw = (newValue) => {
+                    daveShadeInstance.oldAttributes[attributeDef.name] = 0;
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
@@ -518,6 +520,8 @@ window.DaveShade = {};
 
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
+                    if (daveShadeInstance.oldAttributes[attributeDef.name] == newValue.bufferID) return;
+                    daveShadeInstance.oldAttributes[attributeDef.name] = newValue.bufferID;
                     GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
                 };
@@ -711,11 +715,16 @@ window.DaveShade = {};
             daveShadeInstance.GL.clear(bufferBits);
         };
 
+        daveShadeInstance.bufferID = 0;
         daveShadeInstance.buffersFromJSON = (attributeJSON) => {
             const returned = {};
             for (const key in attributeJSON) {
+                //Increment our ID
+                daveShadeInstance.bufferID++;
+
                 const element = attributeJSON[key];
                 const buffer = daveShadeInstance.GL.createBuffer();
+                buffer.bufferID = daveShadeInstance.bufferID;
                 GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
                 GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
 
