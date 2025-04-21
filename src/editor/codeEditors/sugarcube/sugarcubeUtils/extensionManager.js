@@ -1027,6 +1027,16 @@
             );
         }
 
+        getExtensionUnfilteredToolboxIndex(extensionID) {
+            //Find its index
+            return sugarcube.toolbox.contents.indexOf(
+                //Get the extension's def
+                sugarcube.toolbox.contents.find((item) => {
+                    return item.id == extensionID;
+                })
+            );
+        }
+
         removeExtension(extensionID) {
             if (sugarcube.extensionInstances[extensionID]) {
                 //run the disposal function if it exists
@@ -1035,7 +1045,7 @@
                 }
 
                 //Remove the extension's toolbox contents
-                sugarcube.toolbox.contents.splice(this.getExtensionToolboxIndex(extensionID), 1);
+                sugarcube.toolbox.contents.splice(this.getExtensionUnfilteredToolboxIndex(extensionID), 1);
 
                 const instance = sugarcube.extensionInstances[extensionID];
 

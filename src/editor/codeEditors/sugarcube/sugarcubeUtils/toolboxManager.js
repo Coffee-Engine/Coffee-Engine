@@ -59,6 +59,4 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
         //if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
         if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
     }
-
-    sugarcube.workspace.getToolbox().refreshSelection();
 };
