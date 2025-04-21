@@ -77,7 +77,7 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.themeColor.Astro": "Astro",
     "engine.settings.category.Theme.themeColor.Custom": "Custom",
 
-    "engine.settings.category.SugarCube": "SugarCube",
+    "engine.settings.category.SugarCube": "Sugarcube",
     "engine.settings.category.SugarCube.notchWidth": "Notch Width",
     "engine.settings.category.SugarCube.notchHeight": "Notch Height",
     "engine.settings.category.SugarCube.cornerSize": "Corner Size",
