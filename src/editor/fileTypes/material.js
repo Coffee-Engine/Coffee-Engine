@@ -2,11 +2,19 @@
     let shader = { uniforms: {} };
 
     const uniformTypes = {
+        35670: { name: "", type: coffeeEngine.PropertyTypes.BOOLEAN },
+
+        5124: { name: "", type: coffeeEngine.PropertyTypes.INT },
+        5125: { name: "", type: coffeeEngine.PropertyTypes.INT },
         5126: { name: "", type: coffeeEngine.PropertyTypes.FLOAT },
 
         35664: { name: "", type: coffeeEngine.PropertyTypes.VEC2 },
         35665: { name: "", type: coffeeEngine.PropertyTypes.VEC3 },
         35666: { name: "", type: coffeeEngine.PropertyTypes.VEC4 },
+
+        35674: { name: "", type: "mat2" },
+        35675: { name: "", type: "mat3" },
+        35676: { name: "", type: "mat4" },
 
         35678: { name: "", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" },
         35679: { name: "", type: coffeeEngine.PropertyTypes.FILE, fileType: "vox" },
