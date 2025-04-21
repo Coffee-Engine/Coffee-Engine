@@ -261,12 +261,14 @@
                     this.usingSugarCube = false;
 
                     mirrorManager.setScript(this.fileReader.result, editor.languageRedirects[this.readType] || this.readType);
+                    sugarcube.deserialize({});
                 } else {
                     this.codeMirrorArea.style.visibility = "hidden";
                     this.blocklyArea.style.visibility = "inherit";
                     this.usingSugarCube = true;
 
                     sugarcube.deserialize(JSON.parse(this.fileReader.result));
+                    mirrorManager.setScript("", "");
                 }
 
                 this.title = `${this.filePath} | ${editor.language["editor.window.codeEditor"]}`;
