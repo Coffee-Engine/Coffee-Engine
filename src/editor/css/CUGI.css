@@ -222,6 +222,16 @@
     overflow-x: auto;
 }
 
+.CUGI-objectContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-2);
+    border-color: var(--background-3);
+    border-width: 2px;
+    border-style: solid;
+    overflow-x: auto;
+}
+
 .CUGI-ItemContainer {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -237,7 +247,5 @@
     font-weight: bold;
     font-style: italic;
     margin: 0px;
-    margin-top: 25%;
-    margin-bottom: 25%;
     padding: 0.5em;
 }

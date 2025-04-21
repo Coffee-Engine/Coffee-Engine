@@ -76,7 +76,7 @@
 
             //The data removal process
             removeEl.onclick = () => {
-                data.target.splice(data.key, 1);
+                delete data.target[data.key];
                 refreshData();
             }
 
@@ -96,13 +96,22 @@
         return container;
     }
 
-    CUGI.types["array"] = (data) => {
+    CUGI.types["object"] = (data) => {
         const { target, key } = data;
-        target[key] = target[key] || [];
+        target[key] = target[key] || {};
 
         //Create our container
-        const arrayContainer = document.createElement("div");
-        arrayContainer.className = "CUGI-arrayContainer";
+        const objectContainer = document.createElement("div");
+        objectContainer.className = "CUGI-objectContainer";
+
+        const elementContainer = document.createElement("div");
+        elementContainer.style.display = "grid";
+        elementContainer.style.gridTemplateColumns = "50% 50%";
+
+        const elementName = document.createElement("input");
+        elementName.placeholder = "Key";
+        elementName.type = "text";
+        elementName.className = "CUGI-itemKey";
 
         const elementAdder = document.createElement("dropdown-menu");
         elementAdder.innerHTML = `
@@ -116,9 +125,12 @@
             <dropdown-item value="object">Object</dropdown-item>
         `;
 
+        elementContainer.appendChild(elementName);
+        elementContainer.appendChild(elementAdder);
+
         //Refresh data
         const refreshData = () => {
-            arrayContainer.innerHTML = "";
+            objectContainer.innerHTML = "";
 
             //Cycle through each element in our array
             for (let item in target[key]) {
@@ -128,27 +140,30 @@
                 if (CUGI.types[CUGIType]) {
                     const newInputData = {...data, target: target[key], key: item};
                     const input = CUGI.types[CUGIType](newInputData);
-                    arrayContainer.appendChild(createArrayElementContainer(item, input, refreshData, newInputData));
+                    objectContainer.appendChild(createArrayElementContainer(item, input, refreshData, newInputData));
                 }
             }
 
             //Append the element adder again
-            arrayContainer.appendChild(elementAdder);
+            objectContainer.appendChild(elementContainer);
         }
 
         //Give functionality to the element adder
         elementAdder.onchange = (value) => {
-            target[key].push(CUGI.macros.valueFromType(value));
+            if (target[key][elementName.value] !== undefined) return;
+            target[key][elementName.value] = CUGI.macros.valueFromType(value);
             if (CUGI.types[value]) {
-                const ID = target[key].length - 1;
+                const ID = elementName.value;
                 const newInputData = {...data, target: target[key], key: ID};
                 const input = CUGI.types[value](newInputData);
-                arrayContainer.insertBefore(createArrayElementContainer(ID, input, refreshData, newInputData), elementAdder);
+                objectContainer.insertBefore(createArrayElementContainer(ID, input, refreshData, newInputData), elementContainer);
+
+                elementName.value = "";
             }
         }
 
         refreshData();
 
-        return arrayContainer;
+        return objectContainer;
     }
 })();
