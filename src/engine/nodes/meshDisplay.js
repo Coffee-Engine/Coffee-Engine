@@ -159,8 +159,11 @@
 
         extraSerialize() {
             return {
-                after: true,
-                data: ["materials"]
+                after: false,
+                data: [
+                    "__scriptStartupProps",
+                    "materials"
+                ]
             };
         }
 

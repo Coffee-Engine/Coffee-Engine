@@ -257,13 +257,20 @@
         }
 
         __serializeValue(value) {
-            let returned = value;
-            if (value.serialize && typeof value.serialize == "function") returned = value.serialize();
+            //Determine original coolage
+            let returned = {};
+            if (Array.isArray(value)) returned = [];
             
-            if (typeof returned == "object") {
-                for (let key in returned) {
-                    returned[key] = this.__serializeValue(returned[key]);
+            let rValue = value;
+            if (value.serialize && typeof value.serialize == "function") returned = rValue.serialize();
+            
+            if (typeof rValue == "object") {
+                for (let key in rValue) {
+                    returned[key] = this.__serializeValue(rValue[key]);
                 }
+            }
+            else {
+                returned = rValue;
             }
 
             return returned;
@@ -284,8 +291,8 @@
 
                 //Now we check for after
                 if (!Array.isArray(extraSerialize)) {
-                    extraAfter = extraSerialize.after;
-                    extraSerialize = extraSerialize.data;
+                    extraAfter = extraSerialize.after || false;
+                    extraSerialize = extraSerialize.data || [];
                 }
 
                 //If we are before

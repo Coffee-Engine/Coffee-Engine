@@ -106,14 +106,14 @@
 
         const elementAdder = document.createElement("dropdown-menu");
         elementAdder.innerHTML = `
-            New Element
-            <dropdown-item value="float">Number</dropdown-item>
-            <dropdown-item value="vec2">Vector 2</dropdown-item>
-            <dropdown-item value="vec3">Vector 3</dropdown-item>
-            <dropdown-item value="vec4">Vector 4</dropdown-item>
-            <dropdown-item value="string">String</dropdown-item>
-            <dropdown-item value="array">Array</dropdown-item>
-            <dropdown-item value="object">Object</dropdown-item>
+            ${editor.language["engine.CUGI.newElement"]}
+            <dropdown-item value="float">${editor.language["engine.CUGI.number"]}</dropdown-item>
+            <dropdown-item value="vec2">${editor.language["engine.CUGI.vec2"]}</dropdown-item>
+            <dropdown-item value="vec3">${editor.language["engine.CUGI.vec3"]}</dropdown-item>
+            <dropdown-item value="vec4">${editor.language["engine.CUGI.vec4"]}</dropdown-item>
+            <dropdown-item value="string">${editor.language["engine.CUGI.string"]}</dropdown-item>
+            <dropdown-item value="array">${editor.language["engine.CUGI.array"]}</dropdown-item>
+            <dropdown-item value="object">${editor.language["engine.CUGI.object"]}</dropdown-item>
         `;
 
         //Refresh data

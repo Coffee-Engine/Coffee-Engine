@@ -557,6 +557,16 @@ editor.EnglishLang = {
     "sugarcube.files.menu.asMenu.byte": "Byte Array",
     "sugarcube.files.menu.asMenu.dataURL": "Data URL",
 
+    "engine.CUGI.newElement": "New Element",
+    "engine.CUGI.key": "Key",
+    "engine.CUGI.number": "Number",
+    "engine.CUGI.vec2": "Vector 2",
+    "engine.CUGI.vec3": "Vector 3",
+    "engine.CUGI.vec4": "Vector 4",
+    "engine.CUGI.string": "string",
+    "engine.CUGI.array": "array",
+    "engine.CUGI.object": "object",
+
     "engine.nodeNames.scene": "Scene",
     "engine.nodeNames.Node": "Node",
     "engine.nodeNames.Node2D": "Node 2D",
