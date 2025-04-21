@@ -128,8 +128,12 @@
             if (this.meshData && !serializationCall) {
                 for (let subMeshIndex in this.meshData.pointCount) {
                     //Create our material slot
+                    //Start with the offset
+                    const offset = (coffeeEngine.isEditor) ? Number(editor.settings.values.Editor.startIndex) : 0;
+
+                    //Push it
                     extraProperties.push({ 
-                        text: editor.language["engine.nodeProperties.MeshDisplay.material"].replace("[number]", subMeshIndex), 
+                        text: editor.language["engine.nodeProperties.MeshDisplay.material"].replace("[number]", Number(subMeshIndex) + offset), 
                         key: subMeshIndex, 
                         target: this.materials, 
                         type: coffeeEngine.PropertyTypes.FILE, 

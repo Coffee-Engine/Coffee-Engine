@@ -128,7 +128,8 @@
                 if (CUGI.types[CUGIType]) {
                     const newInputData = {...data, target: target[key], key: item};
                     const input = CUGI.types[CUGIType](newInputData);
-                    arrayContainer.appendChild(createArrayElementContainer(item, input, refreshData, newInputData));
+                    const itemText = item + Number(editor.settings.values.Editor.startIndex);
+                    arrayContainer.appendChild(createArrayElementContainer(itemText, input, refreshData, newInputData));
                 }
             }
 
@@ -143,7 +144,8 @@
                 const ID = target[key].length - 1;
                 const newInputData = {...data, target: target[key], key: ID};
                 const input = CUGI.types[value](newInputData);
-                arrayContainer.insertBefore(createArrayElementContainer(ID, input, refreshData, newInputData), elementAdder);
+                const itemText = ID + Number(editor.settings.values.Editor.startIndex);
+                arrayContainer.insertBefore(createArrayElementContainer(itemText, input, refreshData, newInputData), elementAdder);
             }
         }
 

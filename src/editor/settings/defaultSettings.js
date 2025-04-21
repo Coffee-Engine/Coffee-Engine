@@ -94,6 +94,16 @@
                         localStorage.clear();
                     },
                 },
+                {
+                    target: editor.settings.values.Editor,
+                    key: "startIndex",
+                    defaultValue: 0,
+                    type: "dropdown",
+                    items: [
+                        { text: editor.language["engine.settings.category.Editor.startIndex.0"], value: 0 },
+                        { text: editor.language["engine.settings.category.Editor.startIndex.1"], value: 1 }
+                    ]
+                }
             ],
             Window:[
                 {

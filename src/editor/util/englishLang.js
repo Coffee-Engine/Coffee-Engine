@@ -38,6 +38,9 @@ editor.EnglishLang = {
     "engine.settings.category.Editor.changeLayout": "Change Layout",
     "engine.settings.category.Editor.clearLocalStorage": "Clear Data",
     "engine.settings.category.Editor.clearLocalStorage.cleared": "Data Cleared",
+    "engine.settings.category.Editor.startIndex": "Array Start Index",
+    "engine.settings.category.Editor.startIndex.0": "0 (Javascript Like)",
+    "engine.settings.category.Editor.startIndex.1": "1 (Sugarcube Like)",
 
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
