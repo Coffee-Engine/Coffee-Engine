@@ -11,13 +11,13 @@
     }
 
     const GLTypes = {
-        5120: [coffeeEngine.byteReader.ReadByte, 1, true],
-        5121: [coffeeEngine.byteReader.ReadByte, 1, false],
-        5122: [coffeeEngine.byteReader.Read2Bytes, 2, true],
-        5123: [coffeeEngine.byteReader.Read2Bytes, 2, false],
-        5124: [coffeeEngine.byteReader.Read4Bytes, 4, true],
-        5125: [coffeeEngine.byteReader.Read4Bytes, 4, false],
-        5126: [coffeeEngine.byteReader.ReadFloat32, 4, false],
+        5120: [coffeeEngine.byteReader.ReadByte, 1, true],     //Unsigned Byte
+        5121: [coffeeEngine.byteReader.ReadByte, 1, false],    //Byte
+        5122: [coffeeEngine.byteReader.Read2Bytes, 2, true],   //Unsigned Short
+        5123: [coffeeEngine.byteReader.Read2Bytes, 2, false],  //Short
+        5124: [coffeeEngine.byteReader.Read4Bytes, 4, true],   //Unsigned int
+        5125: [coffeeEngine.byteReader.Read4Bytes, 4, false],  //Int
+        5126: [coffeeEngine.byteReader.ReadFloat32, 4, false], //Float
     };
 
     //I'm doing this because I'm tortured
@@ -39,7 +39,7 @@
                 if (defaultSize > 1) {
                     const conjoined = [];
                     for (let x = 0; x < defaultSize; x++) {
-                        conjoined.push(type[0](BINPartition, byteID + x * type[1], type[2]));
+                        conjoined.push(type[0](BINPartition, byteID + (x * type[1]), type[2]));
                     }
                     returner.push(conjoined);
                 } else {
