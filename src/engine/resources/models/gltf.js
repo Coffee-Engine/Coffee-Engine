@@ -81,9 +81,26 @@
         const accessors = JSONPartition.accessors;
         const bufferViews = JSONPartition.bufferViews;
 
+        const materialToSubmesh = {};
+
         //Mesh Reader
         const readMesh = (transform, mesh) => {
             mesh.primitives.forEach((primitive) => {
+                if (materialToSubmesh[primitive.material] === undefined) {
+                    materialToSubmesh[primitive.material] = data.length;
+
+                    data.push({
+                        a_position: [],
+                        a_texCoord: [],
+                        a_normal: [],
+                        a_color: [],
+                    });
+
+                    pointCount.push(0);
+                }
+
+                let submeshID = materialToSubmesh[primitive.material];
+
                 const primitiveGeo = {};
                 const attributes = primitive.attributes;
                 const standardID = attributes.POSITION || attributes.NORMAL || attributes.TEXCOORD_0;
@@ -138,19 +155,15 @@
                     constructedSubmesh.a_color.push(primitiveGeo.a_color[indice]);
                 });
 
-                data.push(constructedSubmesh);
-                pointCount.push(indicies.length);
-
-                const dataLength = data.length - 1;
-                data[dataLength].a_position = new Float32Array(data[dataLength].a_position.flat(4));
-                data[dataLength].a_texCoord = new Float32Array(data[dataLength].a_texCoord.flat(4));
-                data[dataLength].a_normal = new Float32Array(data[dataLength].a_normal.flat(4));
-                data[dataLength].a_color = new Float32Array(data[dataLength].a_color.flat(4));
+                data[submeshID].a_position.push(constructedSubmesh.a_position);
+                data[submeshID].a_texCoord.push(constructedSubmesh.a_texCoord);
+                data[submeshID].a_normal.push(constructedSubmesh.a_normal);
+                data[submeshID].a_color.push(constructedSubmesh.a_color);
+                pointCount[submeshID] += indicies.length;
             });
         };
 
         //Find our mesh
-        console.log(JSONPartition);
         const readNodes = (matrix, nodeArray) => {
             nodeArray.forEach((nodeID) => {
                 const node = JSONPartition.nodes[nodeID];
@@ -182,5 +195,12 @@
         };
 
         readNodes(coffeeEngine.matrix4.identity(), currentScene.nodes);
+
+        for (let submeshID in data) {
+            data[submeshID].a_position = new Float32Array(data[submeshID].a_position.flat(4));
+            data[submeshID].a_texCoord = new Float32Array(data[submeshID].a_texCoord.flat(4));
+            data[submeshID].a_normal = new Float32Array(data[submeshID].a_normal.flat(4));
+            data[submeshID].a_color = new Float32Array(data[submeshID].a_color.flat(4));
+        }
     };
 })();
