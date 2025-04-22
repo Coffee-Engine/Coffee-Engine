@@ -30,7 +30,7 @@
             const bufferView = bufferViews[accessor.bufferView];
             const type = GLTypes[accessor.componentType];
             const stepSize = bufferView.byteStride || (defaultSize * type[1]);
-            const byteOffset = bufferView.byteOffset || 0;
+            const byteOffset = (bufferView.byteOffset || 0) + (accessor.byteOffset || 0);
             const end = byteOffset + ((accessor.count) ? (accessor.count * stepSize) : bufferView.byteLength);
 
             //Loop through the bytes of the positions
