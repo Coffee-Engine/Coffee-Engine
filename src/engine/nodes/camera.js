@@ -97,6 +97,7 @@
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 this.shader.uniforms.u_objectID.value = drawID;
+                coffeeEngine.renderer.daveshade.cullFace();
                 this.shader.drawFromBuffers(6);
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);

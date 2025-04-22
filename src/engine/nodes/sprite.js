@@ -80,6 +80,7 @@
                 if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
                 if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
 
+                coffeeEngine.renderer.daveshade.cullFace();
                 this.#shader.drawFromBuffers(6);
             }
         }

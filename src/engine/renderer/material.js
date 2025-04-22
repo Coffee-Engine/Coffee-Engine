@@ -64,6 +64,6 @@
             }
         };
 
-        coffeeEngine.renderer.defaultMaterial = new coffeeEngine.renderer.material("coffee:/basis", {});
+        coffeeEngine.renderer.defaultMaterial = new coffeeEngine.renderer.material("coffee:/basis", {}, 0);
     };
 })();

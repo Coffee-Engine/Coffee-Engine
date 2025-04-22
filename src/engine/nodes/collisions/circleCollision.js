@@ -26,6 +26,7 @@
                 //Simple debug test
                 shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 shader.uniforms.u_objectID.value = drawID;
+                coffeeEngine.renderer.daveshade.cullFace();
                 shader.drawFromBuffers(6);
             }
         }

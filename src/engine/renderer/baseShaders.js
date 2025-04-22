@@ -161,7 +161,7 @@
                     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
                     o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,o_color.w);
                     o_emission = vec4(EMISSION, o_color.w);
-                    o_position = vec4(v_position, pow(o_color.w,2.0));
+                    o_position = vec4(v_position, o_color.w);
                     o_normal = vec4(NORMAL, o_color.w);
 
                     o_matAtr *= o_color.w;
