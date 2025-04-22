@@ -14,8 +14,9 @@
         //* It stores material data. thats it;
         coffeeEngine.renderer.material = class {
 
-            constructor(shader, params) {
+            constructor(shader, params, cullMode) {
                 this.shader = {};
+                this.cullMode = 2;
                 //Internal shaders
                 if (shader.startsWith("coffee:/")) {
                     //Remove the coffee predesessor, and get the default shader
@@ -28,7 +29,7 @@
                 }
                 this.shaderPath = shader;
                 this.params = params;
-
+                this.cullMode = Number(cullMode);
             }
 
             use() {
@@ -36,6 +37,8 @@
                 if (this.shader) {
                     const filledKeys = Object.keys(this.params);
                     const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
+
+                    coffeeEngine.renderer.daveshade.cullFace(this.cullMode);
 
                     for (const key in this.params) {
                         if (typeof this.params[key][0] === "string") typeConversions[this.params[key][1]](this.params[key]);

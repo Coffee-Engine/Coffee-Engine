@@ -634,6 +634,10 @@ editor.EnglishLang = {
     "engine.nodeProperties.scene.sunMultiplier": "Fog Sun Affectiveness",
 
     "engine.fileProperties.Shader.shader" : "Shader",
+    "engine.fileProperties.Shader.cullMode": "Cull Side",
+    "engine.fileProperties.Shader.cullMode.front": "Front",
+    "engine.fileProperties.Shader.cullMode.back": "Back",
+    "engine.fileProperties.Shader.cullMode.neither": "Neither",
 
     "runtime.debugText": "Press shift + i to open the debug console"
 };

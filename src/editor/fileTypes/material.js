@@ -50,7 +50,14 @@
                     }).catch(() => {});
                 }
 
-                return [{ name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }].concat(uniforms);
+                return [
+                    { name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } },
+                    { name: "cullMode", translationKey: "engine.fileProperties.Shader.cullMode", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+                        { text: editor.language["engine.fileProperties.Shader.cullMode.front"], value: 1 },
+                        { text: editor.language["engine.fileProperties.Shader.cullMode.back"], value: 2 },
+                        { text: editor.language["engine.fileProperties.Shader.cullMode.neither"], value: 2 },
+                    ]}
+                ].concat(uniforms);
             },
             onPropertyChange: (value, data) => {
                 const { target, key } = data;
@@ -68,7 +75,13 @@
                         shader = { uniforms: {} };
                         refreshListing();
                     });
-                } else {
+                } 
+                else if (key == "cullMode") {
+                    const liveMaterial = coffeeEngine.renderer.materialStorage[path];
+                    if (liveMaterial) liveMaterial.cullMode = Number(value);
+                    return true;
+                }
+                else {
                     //Just set the parameters for everything else
                     target.params = target.params || {};
                     target.params[key] = [value, shader.uniforms[key].type];
