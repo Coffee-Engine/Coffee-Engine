@@ -31,6 +31,8 @@ window.DaveShade = {};
         FAILURE: 0,
     };
 
+    DaveShade.IndiceIdent = "__INDICIES__";
+
     DaveShade.REGEX = {
         ATTRIBUTE: /attribute.*;/g,
     };
@@ -555,8 +557,13 @@ window.DaveShade = {};
             //* The buffer setter! the Legacy ONE!
             shader.setBuffersRaw = (attributeJSON) => {
                 //? Loop through the keys
+                shader.usingIndices = false;
                 for (let key in attributeJSON) {
                     //* if it exists set the attribute
+                    if (key == DaveShade.IndiceIdent) {
+                        //Do nothing
+                        continue;
+                    }
                     if (shader.attributes[key]) {
                         shader.attributes[key].setRaw(attributeJSON[key]);
                     }
@@ -566,9 +573,19 @@ window.DaveShade = {};
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
                 //? Loop through the keys
+                shader.usingIndices = false;
                 for (let key in attributeJSON) {
                     //* if it exists set the attribute
-                    if (shader.attributes[key]) {
+                    if (key == DaveShade.IndiceIdent) {
+                        const newValue = attributeJSON[key];
+                        shader.usingIndices = true;
+
+                        //Make sure we don't already have the indice bound
+                        if (daveShadeInstance.oldAttributes[DaveShade.IndiceIdent] == newValue.bufferID) return;
+                        daveShadeInstance.oldAttributes[DaveShade.IndiceIdent] = newValue.bufferID;
+                        GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
+                    }
+                    else if (shader.attributes[key]) {
                         shader.attributes[key].set(attributeJSON[key]);
                     }
                 }
@@ -576,7 +593,12 @@ window.DaveShade = {};
 
             shader.drawFromBuffers = (triAmount, renderMode) => {
                 GL.useProgram(shader.program);
-                GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
+
+                //Draw using indicies if we are using indicies
+                if (!shader.usingIndices) GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
+                else GL.drawElements(renderMode || GL.TRIANGLES, triAmount, GL.UNSIGNED_INT, 0);
+
+                //Increment drawn tri count
                 daveShadeInstance.triCount += triAmount;
             };
 
@@ -725,8 +747,16 @@ window.DaveShade = {};
                 const element = attributeJSON[key];
                 const buffer = daveShadeInstance.GL.createBuffer();
                 buffer.bufferID = daveShadeInstance.bufferID;
-                GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
-                GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
+
+                //If we have indicies use indicies
+                if (key == DaveShade.IndiceIdent) {
+                    GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
+                    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, element, GL.STATIC_DRAW);
+                }
+                else {
+                    GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
+                    GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
+                }
 
                 returned[key] = buffer;
             }
