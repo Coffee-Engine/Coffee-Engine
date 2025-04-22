@@ -10,7 +10,25 @@
         register: (name, classObj) => {
             coffeeEngine.behaviorManager.storage[name] = classObj;
             coffeeEngine.behaviorManager.lastLoaded = classObj;
+
+            for (let id in coffeeEngine.behaviorManager.listeners) {
+                coffeeEngine.behaviorManager.listeners[id](name);
+            }
+
             return classObj;
+        },
+
+        listeners: [],
+
+        addBehaviorListener: (name, callback) => {
+            const callbackMain = (retName) => {
+                if (name == retName) {
+                    callback();
+    
+                    coffeeEngine.behaviorManager.listeners.splice(coffeeEngine.behaviorManager.listeners.indexOf(callbackMain), 1);
+                }
+            }
+            coffeeEngine.behaviorManager.listeners.push(callbackMain);
         },
 
         //Behavior loading
@@ -39,8 +57,10 @@
                             document.body.appendChild(script);
 
                             //Save it
-                            coffeeEngine.behaviorManager.loadedFiles[filePath] = { behavior: coffeeEngine.behaviorManager.lastLoaded, properties: properties};
-                            resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
+                            coffeeEngine.behaviorManager.addBehaviorListener(filePath, () => {
+                                coffeeEngine.behaviorManager.loadedFiles[filePath] = { behavior: coffeeEngine.behaviorManager.storage[filePath], properties: properties};
+                                resolve(coffeeEngine.behaviorManager.storage[filePath]);
+                            });
                         };
 
                         fileReader.readAsText(file);

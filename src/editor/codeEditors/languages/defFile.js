@@ -6,7 +6,7 @@ window.programmingLanguages = [
         useBlocklyEditor: false,
         fileExtension: "js",
         //We do a function so that our translations work
-        defaultBehavior: () => {
+        defaultBehavior: (inheritence, path) => {
             return `//${editor.language["editor.window.typed.commentMessage"]}
 class behavior {
     ready() {
@@ -29,7 +29,7 @@ class behavior {
     //}
 }
     
-coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
+coffeeEngine.behaviorManager.register("${path}",behavior);`;
         },
     },
     {
@@ -38,7 +38,7 @@ coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
         useBlocklyEditor: false,
         fileExtension: "cappu",
         //We do a function so that our translations work
-        defaultBehavior: () => {
+        defaultBehavior: (inheritence, path) => {
             return `//${editor.language["editor.window.typed.commentMessage"]}
 class behavior contains
     function ready()
@@ -61,7 +61,7 @@ class behavior contains
     //end
 end
     
-coffeeEngine.behaviorManager.register("myBehavior",behavior);`;
+coffeeEngine.behaviorManager.register("${path}",behavior);`;
         },
 
         //So we know what to do with our code
