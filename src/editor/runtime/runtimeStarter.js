@@ -5,8 +5,17 @@
         editor.runtime.compileWithDecaf(scene).then((htmlData) => {
             const blob = new Blob([htmlData], { type: "text/html" });
             const url = URL.createObjectURL(blob);
-            window.open(url, "coffeeEngineWindow", "popup");
-            URL.revokeObjectURL(url);
+            const opened = window.open(url, "coffeeEngineWindow", "popup");
+
+            //Make an interval to do a "dirty check" on the window close.
+            const interval = setInterval(() => {
+                if (opened.closed) {
+                    console.log("runtime terminated");
+                    clearInterval(interval);
+
+                    URL.revokeObjectURL(url);
+                }
+            }, 125);
         });
     };
 })();

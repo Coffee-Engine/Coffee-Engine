@@ -85,6 +85,8 @@
                         }
                     }
 
+                    console.log(this.#scriptObject);
+
                     if (this.#scriptObject.ready) {
                         this.#scriptObject.ready();
                     }

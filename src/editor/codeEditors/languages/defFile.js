@@ -29,7 +29,7 @@ class behavior {
     //}
 }
     
-coffeeEngine.behaviorManager.register("${path}",behavior);`;
+coffeeEngine.behaviorManager.register(FILE_PATH,behavior);`;
         },
     },
     {
@@ -61,7 +61,7 @@ class behavior contains
     //end
 end
     
-coffeeEngine.behaviorManager.register("${path}",behavior);`;
+coffeeEngine.behaviorManager.register(FILE_PATH,behavior);`;
         },
 
         //So we know what to do with our code
@@ -90,7 +90,6 @@ coffeeEngine.behaviorManager.register("${path}",behavior);`;
                         }
                         currentInheritence = coffeeEngine.nodeRegister[currentInheritence[1]];
                     }
-                    console.log(inheritenceTree);
                     return JSON.stringify(inheritenceTree);
                 })()}}`
             );
@@ -140,7 +139,7 @@ class behavior {
     }
 }
     
-coffeeEngine.behaviorManager.register("${path}",behavior);`;
+coffeeEngine.behaviorManager.register(FILE_PATH,behavior);`;
         },
     },
     {
