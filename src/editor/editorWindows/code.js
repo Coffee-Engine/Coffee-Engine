@@ -19,7 +19,7 @@
 
             //The two IDEs?
             this.workspace = {
-                codeMirror: mirrorManager.inject(this.codeMirrorArea),
+                codeMirror: mirrorManager.inject(this.codeMirrorArea, true),
                 sugarcube: sugarcube.inject(this.blocklyArea),
             };
 
