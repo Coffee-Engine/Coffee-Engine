@@ -64,7 +64,15 @@
                         function (e, cur) {return e.getTokenAt(cur);},
                         options);
     };
+
+    function cappuccinoHint(editor, options) {
+      return scriptHint(editor, cappuccinoKeywords,
+                        function (e, cur) {return e.getTokenAt(cur);},
+                        options);
+    };
+
     CodeMirror.registerHelper("hint", "js", javascriptHint);
+    CodeMirror.registerHelper("hint", "cappu", cappuccinoHint);
   
     var stringProps = ("charAt charCodeAt indexOf lastIndexOf substring substr slice trim trimLeft trimRight " +
                        "toUpperCase toLowerCase split concat match replace search").split(" ");
@@ -73,8 +81,9 @@
     var funcProps = "prototype apply call bind".split(" ");
     var javascriptKeywords = ("break case catch class const continue debugger default delete do else export extends false finally for function " +
                     "if in import instanceof new null return super switch this throw true try typeof var void while with yield").split(" ");
-    var coffeescriptKeywords = ("and break catch class continue delete do else extends false finally for " +
-                    "if in instanceof isnt new no not null of off on or return switch then throw true try typeof until void while with yes").split(" ");
+    var cappuccinoKeywords = ("break case catch class const continue debugger default delete do else export extends false finally for function " +
+      "if in import instanceof new null return super switch this throw true try typeof var void while with yield " +
+      "end do then elseif contains from constructed and or not repeat until").split(" ");
   
     function forAllProps(obj, callback) {
       if (!Object.getOwnPropertyNames || !Object.getPrototypeOf) {
