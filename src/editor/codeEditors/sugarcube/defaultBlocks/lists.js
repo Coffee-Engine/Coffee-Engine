@@ -234,7 +234,7 @@
             for (let variable in globals) {
                 if (!Array.isArray(globals[variable])) continue;
 
-                if (!advanced) returned.push(variable);
+                if (!advanced) returned.push({ text: variable, value: "​" + variable });
                 else returned.push({ name: variable, global: true, type: "list", color: "#FF661A" });
             }
 
@@ -392,6 +392,7 @@
         }
 
         getList_compile(block, generator) {
+            if (block.editedState.varData.global) `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 

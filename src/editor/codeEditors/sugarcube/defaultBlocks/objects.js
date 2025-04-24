@@ -157,9 +157,9 @@
             const returned = [];
             
             for (let variable in globals) {
-                if ((typeof variable != "object") || Array.isArray(globals[variable])) continue;
+                if ((typeof globals[variable] != "object") || Array.isArray(globals[variable])) continue;
     
-                if (!advanced) returned.push(variable);
+                if (!advanced) returned.push({ text: variable, value: "​" + variable });
                 else returned.push({ name: variable, global: true, type: "object", color: "#8672FF" });
             }
 
@@ -185,7 +185,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.variables.getAll();
+            const variables = this.getTablesAndGlobalTables(true);
             const returned = [];
             let varExists = false;
 
@@ -295,6 +295,7 @@
         }
 
         getTable(block, generator, manager) {
+            if (block.editedState.varData.global) `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 

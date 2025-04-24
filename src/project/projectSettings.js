@@ -5,7 +5,14 @@
             {type: "float", target: coffeeEngine.runtime, key: "targetFramerate", defaultValue: 60},
             {type: "boolean", target: coffeeEngine.runtime, key: "VSync", defaultValue: false},
             {type: "broadcasts", target: coffeeEngine, key: "broadcasts", defaultValue: {}},
-            {type: "globalVariables", target: window, key: "globals", defaultValue: {}},
+            {type: "globalVariables", target: window, key: "globals", defaultValue: {}, onchange: () => {
+                if (coffeeEngine.isEditor) {
+                    //Refresh extension categories
+                    sugarcube.extensionManager.updateExtensionBlocks("variables");
+                    sugarcube.extensionManager.updateExtensionBlocks("lists");
+                    sugarcube.extensionManager.updateExtensionBlocks("tables");
+                }
+            }},
         ],
         collision: [
             {type: "collisionGroups", target: coffeeEngine, key: "collisionGroup", defaultValue: { default: { default: true } }},

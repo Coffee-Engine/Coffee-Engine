@@ -117,7 +117,8 @@
             for (let variable in globals) {
                 if (typeof globals[variable] != "string") continue;
 
-                if (!advanced) returned.push(variable);
+                //Use a 0 width character to differentiate
+                if (!advanced) returned.push({ text: variable, value: "​" + variable });
                 else returned.push({ name: variable, global: true, type: "variable", color: "#FF8C1A" });
             }
 
@@ -130,6 +131,16 @@
             });
 
             return returned
+        }
+
+        //Simple true false
+        isGlobal(variable, callback) {
+            if (variable.startsWith("​")) {
+                const varName = variable.replace("​", "");
+                if (callback) callback(varName, globals[varName]);
+                return true;
+            }
+            return false;
         }
 
         openVariableMenu() {
@@ -239,19 +250,23 @@
         }
 
         getVariable(block, generator, manager) {
+            if (block.editedState.varData.global) `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         setVariable({ variable, val }, { self }) {
             //We just set da variable
+            if (this.isGlobal(variable, (globalName) => { globals[globalName] = val })) return;
             self[variable] = val;
         }
 
         changeVariable({ variable, val }, { self }) {
+            if (this.isGlobal(variable, (globalName, globalVal) => { globals[globalName] = sugarcube.cast.toNumber(globalVal) + val })) return;
             self[variable] = sugarcube.cast.toNumber(self[variable]) + sugarcube.cast.toNumber(val);
         }
 
         multiplyVariable({ variable, val }, { self }) {
+            if (this.isGlobal(variable, (globalName, globalVal) => { globals[globalName] = sugarcube.cast.toNumber(globalVal) * val })) return;
             self[variable] = sugarcube.cast.toNumber(self[variable]) * sugarcube.cast.toNumber(val);
         }
 
