@@ -52,15 +52,15 @@
                             //get CUGI properties
                             const properties = coffeeEngine.behaviorManager.parseProperties(fileReader.result.match(coffeeEngine.behaviorManager.CUGIPropertyRegex) || []);
 
-                            //Set the inner text and add the element.
-                            script.innerHTML = `(function(FILE_PATH) {\n${fileReader.result.replaceAll(coffeeEngine.behaviorManager.CUGIPropertyRegex, "")}\n})("${filePath.replaceAll('"', "\\\"")}");`;
-                            document.body.appendChild(script);
-
                             //Save it
                             coffeeEngine.behaviorManager.addBehaviorListener(filePath, () => {
                                 coffeeEngine.behaviorManager.loadedFiles[filePath] = { behavior: coffeeEngine.behaviorManager.storage[filePath], properties: properties};
                                 resolve(coffeeEngine.behaviorManager.loadedFiles[filePath]);
                             });
+
+                            //Set the inner text and add the element.
+                            script.innerHTML = `(function(FILE_PATH) {\n${fileReader.result.replaceAll(coffeeEngine.behaviorManager.CUGIPropertyRegex, "")}\n})("${filePath.replaceAll('"', "\\\"")}");`;
+                            document.body.appendChild(script);
                         };
 
                         fileReader.readAsText(file);
