@@ -78,6 +78,8 @@
             removeEl.onclick = () => {
                 data.target.splice(data.key, 1);
                 refreshData();
+
+                if (data.onchange) data.onchange();
             }
 
             const textEl = document.createElement("p");
@@ -105,16 +107,23 @@
         arrayContainer.className = "CUGI-arrayContainer";
 
         const elementAdder = document.createElement("dropdown-menu");
-        elementAdder.innerHTML = `
-            ${editor.language["engine.CUGI.newElement"]}
-            <dropdown-item value="float">${editor.language["engine.CUGI.number"]}</dropdown-item>
-            <dropdown-item value="vec2">${editor.language["engine.CUGI.vec2"]}</dropdown-item>
-            <dropdown-item value="vec3">${editor.language["engine.CUGI.vec3"]}</dropdown-item>
-            <dropdown-item value="vec4">${editor.language["engine.CUGI.vec4"]}</dropdown-item>
-            <dropdown-item value="string">${editor.language["engine.CUGI.string"]}</dropdown-item>
-            <dropdown-item value="array">${editor.language["engine.CUGI.array"]}</dropdown-item>
-            <dropdown-item value="object">${editor.language["engine.CUGI.object"]}</dropdown-item>
-        `;
+        //Fancy vs not fancy
+        if (data.notFancy) elementAdder.innerHTML = `
+                ${editor.language["engine.projectSettings.broadcasts.add"]}
+                <dropdown-item value="string">${editor.language["engine.CUGI.value"]}</dropdown-item>
+                <dropdown-item value="array">${editor.language["engine.CUGI.array"]}</dropdown-item>
+                <dropdown-item value="object">${editor.language["engine.CUGI.object"]}</dropdown-item>
+            `;
+        else elementAdder.innerHTML = `
+                ${editor.language["engine.CUGI.newElement"]}
+                <dropdown-item value="float">${editor.language["engine.CUGI.number"]}</dropdown-item>
+                <dropdown-item value="vec2">${editor.language["engine.CUGI.vec2"]}</dropdown-item>
+                <dropdown-item value="vec3">${editor.language["engine.CUGI.vec3"]}</dropdown-item>
+                <dropdown-item value="vec4">${editor.language["engine.CUGI.vec4"]}</dropdown-item>
+                <dropdown-item value="string">${editor.language["engine.CUGI.string"]}</dropdown-item>
+                <dropdown-item value="array">${editor.language["engine.CUGI.array"]}</dropdown-item>
+                <dropdown-item value="object">${editor.language["engine.CUGI.object"]}</dropdown-item>
+            `;
 
         //Refresh data
         const refreshData = () => {
@@ -146,6 +155,8 @@
                 const input = CUGI.types[value](newInputData);
                 const itemText = ID + Number(editor.settings.values.Editor.startIndex);
                 arrayContainer.insertBefore(createArrayElementContainer(itemText, input, refreshData, newInputData), elementAdder);
+
+                if (data.onchange) data.onchange();
             }
         }
 

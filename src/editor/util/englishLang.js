@@ -135,6 +135,10 @@ editor.EnglishLang = {
     "engine.projectSettings.broadcasts.add": "Add",
     "engine.projectSettings.broadcasts.placeholder": "Broadcast",
 
+    "engine.projectSettings.globals": "Global Variables",
+    "engine.projectSettings.globals.add": "Add",
+    "engine.projectSettings.globals.placeholder": "Global",
+
     "engine.projectSettings.collision": "Collision",
     "engine.projectSettings.collisionGroups": "Collision Groups",
     "engine.projectSettings.collisionGroups.add": "Add",
@@ -562,13 +566,14 @@ editor.EnglishLang = {
 
     "engine.CUGI.newElement": "New Element",
     "engine.CUGI.key": "Key",
+    "engine.CUGI.value": "Value",
     "engine.CUGI.number": "Number",
     "engine.CUGI.vec2": "Vector 2",
     "engine.CUGI.vec3": "Vector 3",
     "engine.CUGI.vec4": "Vector 4",
-    "engine.CUGI.string": "string",
-    "engine.CUGI.array": "array",
-    "engine.CUGI.object": "object",
+    "engine.CUGI.string": "String",
+    "engine.CUGI.array": "Array",
+    "engine.CUGI.object": "Table",
 
     "engine.nodeNames.scene": "Scene",
     "engine.nodeNames.Node": "Node",

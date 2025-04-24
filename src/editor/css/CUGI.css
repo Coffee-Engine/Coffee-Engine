@@ -249,3 +249,74 @@
     margin: 0px;
     padding: 0.5em;
 }
+
+.CUGI-GlobalContainer {
+    flex-direction: column;
+
+    background-color: var(--background-1);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+    text-align: center;
+    width: 100%;
+}
+
+.CUGI-Global {
+    display: grid;
+    grid-template-columns: 41px auto 1fr;
+    background-color: var(--background-2);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+}
+
+.CUGI-GlobalRemove {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    height: 41px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.CUGI-GlobalName {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.CUGI-GlobalCreation-Container {
+    display: grid;
+    grid-template-columns: auto 64px;
+}
+
+.CUGI-ValueDiv {
+    background-color: var(--background-3);
+    display: flex;
+}
+
+.CUGI-ValueDiv > input {
+    width: 100%;
+}
+
+.CUGI-ValueDiv > div {
+    width: 100%;
+}
+
+.CUGI-AddBroadcast {
+    font-weight: normal;
+    font-size: x-large;
+    font-family: monospace;
+}
+
+.CUGI-AddGlobal {
+    font-weight: normal;
+    font-size: x-large;
+    font-family: monospace;
+}
+
+.CUGI-CollisionGroupAdd {
+    font-weight: normal;
+    font-size: x-large;
+    font-family: monospace;
+}
