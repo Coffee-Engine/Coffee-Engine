@@ -82,5 +82,8 @@ window.coffeeEngine = {
         return "Node";
     },
 
+    //Our timer
     timer: 0,
 };
+
+window.globals = {};
