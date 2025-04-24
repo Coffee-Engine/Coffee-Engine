@@ -94,7 +94,7 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "tableMenu",
+                                menu: "localTableMenu",
                             },
                             value: {
                                 type: sugarcube.ArgumentType.OBJECT,
@@ -109,14 +109,17 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "tableMenu",
+                                menu: "localTableMenu",
                             },
                         },
                     },
                 ],
                 menus: {
-                    tableMenu: {
+                    localTableMenu: {
                         items: "getTables",
+                    },
+                    tableMenu: {
+                        items: "getTablesAndGlobalTables",
                     },
                 },
                 mutators: {
@@ -138,6 +141,28 @@
         getTables(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "object") return;
+
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
+            });
+
+            return returned;
+        }
+
+        getTablesAndGlobalTables(advanced) {
+            const variables = sugarcube.variables.getAll();
+            const returned = [];
+            
+            for (let variable in globals) {
+                if ((typeof variable != "object") || Array.isArray(globals[variable])) continue;
+    
+                if (!advanced) returned.push(variable);
+                else returned.push({ name: variable, global: true, type: "object", color: "#8672FF" });
+            }
+
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "object") return;
@@ -177,6 +202,7 @@
                             color: variable.color,
                             name: variable.name,
                             public: variable.public,
+                            global: variable.global
                         },
                     },
                 });
@@ -233,7 +259,7 @@
         variable_Deserialize(state, block) {
             if (state.varData) {
                 //If public add icon
-                if (state.varData.public) {
+                if (state.varData.public || state.varData.global) {
                     //create Text
                     block.inputFromJson_({
                         type: "input_dummy",
@@ -242,7 +268,7 @@
                     block.inputList[block.inputList.length - 1].appendField(
                         block.fieldFromJson_({
                             type: "field_image",
-                            src: sugarcube.earthIcon,
+                            src: state.varData.global ? sugarcube.earthIcon : sugarcube.publicIcon,
                             width: 24,
                             height: 24,
                         })

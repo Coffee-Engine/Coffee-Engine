@@ -169,7 +169,7 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "listMenu",
+                                menu: "localListMenu",
                             },
                             value: {
                                 type: sugarcube.ArgumentType.ARRAY,
@@ -184,14 +184,17 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "listMenu",
+                                menu: "localListMenu",
                             },
                         },
                     },
                 ],
                 menus: {
-                    listMenu: {
+                    localListMenu: {
                         items: "getLists",
+                    },
+                    listMenu: {
+                        items: "getListsAndGlobalLists",
                     },
                 },
                 mutators: {
@@ -224,6 +227,28 @@
             return returned;
         }
 
+        getListsAndGlobalLists(advanced) {
+            const variables = sugarcube.variables.getAll();
+            const returned = [];
+            
+            for (let variable in globals) {
+                if (!Array.isArray(globals[variable])) continue;
+
+                if (!advanced) returned.push(variable);
+                else returned.push({ name: variable, global: true, type: "list", color: "#FF661A" });
+            }
+
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "list") return;
+
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
+            });
+
+            return returned;
+        }
+
         openVariableMenu() {
             const createdWindow = new editor.windows.variable(400, 300);
             createdWindow.__moveToTop();
@@ -241,7 +266,7 @@
         variable_Deserialize(state, block) {
             if (state.varData) {
                 //If public add icon
-                if (state.varData.public) {
+                if (state.varData.public || state.varData.global) {
                     //create Text
                     block.inputFromJson_({
                         type: "input_dummy",
@@ -250,7 +275,7 @@
                     block.inputList[block.inputList.length - 1].appendField(
                         block.fieldFromJson_({
                             type: "field_image",
-                            src: sugarcube.earthIcon,
+                            src: state.varData.global ? sugarcube.earthIcon : sugarcube.publicIcon,
                             width: 24,
                             height: 24,
                         })
@@ -277,7 +302,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.variables.getAll();
+            const variables = this.getListsAndGlobalLists(true);
             const returned = [];
             let listExists = false;
 
@@ -295,6 +320,7 @@
                             color: variable.color,
                             name: variable.name,
                             public: variable.public,
+                            global: variable.global
                         },
                     },
                 });
