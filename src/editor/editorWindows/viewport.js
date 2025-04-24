@@ -155,19 +155,34 @@
                                     this.canvas.requestPointerLock();
                                     this.draggingNode = true;
                                 }
-        
-                                if (hit instanceof coffeeEngine.getNode("Node2D")) {
-                                    hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
-                                    hit.position.y -= event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05;
+                                //Make sure we don't fling it immediately
+                                else if (hit instanceof coffeeEngine.getNode("Node2D")) {
+                                    const moveArr = [
+                                        event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05,
+                                        event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05
+                                    ];
+
+                                    if (!isNaN(moveArr[0])) hit.position.x += moveArr[0];
+                                    if (!isNaN(moveArr[1])) hit.position.y -= moveArr[1];
                                 }
                                 else if (hit instanceof coffeeEngine.getNode("Node3D")) {
-                                    hit.position.x += event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05;
-                                    hit.position.y += event.movementX * coffeeEngine.renderer.cameraData.transform[1] * 0.05;
-                                    hit.position.z += event.movementX * coffeeEngine.renderer.cameraData.transform[2] * 0.05;
+                                    const moveArr = [
+                                        event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05,
+                                        event.movementX * coffeeEngine.renderer.cameraData.transform[1] * 0.05,
+                                        event.movementX * coffeeEngine.renderer.cameraData.transform[2] * 0.05,
 
-                                    hit.position.x += -event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05;
-                                    hit.position.y += -event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05;
-                                    hit.position.z += -event.movementY * coffeeEngine.renderer.cameraData.transform[6] * 0.05;
+                                        -event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05,
+                                        -event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05,
+                                        -event.movementY * coffeeEngine.renderer.cameraData.transform[6] * 0.05,
+                                    ];
+
+                                    if (!isNaN(moveArr[0])) hit.position.x += moveArr[0];
+                                    if (!isNaN(moveArr[1])) hit.position.y += moveArr[1];
+                                    if (!isNaN(moveArr[2])) hit.position.z += moveArr[2];
+
+                                    if (!isNaN(moveArr[3])) hit.position.x += moveArr[3];
+                                    if (!isNaN(moveArr[4])) hit.position.y += moveArr[4];
+                                    if (!isNaN(moveArr[5])) hit.position.z += moveArr[5];
                                 }
                             }
 
