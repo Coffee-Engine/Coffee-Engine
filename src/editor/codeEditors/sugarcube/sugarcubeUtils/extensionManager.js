@@ -1069,7 +1069,7 @@
                 //fields
                 if (instance.__info.fields) for (let field in instance.__info.fields) {
                     const fieldData = instance.__info.fields[field];
-                    let fieldID = `${extensionID}_${menu}`;
+                    let fieldID = `${extensionID}_${field}`;
 
                     if (fieldData.acceptReporters) delete Blockly.Blocks[`__sugarcube_field_${fieldID}`]
                     Blockly.fieldRegistry.unregister(fieldID);
