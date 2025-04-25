@@ -207,6 +207,7 @@
                     removeList: {
                         text: editor.language["sugarcube.lists.contextMenu.removeList"],
                         opcode: "removeList",
+                        eligibility: "notGlobal",
                         weight: 4,
                     },
                 },
@@ -247,6 +248,20 @@
             });
 
             return returned;
+        }
+
+        //Simple true false
+        isGlobal(variable, callback) {
+            if (variable.startsWith("​")) {
+                const varName = variable.replace("​", "");
+                if (callback) callback(varName, globals[varName]);
+                return true;
+            }
+            return false;
+        }
+
+        notGlobal(variable) {
+            return !variable.editedState.varData.global;
         }
 
         openVariableMenu() {
@@ -397,77 +412,112 @@
         }
 
         addItem({ list, item }, { self }) {
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+
             //MAKE SURE its a list
-            if (!Array.isArray(self[list])) return;
-            self[list].push(item);
+            if (!Array.isArray(targetList)) return;
+            targetList.push(item);
         }
 
         removeItem({ list, item }, { self }) {
-            //MAKE SURE its a list
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
 
+            //MAKE SURE its a list
+            if (!Array.isArray(targetList)) return;
             item = Math.floor(item - 1);
 
             //Prevent OOB indeing
-            if (item < 0 || item >= self[list].length) return;
-            self[list].splice(item, 1);
+            if (item < 0 || item >= targetList.length) return;
+            targetList.splice(item, 1);
         }
 
         clearList({ list }, { self }) {
-            if (!Array.isArray(self[list])) return;
-            self[list] = [];
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+
+            if (!Array.isArray(targetList)) return;
+            targetList = [];
         }
 
         insertItem({ list, item, value }, { self }) {
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            
+            if (!Array.isArray(targetList)) return;
             item = Math.floor(item - 1);
             //OOB indexing works with array.splice how nice
-            self[list].splice(item, 0, value);
+            targetList.splice(item, 0, value);
         }
 
         replaceItem({ list, item, value }, { self }) {
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            
+            if (!Array.isArray(targetList)) return;
 
             item = Math.floor(item - 1);
 
             //Prevent OOB indeing
-            if (item < 0 || item >= self[list].length) return;
-            self[list][item] = value;
+            if (item < 0 || item >= targetList.length) return;
+            targetList[item] = value;
         }
 
         getItem({ list, item }, { self }) {
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            
+            if (!Array.isArray(targetList)) return;
 
             item = Math.floor(item - 1);
 
             //Prevent OOB indeing
-            if (item < 0 || item >= self[list].length) return;
-            return self[list][item];
+            if (item < 0 || item >= targetList.length) return;
+            return targetList[item];
         }
 
         getItemNumber({ list, value }, { self }) {
-            if (!Array.isArray(self[list])) return 0;
-            return self[list].indexOf(value) + 1;
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            
+            if (!Array.isArray(targetList)) return 0;
+            return targetList.indexOf(value) + 1;
         }
 
         length({ list }, { self }) {
-            if (!Array.isArray(self[list])) return 0;
-            return self[list].length;
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            
+            if (!Array.isArray(targetList)) return 0;
+            return targetList.length;
         }
 
         getItemContainment({ list, value }, { self }) {
-            if (!Array.isArray(self[list])) return false;
-            return self[list].includes(value);
+            //Make sure we target it right
+            let targetList = self[list];
+            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            
+            if (!Array.isArray(targetList)) return false;
+            return targetList.includes(value);
         }
 
         substitute({ objectLike, value }, { self }) {
-            if (typeof self[objectLike] != "object" || Array.isArray(self[objectLike])) return;
+            if (!Array.isArray(self[objectLike])) return;
 
             return (self[objectLike] = value);
         }
 
         originate({ objectLike }, { self }) {
-            if (typeof self[objectLike] != "object" || Array.isArray(self[objectLike])) return;
+            if (!Array.isArray(self[objectLike])) return;
             
             return (self[objectLike] = [...self[objectLike]]);
         }

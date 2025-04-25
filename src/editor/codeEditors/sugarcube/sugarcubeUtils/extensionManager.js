@@ -804,7 +804,7 @@
                     contextMenu.preconditionFn = (scope) => {
                         //This part sucks I have to write a whole storage thingy. UGhhhhhh
                         if (!menuDat.global && !sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
-                        if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope.block, scope);
+                        if (extensionClass[menuDat.eligibility]) return (extensionClass[menuDat.eligibility](scope.block, scope)) ? "enabled" : "disabled";
                         return "enabled";
                     };
                 }

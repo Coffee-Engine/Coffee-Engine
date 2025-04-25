@@ -90,6 +90,7 @@
                     removeVariable: {
                         text: editor.language["sugarcube.variables.contextMenu.removeVariable"],
                         opcode: "removeVariable",
+                        eligibility: "notGlobal",
                         weight: 4,
                     },
                 },
@@ -141,6 +142,10 @@
                 return true;
             }
             return false;
+        }
+
+        notGlobal(variable) {
+            return !variable.editedState.varData.global;
         }
 
         openVariableMenu() {

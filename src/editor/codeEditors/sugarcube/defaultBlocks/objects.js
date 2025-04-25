@@ -132,6 +132,7 @@
                     removeTable: {
                         text: editor.language["sugarcube.tables.contextMenu.removeTable"],
                         opcode: "removeTable",
+                        eligibility: "notGlobal",
                         weight: 4,
                     },
                 },
@@ -172,6 +173,20 @@
             });
 
             return returned;
+        }
+
+        //Simple true false
+        isGlobal(variable, callback) {
+            if (variable.startsWith("​")) {
+                const varName = variable.replace("​", "");
+                if (callback) callback(varName, globals[varName]);
+                return true;
+            }
+            return false;
+        }
+
+        notGlobal(variable) {
+            return !variable.editedState.varData.global;
         }
 
         openVariableMenu() {
@@ -301,23 +316,39 @@
 
         //Simplicity
         setKey({ table, key, val }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            self[table][key] = val;
+            //Make sure we target it right
+            let targetTable = self[table];
+            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            targetTable[key] = val;
         }
 
         getKey({ table, key }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            return self[table][key];
+            //Make sure we target it right
+            let targetTable = self[table];
+            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            return targetTable[key];
         }
 
         getKeys({ table }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            return Object.keys(self[table]);
+            //Make sure we target it right
+            let targetTable = self[table];
+            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            return Object.keys(targetTable);
         }
 
         getValues({ table }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            return Object.values(self[table]);
+            //Make sure we target it right
+            let targetTable = self[table];
+            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            return Object.values(targetTable);
         }
 
         substitute({ objectLike, value }, { self }) {
