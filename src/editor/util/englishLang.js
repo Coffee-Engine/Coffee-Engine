@@ -598,26 +598,38 @@ editor.EnglishLang = {
     "engine.nodeNames.Sprite3D": "Sprite 3D",
 
     "engine.nodePropertyLabels.NothingHere": "Nothing here!",
+    
     "engine.nodeProperties.Node.name": "Name",
     "engine.nodeProperties.Node.script": "Script",
     "engine.nodeProperties.Node.modulatedColor": "Modulated Color",
     "engine.nodeProperties.Node.position": "Position",
     "engine.nodeProperties.Node.rotation": "Rotation",
     "engine.nodeProperties.Node.scale": "Scale",
+    
     "engine.nodeProperties.Node2D.layer": "Layer",
+    
     "engine.nodeProperties.Sprite.spritePath": "Sprite Path",
     "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
+    "engine.nodeProperties.Sprite.filtering": "Filtering",
+    "engine.nodeProperties.Sprite.filtering.nearest": "Nearest",
+    "engine.nodeProperties.Sprite.filtering.linear": "Linear",
+
     "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
+    
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
     "engine.nodeProperties.MeshDisplay.material": "Material [number]",
+    
     "engine.nodeProperties.Camera.fov": "FOV",
     "engine.nodeProperties.Camera.nearPlane": "Near Plane",
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
     "engine.nodeProperties.Camera.active": "Active",
+    
     "engine.nodeProperties.Light.radius": "Radius",
     "engine.nodeProperties.Light.color": "Color",
+    
     "engine.nodeProperties.SpotLight.falloff": "Falloff",
+    
     "engine.nodeProperties.Collision.group": "Collision Group",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
