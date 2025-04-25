@@ -47,52 +47,61 @@
                     coffeeEngine.renderer.fileToShader(material.shader).then((shaderOBJ) => {
                         shader = shaderOBJ;
                         refreshListing();
-                    }).catch(() => {});
+                    }).catch(() => {
+                        shader = { uniforms: {} };
+                        refreshListing();
+                    });
                 }
 
                 return [
                     { name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } },
                     { name: "cullMode", translationKey: "engine.fileProperties.Shader.cullMode", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
-                        { text: editor.language["engine.fileProperties.Shader.cullMode.front"], value: 1 },
-                        { text: editor.language["engine.fileProperties.Shader.cullMode.back"], value: 2 },
                         { text: editor.language["engine.fileProperties.Shader.cullMode.neither"], value: 2 },
-                    ]}
+                        { text: editor.language["engine.fileProperties.Shader.cullMode.front"], value: 1 },
+                        { text: editor.language["engine.fileProperties.Shader.cullMode.back"], value: 0 },
+                    ]},
+                    { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+                        { text: editor.language["engine.nodeProperties.Sprite.filtering.nearest"], value: "NEAREST"},
+                        { text: editor.language["engine.nodeProperties.Sprite.filtering.linear"], value: "LINEAR"},
+                    ]},
                 ].concat(uniforms);
             },
             onPropertyChange: (value, data) => {
                 const { target, key } = data;
-                if (key == "shader") {
-                    //If its the shader that changes change the shader
-                    coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
-                        shader = shaderOBJ;
+                const liveMaterial = coffeeEngine.renderer.materialStorage[path];
+                switch (key) {
+                    case "shader":
+                        //If its the shader that changes change the shader
+                        coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
+                            shader = shaderOBJ;
+                            if (liveMaterial) liveMaterial.shader = shaderOBJ;
+                            refreshListing();
+                        })
+                        //Make empty if no shader
+                        .catch(() => {
+                            shader = { uniforms: {} };
+                            refreshListing();
+                        });
+                        break;
+
+                    case "cullMode":
+                        if (liveMaterial) liveMaterial.cullMode = Number(value);
+                        break;
+
+                    case "filtering":
+                        if (liveMaterial) liveMaterial.filtering = value || "NEAREST";
+                        break;
+                
+                    default:
+                        //Just set the parameters for everything else
+                        target.params = target.params || {};
+                        target.params[key] = [value, shader.uniforms[key].type];
                         
-                        const liveMaterial = coffeeEngine.renderer.materialStorage[path];
-                        if (liveMaterial) liveMaterial.shader = shaderOBJ;
-                        refreshListing();
-                    })
-                    //Make empty if no shader
-                    .catch(() => {
-                        shader = { uniforms: {} };
-                        refreshListing();
-                    });
-                } 
-                else if (key == "cullMode") {
-                    const liveMaterial = coffeeEngine.renderer.materialStorage[path];
-                    if (liveMaterial) liveMaterial.cullMode = Number(value);
-                    return true;
-                }
-                else {
-                    //Just set the parameters for everything else
-                    target.params = target.params || {};
-                    target.params[key] = [value, shader.uniforms[key].type];
-
-                    const liveMaterial = coffeeEngine.renderer.materialStorage[path];
-                    if (liveMaterial) {
-                        if (!liveMaterial.params[key]) [value, shader.uniforms[key].type];
-                        else liveMaterial.params[key][0] = value;
-                    }
-
-                    return true;
+                        if (liveMaterial) {
+                            if (!liveMaterial.params[key]) liveMaterial.params[key] = [value, shader.uniforms[key].type];
+                            else liveMaterial.params[key][0] = value;
+                        }
+                        break;
                 }
             },
         };

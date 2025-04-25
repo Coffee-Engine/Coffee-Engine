@@ -4,8 +4,16 @@
             const path = param[0];
             param[0] = null;
             coffeeEngine.renderer.fileToTexture(path).then((texture) => {
-                param[0] = texture.texture;
+                param[0] = texture;
             });
+        }
+    }
+
+    const specialHandling = {
+        35678: (param, key, shader, material) => {
+            //Set the texture filtering.
+            if (param[0].setFiltering) param[0].setFiltering(DaveShade.filtering[material.filtering || "NEAREST"]);
+            shader.uniforms[key].value = param[0].texture;
         }
     }
 
@@ -14,7 +22,11 @@
         //* It stores material data. thats it;
         coffeeEngine.renderer.material = class {
 
-            constructor(shader, params, cullMode) {
+            constructor({shader, params, cullMode, filtering}) {
+                shader = shader || "coffee:/basis"
+                params = params || {};
+                cullMode = (cullMode !== undefined) ? cullMode : 2;
+
                 this.shader = {};
                 this.cullMode = 2;
                 //Internal shaders
@@ -30,6 +42,7 @@
                 this.shaderPath = shader;
                 this.params = params;
                 this.cullMode = Number(cullMode);
+                this.filtering = filtering || "NEAREST";
             }
 
             use() {
@@ -41,8 +54,14 @@
                     coffeeEngine.renderer.daveshade.cullFace(this.cullMode);
 
                     for (const key in this.params) {
-                        if (typeof this.params[key][0] === "string") typeConversions[this.params[key][1]](this.params[key]);
-                        else if (this.shader.uniforms[key] && this.params[key][0]) this.shader.uniforms[key].value = this.params[key][0];
+                        const param = this.params[key];
+                        if (typeof param[0] === "string") typeConversions[param[1]](param);
+
+                        //The actual setter
+                        else if (this.shader.uniforms[key] && param[0]) {
+                            if (specialHandling[param[1]]) specialHandling[param[1]](param, key, this.shader, this);
+                            else this.shader.uniforms[key].value = param[0];
+                        }
                     }
 
                     //Set non filled keys

@@ -321,7 +321,8 @@
                     });
                 }
                 
-                input.value = target[key];
+                //Yeah
+                input.value = target[key] || input.children[0].value;
 
                 input.onchange = CUGI.macros.onchange(data, input);
 

@@ -154,7 +154,7 @@
                     fileReader.onload = () => {
                         const materialData = JSON.parse(fileReader.result) || { shader: "coffee:/basis.glsl", params: {} };
 
-                        coffeeEngine.renderer.materialStorage[src] = new coffeeEngine.renderer.material(materialData.shader || "coffee:/basis", materialData.params || {}, (materialData.cullMode !== undefined) ? materialData.cullMode : 2);
+                        coffeeEngine.renderer.materialStorage[src] = new coffeeEngine.renderer.material(materialData || {});
 
                         resolve(coffeeEngine.renderer.materialStorage[src]);
                     };
