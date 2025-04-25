@@ -2,11 +2,12 @@
     class billboard extends coffeeEngine.getNode("Node3D") {
         //Sprite stuff
         #spritePath = "";
+        filtering = "NEAREST"
 
         set spritePath(value) {
             this.#spritePath = value;
             coffeeEngine.renderer.fileToTexture(value).then((texture) => {
-                this.texture = texture.texture;
+                this.texture = texture;
                 this.textureWidth = texture.width;
                 this.textureHeight = texture.height;
                 this.updateMatrix();
@@ -86,7 +87,8 @@
                         .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
                         .webGLValue();
 
-                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture;
+                this.texture.setFiltering(DaveShade.filtering[this.filtering]);
+                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture.texture;
                 if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
                 if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
 

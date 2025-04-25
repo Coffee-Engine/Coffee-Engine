@@ -114,7 +114,13 @@ window.DaveShade = {};
 
     DaveShade.side = {
         FRONT:0,
-        BACK:1
+        BACK:1,
+        NEITHER: 2,
+    }
+
+    DaveShade.filtering = {
+        LINEAR: 9729,
+        NEAREST: 9728,
     }
 
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
@@ -657,9 +663,29 @@ window.DaveShade = {};
                 height = data.height;
             } else {
                 daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, width, height, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
+
+                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_S, daveShadeInstance.GL.CLAMP_TO_EDGE);
+                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_T, daveShadeInstance.GL.CLAMP_TO_EDGE);
+                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_MIN_FILTER, daveShadeInstance.GL.LINEAR);
             }
 
-            return { texture: texture, width: width, height: height };
+            //Create our texture object
+            const textureOBJ = { 
+                texture: texture, width: width, height: height,
+                currentFilter: GL.LINEAR,
+                setFiltering: (newFilter, isMin) => {
+                    isMin = isMin || false;
+
+                    if (textureOBJ.currentFilter == newFilter) return;
+
+                    daveShadeInstance.GL.bindTexture(daveShadeInstance.GL.TEXTURE_2D, texture);
+                    daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_MAG_FILTER, newFilter);
+
+                    textureOBJ.currentFilter = newFilter;
+                }
+            };
+
+            return textureOBJ;
         };
 
         //Framebuffer stuff
