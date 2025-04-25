@@ -407,14 +407,14 @@
         }
 
         getList_compile(block, generator) {
-            if (block.editedState.varData.global) `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
+            if (block.editedState.varData.global) return `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         addItem({ list, item }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
 
             //MAKE SURE its a list
             if (!Array.isArray(targetList)) return;
@@ -424,7 +424,7 @@
         removeItem({ list, item }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
 
             //MAKE SURE its a list
             if (!Array.isArray(targetList)) return;
@@ -438,7 +438,7 @@
         clearList({ list }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+           this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
 
             if (!Array.isArray(targetList)) return;
             targetList = [];
@@ -447,7 +447,7 @@
         insertItem({ list, item, value }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
             
             if (!Array.isArray(targetList)) return;
             item = Math.floor(item - 1);
@@ -458,7 +458,7 @@
         replaceItem({ list, item, value }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
             
             if (!Array.isArray(targetList)) return;
 
@@ -472,7 +472,7 @@
         getItem({ list, item }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
             
             if (!Array.isArray(targetList)) return;
 
@@ -486,7 +486,7 @@
         getItemNumber({ list, value }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
             
             if (!Array.isArray(targetList)) return 0;
             return targetList.indexOf(value) + 1;
@@ -495,7 +495,7 @@
         length({ list }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
             
             if (!Array.isArray(targetList)) return 0;
             return targetList.length;
@@ -504,7 +504,7 @@
         getItemContainment({ list, value }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
-            if (this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]})) return;
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
             
             if (!Array.isArray(targetList)) return false;
             return targetList.includes(value);

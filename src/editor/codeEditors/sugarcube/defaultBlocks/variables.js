@@ -255,7 +255,7 @@
         }
 
         getVariable(block, generator, manager) {
-            if (block.editedState.varData.global) `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
+            if (block.editedState.varData.global) return `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 

@@ -310,7 +310,7 @@
         }
 
         getTable(block, generator, manager) {
-            if (block.editedState.varData.global) `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
+            if (block.editedState.varData.global) return `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
@@ -318,7 +318,7 @@
         setKey({ table, key, val }, { self }) {
             //Make sure we target it right
             let targetTable = self[table];
-            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
             
             if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
             targetTable[key] = val;
@@ -327,7 +327,7 @@
         getKey({ table, key }, { self }) {
             //Make sure we target it right
             let targetTable = self[table];
-            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
             
             if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
             return targetTable[key];
@@ -336,7 +336,7 @@
         getKeys({ table }, { self }) {
             //Make sure we target it right
             let targetTable = self[table];
-            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
             
             if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
             return Object.keys(targetTable);
@@ -345,7 +345,7 @@
         getValues({ table }, { self }) {
             //Make sure we target it right
             let targetTable = self[table];
-            if (this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]})) return;
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
             
             if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
             return Object.values(targetTable);
