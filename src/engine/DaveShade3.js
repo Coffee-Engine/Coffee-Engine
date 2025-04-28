@@ -656,7 +656,7 @@ window.DaveShade = {};
         //For going back to canvas rendering
         daveShadeInstance.renderToCanvas = () => {
             GL.bindFramebuffer(GL.FRAMEBUFFER, null);
-            if (GL_TYPE == "webgl2") GL.drawBuffers([GL.BACK]);
+            if (daveShadeInstance.GL_TYPE == "webgl2") GL.drawBuffers([GL.BACK]);
             GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         };
 
@@ -770,7 +770,7 @@ window.DaveShade = {};
 
         //Voxels :(
         daveShadeInstance.createTexture3D = (data, size, height, depth) => {
-            if (!GL_TYPE == "webgl2") return;
+            if (!daveShadeInstance.GL_TYPE == "webgl2") return;
 
             const texture = GL.createTexture();
             GL.bindTexture(GL.TEXTURE_3D, texture);
@@ -831,7 +831,7 @@ window.DaveShade = {};
             framebuffer.use = () => {
                 GL.bindFramebuffer(GL.FRAMEBUFFER, framebuffer.buffer);
                 //Make sure to use our attachments
-                if (GL_TYPE == "webgl2") GL.drawBuffers(framebuffer.drawBuffers);
+                if (daveShadeInstance.GL_TYPE == "webgl2") GL.drawBuffers(framebuffer.drawBuffers);
                 GL.viewport(0, 0, framebuffer.width, framebuffer.height);
             };
 
