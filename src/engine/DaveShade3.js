@@ -132,6 +132,7 @@ window.DaveShade = {};
         //Get our color attachment
         const attachedBuffer = dsInfo.DRAWBUFFER_MANAGER ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
         GL.framebufferTexture2D(GL.FRAMEBUFFER, attachedBuffer, GL.TEXTURE_2D, renderBufferInfo.texture, 0);
+
         framebufferInfo.colorAttachments += 1;
     };
 
@@ -816,7 +817,7 @@ window.DaveShade = {};
         }
 
         //Framebuffer stuff
-        daveShadeInstance.createFramebuffer = (width, height, attachments) => {
+        daveShadeInstance.createFramebuffer = (width, height, attachments, antiAliasing) => {
             const framebuffer = {
                 buffer: GL.createFramebuffer(),
                 attachments: [],

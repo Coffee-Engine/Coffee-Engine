@@ -217,6 +217,7 @@
             mainPass.uniforms.u_lightCount.value = this.lightCount;
             mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
             mainPass.uniforms.u_fogData.value = this.fogData.flat();
+            mainPass.uniforms.u_antiAliasingRate = 1;
             mainPass.drawFromBuffers(6);
         }
 

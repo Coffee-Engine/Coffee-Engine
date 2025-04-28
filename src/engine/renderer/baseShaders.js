@@ -276,11 +276,14 @@
                 uniform mat4 u_camera;
                 uniform vec3 u_cameraPosition;
 
+                uniform float u_antiAliasingRate;
+
                 uniform vec2 u_res;
                 uniform highp int u_fullBright;
 
                 vec3 viewToFrag;
                 vec3 F0;
+                vec4 finalFrag;
 
                 float lightDot(vec3 a,vec3 b) {
                     return min(1.0,max(0.0,dot(a,b)));
@@ -403,7 +406,7 @@
                         fogData[0][1] //Falloff
                     );
 
-                    return mix(gl_FragColor.xyz, fogData[1], mixAmount);
+                    return mix(finalFrag.xyz, fogData[1], mixAmount);
                 }
 
                 vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
@@ -415,12 +418,15 @@
                     float sunAmount = max(dot(toPoint, -u_sunDir), 0.0);
                     vec3 sunEffection = mix(u_ambientColor, u_sunColor, pow(sunAmount, fogData[2][0]));
 
-                    return mix(gl_FragColor.xyz, fogData[1] * sunEffection, mixAmount);
+                    return mix(finalFrag.xyz, fogData[1] * sunEffection, mixAmount);
                 }
-                
-                void main()
-                {
-                    vec2 screenUV = gl_FragCoord.xy / u_res;
+
+                //CAA
+                //Coffee Anti-Aliasing
+                vec4 renderPixel(vec2 fragCoord) {
+                    finalFrag = vec4(0,0,0,0);
+
+                    vec2 screenUV = fragCoord / u_res;
                     vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
                     vec3 position = texture2D(u_position, screenUV).xyz;
                     viewToFrag = normalize(u_cameraPosition - position);
@@ -430,16 +436,16 @@
                     //}
                     vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
 
-                    gl_FragColor = texture2D(u_color,screenUV);
-                    if (gl_FragColor.w > 1.0) {
-                        gl_FragColor.w = 1.0;
+                    finalFrag = texture2D(u_color,screenUV);
+                    if (finalFrag.w > 1.0) {
+                        finalFrag.w = 1.0;
                     }
 
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0 && u_fullBright == 0) {
                         //Calculate F0
-                        F0 = mix(vec3(0.04), gl_FragColor.xyz, matAttributes.y);
+                        F0 = mix(vec3(0.04), finalFrag.xyz, matAttributes.y);
 
                         //Add the sun
                         lightColor += u_sunColor * lightDot(normal, u_sunDir);
@@ -452,15 +458,15 @@
                             //Stuff required to calculate the end result
                             mat4 light = u_lights[i];
 
-                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, gl_FragColor.xyz, position, normal, matAttributes.xyz);}
+                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, finalFrag.xyz, position, normal, matAttributes.xyz);}
                             else {lightColor.xyz += calculateLight(light, position, normal);}
                         }
 
                         matAttributes.z -= ceil(matAttributes.z) - 1.0;
-                        gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
+                        finalFrag.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
                     }
 
-                    gl_FragColor += texture2D(u_emission,screenUV);
+                    finalFrag += texture2D(u_emission,screenUV);
 
                     int fogType = int(u_fogData[0][0]);
                     //Handle sky plane
@@ -476,9 +482,27 @@
                         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
                         else if (fogType == 3) { fogColour = fogDefault((vec4(position,1) * u_camera).z, viewToFrag, u_fogData); }
 
-                        if (matAttributes.x < -0.1) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
-                        else { gl_FragColor.xyz = fogColour; }
+                        if (matAttributes.x < -0.1) { finalFrag.xyz = mix(finalFrag.xyz, fogColour, u_fogData[2][1]); }
+                        else { finalFrag.xyz = fogColour; }
                     }
+
+                    return finalFrag;
+                }
+                
+                void main()
+                {
+                    vec4 averageFrag = vec4(0,0,0,0);
+                    vec2 antiAliasingStep = vec2((1.0/u_res.x)/u_antiAliasingRate, (1.0/u_res.y)/u_antiAliasingRate);
+                    for (int x=0; x<=16; x++) {
+                        if (x>=int(u_antiAliasingRate)) break;
+                        for (int y=0; y<=16; y++) {
+                            if (y>=int(u_antiAliasingRate)) break;
+                            averageFrag += renderPixel(gl_FragCoord.xy + vec2(x,y));
+                        }
+                    }
+
+                    gl_FragColor = averageFrag / (u_antiAliasingRate*u_antiAliasingRate);
+                    gl_FragColor.w = min(1.0, gl_FragColor.w);
                 }
                 `
             ),
