@@ -31,8 +31,8 @@
 
                      //get uvs from buffer
                      const uv1 = [uvs[triangleUVID] || 0, uvs[triangleUVID+1] || 0];
-                     const uv2 = [(typeof uvs[triangleUVID+2] == "undefined") ? uvs[triangleUVID+2] : 1, uvs[triangleUVID+3] || 0];
-                     const uv3 = [(typeof uvs[triangleUVID+4] == "undefined") ? uvs[triangleUVID+4] : 1, (typeof uvs[triangleUVID+5] == "undefined") ? uvs[triangleUVID+5] : 1];
+                     const uv2 = [(typeof uvs[triangleUVID+2] != "undefined") ? uvs[triangleUVID+2] : 1, uvs[triangleUVID+3] || 0];
+                     const uv3 = [(typeof uvs[triangleUVID+4] != "undefined") ? uvs[triangleUVID+4] : 1, (typeof uvs[triangleUVID+5] != "undefined") ? uvs[triangleUVID+5] : 1];
                 
                     //Calculate edges
                     const edge1 = [point2[0]-point1[0], point2[1]-point1[1], point2[2]-point1[2]];
