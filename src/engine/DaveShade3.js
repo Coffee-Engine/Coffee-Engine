@@ -684,6 +684,7 @@ window.DaveShade = {};
 
             //Create our texture object
             const textureOBJ = { 
+                type: "TEXTURE2D",
                 texture: texture, width: width, height: height,
                 currentFilter: GL.LINEAR,
                 setFiltering: (newFilter, isMin) => {
@@ -701,15 +702,93 @@ window.DaveShade = {};
             return textureOBJ;
         };
 
+        //Cubes :)
+        daveShadeInstance.cubemapOrder = [
+            GL.TEXTURE_CUBE_MAP_POSITIVE_X,
+            GL.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            GL.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            GL.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            GL.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            GL.TEXTURE_CUBE_MAP_NEGATIVE_Z
+        ];
+
+        //Orientations
+        //X+
+        //Y+
+        //Z+
+        //X-
+        //Y-
+        //Z-
+        daveShadeInstance.createTextureCube = (textures, width, height) => {
+            if (!Array.isArray(textures)) return;
+            if (textures.length != 6) return;
+
+            //Create our cubemap
+            const texture = GL.createTexture();
+            GL.bindTexture(GL.TEXTURE_CUBE_MAP, texture);
+
+            const sizes = [];
+
+            //Loop through our cubemap
+            for (let texID in textures) {
+                const data = textures[texID];
+                const target = daveShadeInstance.cubemapOrder[texID];
+
+                //Parse our textures
+                if (data instanceof Image) {
+                    GL.texImage2D(target, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, data);
+                    sizes.push({ width: data.width, height: data.height });
+                } else {
+                    GL.texImage2D(target, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+                    sizes.push({ width: width, height: height });
+                }
+            }
+
+            GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+
+            //Create our texture object
+            const textureOBJ = {
+                type: "CUBEMAP",
+                texture: texture, sizes: sizes,
+                currentFilter: GL.LINEAR,
+                setFiltering: (newFilter, isMin) => {
+                    isMin = isMin || false;
+
+                    if (textureOBJ.currentFilter == newFilter) return;
+
+                    GL.bindTexture(GL.TEXTURE_CUBE_MAP, texture);
+                    GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, newFilter);
+
+                    textureOBJ.currentFilter = newFilter;
+                }
+            };
+
+            return textureOBJ;
+        }
+
         //Voxels :(
-        daveShadeInstance.createTexture3D = (data, width, height, depth) => {
+        daveShadeInstance.createTexture3D = (data, size, height, depth) => {
             if (!GL_TYPE == "webgl2") return;
 
             const texture = GL.createTexture();
             GL.bindTexture(GL.TEXTURE_3D, texture);
 
-            
-            GL.texImage3D(GL.TEXTURE_3D, 0, GL.RGBA, width, height, depth, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+            //Set our data, if we are using an image make sure the image gets the data
+            if (data instanceof Image) {
+                //Use size or split the data in half
+                size = size || data.height/2;
+
+                //Set our stuff to be appropriate
+                height = size;
+                depth = data.height / size;
+                size = data.width;
+
+                GL.texImage3D(GL.TEXTURE_3D, 0, GL.RGBA, size, height, depth, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+            } else {
+                GL.texImage3D(GL.TEXTURE_3D, 0, GL.RGBA, size, height, depth, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+            }
 
             GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
             GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
@@ -718,7 +797,8 @@ window.DaveShade = {};
 
             //Create our texture object
             const textureOBJ = { 
-                texture: texture, width: width, height: height, depth: depth,
+                type: "TEXTURE3D",
+                texture: texture, width: size, height: height, depth: depth,
                 currentFilter: GL.LINEAR,
                 setFiltering: (newFilter, isMin) => {
                     isMin = isMin || false;
