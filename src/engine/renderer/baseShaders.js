@@ -498,6 +498,7 @@
                     vec4 averageFrag = vec4(0,0,0,0);
                     averageFrag = renderPixel(gl_FragCoord.xy);
                     if (u_antiAliasingRate >= 2.0) {
+                        averageFrag *= 8.0;
                         averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,0));
                         averageFrag += renderPixel(gl_FragCoord.xy + vec2(0,-1));
                         averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,0));
@@ -506,7 +507,7 @@
                         averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,1));
                         averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,-1));
                         averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,-1));
-                        averageFrag /= 9.0;
+                        averageFrag /= 16.0;
                     }
 
                     gl_FragColor = averageFrag;
