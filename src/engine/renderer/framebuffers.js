@@ -45,6 +45,9 @@
         }
 
         renderer.resize = (width, height) => {
+            //Prevent older devices from dying
+            if (width * renderer.drawBufferSizeMul > 2560 || height * renderer.drawBufferSizeMul > 1440) renderer.drawBufferSizeMul = 1;
+            
             renderer.drawBuffer.resize(width * renderer.drawBufferSizeMul, height * renderer.drawBufferSizeMul);
             renderer.post0.resize(width, height);
             renderer.post1.resize(width, height);

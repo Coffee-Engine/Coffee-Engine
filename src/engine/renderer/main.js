@@ -3,7 +3,7 @@
     coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
         renderer.canvas = canvas;
-        renderer.drawBufferSizeMul = 2;
+        renderer.drawBufferSizeMul = 1;
 
         //Firefox's blending is wierd
         renderer.daveshade = DaveShade.createInstance(renderer.canvas, {
