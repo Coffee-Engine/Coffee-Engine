@@ -56,6 +56,7 @@
                         { text: editor.language["editor.window.sceneTree.addChild"], value: "addChild" },
                         { text: editor.language["editor.window.sceneTree.addDuplicateChild"], value: "addDuplicateChild" },
                         { text: editor.language["editor.window.sceneTree.duplicate"], value: "duplicate" },
+                        { text: editor.language["editor.window.sceneTree.createPrefab"], value: "createPrefab" },
                         { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },
                     ];
                 };
@@ -112,6 +113,11 @@
                             }
 
                             Node.parent.addChild(duplicated);
+                            break;
+                        }
+
+                        case "createPrefab": {
+                            console.log(coffeeEngine.runtime.currentScene.__serializeChildren([Node]));
                             break;
                         }
 

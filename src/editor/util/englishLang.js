@@ -211,6 +211,7 @@ editor.EnglishLang = {
     "editor.window.sceneTree.addChild": "Add Child",
     "editor.window.sceneTree.addDuplicateChild": "Duplicate as Child",
     "editor.window.sceneTree.duplicate": "Duplicate Node",
+    "editor.window.sceneTree.createPrefab": "Create Prefab",
     "editor.window.sceneTree.delete": "Remove Node",
 
     "editor.window.nodeMaker": "Add a Node",
