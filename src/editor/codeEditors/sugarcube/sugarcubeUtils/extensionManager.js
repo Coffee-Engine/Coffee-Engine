@@ -1077,7 +1077,7 @@
 
                 //mutators
                 if (instance.__info.mutators) for (let mutator in instance.__info.mutators) {
-                    Blockly.Extensions.unregister(`${extensionID}_${contextMenu}`);
+                    Blockly.Extensions.unregister(`${extensionID}_${mutator}`);
                 };
 
                 //context menus
