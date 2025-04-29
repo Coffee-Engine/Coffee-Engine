@@ -156,6 +156,8 @@
             const zipInstance = new JSZip();
 
             const folderRoot = await project.getFile(fileRoot.replaceAll(/\/$/g, ""));
+            let latteName = fileRoot.split("/");
+            latteName = latteName[latteName.length - 1];
 
             project.decaf.loopThroughSave(fileRoot, folderRoot, zipInstance, () => {
                 zipInstance.generateAsync({ type: "blob" }).then((blob) => {
@@ -163,7 +165,7 @@
                     const blobURL = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = blobURL;
-                    link.download = `project.${coffeeEngine.packageFormat}`;
+                    link.download = `${latteName}.${coffeeEngine.packageFormat}`;
                     link.click();
                     URL.revokeObjectURL(blobURL);
                 });
