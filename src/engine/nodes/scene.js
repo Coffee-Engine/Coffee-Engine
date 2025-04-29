@@ -132,6 +132,8 @@
             const renderer = coffeeEngine.renderer;
             const GL = renderer.daveshade.GL;
 
+            const {width, height} = coffeeEngine.renderer.drawBuffer;
+
             //Clear the main renderers depth, and reset the sun
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.sunDirection = [0, 0, 0];
@@ -142,7 +144,7 @@
 
             //Clear the depth each time and draw the sky/scene
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
-            this.__drawSky(renderer);
+            this.__drawSky(renderer, width, height);
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.__drawScene(renderer);
 
@@ -152,15 +154,20 @@
             this.__drawFinal(renderer, renderer.mainShaders.mainPass);
         }
 
-        __drawSky(renderer) {
-            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
-            renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
-            renderer.mainShaders.skyplane.uniforms.groundColor.value = this.groundColor;
-            renderer.mainShaders.skyplane.uniforms.centerColor.value = this.centerColor;
+        __drawSky(renderer, width, height) {
+            renderer.cameraData.res = [width, height];
 
-            renderer.mainShaders.skyplane.drawFromBuffers(6);
+            //Set our uniforms
+            const skyShader = renderer.mainShaders.skyplane;
+            skyShader.setBuffers(coffeeEngine.shapes.plane);
+            skyShader.setUniforms({
+                horizonColor: this.horizonColor,
+                skyColor: this.skyColor,
+                groundColor: this.groundColor,
+                centerColor: this.centerColor,
+            })
+
+            skyShader.drawFromBuffers(6);
         }
 
         __drawScene(renderer) {
@@ -205,22 +212,30 @@
 
         __drawFinal(renderer, mainPass) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            const uniforms = mainPass.uniforms;
+            const drawBuffer =  renderer.drawBuffer.attachments;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
             
             //Neato!
-            uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
-            uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
-            uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
-            uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
-            uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            uniforms.u_sunDir.value = this.sunDirection;
-            uniforms.u_sunColor.value = this.sunColor;
-            uniforms.u_ambientColor.value = this.ambientColor;
-            uniforms.u_lightCount.value = this.lightCount;
-            uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
-            uniforms.u_fogData.value = this.fogData.flat();
-            uniforms.u_antiAliasingRate.value = (coffeeEngine.renderer.viewport.antiAlias) ? 2 : 1;
+            mainPass.setUniforms({
+                //Textures
+                u_color: drawBuffer[0].texture, 
+                u_materialAttributes: drawBuffer[1].texture, 
+                u_emission: drawBuffer[2].texture, 
+                u_position: drawBuffer[3].texture, 
+                u_normal: drawBuffer[4].texture,
+
+                //The sun
+                u_sunDir: this.sunDirection,
+                u_sunColor: this.sunColor,
+                u_ambientColor: this.ambientColor,
+
+                //Lights
+                u_lightCount: this.lightCount,
+
+                //fog data
+                u_fogData: this.fogData.flat(),
+                u_cameraPosition: coffeeEngine.renderer.cameraData.position.webGLValue(),
+            });
 
             //Draw main pass!
             mainPass.drawFromBuffers(6);

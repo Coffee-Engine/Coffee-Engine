@@ -404,6 +404,7 @@ window.DaveShade = {};
                 };
             }
 
+            //? Compiling oh compiling!
             compileStatus = GL.getShaderInfoLog(shader.vertex.shader);
             if (compileStatus.length > 0) {
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${compileStatus}\n***`);
@@ -413,6 +414,7 @@ window.DaveShade = {};
                 };
             }
 
+            //Oooh ohh ohh
             compileStatus = GL.getShaderInfoLog(shader.fragment.shader);
             if (compileStatus.length > 0) {
                 console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${compileStatus}\n***`);
@@ -624,6 +626,19 @@ window.DaveShade = {};
             shader.dispose = () => {
                 daveShadeInstance.clearShaderFromMemory(shader);
             };
+
+            //* Quick function
+            shader.setUniforms = (uniforms) => {
+                //Make sure we have an object
+                if (typeof uniforms != "object" || Array.isArray(uniforms)) return;
+                
+                //Loop through keys
+                for (let key in uniforms) {
+                    if (shader.uniforms[key]) {
+                        shader.uniforms[key].value = uniforms[key];
+                    }
+                }
+            }
 
             //*Add it to the list of shaders to dispose of when the instance no longer exists.
             daveShadeInstance.SHADERS.push(shader);

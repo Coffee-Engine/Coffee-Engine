@@ -351,7 +351,7 @@
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
-            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width, this.canvas.height);
+            coffeeEngine.renderer.resize(this.canvas.width, this.canvas.height);
         }
     };
 
