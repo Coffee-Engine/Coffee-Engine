@@ -33,6 +33,7 @@
             renderer.postBuffer = renderer.postBuffer % 2;
 
             renderer[`post${renderer.postBuffer}`].use();
+            renderer.daveshade.clear(renderer.daveshade.GL.COLOR_BUFFER_BIT);
         }
 
         renderer.getPost = () => {

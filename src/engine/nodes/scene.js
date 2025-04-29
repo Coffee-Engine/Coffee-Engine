@@ -149,9 +149,17 @@
             this.__drawScene(renderer);
 
             //Render it back to the main draw pass.
-            renderer.daveshade.renderToCanvas();
             renderer.daveshade.cullFace();
+            renderer.swapPost();
+
             this.__drawFinal(renderer, renderer.mainShaders.mainPass);
+            this.__postProcess(renderer);
+
+            //The final blit!
+            renderer.daveshade.renderToCanvas();
+            renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
+            renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPost().attachments[0].texture });
+            renderer.mainShaders.viewportPass.drawFromBuffers(6);
         }
 
         __drawSky(renderer, width, height) {
@@ -170,7 +178,7 @@
             skyShader.drawFromBuffers(6);
         }
 
-        __drawScene(renderer) {
+        __drawScene() {
             //Sort em
             this.drawList.sort((node1, node2) => {
                 //Don't spend the extra time recomputing the value
@@ -211,7 +219,14 @@
         }
 
         __drawFinal(renderer, mainPass) {
-            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            if (renderer.viewport.antiAlias) {
+                renderer.getPost().resize(renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul);
+                renderer.getPost().use();
+            }
+
+            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul];
+            else renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            
             const drawBuffer =  renderer.drawBuffer.attachments;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
             
@@ -239,6 +254,20 @@
 
             //Draw main pass!
             mainPass.drawFromBuffers(6);
+
+            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+        }
+
+        __postProcess(renderer) {
+            //Do our AA pass first
+            if (renderer.viewport.antiAlias) {
+                renderer.swapPost();
+                renderer.mainShaders.antiAliasPass.setBuffers(coffeeEngine.shapes.plane);
+                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.getPrevPost().attachments[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
+                renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
+
+                renderer.getPrevPost().resize(renderer.canvas.width, renderer.canvas.height);
+            }
         }
 
         //Child management
