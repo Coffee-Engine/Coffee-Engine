@@ -205,19 +205,24 @@
 
         __drawFinal(renderer, mainPass) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            const uniforms = mainPass.uniforms;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
-            mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
-            mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
-            mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
-            mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
-            mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            mainPass.uniforms.u_sunDir.value = this.sunDirection;
-            mainPass.uniforms.u_sunColor.value = this.sunColor;
-            mainPass.uniforms.u_ambientColor.value = this.ambientColor;
-            mainPass.uniforms.u_lightCount.value = this.lightCount;
-            mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
-            mainPass.uniforms.u_fogData.value = this.fogData.flat();
-            mainPass.uniforms.u_antiAliasingRate = 1;
+            
+            //Neato!
+            uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
+            uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
+            uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
+            uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
+            uniforms.u_sunDir.value = this.sunDirection;
+            uniforms.u_sunColor.value = this.sunColor;
+            uniforms.u_ambientColor.value = this.ambientColor;
+            uniforms.u_lightCount.value = this.lightCount;
+            uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
+            uniforms.u_fogData.value = this.fogData.flat();
+            uniforms.u_antiAliasingRate.value = (coffeeEngine.renderer.viewport.antiAlias) ? 2 : 1;
+
+            //Draw main pass!
             mainPass.drawFromBuffers(6);
         }
 

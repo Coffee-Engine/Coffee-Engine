@@ -16,7 +16,7 @@
         const daveshadeInstance = renderer.daveshade;
 
         //Add our draw buffer
-        renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width * 4, renderer.canvas.height * 4, [
+        renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
             //Colors
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
             //Material Attributes
@@ -180,7 +180,7 @@
         renderer.initilizeShapes();
         renderer.initilizeDebugSprites(renderer);
 
-        renderer.drawBuffer.resize(renderer.canvas.width * 4, renderer.canvas.height * 4);
+        renderer.drawBuffer.resize(renderer.canvas.width, renderer.canvas.height);
         renderer.canvas.addEventListener("resize", () => {});
 
         return renderer;
@@ -249,7 +249,7 @@
                 break;
         }
 
-        renderer.drawBuffer.resize(renderer.canvas.width * 4,renderer.canvas.height * 4);
+        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
     }
 
     coffeeEngine.renderer.dispose = () => {

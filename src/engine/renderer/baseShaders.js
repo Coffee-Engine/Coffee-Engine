@@ -283,6 +283,7 @@
 
                 vec3 viewToFrag;
                 vec3 F0;
+
                 vec4 finalFrag;
 
                 float lightDot(vec3 a,vec3 b) {
@@ -426,6 +427,9 @@
                 vec4 renderPixel(vec2 fragCoord) {
                     finalFrag = vec4(0,0,0,0);
 
+                    fragCoord.x = max(0.0, min(u_res.x - 1.0, fragCoord.x));
+                    fragCoord.y = max(0.0, min(u_res.y - 1.0, fragCoord.y));
+
                     vec2 screenUV = fragCoord / u_res;
                     vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
                     vec3 position = texture2D(u_position, screenUV).xyz;
@@ -492,17 +496,20 @@
                 void main()
                 {
                     vec4 averageFrag = vec4(0,0,0,0);
-                    vec2 antiAliasingStep = vec2((1.0/u_res.x)/u_antiAliasingRate, (1.0/u_res.y)/u_antiAliasingRate);
-                    for (int x=0; x<=16; x++) {
-                        if (x>=int(u_antiAliasingRate)) break;
-                        for (int y=0; y<=16; y++) {
-                            if (y>=int(u_antiAliasingRate)) break;
-                            averageFrag += renderPixel(gl_FragCoord.xy + vec2(x,y));
-                        }
+                    averageFrag = renderPixel(gl_FragCoord.xy);
+                    if (u_antiAliasingRate >= 2.0) {
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,0));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(0,-1));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,0));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(0,1));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,1));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,1));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,-1));
+                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,-1));
+                        averageFrag /= 9.0;
                     }
 
-                    gl_FragColor = averageFrag / (u_antiAliasingRate*u_antiAliasingRate);
-                    gl_FragColor.w = min(1.0, gl_FragColor.w);
+                    gl_FragColor = averageFrag;
                 }
                 `
             ),
