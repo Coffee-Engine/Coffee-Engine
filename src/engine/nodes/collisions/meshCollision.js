@@ -10,6 +10,9 @@
             coffeeEngine.mesh.fromProjectFile(value).then((data) => {
                 this.meshData = data;
                 this.collision.mesh = data;
+            }).catch(() => {
+                this.meshData = null;
+                this.collision.mesh = null;
             });
         }
 
@@ -53,6 +56,8 @@
             // prettier-ignore
             return [
                 { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---",
+                { name: "collisionGroup", translationKey: "engine.nodeProperties.Collision.group", items: () => {return Object.keys(coffeeEngine.collisionGroup)}, type: coffeeEngine.PropertyTypes.DROPDOWN},
                 "---", 
                 { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 

@@ -73,8 +73,11 @@
                     },
                 ],
                 menus: {
-                    varMenu: {
+                    localVarMenu: {
                         items: "getVars",
+                    },
+                    varMenu: {
+                        items: "getVarsAndGlobalVars",
                     },
                 },
                 mutators: {
@@ -87,23 +90,62 @@
                     removeVariable: {
                         text: editor.language["sugarcube.variables.contextMenu.removeVariable"],
                         opcode: "removeVariable",
+                        eligibility: "notGlobal",
                         weight: 4,
                     },
                 },
             };
         }
 
-        getVars() {
+        getVars(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "variable") return;
 
-                returned.push(variable.name);
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
             });
 
             return returned;
+        }
+
+        getVarsAndGlobalVars(advanced) {
+            const variables = sugarcube.variables.getAll();
+            const returned = [];
+
+            for (let variable in globals) {
+                if (typeof globals[variable] != "string") continue;
+
+                //Use a 0 width character to differentiate
+                if (!advanced) returned.push({ text: variable, value: "​" + variable });
+                else returned.push({ name: variable, global: true, type: "variable", color: "#FF8C1A" });
+            }
+
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "variable") return;
+
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
+            });
+
+            return returned
+        }
+
+        //Simple true false
+        isGlobal(variable, callback) {
+            if (variable.startsWith("​")) {
+                const varName = variable.replace("​", "");
+                if (callback) callback(varName, globals[varName]);
+                return true;
+            }
+            return false;
+        }
+
+        notGlobal(variable) {
+            return !variable.editedState.varData.global;
         }
 
         openVariableMenu() {
@@ -122,6 +164,23 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
+                //If public add icon
+                if (state.varData.public || state.varData.global) {
+                    //create Text
+                    block.inputFromJson_({
+                        type: "input_dummy",
+                        name: `text`,
+                    });
+                    block.inputList[block.inputList.length - 1].appendField(
+                        block.fieldFromJson_({
+                            type: "field_image",
+                            src: state.varData.global ? sugarcube.earthIcon : sugarcube.publicIcon,
+                            width: 24,
+                            height: 24,
+                        })
+                    );
+                }
+
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
@@ -142,7 +201,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.variables.getAll();
+            const variables = this.getVarsAndGlobalVars(true);
             const returned = [];
             let varExists = false;
 
@@ -158,6 +217,8 @@
                         varData: {
                             color: variable.color,
                             name: variable.name,
+                            public: variable.public,
+                            global: variable.global
                         },
                     },
                 });
@@ -185,27 +246,32 @@
 
         precompile_func() {
             let generated = "";
-            this.getVars().forEach((list) => {
-                generated += `this["${list.replaceAll('"', '\\"')}"] = "";\n`;
+            this.getVars(true).forEach((variable) => {
+                if (variable.public) generated += `@editor(string) "${variable.name.replaceAll('"', '\\"')}";\n`;
+                generated += `this["${variable.name.replaceAll('"', '\\"')}"] = "";\n`;
             });
 
             return generated;
         }
 
         getVariable(block, generator, manager) {
+            if (block.editedState.varData.global) return `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         setVariable({ variable, val }, { self }) {
             //We just set da variable
+            if (this.isGlobal(variable, (globalName) => { globals[globalName] = val })) return;
             self[variable] = val;
         }
 
         changeVariable({ variable, val }, { self }) {
+            if (this.isGlobal(variable, (globalName, globalVal) => { globals[globalName] = sugarcube.cast.toNumber(globalVal) + val })) return;
             self[variable] = sugarcube.cast.toNumber(self[variable]) + sugarcube.cast.toNumber(val);
         }
 
         multiplyVariable({ variable, val }, { self }) {
+            if (this.isGlobal(variable, (globalName, globalVal) => { globals[globalName] = sugarcube.cast.toNumber(globalVal) * val })) return;
             self[variable] = sugarcube.cast.toNumber(self[variable]) * sugarcube.cast.toNumber(val);
         }
 

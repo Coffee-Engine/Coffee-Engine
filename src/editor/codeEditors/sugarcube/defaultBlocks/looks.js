@@ -159,7 +159,7 @@
                         opcode: "setSprite",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setSprite"],
-                        filter: ["Sprite", "Billboard"],
+                        filter: ["Sprite", "Sprite3D", "Billboard"],
                         arguments: {
                             image: {
                                 type: sugarcube.ArgumentType.CUSTOM,
@@ -171,8 +171,9 @@
                         opcode: "getSprite",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.looks.block.getSprite"],
-                        filter: ["Sprite", "Billboard"],
+                        filter: ["Sprite", "Sprite3D", "Billboard"],
                     },
+                    //Mesh stuff
                     {
                         opcode: "setMesh",
                         type: sugarcube.BlockType.COMMAND,
@@ -190,6 +191,34 @@
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.looks.block.getMesh"],
                         filter: ["MeshDisplay"],
+                    },
+                    {
+                        opcode: "setMaterial",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.looks.block.setMaterial"],
+                        filter: ["MeshDisplay"],
+                        arguments: {
+                            id: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 0,
+                            },
+                            material: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Material",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "getMaterial",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.looks.block.getMaterial"],
+                        filter: ["MeshDisplay"],
+                        arguments: {
+                            id: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                customType: "material",
+                            },
+                        }
                     },
                     //Lights
                     {
@@ -251,7 +280,7 @@
                         opcode: "setTint",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.looks.block.setTint"],
-                        filter: ["Sprite", "Billboard", "MeshDisplay"],
+                        filter: ["Sprite", "Sprite3D", "Billboard", "MeshDisplay"],
                         arguments: {
                             tint: {
                                 type: sugarcube.ArgumentType.COLOR,
@@ -287,6 +316,12 @@
 
                         initilize: "file_Init",
                     },
+                    Material: {
+                        acceptReporters: true,
+                        editor: "material_Editor",
+
+                        initilize: "file_Init",
+                    }
                 },
             };
         }
@@ -375,11 +410,30 @@
 
         setMesh({ mesh }, util) {
             //Hope to god its a mesh
+            if (!mesh) return;
             util.target.meshPath = sugarcube.cast.toString(mesh);
         }
 
         getMesh(args, util) {
             return sugarcube.cast.toString(util.target.meshPath);
+        }
+
+        setMaterial({ id, material }) {
+            id = sugarcube.cast.toNumber(id);
+            //Make sure our material and ID exist
+            if (!util.target.materials) return;
+            if (!util.target.materials[id]) return;
+
+            util.target.materials[id] = sugarcube.cast.toString(material);
+        }
+
+        getMaterial({ id }) {
+            id = sugarcube.cast.toNumber(id);
+            //Make sure our material and ID exist
+            if (!util.target.materials) return;
+            if (!util.target.materials[id]) return;
+
+            return sugarcube.cast.toString(util.target.materials[id]);
         }
 
         //Lights
@@ -476,6 +530,13 @@
 
             //Silly guys
             loadal.acceptTypes = "obj,dae,glb";
+        }
+
+        material_Editor(field) {
+            const loadal = this.callLoadal(field);
+
+            //Silly guys
+            loadal.acceptTypes = "material";
         }
     }
 

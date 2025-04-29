@@ -61,11 +61,16 @@
                 height:100%;
                 background-color: var(--background-2);
                 border-right: 8px solid var(--background-4);
+
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             .settingsPanel {
                 height:100%;
                 flex-grow: 1;
+                overflow-y: auto;
+                overflow-x: hidden;
             }
 
             @keyframes boot {
@@ -81,7 +86,7 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-Settings">
             <h1 class="centerText" style="margin:2px; margin-top:4px;">
                 <button id="goBack">${editor.language["engine.generic.back"]}</button>
                 ${editor.language["engine.settings.welcome"]}
@@ -93,7 +98,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();
@@ -115,41 +120,36 @@
             //When the sidebar button is clicked open that category
             button.onclick = () => {
                 //Clear elements and html
-                editor.settings.elements = {};
+                //editor.settings.elements = {};
                 settingsPanel.innerHTML = "";
 
-                //Loop through settings in that category
-                Object.keys(category).forEach((settingKey) => {
-                    //Create our text for the editor element
-                    const settingSpan = document.createElement("p");
-                    settingSpan.innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]} : `;
-                    settingSpan.style.fontSize = "Large";
-                    settingSpan.style.margin = "2px";
+                //Add our panel
+                settingsPanel.appendChild(CUGI.createList(category, {
+                    globalChange: () => {editor.Storage.setStorage("settingsValues", editor.settings.values);},
+                    //Provide translations
+                    preprocess: (item) => {
+                        const translationKey = `engine.settings.category.${key}.${item.translationKey || item.key}`;
+                        item.text = editor.language[translationKey] || (item.translationKey || item.key);
 
-                    //This is where we get inputs for the setting
-                    let elementEditor = editor.settings.elementFromType(category[settingKey].type, category[settingKey], key, settingKey);
-                    editor.settings.elements[settingKey] = {
-                        span: settingSpan,
-                        input: elementEditor,
-                    };
+                        //Intercept items call
+                        if (typeof item.items == "function") {
+                            const oldItems = item.items;
+                            item.items = (data) => {
+                                const parsed = oldItems(data);
 
-                    if (elementEditor) {
-                        //If we have an array we need to check for something
-                        if (Array.isArray(elementEditor)) {
-                            //Set our element to be proper
-                            if (elementEditor[1]) {
-                                settingSpan.innerHTML = "";
-                                elementEditor[0].innerHTML = `${editor.language[`engine.settings.category.${key}.${settingKey}`]}`;
-                                elementEditor = elementEditor[0];
+                                //translate the keys
+                                for (let itemID in parsed) {
+                                    if (typeof parsed[itemID] == "object") continue;
+                                    parsed[itemID] = {text: (editor.language[`${translationKey}.${parsed[itemID]}`] || parsed[itemID]), value: parsed[itemID]};
+                                }
+
+                                return parsed
                             }
-                        }
-                        settingSpan.appendChild(elementEditor);
+                        };
+
+                        return item;
                     }
-
-                    settingsPanel.appendChild(settingSpan);
-
-                    if (category[settingKey].menuInit) category[settingKey].menuInit(editor.settings.values[key], editor.settings.elements[settingKey]);
-                });
+                }));
             };
         });
 

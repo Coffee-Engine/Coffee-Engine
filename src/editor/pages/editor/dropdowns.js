@@ -5,10 +5,39 @@
             file: document.getElementById("coffeeEngineProjectDropdown"),
             window: document.getElementById("coffeeEngineWindowDropdown"),
             scene: document.getElementById("coffeeEngineSceneDropdown"),
+            runtime: document.getElementById("coffeeEngineRuntimeDropdown")
         };
 
         editor.dropdownBar.file.onchange = (value) => {
             switch (value) {
+                case "importFiles": {
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.multiple = true;
+
+                    fileInput.onchange = () => {
+                        Array.from(fileInput.files).forEach(file => {
+                            project.setFile(file.name, file, file.type);
+                        });
+                    };
+
+                    fileInput.click();
+                    break;
+                }
+
+                case "openLatte": {
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.accept = `.${coffeeEngine.packageFormat}`;
+
+                    fileInput.onchange = () => {
+                        project.latte.loadLatteFrom(fileInput.files[0]);
+                    };
+
+                    fileInput.click();
+                    break;
+                }
+
                 case "save":
                     if (editor.safeties.filePermissions) {
                         editor.updateProjectDB();
@@ -70,15 +99,51 @@
             if (!coffeeEngine.runtime.currentScene) return;
 
             switch (value) {
+                case "new":
+                    const sceneModal = new editor.windows.newScene(400, 150);
+                    sceneModal.x = (window.innerWidth / 2) - 200;
+                    sceneModal.y = (window.innerHeight / 2) - 75;
+                    sceneModal.__moveToTop();
+                    break;
+
                 case "save":
                     //Its actually that easy
                     project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
                     console.log(editor.language["editor.notification.saveScene"].replace("[path]", coffeeEngine.runtime.currentScene.scenePath));
                     break;
 
+                case "load":
+                    //Its like some sort of loading. :trol:
+                    const sceneLoadal = new editor.windows.modalFileExplorer(400, 400);
+                    sceneLoadal.x = (window.innerWidth / 2) - 200;
+                    sceneLoadal.y = (window.innerHeight / 2) - 200;
+                    sceneLoadal.__moveToTop();
+                    sceneLoadal.acceptTypes = "scene";
+
+                    sceneLoadal.onFileSelected = (path) => {
+                        editor.sendFileHook(path.split(".")[1], path);
+                    };
+                    break
+
                 default:
                     break;
             }
         };
+
+        //Now for the runtime starting
+        editor.dropdownBar.runtime.onchange = (value) => {
+            switch (value) {
+                case "startHere":
+                    editor.runtime.startWindowed(coffeeEngine.runtime.currentScene.scenePath);
+                    break;
+
+                case "startDefault":
+                    editor.runtime.startWindowed();
+                    break;
+            
+                default:
+                    break;
+            }
+        }
     };
 })();

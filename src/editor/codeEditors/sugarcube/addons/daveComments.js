@@ -326,7 +326,7 @@
                 //Special behavior for the markdown boys
                 icon.style.width = iconData.markdownOnly ? "calc(20px * var(--markdownMul))" : "20px";
                 icon.style.marginRight = iconData.markdownOnly ? "calc(2px * var(--markdownMul))" : "2px";
-                icon.style.visibility = iconData.markdownOnly ? "var(--markdownMode)" : "visible";
+                icon.style.visibility = iconData.markdownOnly ? "var(--markdownMode)" : "inherit";
                 icon.style.transition = iconData.markdownOnly ? "all 125ms" : "";
 
                 //Its image and selection prevention

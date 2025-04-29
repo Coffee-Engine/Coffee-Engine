@@ -15,10 +15,127 @@
             return this.currentSystemRoot;
         }
 
+        makeFileDAD(element, path) {
+            //Prevent file opening in the browser
+            element.ondragover = (event) => {
+                event.preventDefault();
+            }
+
+            //file drag and drop
+            element.ondrop = (event) => {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                //Get items in the list
+                if (event.dataTransfer.items) {
+                    const items = [...event.dataTransfer.items];
+
+                    //Make sure each item is a file and then add it if possible
+                    items.forEach(item => {
+                        if (item.kind == "file") {
+                            const file = item.getAsFile();
+                            project.setFile(`${path}${file.name}`, file, file.type);
+                        }
+                    });
+                };
+            }
+        }
+
         init(container) {
             this.currentSystemRoot = project.fileSystem;
             this.title = editor.language["editor.window.fileExplorer"];
-            container.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+
+            //Style our container
+            container.style.overflow = "hidden";
+            container.style.height = "100%";
+            container.style.width = "100%";
+
+            //Add the split button/container holder
+            const splitHolder = document.createElement("div");
+            splitHolder.style.height = "100%";
+            splitHolder.style.width = "100%";
+            splitHolder.style.display = "grid";
+            splitHolder.style.gridTemplateRows = "24px auto";
+
+            //The button holder, holds various controls
+            const buttonHolder = document.createElement("div");
+            buttonHolder.style.display = "flex";
+
+            //Default buttons
+            {
+                //Creation
+                const addFile = document.createElement("button");
+                addFile.innerText = editor.language["editor.window.fileExplorer.createFile"];
+
+                addFile.onclick = () => {
+                    const createdWindow = new editor.windows.fileCreator(400,150);
+                    createdWindow.__moveToTop();
+                    createdWindow.x = (window.innerWidth / 2) - 200;
+                    createdWindow.y = (window.innerHeight / 2) - 100;
+                }
+                
+                buttonHolder.appendChild(addFile);
+
+                //Importing (without having to go through project)
+                const importFile = document.createElement("button");
+                importFile.innerText = editor.language["editor.window.fileExplorer.importFiles"];
+
+                //Just the same as the other file importer
+                importFile.onclick = () => {
+                    const fileInput = document.createElement("input");
+                    fileInput.type = "file";
+                    fileInput.multiple = true;
+
+                    fileInput.onchange = () => {
+                        Array.from(fileInput.files).forEach(file => {
+                            project.setFile(file.name, file, file.type);
+                        });
+                    };
+
+                    fileInput.click();
+                }
+                
+                buttonHolder.appendChild(importFile);
+            }
+
+            //The main container for the fs
+            let mainContainer = document.createElement("div");
+            mainContainer.style.overflowY = "scroll";
+
+            splitHolder.appendChild(buttonHolder);
+            splitHolder.appendChild(mainContainer);
+
+            //Add the split holder
+            container.appendChild(splitHolder);
+            
+            //If we are a folder add a refresh button
+            if (project.isFolder) {
+                
+                const refreshButton = document.createElement("button");
+                refreshButton.innerText = editor.language["editor.window.fileExplorer.refresh"];
+
+                refreshButton.onclick = () => {
+                    project.fileSystem = {};
+                    mainContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+
+                    //Rescan
+                    project.scanFolder(project.directoryHandle, false, project.fileSystem).then(() => {
+                        this.currentSystemRoot = project.fileSystem;
+                        
+                        mainContainer.innerHTML = "";
+                        this.displayDirectory(this.systemRoot, mainContainer, false);
+                    })
+                }
+
+                buttonHolder.appendChild(refreshButton);
+            }
+
+            //Add our reading text
+            mainContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+            
+            //Drag and drop stuff
+            this.makeFileDAD(mainContainer, "");
+
             //Our display function
             this.displayDirectory = (directory, parentDiv, even, path) => {
                 path = path || "";
@@ -110,18 +227,38 @@
                     else {
                         element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
 
+                        this.makeFileDAD(element, `${path}${key}/`);
+
                         //Our folder dropdown
                         //Notice the sleek difference.
                         //If somebody would take the time to add folder renaming I will give you a hug.
                         element.contextFunction = () => {
-                            return [{ text: editor.language["editor.window.fileExplorer.delete"], value: "delete" }];
+                            return [
+                                { text: editor.language["editor.window.fileExplorer.createFile"], value: "newFile" },
+                                { text: editor.language["editor.window.fileExplorer.delete"], value: "delete" },
+                                { text: editor.language["editor.window.fileExplorer.package"], value: "package" },
+                            ];
                         };
 
                         element.contentAnswer = (value) => {
                             switch (value) {
+                                case "newFile": {
+                                    const createdWindow = new editor.windows.fileCreator(400,150);
+                                    createdWindow.__moveToTop();
+                                    createdWindow.x = (window.innerWidth / 2) - 200;
+                                    createdWindow.y = (window.innerHeight / 2) - 100;
+
+                                    createdWindow.path.value = `${path}${key}/newFile.txt`;
+                                    break;
+                                }
+
                                 case "delete":
                                     //Die
                                     project.deleteFile(`${path}${key}`);
+                                    break;
+
+                                case "package":
+                                    project.latte.saveLatteFrom(path);
                                     break;
 
                                 default:
@@ -166,16 +303,16 @@
                 if (!event) event = { type: "ALL", src: "COFFEE_ALL" };
                 switch (event.type) {
                     case "ALL": {
-                        container.innerHTML = "";
-                        this.displayDirectory(this.systemRoot, container, false);
+                        mainContainer.innerHTML = "";
+                        this.displayDirectory(this.systemRoot, mainContainer, false);
                         break;
                     }
 
                     //There is probably a way better way of doing this
                     case "FILE_ADDED": {
-                        container.innerHTML = "";
+                        mainContainer.innerHTML = "";
 
-                        this.displayDirectory(this.systemRoot, container, false);
+                        this.displayDirectory(this.systemRoot, mainContainer, false);
                         break;
                     }
 
@@ -192,7 +329,9 @@
 
         resized() {}
 
-        dispose() {}
+        dispose() {
+            coffeeEngine.removeEventListener("fileSystemUpdate", this.updateFunction);
+        }
     };
 
     editor.windows.__Serialization.register(editor.windows.fileExplorer, "fileExplorer");

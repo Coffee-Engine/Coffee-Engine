@@ -59,7 +59,7 @@
 
                 margin:0px;
 
-                background:${editor.taskbarStyles[editor.taskbarStyle]};
+                background: var(--background-1);
 
                 display:grid;
                 grid-template-columns: auto ${editor.taskbarHeight}px ${editor.taskbarHeight}px;
@@ -222,6 +222,18 @@
                 background-color: var(--background-4);
             }
 
+            .progressBar {
+                width: 100%;
+                background-color: var(--background-4);
+            }
+
+            .progressBar-inner {
+                width: var(--progress);
+                height: 100%;
+                background-color: var(--text-1);
+                transition: all 250ms;
+            }
+
             @keyframes closeWindow {
                 0% {
                     min-height:0px;
@@ -242,6 +254,8 @@
             <div class="dropdownsTopbar">
                 <dropdown-menu id="coffeeEngineProjectDropdown">
                     ${editor.language["editor.dropdown.project"]}
+                    <dropdown-item class="dropdown-menu-fill-down" value="importFiles">${editor.language["editor.dropdown.project.importFiles"]}</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down" value="openLatte">${editor.language["editor.dropdown.project.importLatte"]}</dropdown-item>
                     ${
                         !project.isFolder && editor.safeties.filePermissions
                             ? //If we do have the ability to save directly to the same file
@@ -251,7 +265,6 @@
                               `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
                     }
                     <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}</dropdown-item>
-                    <dropdown-item class="dropdown-menu-fill-down"  value="importFile">${editor.language["editor.dropdown.project.importFile"]}</dropdown-item>
                 </dropdown-menu>
                 <dropdown-menu id="coffeeEngineWindowDropdown">
                     ${editor.language["editor.dropdown.window"]}
@@ -262,21 +275,21 @@
                     <dropdown-item class="dropdown-menu-fill-down"  value="save">${editor.language["editor.dropdown.scene.save"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="load">${editor.language["editor.dropdown.scene.load"]}</dropdown-item>
                 </dropdown-menu>
+                <dropdown-menu id="coffeeEngineRuntimeDropdown">
+                    ${editor.language["editor.dropdown.runtime"]}
+                    <dropdown-item class="dropdown-menu-fill-down"  value="startHere">${editor.language["editor.dropdown.runtime.startHere"]}</dropdown-item>
+                    <dropdown-item class="dropdown-menu-fill-down"  value="startDefault">${editor.language["editor.dropdown.runtime.startDefault"]}</dropdown-item>
+                </dropdown-menu>
             </div>
             <div class="dockDefault" id="coffeeEngineDock"></div>
             <div class="dockOverlay" id="coffeeEngineDockoverlay"></div>
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         editor.dock.element = document.getElementById("coffeeEngineDock");
         editor.dock.overlayElement = document.getElementById("coffeeEngineDockoverlay");
-
-        //Deserialize our windows
-        editor.dock.refreshLayout(true);
-        editor.__deserializeLayout();
-        editor.__setupDropdownFunctionality();
 
         //Our indexedDB store
         const store = editor.indexedDB.getStore("recentprojects", false);
@@ -340,8 +353,6 @@
         sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/files.js");
         //sugarcube.extensionManager.loadExtension("editor/codeEditors/sugarcube/defaultBlocks/testCat.js");
 
-        const fileReader = new FileReader();
-
         //Add our scene file hook
         editor.addFileOpenHook(
             "scene",
@@ -351,10 +362,18 @@
             this
         );
 
-        //Open the user into the defaultScene
-        project.getFile("scenes/default.scene").then((file) => {
-            if (!file) return;
-            coffeeEngine.runtime.currentScene.openScene("scenes/default.scene");
+        //Open the user into the defaultScene (once the project config is loaded)
+        coffeeEngine.addEventListener("projectSettingsLoaded", () => {
+            //Deserialize our windows
+            editor.dock.refreshLayout(true);
+            editor.__deserializeLayout();
+            editor.__setupDropdownFunctionality();
+
+            //Then load default scene
+            project.getFile(coffeeEngine.runtime.defaultScene).then((file) => {
+                if (!file) return;
+                coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.defaultScene);
+            }).catch(() => {});
         });
     };
 })();

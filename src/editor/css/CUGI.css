@@ -1,0 +1,322 @@
+.CUGI-PropertyHolder {
+    display : flex;
+    margin: 2px;
+    padding: 0px;
+
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.CUGI-Number {
+    width: 64px;
+}
+
+.CUGI-String {
+    min-width: 128px;
+}
+
+.CUGI-X {
+    border-left-color: #ff0000;
+}
+
+.CUGI-Y {
+    border-left-color: #00ff00;
+}
+
+.CUGI-Z {
+    border-left-color: #0000ff;
+}
+
+.CUGI-W {
+    border-left-color: #ffff00;
+}
+
+.CUGI-BroadcastContainer {
+    flex-direction: column;
+
+    background-color: var(--background-1);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+    text-align: center;
+    width: 100%;
+}
+
+.CUGI-Broadcast {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--background-2);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+}
+
+.CUGI-BroadcastRemove {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.CUGI-BroadcastName {
+    margin-left: 8px;
+}
+
+.CUGI-BroadcastCreation-Container {
+    display: grid;
+    grid-template-columns: auto 64px;
+}
+
+.CUGI-CollisionGroupContainer {
+    flex-direction: column;
+
+    background-color: var(--background-1);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+    text-align: center;
+    width: 100%;
+
+    overflow-x: hidden;
+}
+
+.CUGI-CollisionGroupCreation-Container {
+    display: grid;
+    grid-template-columns: auto 64px;
+    border-bottom-color: var(--background-4);
+    border-bottom-style: solid;
+    border-bottom-width: 4px;
+
+    margin-bottom: 8px;
+}
+
+.CUGI-CollisionGroup {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--background-2);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+}
+
+.CUGI-CollisionGroupRemove {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    margin: 0px;
+    padding: 0px;
+}
+
+.CUGI-CollisionGroupName {
+    margin-left: 8px;
+}
+
+.CUGI-CollisionGroupMatrix-Container {
+    overflow-x: scroll;
+}
+
+.CUGI-CollisionMatrix {
+    display: grid;
+    grid-template-columns: var(--grid);
+    width: 100%;
+}
+
+.CUGI-CollisionMatrixGroupName {
+    background-color: var(--background-2);
+    min-width: 64px;
+    min-height: 16px;
+    padding: 4px;
+    text-align: center;
+    text-overflow: clip;
+}
+
+.CUGI-CollisionRightBorder {
+    border-right-color: var(--background-3);
+    border-right-width: 4px;
+    border-right-style: solid;
+}
+
+.CUGI-CollisionBottomBorder {
+    border-bottom-color: var(--background-3);
+    border-bottom-width: 4px;
+    border-bottom-style: solid;
+}
+
+.CUGI-CollisionGroupCheckbox {
+    transform: translate(0%, 0%) !important;
+}
+
+.CUGI-CollisionGroupCheckboxContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-1);
+}
+
+.CUGI-ExtensionContainer {
+    flex-direction: column;
+
+    background-color: var(--background-1);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+    text-align: center;
+    width: 100%;
+}
+
+.CUGI-Extension {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--background-2);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+}
+
+.CUGI-ExtensionReload {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.CUGI-ExtensionRemove {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+.CUGI-ExtensionDetail {
+    display: grid;
+    grid-template-rows: 50% 50%;
+}
+
+.CUGI-ExtensionName {
+    text-align: left;
+    margin:2px;
+    margin-left: 8px;
+}
+
+.CUGI-arrayContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-2);
+    border-color: var(--background-3);
+    border-width: 2px;
+    border-style: solid;
+    overflow-x: auto;
+}
+
+.CUGI-objectContainer {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-2);
+    border-color: var(--background-3);
+    border-width: 2px;
+    border-style: solid;
+    overflow-x: auto;
+}
+
+.CUGI-ItemContainer {
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+.CUGI-ItemValueDiv {
+    display: flex;
+    height: 100%;
+    margin: 0px;
+}
+
+.CUGI-ItemName {
+    font-weight: bold;
+    font-style: italic;
+    margin: 0px;
+    padding: 0.5em;
+}
+
+.CUGI-GlobalContainer {
+    flex-direction: column;
+
+    background-color: var(--background-1);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+    text-align: center;
+    width: 100%;
+}
+
+.CUGI-Global {
+    display: grid;
+    grid-template-columns: 41px auto 1fr;
+    background-color: var(--background-2);
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--background-4);
+}
+
+.CUGI-GlobalRemove {
+    border-right-color: var(--background-4);
+    border-right-style: solid;
+    border-right-width: 3px;
+    aspect-ratio: 1;
+    height: 41px;
+    margin: 0px;
+    padding: 0px;
+}
+
+.CUGI-GlobalName {
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.CUGI-GlobalCreation-Container {
+    display: grid;
+    grid-template-columns: auto 64px;
+}
+
+.CUGI-ValueDiv {
+    background-color: var(--background-3);
+    display: flex;
+}
+
+.CUGI-ValueDiv > input {
+    width: 100%;
+}
+
+.CUGI-ValueDiv > div {
+    width: 100%;
+}
+
+.CUGI-AddBroadcast {
+    font-weight: normal;
+    font-size: x-large;
+    font-family: monospace;
+}
+
+.CUGI-AddGlobal {
+    font-weight: normal;
+    font-size: x-large;
+    font-family: monospace;
+}
+
+.CUGI-CollisionGroupAdd {
+    font-weight: normal;
+    font-size: x-large;
+    font-family: monospace;
+}

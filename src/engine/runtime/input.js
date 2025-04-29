@@ -58,6 +58,9 @@
 
     //Keyboard stuff
     window.addEventListener("keydown", (event) => {
+        //FOR SOME REASON cHroMium doesn't take ONLY KEYBOARD INPUT as keyboard input.
+        if (!event.key) return;
+
         let lowercase = event.key.toLowerCase();
         //Account for space
         if (event.key == " ") {
@@ -69,6 +72,9 @@
     });
 
     window.addEventListener("keyup", (event) => {
+        //FOR SOME REASON cHroMium doesn't take ONLY KEYBOARD INPUT as keyboard input.
+        if (!event.key) return;
+
         let lowercase = event.key.toLowerCase();
         if (event.key == " ") {
             lowercase = "space";

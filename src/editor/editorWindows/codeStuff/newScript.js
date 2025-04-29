@@ -85,7 +85,7 @@
                 //This might be the one reason I actually look for a catch :Skull Emoji:
                 project.getFile(this.path.value).catch((reason) => {
                     //Then we set the file
-                    project.setFile(this.path.value, editor.getLanguageDefFromExtension(this.type.value).defaultBehavior(sugarcubeInheritence), "text/javascript").then((path) => {
+                    project.setFile(this.path.value, editor.getLanguageDefFromExtension(this.type.value).defaultBehavior(sugarcubeInheritence, this.path.value), "text/javascript").then((path) => {
                         editor.sendFileHook(path.split(".")[1], path);
                         this._dispose();
                     });

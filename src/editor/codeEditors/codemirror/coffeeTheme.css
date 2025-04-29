@@ -1,0 +1,158 @@
+.cm-s-coffee-engine.CodeMirror {
+    background: var(--background-2);
+    color: var(--code-text);
+    font-family: var(--code-fontFamily), monospace;
+    font-size: var(--code-fontSize);
+    height: 100%;
+}
+
+.cm-s-coffee-engine div.CodeMirror-selected {
+    background: var(--background-4);
+}
+
+.cm-s-coffee-engine .CodeMirror-line::selection,
+.cm-s-coffee-engine .CodeMirror-line>span::selection,
+.cm-s-coffee-engine .CodeMirror-line>span>span::selection {
+    background: var(--background-4);
+}
+
+.cm-s-coffee-engine .CodeMirror-line::-moz-selection,
+.cm-s-coffee-engine .CodeMirror-line>span::-moz-selection,
+.cm-s-coffee-engine .CodeMirror-line>span>span::-moz-selection {
+    background: var(--background-4);
+}
+
+.cm-s-coffee-engine .CodeMirror-gutters {
+    background: var(--background-3);
+    border-right: 0px;
+}
+
+.cm-s-coffee-engine .CodeMirror-guttermarker {
+    color: var(--text-2);
+}
+
+.cm-s-coffee-engine .CodeMirror-guttermarker-subtle {
+    color: var(--text-3);
+}
+
+.cm-s-coffee-engine .CodeMirror-linenumber {
+    color: var(--text-1);
+}
+
+.cm-s-coffee-engine .CodeMirror-cursor {
+    border-left: 1px solid var(--text-1);
+}
+
+.cm-s-coffee-engine span.cm-comment {
+    color: var(--comment);
+}
+
+.cm-s-coffee-engine span.cm-atom {
+    color: var(--class-name);
+}
+
+.cm-s-coffee-engine span.cm-number {
+    color: var(--number-color);
+}
+
+.cm-s-coffee-engine span.cm-comment.cm-attribute {
+    color: var(--attribute);
+}
+
+.cm-s-coffee-engine span.cm-comment.cm-def {
+    color: var(--comment-doc);
+}
+
+.cm-s-coffee-engine span.cm-comment.cm-tag {
+    color: var(--comment-doc-keyword);
+}
+
+.cm-s-coffee-engine span.cm-comment.cm-type {
+    color: var(--comment-doc-type);
+}
+
+.cm-s-coffee-engine span.cm-property,
+.cm-s-coffee-engine span.cm-attribute {
+    color: var(--attribute);
+}
+
+.cm-s-coffee-engine span.cm-keyword {
+    color: var(--keyword);
+}
+
+.cm-s-coffee-engine span.cm-builtin {
+    color: var(--keyword);
+}
+
+.cm-s-coffee-engine span.cm-string {
+    color: var(--string);
+}
+
+.cm-s-coffee-engine span.cm-variable {
+    color: var(--variable);
+}
+
+.cm-s-coffee-engine span.cm-variable-2 {
+    color: var(--variable);
+}
+
+.cm-s-coffee-engine span.cm-variable-3,
+.cm-s-coffee-engine span.cm-type {
+    color: var(--variable);
+}
+
+.cm-s-coffee-engine span.cm-def {
+    color: var(--class-name);
+}
+
+.cm-s-coffee-engine span.cm-bracket {
+    color: var(--delimiter-bracket);
+}
+
+.cm-s-coffee-engine span.cm-tag {
+    color: var(--code-tag);
+}
+
+.cm-s-coffee-engine span.cm-header {
+    color: var(--code-header);
+}
+
+.cm-s-coffee-engine span.cm-link {
+    color: var(--code-link);
+}
+
+.cm-s-coffee-engine .CodeMirror-activeline-background {
+    background: var(--background-3);
+}
+
+.cm-s-coffee-engine .CodeMirror-matchingbracket {
+    text-decoration: underline;
+    color: var(--text-3) !important;
+}
+
+.cm-s-coffee-engine .CodeMirror-foldmarker {
+    color: var(--link-1);
+    text-shadow: var(--link-3) 1px 1px 2px, var(--link-3) -1px -1px 2px, var(--link-3) 1px -1px 2px, var(--link-3) -1px 1px 2px;
+    font-family: arial;
+    line-height: .3;
+    font-size: 2em;
+    cursor: pointer;
+}
+
+.cm-s-coffee-engine .CodeMirror-foldgutter {
+    width: .7em;
+}
+
+.cm-s-coffee-engine .CodeMirror-foldgutter-open,
+.cm-s-coffee-engine .CodeMirror-foldgutter-folded {
+    cursor: pointer;
+}
+
+.cm-s-coffee-engine .CodeMirror-foldgutter-open:after {
+content: "\25BE";
+}
+
+.cm-s-coffee-engine .CodeMirror-foldgutter-folded:after {
+    content: "\25B8";
+}
+  

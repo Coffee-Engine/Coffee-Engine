@@ -17,6 +17,7 @@
                 //Simple debug test
                 shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 shader.uniforms.u_objectID.value = drawID;
+                coffeeEngine.renderer.daveshade.cullFace();
                 shader.drawFromBuffers(6);
             }
         }
@@ -25,6 +26,8 @@
             // prettier-ignore
             return [
                 { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
+                "---",
+                { name: "collisionGroup", translationKey: "engine.nodeProperties.Collision.group", items: () => {return Object.keys(coffeeEngine.collisionGroup)}, type: coffeeEngine.PropertyTypes.DROPDOWN},
                 "---", 
                 { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC2 }, 
                 { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.FLOAT, isRadians: true }, 

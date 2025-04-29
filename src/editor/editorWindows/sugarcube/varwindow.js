@@ -181,17 +181,39 @@
             container.appendChild(variableName);
             container.appendChild(typeDiv);
 
-            this.colorInput = document.createElement("color-picker");
-            this.colorInput.setAttribute("hasExtensions", true);
-            container.appendChild(this.colorInput);
-            this.colorInput.style.width = "32px";
-            this.colorInput.style.height = "32px";
+            this.extraOptions = document.createElement("div");
+            this.extraOptions.style.display = "flex";
+            this.extraOptions.style.alignItems = "center";
+            this.extraOptions.style.justifyContent = "center";
 
-            this.colorInput.style.position = "relative";
-            this.colorInput.style.margin = "8px";
-            this.colorInput.style.marginLeft = "50%";
+            {
+                this.colorInput = document.createElement("color-picker");
+                this.colorInput.setAttribute("hasExtensions", true);
+                this.extraOptions.appendChild(this.colorInput);
+                this.colorInput.style.width = "32px";
+                this.colorInput.style.height = "32px";
 
-            this.colorInput.style.transform = "translate(-50%,0%)";
+                this.colorInput.style.position = "relative";
+                this.colorInput.style.margin = "8px";
+
+                this.colorInput.style.transform = "translate(-50%,0%)";
+
+                const publicText = document.createElement("p");
+                publicText.innerText = `${editor.language["editor.window.createVar.isPublic"]} : `;
+                publicText.style.marginLeft = "8px";
+                publicText.style.fontSize = "16px";
+                this.extraOptions.appendChild(publicText);
+    
+                //Then the checkbox
+                this.publicInput = document.createElement("input");
+                this.publicInput.type = "checkbox";
+                this.publicInput.style.transform = "translate(0%,0%)";
+                this.publicInput.style.width = "16px";
+                this.publicInput.style.height = "16px";
+                this.extraOptions.appendChild(this.publicInput);
+            }
+
+            container.appendChild(this.extraOptions);
 
             const buttonDiv = document.createElement("div");
             buttonDiv.style.display = "grid";
@@ -202,7 +224,7 @@
                 closeButton.style.margin = "10%";
                 closeButton.style.marginLeft = "25%";
                 closeButton.style.marginRight = "12.5%";
-                closeButton.innerText = "cancel";
+                closeButton.innerText = editor.language["engine.generic.back"];
                 buttonDiv.appendChild(closeButton);
 
                 //Close button functionality
@@ -214,7 +236,7 @@
                 doneButton.style.margin = "10%";
                 doneButton.style.marginLeft = "12.5%";
                 doneButton.style.marginRight = "25%";
-                doneButton.innerText = "done";
+                doneButton.innerText = editor.language["engine.generic.done"];
                 buttonDiv.appendChild(doneButton);
 
                 //Done button functionality
@@ -222,7 +244,7 @@
                     if (variableName.value.length < 1) return;
 
                     //Create our variable
-                    sugarcube.variables.createVariable(variableName.value, this.variableType, this.colorInput.value);
+                    sugarcube.variables.createVariable(variableName.value, this.variableType, this.colorInput.value, this.publicInput.checked);
 
                     //Refresh extension categories
                     sugarcube.extensionManager.updateExtensionBlocks("variables");

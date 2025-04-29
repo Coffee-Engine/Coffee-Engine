@@ -4,6 +4,11 @@
         coffeeEngine.renderer.fileToTexture = (src) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+                
                 if (coffeeEngine.renderer.textureStorage[src]) {
                     resolve(coffeeEngine.renderer.textureStorage[src]);
                     return;
@@ -63,6 +68,11 @@
         coffeeEngine.renderer.fileToShader = (src, override) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+
                 //If we want to override the shader override.
                 if (!override) {
                     //Make sure we allocate this in storage first
@@ -83,7 +93,25 @@
 
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
-                    coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.compilePBRshader(fileReader.result);
+                    if (!override) {
+                        coffeeEngine.renderer.shaderStorage[src] = coffeeEngine.renderer.compilePBRshader(fileReader.result);
+                    }
+                    else {
+                        const shader = coffeeEngine.renderer.compilePBRshader(fileReader.result);
+                        if (coffeeEngine.renderer.shaderStorage[src]) {
+                            //Check to make sure our status is good
+                            if (shader.status == 0) return;
+
+                            //If so dispose
+                            if (coffeeEngine.renderer.shaderStorage[src].dispose) coffeeEngine.renderer.shaderStorage[src].dispose();
+
+                            //Replace the shader
+                            for (let key in shader) {
+                                coffeeEngine.renderer.shaderStorage[src][key] = shader[key];
+                            }
+                        }
+                        else coffeeEngine.renderer.shaderStorage[src] = shader;
+                    }
 
                     resolve(coffeeEngine.renderer.shaderStorage[src]);
                 };
@@ -103,6 +131,11 @@
         coffeeEngine.renderer.fileToMaterial = (src) => {
             //Then we make our promise
             return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+                
                 //Make sure we allocate this in storage first
                 if (coffeeEngine.renderer.materialStorage[src]) {
                     resolve(coffeeEngine.renderer.materialStorage[src]);
@@ -121,7 +154,7 @@
                     fileReader.onload = () => {
                         const materialData = JSON.parse(fileReader.result) || { shader: "coffee:/basis.glsl", params: {} };
 
-                        coffeeEngine.renderer.materialStorage[src] = new coffeeEngine.renderer.material(materialData.shader || "coffee:/basis", materialData.params || {});
+                        coffeeEngine.renderer.materialStorage[src] = new coffeeEngine.renderer.material(materialData || {});
 
                         resolve(coffeeEngine.renderer.materialStorage[src]);
                     };

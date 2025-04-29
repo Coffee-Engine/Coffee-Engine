@@ -80,6 +80,40 @@
                     },
                     "---",
                     {
+                        opcode: "instansiateNode",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: editor.language["sugarcube.scene.block.instansiateNode"],
+                        arguments: {
+                            node: {
+                                menu: "NodeMenu"
+                            },
+                        },
+                    },
+                    {
+                        opcode: "setParentOf",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.scene.block.setParentOf"],
+                        arguments: {
+                            node: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                            parent: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            },
+                        },
+                    },
+                    {
+                        opcode: "unparent",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.scene.block.unparent"],
+                        arguments: {
+                            node: {
+                                type: sugarcube.ArgumentType.OBJECT,
+                            }
+                        },
+                    },
+                    "---",
+                    {
                         opcode: "setVariable",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.scene.block.setVariable"],
@@ -99,7 +133,7 @@
                     },
                     {
                         opcode: "getVariable",
-                        type: sugarcube.BlockType.REPORTER,
+                        type: sugarcube.BlockType.REPORTER_ANY,
                         text: editor.language["sugarcube.scene.block.getVariable"],
                         arguments: {
                             variable: {
@@ -112,18 +146,45 @@
                         },
                     },
                 ],
+                menus: {
+                    NodeMenu: {
+                        items: "nodeMenu",
+                        acceptReporters: true
+                    }
+                },
                 fields: {
                     Scene: {
                         acceptReporters: true,
                         editor: "file_Editor",
 
-                        initilize: "file_Init",
+                        initilize: "generic_Init",
                     },
                 },
             };
         }
 
-        file_Init(field) {
+        nodeMenu() {
+            const returned = [];
+
+            for (let key in coffeeEngine.nodeRegister) {
+                //Get our menu definition for the node
+                const nodeDef = {
+                    text: editor.language[`engine.nodeNames.${key}`] || key,
+                    value: key
+                };
+
+                //Get our parent and our index for it if possible
+                const nodeParent = coffeeEngine.nodeRegister[key][1];
+                const foundIndex = returned.findIndex((element) => element.value == nodeParent);
+
+                if (foundIndex == -1) returned.push(nodeDef)
+                else returned.splice(foundIndex + 1, 0, nodeDef);
+            }
+
+            return returned;
+        }
+
+        generic_Init(field) {
             field.createBorderRect_();
             field.createTextElement_();
         }
@@ -166,6 +227,19 @@
 
         getScript({ object }) {
             return object ? object.scriptObject : null;
+        }
+
+        instansiateNode({ node }) {
+            if (!coffeeEngine.nodeRegister[node]) return;
+            return new coffeeEngine.nodeRegister[node][0]();
+        }
+
+        setParentOf({ node, parent }) {
+            node.parent = parent;
+        }
+
+        unparent({ node }) {
+            node.parent = null;
         }
 
         getChildren({ object }) {

@@ -260,6 +260,30 @@
                     },
                     "---",
                     {
+                        opcode: "true",
+                        compileFunc: "true",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.true"]
+                    },
+                    {
+                        opcode: "false",
+                        compileFunc: "false",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.false"]
+                    },
+                    "---",
+                    {
+                        opcode: "exists",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.operators.block.exists"],
+                        arguments: {
+                            value: {
+                                type: sugarcube.ArgumentType.HOLE
+                            }
+                        }
+                    },
+                    "---",
+                    {
                         opcode: "modulo",
                         type: sugarcube.BlockType.REPORTER,
                         text: editor.language["sugarcube.operators.block.modulo"],
@@ -386,6 +410,19 @@
             return sugarcube.cast.toBoolean(sugarcube.cast.toBoolean(A) ^ sugarcube.cast.toBoolean(B));
         }
 
+        true() {
+            return "true";
+        }
+
+        false() {
+            return "false";
+        }
+
+        //yeah a silly block
+        exists({ value }) {
+            return !(value === undefined || value === null || value === "");
+        }
+
         not({ A }) {
             return !sugarcube.cast.toBoolean(A);
         }
@@ -420,13 +457,13 @@
                     return Math.tan(sugarcube.cast.toNumber(B) * this.deg2Rad);
 
                 case "asin":
-                    return Math.asin(sugarcube.cast.toNumber(B) * this.rad2Deg);
+                    return Math.asin(sugarcube.cast.toNumber(B)) * this.rad2Deg;
 
                 case "acos":
-                    return Math.acos(sugarcube.cast.toNumber(B) * this.rad2Deg);
+                    return Math.acos(sugarcube.cast.toNumber(B)) * this.rad2Deg;
 
                 case "atan":
-                    return Math.atan(sugarcube.cast.toNumber(B) * this.rad2Deg);
+                    return Math.atan(sugarcube.cast.toNumber(B)) * this.rad2Deg;
 
                 default:
                     return Math[A](sugarcube.cast.toNumber(B));

@@ -5,7 +5,7 @@ input {
 
     color: var(--text-1);
 
-    -moz-appearance: textfield;
+    appearance: textfield;
 }
 
 input[type="checkbox"] {
@@ -44,6 +44,14 @@ input[type="checkbox"]:checked {
 input[type="checkbox"]:checked:hover {
     background-color: var(--text-2);
     border-color: var(--text-1);
+}
+
+textarea {
+    background-color: var(--background-2);
+    border-color: var(--background-1);
+    border-style: solid;
+
+    color: var(--text-1);
 }
 
 select {
@@ -156,4 +164,66 @@ input[type="range"]::-moz-range-progress {
 input[type="range"]::-moz-range-track {
     background-color: var(--background-4);
     height: 16px;
+}
+
+button {
+    background-color: var(--background-2);
+    color: var(--text-1);
+
+    border-style: solid;
+    border-radius: 2px;
+    border-width: 2px;
+    border-color: var(--background-3);
+
+    transition:
+        all 100ms,
+        visibility 1ms;
+
+    font-size: large;
+
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+
+    cursor: pointer;
+}
+
+button:hover {
+    color: var(--text-2);
+    background-color: var(--background-3);
+}
+
+button:active {
+    color: var(--text-1);
+    background-color: var(--background-4);
+    border-color: var(--background-4);
+}
+
+button:disabled {
+    color: var(--text-1);
+    background-color: var(--background-4);
+    border-color: var(--background-4);
+}
+
+.blocklyFlyoutButton {
+    fill: transparent;
+    stroke: var(--text-1);
+    stroke-width: 1px;
+    transition: fill 250ms;
+}
+
+.blocklyFlyoutButton:hover {
+    fill: var(--text-3);
+    stroke: var(--text-1);
+    stroke-width: 1px;
+}
+
+.blocklyFlyoutButtonShadow {
+    fill: transparent;
+}
+
+.blocklyFlyoutButton>.blocklyText {
+    fill: var(--text-1);
+    font: 500 16pt helvetica;
+    stroke: transparent;
 }

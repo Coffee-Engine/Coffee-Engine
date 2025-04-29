@@ -13,6 +13,16 @@
         ambientColor = [0, 0, 0];
         lightCount = 0;
         
+        //The layout
+        //* TYPE          , FALLOFF   , START
+        //* RED           , GREEN     , BLUE
+        //* Sun Multiplier, Sky Effect, NU 
+        fogData = [
+            0, 0.125, 5,
+            [1, 1, 1],
+            8, 0, 0
+        ];
+        
         //? And here is our matrix.
         //? The humble matrix
         mixedMatrix = coffeeEngine.matrix4.identity();
@@ -87,7 +97,7 @@
 
         update(deltaTime) {
             this.children.forEach(child => {
-                child.update();
+                child.update(deltaTime);
             })
             
             //this.castEvent("update", deltaTime);
@@ -195,17 +205,24 @@
 
         __drawFinal(renderer, mainPass) {
             renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            const uniforms = mainPass.uniforms;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
-            mainPass.uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
-            mainPass.uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
-            mainPass.uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
-            mainPass.uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
-            mainPass.uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            mainPass.uniforms.u_sunDir.value = this.sunDirection;
-            mainPass.uniforms.u_sunColor.value = this.sunColor;
-            mainPass.uniforms.u_ambientColor.value = this.ambientColor;
-            mainPass.uniforms.u_lightCount.value = this.lightCount;
-            mainPass.uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
+            
+            //Neato!
+            uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
+            uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
+            uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
+            uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
+            uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
+            uniforms.u_sunDir.value = this.sunDirection;
+            uniforms.u_sunColor.value = this.sunColor;
+            uniforms.u_ambientColor.value = this.ambientColor;
+            uniforms.u_lightCount.value = this.lightCount;
+            uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
+            uniforms.u_fogData.value = this.fogData.flat();
+            uniforms.u_antiAliasingRate.value = (coffeeEngine.renderer.viewport.antiAlias) ? 2 : 1;
+
+            //Draw main pass!
             mainPass.drawFromBuffers(6);
         }
 
@@ -245,36 +262,82 @@
             node = null;
         }
 
+        __serializeValue(value) {
+            //Determine original coolage
+            let returned = {};
+            if (Array.isArray(value)) returned = [];
+            
+            let rValue = value;
+            if (value.serialize && typeof value.serialize == "function") returned = rValue.serialize();
+            
+            if (typeof rValue == "object") {
+                for (let key in rValue) {
+                    returned[key] = this.__serializeValue(rValue[key]);
+                }
+            }
+            else {
+                returned = rValue;
+            }
+
+            return returned;
+        }
+
+        //We want to recursively go downwards and get the properties and types of each child
+        __serializeChildren(node) {
+            const returnedObject = [];
+            node.forEach((child) => {
+                const properties = {};
+
+                //Do script startup props first so ensure they load first
+
+                //Less precious but still needed to be stored
+                let extraSerialize = (child.extraSerialize) ? child.extraSerialize() : [];
+                let extraAfter = false;
+                if (typeof extraSerialize != "object") extraSerialize = [];
+
+                //Now we check for after
+                if (!Array.isArray(extraSerialize)) {
+                    extraAfter = extraSerialize.after || false;
+                    extraSerialize = extraSerialize.data || [];
+                }
+
+                //If we are before
+                if (extraSerialize && !extraAfter) extraSerialize.forEach((property) => {
+                    //Safeties
+                    if (!child[property]) return;
+                    properties[property] = this.__serializeValue(child[property]);
+                });
+
+                //Loop through child properties and validate/add each one
+                child.getProperties(() => {}, true).forEach((property) => {
+                    //Make sure its a property and not a label
+                    if (typeof property != "object") return;
+
+                    //Safeties
+                    if (!child[property.name]) return;
+                    properties[property.name] = this.__serializeValue(child[property.name]);
+                });
+
+                //If we are after
+                if (extraSerialize && extraAfter) extraSerialize.forEach((property) => {
+                    //Safeties
+                    if (!child[property]) return;
+                    properties[property] = this.__serializeValue(child[property]);
+                });
+
+                //Push the child to the returned object array
+                returnedObject.push({
+                    name: child.name,
+                    nodeType: coffeeEngine.getNodeName(child),
+                    children: this.__serializeChildren(child.children),
+                    properties: properties,
+                });
+            });
+            return returnedObject;
+        }
+
         //Scene serialization and stuff
         serialize() {
-            //We want to recursively go downwards and get the properties and types of each child
-            const goDown = (children) => {
-                const returnedObject = [];
-                children.forEach((child) => {
-                    const properties = {};
-
-                    //Loop through child properties and validate/add each one
-                    child.getProperties().forEach((property) => {
-                        //Make sure its a property and not a label
-                        if (typeof property != "object") return;
-
-                        //Safeties
-                        if (!child[property.name]) return;
-                        if (child[property.name].serialize) properties[property.name] = child[property.name].serialize();
-                        else properties[property.name] = child[property.name];
-                    });
-
-                    //Push the child to the returned object array
-                    returnedObject.push({
-                        name: child.name,
-                        nodeType: coffeeEngine.getNodeName(child),
-                        children: goDown(child.children),
-                        properties: properties,
-                    });
-                });
-                return returnedObject;
-            };
-
             //Get our preloaded asset paths
             const keys = {};
             Object.keys(coffeeEngine.preloadFunctions).forEach((key) => {
@@ -290,7 +353,7 @@
             return {
                 name: this.name,
                 nodeType: "scene",
-                children: goDown(coffeeEngine.runtime.currentScene.children),
+                children: this.__serializeChildren(coffeeEngine.runtime.currentScene.children),
                 preload: keys,
 
                 //Serialize the sky
@@ -299,7 +362,50 @@
                 groundColor: this.groundColor,
                 centerColor: this.centerColor,
                 ambientColor: this.ambientColor,
+                fogData: this.fogData,
             };
+        }
+
+        //Scene deserialization and stuff
+        __deserializeValue(value) {
+            //Prototype property
+            if (typeof value == "object" && value["/-_-PROTOTYPE-_-/"]) {
+                if (coffeeEngine[value["/-_-PROTOTYPE-_-/"]] && coffeeEngine[value["/-_-PROTOTYPE-_-/"]].deserialize) {
+                    let returned;
+                    returned = coffeeEngine[value["/-_-PROTOTYPE-_-/"]].deserialize(returned, value.value);
+                    return returned;
+                }
+            }
+
+            //if not do our typical
+            let returned = value;
+            if (typeof returned == "object") {
+                for (let key in value) {
+                    returned[key] = this.__deserializeValue(returned[key]);
+                }
+            }
+
+            return returned;
+        }
+
+        //recursive child looping
+        __deserializeChildren(parent, physicalParent) {
+            parent.children.forEach((child) => {
+                //Get our node class
+                const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
+                const node = new nodeClass();
+                node.name = child.name;
+                node.parent = physicalParent;
+
+                //Loop through the node's properties
+                if (child.properties) {
+                    for (let key in child.properties) {
+                        node[key] = this.__deserializeValue(child.properties[key]);
+                    }
+                }
+
+                this.__deserializeChildren(child, node);
+            });
         }
 
         deserialize(data) {
@@ -309,6 +415,11 @@
             this.groundColor = data.groundColor || [1, 1, 1];
             this.centerColor = data.centerColor || [0, 0, 0];
             this.ambientColor = data.ambientColor || [0.05, 0.05, 0.05];
+            this.fogData = data.fogData || [
+                0, 0.125, 5,
+                [1, 1, 1],
+                8, 0, 0
+            ];
 
             //Our function for actually loading the scene
             const loadNodes = () => {
@@ -322,32 +433,7 @@
                 this.name = data.name;
 
                 //Now we cycle through every child
-                const _loopThroughChildren = (parent, physicalParent) => {
-                    parent.children.forEach((child) => {
-                        //Get our node class
-                        const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
-                        const node = new nodeClass();
-                        node.name = child.name;
-                        node.parent = physicalParent;
-
-                        //Loop through the node's properties
-                        Object.keys(child.properties).forEach((property) => {
-                            //Make sure we aren't using a ""PROTOTYPE"" definition
-                            const propertyData = child.properties[property];
-                            if (typeof propertyData == "object" && propertyData["/-_-PROTOTYPE-_-/"]) {
-                                if (coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]] && coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize) {
-                                    coffeeEngine[propertyData["/-_-PROTOTYPE-_-/"]].deserialize(node[property], propertyData.value);
-                                }
-                            } else {
-                                node[property] = propertyData;
-                            }
-                        });
-
-                        _loopThroughChildren(child, node);
-                    });
-                };
-
-                _loopThroughChildren(data, this);
+                this.__deserializeChildren(data, this);
             };
 
             //Check if preload exists
@@ -408,29 +494,22 @@
                 { name: "groundColor", translationKey: "engine.nodeProperties.scene.groundColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
                 { name: "centerColor", translationKey: "engine.nodeProperties.scene.centerColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
                 "---", 
-                { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }
+                { name: "ambientColor", translationKey: "engine.nodeProperties.scene.ambientColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true },
+                "---",
+                { name: "0", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogType", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+                    {text: editor.language["engine.nodeProperties.scene.fogType.none"], value: 0},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.retro"], value: 3},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.simple"], value: 1},
+                    {text: editor.language["engine.nodeProperties.scene.fogType.sunAffected"], value: 2},
+                ]},
+                { name: "2", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogStart", type: coffeeEngine.PropertyTypes.FLOAT },
+                { name: "1", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogFalloff", type: coffeeEngine.PropertyTypes.SLIDER, min:0, max: 10 },
+                "---",
+                { name: "3", target: this.fogData, translationKey: "engine.nodeProperties.scene.fogColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true },
+                "---",
+                { name: "5", target: this.fogData, translationKey: "engine.nodeProperties.scene.skyEffect", type: coffeeEngine.PropertyTypes.SLIDER, min:0, max: 1 },
+                { name: "4", target: this.fogData, translationKey: "engine.nodeProperties.scene.sunMultiplier", type: coffeeEngine.PropertyTypes.SLIDER, min:1, max: 10 },
             ];
-
-            //Input Testing stuff
-            /*
-            return [
-                {name: "INT", type: coffeeEngine.PropertyTypes.INT},
-                {name: "FLOAT", type: coffeeEngine.PropertyTypes.FLOAT},
-                {name: "VEC2", type: coffeeEngine.PropertyTypes.VEC2},
-                {name: "VEC3", type: coffeeEngine.PropertyTypes.VEC3},
-                {name: "VEC4", type: coffeeEngine.PropertyTypes.VEC4},
-                {name: "VEC5", type: "vec5"},
-                {name: "VEC6", type: "vec6"},
-                {name: "COLOR3", type: coffeeEngine.PropertyTypes.COLOR3},
-                {name: "COLOR4", type: coffeeEngine.PropertyTypes.COLOR4},
-                {name: "NODE", type: coffeeEngine.PropertyTypes.NODE},
-                {name: "FILE", type: coffeeEngine.PropertyTypes.FILE},
-                {name: "STRING", type: coffeeEngine.PropertyTypes.STRING},
-                {name: "NAME", type: coffeeEngine.PropertyTypes.NAME},
-                {name: "ARRAY", type: coffeeEngine.PropertyTypes.ARRAY},
-                {name: "OBJECT", type: coffeeEngine.PropertyTypes.OBJECT},
-            ]
-            */
         }
     };
 

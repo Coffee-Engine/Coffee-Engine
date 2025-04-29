@@ -1,5 +1,5 @@
 (function () {
-    coffeeEngine.renderer.initilizeBaseShaders = (renderer) => {
+    coffeeEngine.renderer.initilizeDefaultShaders = (renderer) => {
         renderer.mainShaders.unlit = renderer.compilePBRshader(`
         uniform sampler2D u_texture; //?HINT: Default_WHITE
         void fragment() {

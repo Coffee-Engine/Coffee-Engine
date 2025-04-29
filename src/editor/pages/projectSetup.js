@@ -56,7 +56,10 @@
                 left:50%;
                 opacity:0%;
 
-                display: flex;
+                display: grid;
+                display: grid;
+                grid-template-rows: 34px auto;
+
                 flex-direction: column;
 
                 transform:translate(-50%,-50%);
@@ -93,10 +96,12 @@
 
             .innerBox {
                 width:100%; 
-                height:80%; 
+                height:100%; 
                 margin-top:0px;
                 background-color: var(--background-3);
-                flex-grow: 1;
+
+                display: grid;
+                grid-template-rows: auto auto auto;
 
                 border-top: 8px solid var(--background-4);
             }
@@ -104,6 +109,7 @@
             .nameBox {
                 font-size:larger;
                 margin:8px;
+                min-width:0px;
                 text-align: center;
             }
 
@@ -115,42 +121,38 @@
                 text-align: left;
             }
             .nameDiv {
-                position:relative;
-                
-                margin: 0px;
                 margin-left: 25%;
                 margin-right: 25%;
+                margin-top: 3.125%;
+                margin-bottom: 3.125%;
                 padding:0px;
                 
                 width:50%;
 
                 display:grid;
 
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: auto auto;
             }
             
             .fileDiv {
-                position:relative;
-                
-                margin: 0px;
                 margin-left: 25%;
                 margin-right: 25%;
+                margin-top: 6.25%;
+                margin-bottom: 6.25%;
                 padding:0px;
                 
                 width:50%;
 
                 display:grid;
 
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: auto auto;
             }
 
             .buttonDiv {
-                position:relative;
-                
-                margin: 0px;
                 margin-left: 25%;
                 margin-right: 25%;
-                margin-top: 13.5%;
+                margin-top: 6.25%;
+                margin-bottom: 6.25%;
                 
                 width:50%;
 
@@ -172,7 +174,7 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-ProjectSetup">
             <h1 class="leftText" style="margin:2px; margin-top:4px;">
                 <button id="goBack">${editor.language["engine.generic.back"]}</button>
                 ${editor.language["engine.projectSetup.title"]}
@@ -196,13 +198,13 @@
                     </div>
                 </div>
                 <div class="buttonDiv">
-                    <button style="padding:16px;" id="createProject">Create Project</button>
+                    <button style="padding:16px;" id="createProject"> ${editor.language["engine.projectSetup.create"]}</button>
                 </div>
             </div>
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         document.getElementById("goBack").onclick = () => {
             editor.home.initilize();

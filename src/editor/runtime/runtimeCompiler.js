@@ -44,13 +44,19 @@
         });
     };
 
-    editor.runtime.compileWithDecaf = () => {
+    editor.runtime.compileWithDecaf = (scene, noDebugger) => {
         const zipInstance = new JSZip();
 
         return new Promise((resolve, reject) => {
             project.decaf.loopThroughSave("", project.fileSystem, zipInstance, () => {
-                zipInstance.generateAsync({ type: "base64" }).then((base64) => {
+                zipInstance.generateAsync({ type: "base64" }).then(async (base64) => {
                     //base64 = "data:application/zip;base64," + base64;
+
+                    let targetScene = scene || coffeeEngine.runtime.defaultScene;
+                    if (targetScene) targetScene = `"${targetScene}"`;
+                    else targetScene = `undefined`;
+
+                    const debuggerScript = (noDebugger) ? "" : await (await fetch("editor/runtime/debugger.js")).text(); 
 
                     resolve(
                         editor.runtime.compile(
@@ -59,7 +65,9 @@
     //editor.language is a strange requirement of sugarcube.
 (function(){
     window.editor = {
-        language: {}
+        language: {
+            "runtime.debugText": "${editor.language["runtime.debugText"] || "SHIFT+I"}"
+        }
     };
 })()
 </script>`.split("\n"),
@@ -68,27 +76,53 @@
 project.load("base64",
 "${base64}"
 ).then(() => {
-    //Initilize the renderer
-    const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
-    coffeeEngine.renderer.create(coffeeDrawCanvas);
+    //Start the engine when settings are loaded
+    coffeeEngine.addEventListener("projectSettingsLoaded", () => {
+        //Initilize the renderer
+        const coffeeDrawCanvas = document.getElementById("coffeeEngine_MainCanvas");
+        coffeeEngine.renderer.create(coffeeDrawCanvas, coffeeEngine.renderer.viewport.antiAlias);
 
-    coffeeDrawCanvas.width = window.innerWidth;
-    coffeeDrawCanvas.height = window.innerHeight;
-    coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
-    
-    //Scene Stuff
-    const currentScene = coffeeEngine.runtime.currentScene;
-    currentScene.openScene("scenes/default.scene");
-    window.addEventListener("resize",() => {
-        coffeeDrawCanvas.width = window.innerWidth;
-        coffeeDrawCanvas.height = window.innerHeight;
-        coffeeEngine.renderer.drawBuffer.resize(coffeeDrawCanvas.width,coffeeDrawCanvas.height);
+        //Setup backup emergency camera
+        const cameraData = coffeeEngine.renderer.cameraData
+        cameraData.transform = coffeeEngine.matrix4.identity().webGLValue();
+        cameraData.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000).webGLValue();
+        cameraData.wFactor = [1, 1, 0.1];
+        cameraData.aspectRatio = coffeeDrawCanvas.width / coffeeDrawCanvas.height;
+        cameraData.position.x = 0;
+        cameraData.position.y = 0;
+        cameraData.position.z = 0;
+        
+        //Scene Stuff
+        const currentScene = coffeeEngine.runtime.currentScene;
+        currentScene.openScene(${targetScene} || "scenes/default.scene");
+
+        //resizing
+        coffeeEngine.renderer.resizeToProject();
+        window.addEventListener("resize", coffeeEngine.renderer.resizeToProject);
+
+        coffeeEngine.renderer.resizeToProject();
+        if (coffeeEngine.runtime.VSync) coffeeEngine.runtime.startVSyncLoop();
+        else coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
     });
-
-    //Start the frameloop
-    coffeeEngine.runtime.startFrameLoop(60);
 });
 </script>
+<script>
+${debuggerScript}
+</script>
+<style>
+canvas {
+    image-rendering: optimizeSpeed;             // Older versions of FF
+    image-rendering: -moz-crisp-edges;          // FF 6.0+
+    image-rendering: -webkit-optimize-contrast; // Webkit
+                                                //  (Safari now, Chrome soon)
+    image-rendering: optimize-contrast;         // Possible future browsers.
+    -ms-interpolation-mode: nearest-neighbor;   // IE
+}
+
+body {
+    background-color: #000000;
+}
+</style>
                     `.split("\n")
                         )
                     );

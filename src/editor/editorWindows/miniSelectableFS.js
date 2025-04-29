@@ -29,6 +29,7 @@
             this.acceptedTypes = [];
             this.container = container;
 
+            this.dockable = false;
             this.resizable = false;
             this.title = editor.language["editor.window.fileExplorer.select"];
 

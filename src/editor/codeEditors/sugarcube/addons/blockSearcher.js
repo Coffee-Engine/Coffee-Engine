@@ -25,6 +25,9 @@
         indexBlocks(blockTypes) {
             const blockCreationWorkspace = new Blockly.Workspace();
             blockTypes.forEach((blockType) => {
+                //No indexing invalid blocks
+                if (!Blockly.Blocks[blockType]) return;
+
                 const block = blockCreationWorkspace.newBlock(blockType);
                 this.indexBlockText(blockType.replaceAll("_", " "), blockType);
                 block.inputList.forEach((input) => {

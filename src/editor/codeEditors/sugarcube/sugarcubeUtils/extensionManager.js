@@ -366,9 +366,6 @@
                         if (previous && !Array.isArray(previous)) previous = [previous];
                         if (next && !Array.isArray(next)) next = [next];
                         if (output && !Array.isArray(output)) output = [output];
-                        
-                        //Then finally add ANY if any does not exist and any of the connections
-                        if (output && !output.includes("ANY")) output.push("ANY");
 
                         //Scratch Styled Branches
                         if (typeof text == "object") {
@@ -429,6 +426,14 @@
                             const argumentKeys = Object.keys(block.arguments);
                             for (let argumentID = 0; argumentID < argumentKeys.length; argumentID++) {
                                 const argumentKey = argumentKeys[argumentID];
+
+                                //Make sure the argument exists if not remove it
+                                if (!text.includes([`[${argumentKey}]`])) {
+                                    delete block.arguments[argumentKey];
+                                    argumentKeys.splice(argumentID, 1);
+                                    argumentID--;
+                                    continue;
+                                }
 
                                 //Check to see if the argument exists
                                 if (block.arguments[argumentKey]) {
@@ -581,7 +586,7 @@
                         //Cool stuff
                         //If there is an output or tooltip add them to the block definition
                         //Note that output only determines what the block puts out.
-                        if (block.alignments) blockDef["lastDummyAlign0"] = block.alignment;
+                        if (block.alignment) blockDef["lastDummyAlign0"] = block.alignment;
                         if (previous) blockDef.previousStatement = previous;
                         if (next) blockDef.nextStatement = next;
                         if (output) blockDef.output = output;
@@ -799,7 +804,7 @@
                     contextMenu.preconditionFn = (scope) => {
                         //This part sucks I have to write a whole storage thingy. UGhhhhhh
                         if (!menuDat.global && !sugarcube.contextMenuBlockCorrolations[contextMenu.id].includes(scope.block.type)) return "hidden";
-                        if (extensionClass[menuDat.eligibility]) return extensionClass[menuDat.eligibility](scope.block, scope);
+                        if (extensionClass[menuDat.eligibility]) return (extensionClass[menuDat.eligibility](scope.block, scope)) ? "enabled" : "disabled";
                         return "enabled";
                     };
                 }
@@ -864,6 +869,7 @@
 
             if (sugarcube.extensionInstances[myInfo.id]) return;
 
+            extension.__info = myInfo;
             sugarcube.extensionInstances[myInfo.id] = extension;
 
             //If we aren't in the editor stop here
@@ -991,6 +997,8 @@
             }
 
             if (sugarcube.workspace) {
+                sugarcube.setToolboxBasedOnFilter(sugarcube.currentFilter);
+                
                 sugarcube.workspace.updateToolbox(sugarcube.filtered);
 
                 sugarcube.workspace.getToolbox().refreshSelection();
@@ -1019,6 +1027,16 @@
             );
         }
 
+        getExtensionUnfilteredToolboxIndex(extensionID) {
+            //Find its index
+            return sugarcube.toolbox.contents.indexOf(
+                //Get the extension's def
+                sugarcube.toolbox.contents.find((item) => {
+                    return item.id == extensionID;
+                })
+            );
+        }
+
         removeExtension(extensionID) {
             if (sugarcube.extensionInstances[extensionID]) {
                 //run the disposal function if it exists
@@ -1027,16 +1045,58 @@
                 }
 
                 //Remove the extension's toolbox contents
-                sugarcube.toolbox.contents.splice(getExtensionIndex(extensionID), 1);
+                sugarcube.toolbox.contents.splice(this.getExtensionUnfilteredToolboxIndex(extensionID), 1);
+
+                const instance = sugarcube.extensionInstances[extensionID];
+
+                //Remove blockly data
+
+                //blocks
+                if (instance.__info.blocks) instance.__info.blocks.forEach(block => {
+                    delete Blockly.Blocks[`${extensionID}_${block.opcode}`];
+                })
+
+                //menus
+                if (instance.__info.menus) for (let menu in instance.__info.menus) {
+                    const menuData = instance.__info.menus[menu];
+                    let menuID = `${extensionID}_${menu}`;
+
+                    //Delete the block if needed
+                    if (menuData.acceptReporters) delete Blockly.Blocks[`__sugarcube_menu_${menuID}`];
+                    delete sugarcube.menus[menuID];
+                };
+
+                //fields
+                if (instance.__info.fields) for (let field in instance.__info.fields) {
+                    const fieldData = instance.__info.fields[field];
+                    let fieldID = `${extensionID}_${field}`;
+
+                    if (fieldData.acceptReporters) delete Blockly.Blocks[`__sugarcube_field_${fieldID}`]
+                    Blockly.fieldRegistry.unregister(fieldID);
+                };
+
+                //mutators
+                if (instance.__info.mutators) for (let mutator in instance.__info.mutators) {
+                    Blockly.Extensions.unregister(`${extensionID}_${mutator}`);
+                };
+
+                //context menus
+                if (instance.__info.contextMenus) for (let contextMenu in instance.__info.contextMenus) {
+                    Blockly.ContextMenuRegistry.registry.unregister(`${extensionID}_${contextMenu}`);
+                };
 
                 //Delete the instance.
                 delete sugarcube.extensionInstances[extensionID];
                 delete this.updateFunctions[extensionID];
 
                 if (sugarcube.workspace) {
-                    sugarcube.workspace.updateToolbox(sugarcube.filtered);
+                    sugarcube.setToolboxBasedOnFilter(sugarcube.currentFilter);
 
+                    sugarcube.workspace.updateToolbox(sugarcube.filtered);
+    
                     sugarcube.workspace.getToolbox().refreshSelection();
+    
+                    sugarcube.refreshTheme();
                 }
             }
         }

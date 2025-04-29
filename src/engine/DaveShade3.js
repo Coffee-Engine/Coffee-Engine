@@ -31,6 +31,8 @@ window.DaveShade = {};
         FAILURE: 0,
     };
 
+    DaveShade.IndiceIdent = "__INDICIES__";
+
     DaveShade.REGEX = {
         ATTRIBUTE: /attribute.*;/g,
     };
@@ -112,7 +114,13 @@ window.DaveShade = {};
 
     DaveShade.side = {
         FRONT:0,
-        BACK:1
+        BACK:1,
+        NEITHER: 2,
+    }
+
+    DaveShade.filtering = {
+        LINEAR: 9729,
+        NEAREST: 9728,
     }
 
     DaveShade.EZAttachColorBuffer = (GL, framebufferInfo, dsInfo, renderBufferInfo) => {
@@ -124,6 +132,7 @@ window.DaveShade = {};
         //Get our color attachment
         const attachedBuffer = dsInfo.DRAWBUFFER_MANAGER ? dsInfo.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`] : GL[`COLOR_ATTACHMENT${framebufferInfo.colorAttachments}`];
         GL.framebufferTexture2D(GL.FRAMEBUFFER, attachedBuffer, GL.TEXTURE_2D, renderBufferInfo.texture, 0);
+
         framebufferInfo.colorAttachments += 1;
     };
 
@@ -285,6 +294,7 @@ window.DaveShade = {};
             CANVAS: CANVAS,
             SHADERS: [],
             FRAMEBUFFERS: [],
+            oldAttributes: {}
         };
 
         if (SETTINGS.blendFunc) {
@@ -304,6 +314,8 @@ window.DaveShade = {};
             daveShadeInstance.COLORBUFFER_FLOAT = daveShadeInstance.GL.getExtension("EXT_color_buffer_float");
             daveShadeInstance.FLOAT_BLEND = daveShadeInstance.GL.getExtension("EXT_float_blend");
         }
+
+        //Make our GL more easily accessable from the object
         const GL = daveShadeInstance.GL;
 
         if (daveShadeInstance.blendFunc) {
@@ -315,9 +327,19 @@ window.DaveShade = {};
 
         //*When we need to split the shader into 2 parts due to it being in a single file. good for keeping storage sizes down
         daveShadeInstance.decomposeShader = (shaderCode) => {
-            return {
+            let vertexFunction = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
+            let fragmentFunction = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
+
+            //Return failure code if we fail
+            if (!vertexFunction || !fragmentFunction) return {
                 status: DaveShade.COMPILE_STATUS.FAILURE,
             };
+
+            //Return a new shader
+            return daveShadeInstance.createShader(
+                shaderCode.replace(fragmentFunction, ""),
+                shaderCode.replace(vertexFunction, "")
+            )
         };
 
         //?Could potentially be better? Maybe less if statement hell.
@@ -511,6 +533,7 @@ window.DaveShade = {};
 
                 //* The setter legacy (DS2)
                 shader.attributes[attributeDef.name].setRaw = (newValue) => {
+                    daveShadeInstance.oldAttributes[attributeDef.name] = 0;
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
@@ -518,6 +541,8 @@ window.DaveShade = {};
 
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
+                    if (daveShadeInstance.oldAttributes[attributeDef.name] == newValue.bufferID) return;
+                    daveShadeInstance.oldAttributes[attributeDef.name] = newValue.bufferID;
                     GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
                 };
@@ -550,14 +575,14 @@ window.DaveShade = {};
 
             //* The buffer setter! the Legacy ONE!
             shader.setBuffersRaw = (attributeJSON) => {
-                //* Attribute keys. Whoopee
-                const attributeKeys = Object.keys(attributeJSON);
-
                 //? Loop through the keys
-                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
-                    const key = attributeKeys[keyID];
-
+                shader.usingIndices = false;
+                for (let key in attributeJSON) {
                     //* if it exists set the attribute
+                    if (key == DaveShade.IndiceIdent) {
+                        //Do nothing
+                        continue;
+                    }
                     if (shader.attributes[key]) {
                         shader.attributes[key].setRaw(attributeJSON[key]);
                     }
@@ -566,15 +591,20 @@ window.DaveShade = {};
 
             //* The buffer setter! the Big ONE!
             shader.setBuffers = (attributeJSON) => {
-                //* Attribute keys. Whoopee
-                const attributeKeys = Object.keys(attributeJSON);
-
                 //? Loop through the keys
-                for (let keyID = 0; keyID < attributeKeys.length; keyID++) {
-                    const key = attributeKeys[keyID];
-
+                shader.usingIndices = false;
+                for (let key in attributeJSON) {
                     //* if it exists set the attribute
-                    if (shader.attributes[key]) {
+                    if (key == DaveShade.IndiceIdent) {
+                        const newValue = attributeJSON[key];
+                        shader.usingIndices = true;
+
+                        //Make sure we don't already have the indice bound
+                        if (daveShadeInstance.oldAttributes[DaveShade.IndiceIdent] == newValue.bufferID) return;
+                        daveShadeInstance.oldAttributes[DaveShade.IndiceIdent] = newValue.bufferID;
+                        GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
+                    }
+                    else if (shader.attributes[key]) {
                         shader.attributes[key].set(attributeJSON[key]);
                     }
                 }
@@ -582,8 +612,17 @@ window.DaveShade = {};
 
             shader.drawFromBuffers = (triAmount, renderMode) => {
                 GL.useProgram(shader.program);
-                GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
+
+                //Draw using indicies if we are using indicies
+                if (!shader.usingIndices) GL.drawArrays(renderMode || GL.TRIANGLES, 0, triAmount);
+                else GL.drawElements(renderMode || GL.TRIANGLES, triAmount, GL.UNSIGNED_INT, 0);
+
+                //Increment drawn tri count
                 daveShadeInstance.triCount += triAmount;
+            };
+
+            shader.dispose = () => {
+                daveShadeInstance.clearShaderFromMemory(shader);
             };
 
             //*Add it to the list of shaders to dispose of when the instance no longer exists.
@@ -593,8 +632,8 @@ window.DaveShade = {};
         };
 
         daveShadeInstance.useZBuffer = (use) => {
-            daveShadeInstance.GL.enable(daveShadeInstance.GL.DEPTH_TEST);
-            daveShadeInstance.GL.depthFunc(use ? daveShadeInstance.GL.LEQUAL : daveShadeInstance.GL.NEVER);
+            GL.enable(GL.DEPTH_TEST);
+            GL.depthFunc(use ? GL.LEQUAL : GL.NEVER);
         };
 
         daveShadeInstance.cullFace = (face) => {
@@ -622,28 +661,163 @@ window.DaveShade = {};
             GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         };
 
+        //Texture creation!!!
         daveShadeInstance.createTexture = (data, width, height) => {
-            const texture = daveShadeInstance.GL.createTexture();
-            daveShadeInstance.GL.bindTexture(daveShadeInstance.GL.TEXTURE_2D, texture);
+            const texture = GL.createTexture();
+            GL.bindTexture(GL.TEXTURE_2D, texture);
 
             if (data instanceof Image) {
-                daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
+                GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, data);
 
-                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_S, daveShadeInstance.GL.CLAMP_TO_EDGE);
-                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_WRAP_T, daveShadeInstance.GL.CLAMP_TO_EDGE);
-                daveShadeInstance.GL.texParameteri(daveShadeInstance.GL.TEXTURE_2D, daveShadeInstance.GL.TEXTURE_MIN_FILTER, daveShadeInstance.GL.LINEAR);
+                GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+                GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+                GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
 
                 width = data.width;
                 height = data.height;
             } else {
-                daveShadeInstance.GL.texImage2D(daveShadeInstance.GL.TEXTURE_2D, 0, daveShadeInstance.GL.RGBA, width, height, 0, daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, data);
+                GL.texImage2D(GL.TEXTURE_2D, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+
+                GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+                GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+                GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
             }
 
-            return { texture: texture, width: width, height: height };
+            //Create our texture object
+            const textureOBJ = { 
+                type: "TEXTURE2D",
+                texture: texture, width: width, height: height,
+                currentFilter: GL.LINEAR,
+                setFiltering: (newFilter, isMin) => {
+                    isMin = isMin || false;
+
+                    if (textureOBJ.currentFilter == newFilter) return;
+
+                    GL.bindTexture(GL.TEXTURE_2D, texture);
+                    GL.texParameteri(GL.TEXTURE_2D, GL.TEXTURE_MAG_FILTER, newFilter);
+
+                    textureOBJ.currentFilter = newFilter;
+                }
+            };
+
+            return textureOBJ;
         };
 
+        //Cubes :)
+        daveShadeInstance.cubemapOrder = [
+            GL.TEXTURE_CUBE_MAP_POSITIVE_X,
+            GL.TEXTURE_CUBE_MAP_POSITIVE_Y,
+            GL.TEXTURE_CUBE_MAP_POSITIVE_Z,
+            GL.TEXTURE_CUBE_MAP_NEGATIVE_X,
+            GL.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+            GL.TEXTURE_CUBE_MAP_NEGATIVE_Z
+        ];
+
+        //Orientations
+        //X+
+        //Y+
+        //Z+
+        //X-
+        //Y-
+        //Z-
+        daveShadeInstance.createTextureCube = (textures, width, height) => {
+            if (!Array.isArray(textures)) return;
+            if (textures.length != 6) return;
+
+            //Create our cubemap
+            const texture = GL.createTexture();
+            GL.bindTexture(GL.TEXTURE_CUBE_MAP, texture);
+
+            const sizes = [];
+
+            //Loop through our cubemap
+            for (let texID in textures) {
+                const data = textures[texID];
+                const target = daveShadeInstance.cubemapOrder[texID];
+
+                //Parse our textures
+                if (data instanceof Image) {
+                    GL.texImage2D(target, 0, GL.RGBA, GL.RGBA, GL.UNSIGNED_BYTE, data);
+                    sizes.push({ width: data.width, height: data.height });
+                } else {
+                    GL.texImage2D(target, 0, GL.RGBA, width, height, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+                    sizes.push({ width: width, height: height });
+                }
+            }
+
+            GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+
+            //Create our texture object
+            const textureOBJ = {
+                type: "CUBEMAP",
+                texture: texture, sizes: sizes,
+                currentFilter: GL.LINEAR,
+                setFiltering: (newFilter, isMin) => {
+                    isMin = isMin || false;
+
+                    if (textureOBJ.currentFilter == newFilter) return;
+
+                    GL.bindTexture(GL.TEXTURE_CUBE_MAP, texture);
+                    GL.texParameteri(GL.TEXTURE_CUBE_MAP, GL.TEXTURE_MAG_FILTER, newFilter);
+
+                    textureOBJ.currentFilter = newFilter;
+                }
+            };
+
+            return textureOBJ;
+        }
+
+        //Voxels :(
+        daveShadeInstance.createTexture3D = (data, size, height, depth) => {
+            if (!daveShadeInstance.GL_TYPE == "webgl2") return;
+
+            const texture = GL.createTexture();
+            GL.bindTexture(GL.TEXTURE_3D, texture);
+
+            //Set our data, if we are using an image make sure the image gets the data
+            if (data instanceof Image) {
+                //Use size or split the data in half
+                size = size || data.height/2;
+
+                //Set our stuff to be appropriate
+                height = size;
+                depth = data.height / size;
+                size = data.width;
+
+                GL.texImage3D(GL.TEXTURE_3D, 0, GL.RGBA, size, height, depth, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+            } else {
+                GL.texImage3D(GL.TEXTURE_3D, 0, GL.RGBA, size, height, depth, 0, GL.RGBA, GL.UNSIGNED_BYTE, data);
+            }
+
+            GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_WRAP_S, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_WRAP_T, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_WRAP_R, GL.CLAMP_TO_EDGE);
+            GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_MIN_FILTER, GL.LINEAR);
+
+            //Create our texture object
+            const textureOBJ = { 
+                type: "TEXTURE3D",
+                texture: texture, width: size, height: height, depth: depth,
+                currentFilter: GL.LINEAR,
+                setFiltering: (newFilter, isMin) => {
+                    isMin = isMin || false;
+
+                    if (textureOBJ.currentFilter == newFilter) return;
+
+                    GL.bindTexture(GL.TEXTURE_3D, texture);
+                    GL.texParameteri(GL.TEXTURE_3D, GL.TEXTURE_MAG_FILTER, newFilter);
+
+                    textureOBJ.currentFilter = newFilter;
+                }
+            };
+
+            return textureOBJ;
+        }
+
         //Framebuffer stuff
-        daveShadeInstance.createFramebuffer = (width, height, attachments) => {
+        daveShadeInstance.createFramebuffer = (width, height, attachments, antiAliasing) => {
             const framebuffer = {
                 buffer: GL.createFramebuffer(),
                 attachments: [],
@@ -705,7 +879,7 @@ window.DaveShade = {};
                 daveShadeInstance.clearShaderFromMemory(shader);
             });
 
-            delete daveShadeInstance.GL;
+            delete GL;
             if (daveShadeInstance.CANVAS.parentElement) {
                 daveShadeInstance.CANVAS.parentElement.removeChild(daveShadeInstance.CANVAS);
             }
@@ -714,16 +888,29 @@ window.DaveShade = {};
 
         daveShadeInstance.clear = (bufferBits) => {
             daveShadeInstance.triCount = 0;
-            daveShadeInstance.GL.clear(bufferBits);
+            GL.clear(bufferBits);
         };
 
+        daveShadeInstance.bufferID = 0;
         daveShadeInstance.buffersFromJSON = (attributeJSON) => {
             const returned = {};
             for (const key in attributeJSON) {
+                //Increment our ID
+                daveShadeInstance.bufferID++;
+
                 const element = attributeJSON[key];
-                const buffer = daveShadeInstance.GL.createBuffer();
-                GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
-                GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
+                const buffer = GL.createBuffer();
+                buffer.bufferID = daveShadeInstance.bufferID;
+
+                //If we have indicies use indicies
+                if (key == DaveShade.IndiceIdent) {
+                    GL.bindBuffer(GL.ELEMENT_ARRAY_BUFFER, buffer);
+                    GL.bufferData(GL.ELEMENT_ARRAY_BUFFER, element, GL.STATIC_DRAW);
+                }
+                else {
+                    GL.bindBuffer(GL.ARRAY_BUFFER, buffer);
+                    GL.bufferData(GL.ARRAY_BUFFER, element, GL.STATIC_DRAW);
+                }
 
                 returned[key] = buffer;
             }
@@ -786,14 +973,14 @@ window.DaveShade = {};
             daveShadeInstance.textureReadingBuffer.use();
             
             //Clear and draw
-            daveShadeInstance.GL.clear(daveShadeInstance.GL.COLOR_BUFFER_BIT);
+            GL.clear(GL.COLOR_BUFFER_BIT);
             daveShadeInstance.textureReadingShader.uniforms.u_texture.value = texture.texture;
             daveShadeInstance.textureReadingShader.setBuffers(daveShadeInstance.textureReadingQuad);
             daveShadeInstance.textureReadingShader.drawFromBuffers(6);
 
             //Then finally get the data
             let output = new Uint8Array(4);
-            daveShadeInstance.GL.readPixels(x,y,1,1,daveShadeInstance.GL.RGBA, daveShadeInstance.GL.UNSIGNED_BYTE, output);
+            GL.readPixels(x,y,1,1,GL.RGBA, GL.UNSIGNED_BYTE, output);
             //scale it back down to hopefully save ram
             daveShadeInstance.textureReadingBuffer.resize(1,1);
 

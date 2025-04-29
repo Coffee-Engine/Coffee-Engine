@@ -17,6 +17,8 @@
                     //Convert the point to be multipliable to a matrix
                     this.transformedPoints.push(this.matrix.multiplyVector(this.points[pointID]).toVector3());
                 }
+                
+                this.onMatrixChange(value);
             }
 
             get matrix() {
@@ -33,6 +35,8 @@
                 this.type = "base";
                 this.collisionType = coffeeEngine.collisionTypes.SAT;
             }
+
+            onMatrixChange() {}
 
             //We need to push in 2 vector 3s for an offset, and axis
             getMin(axis) {

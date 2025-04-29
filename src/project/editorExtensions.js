@@ -4,8 +4,24 @@
         readingExtID: 0,
     };
 
-    project.extensions.checkForExtensions = async () => {
+    project.extensions.checkForExtensions = async (deliberate) => {
         console.log("looking for extensions");
+
+        //If we need to deliberately load one extension
+        if (deliberate) {
+            const extPath = `extensions/${deliberate}/`;
+
+            const extensionJson = await project.getFile(`${extPath}extension.json`);
+            
+            //Make sure it exists then parse
+            if (!extensionJson) return;
+
+            project.extensions.storage[deliberate] = new project.extensions.parser(deliberate);
+            await project.extensions.storage[deliberate].parseBase(extensionJson);
+
+            return;
+        }
+
         //Get our extension directory
         project
             .getFile("extensions")
@@ -21,7 +37,8 @@
                         //Make sure it exists then parse
                         if (!extensionJson) return;
 
-                        project.extensions.storage[extID] = new project.extensions.parser(extID, extensionJson);
+                        project.extensions.storage[extID] = new project.extensions.parser(extID);
+                        project.extensions.storage[extID].parseBase(extensionJson);
                     });
                 });
             })
@@ -32,26 +49,42 @@
     };
 
     coffeeEngine.addEventListener("fileSystemUpdate", (event) => {
-        if (event.type == "FINISH_LOADING") project.extensions.checkForExtensions();
+        if (event.type == "FINISH_LOADING") {
+            project.extensions.checkForExtensions();
+        }
     });
 
     //Doing this so management and reading is slightly easier
     project.extensions.parser = class {
-        constructor(extensionID, file) {
+        scriptElements = [];
+
+        constructor(extensionID) {
             this.fileReader = new FileReader();
             this.id = extensionID;
+            this.path = `extensions/${extensionID}/`;
+        }
 
-            //Read our extension.json
-            this.fileReader.onload = async () => {
-                project.extensions.storage[extensionID] = JSON.parse(this.fileReader.result);
+        async parseBase(file) {
+            return new Promise(async (resolve, reject) => {
+                //Read our extension.json
+                this.fileReader.onload = async () => {
+                    project.extensions.storage[this.id] = JSON.parse(this.fileReader.result);
+                    this.myStorage = project.extensions.storage[this.id];
+                    this.myStorage.object = this;
 
-                //Go through needed script directories
-                const myStorage = project.extensions.storage[extensionID];
-                await this.loadScripts(`extensions/${extensionID}/`, myStorage.scripts);
-                if (coffeeEngine.isEditor) await this.loadScripts(`extensions/${extensionID}/`, myStorage.editorScripts);
-            };
+                    //Go through needed script directories
+                    await this.loadScripts(this.path, this.myStorage.scripts);
+                    if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
 
-            this.fileReader.readAsText(file);
+                    resolve();
+                };
+
+                this.fileReader.onerror = () => {
+                    reject("extension not valid?");
+                }
+
+                this.fileReader.readAsText(file);
+            })
         }
 
         async loadScripts(path, scriptArray) {
@@ -67,21 +100,51 @@
                             //Get our script contents
                             const scriptContents = this.fileReader.result;
                             const scriptElement = document.createElement("script");
-                            //Isolate the context;
-                            scriptElement.innerHTML = `(function() {\n${scriptContents}\n})();`;
+
+                            //Append our script element! This is a tool that may come in handy later
+                            this.scriptElements.push(scriptElement);
+
+                            //Isolate the context; Pass in EXT_ID and EXT_PATH
+                            scriptElement.innerHTML = `(function(EXT_ID, EXT_PATH) {\n${scriptContents}\n})("${this.id}", "${path}");`;
                             document.body.appendChild(scriptElement);
 
                             resolve();
                         };
 
-                        this.fileReader.onerror = () => {
-                            reject(`Something happened with file "${path}${scriptArray[index]}"`);
+                        this.fileReader.onerror = (error) => {
+                            reject(`Something happened with file "${path}${scriptArray[index]}\n: ERROR :\n${error}"`);
                         };
 
                         this.fileReader.readAsText(fileData);
                     });
                 });
             }
+        }
+
+        async reloadExtension() {
+            await this.disposeExtension(true);
+
+            await this.loadScripts(this.path, this.myStorage.scripts);
+            if (coffeeEngine.isEditor) await this.loadScripts(this.path, this.myStorage.editorScripts);
+
+            console.log(editor.language["editor.notification.extensionReloaded"].replace("[extension]", this.id));
+
+            //Reload the scene
+            coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.currentScene.scenePath);
+        }
+
+        async disposeExtension(noSceneRefresh) {
+            coffeeEngine.sendEvent("extensionDispose", { ID: this.id, type: "RELOAD" });
+
+            for (let scriptID in this.scriptElements) {
+                let script = this.scriptElements[scriptID];
+                script.parentElement.removeChild(script);
+            }
+
+            this.scriptElements = [];
+
+            //Reload the scene if needed
+            if (!noSceneRefresh) coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.currentScene.scenePath);
         }
     };
 })();

@@ -123,6 +123,18 @@ editor.windows.__Serialization = {
         editor.windows.__Serialization.data[id] = jsonData || {};
     },
 
+    deregister: (id) => {
+        if (!editor.windows.__Serialization[id]) return;
+
+        if (editor.windows.existing[id]) {
+            editor.windows.existing[id].forEach(window => {
+                window._dispose();
+            })
+        }
+        delete editor.windows.__Serialization.all[id];
+        delete editor.windows.__Serialization.data[id];
+    },
+
     find: (windowOBJ) => {
         //Check to make sure the window has tabs. if it does serialize those too.
         if (windowOBJ.tabs && windowOBJ.tabs.length > 1) {
@@ -153,4 +165,20 @@ editor.windows.__Serialization = {
     data: {},
 };
 
+
+//Page root for making page management easier
+editor.pageRoot = document.createElement("div");
+editor.pageRoot.style.position = "absolute";
+editor.pageRoot.style.left = "0px";
+editor.pageRoot.style.top = "0px";
+editor.pageRoot.style.margin = "0px";
+editor.pageRoot.style.padding = "0px";
+editor.pageRoot.style.width = "100%";
+editor.pageRoot.style.height = "100%";
+editor.pageRoot.style.overflow = "hidden";
+
+document.body.appendChild(editor.pageRoot);
+
+
+//Tell coffee we are the editor
 coffeeEngine.isEditor = true;

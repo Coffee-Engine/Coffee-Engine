@@ -173,7 +173,7 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-Setup-Language">
             <h1 class="centerText" style="margin:2px; margin-top:4px;">${editor.language["engine.setup.start"]}</h1>
             <h2 class="centerText" style="margin:2px; margin-bottom:4px;">${editor.language["engine.setup.languageSelect"]}</h2>
             <div class="innerBox" id="languages">
@@ -182,7 +182,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         const languageContainer = document.getElementById("languages");
 
@@ -320,10 +320,10 @@
                 }
             }
         </style>
-        <div id="centerPanel" class="CenterPanel">
+        <div id="centerPanel" class="CenterPanel CenterPanel-Setup-Layout">
             <h1 class="centerText" style="margin:2px; margin-top:4px;">${editor.language["engine.setup.start"]}</h1>
             <h2 class="centerText" style="margin:2px; margin-bottom:4px;">${editor.language["engine.setup.layoutSelect"]}</h2>
-            <div class="innerBox" id="languages">
+            <div class="innerBox" id="layouts">
                 <div id="scratched" class="layoutDiv">
                     <h1 class="centerText">Scratched</h1>
                     ${editor.setup.scratchedSVG}
@@ -340,7 +340,7 @@
         </div>
         `;
 
-        document.body.appendChild(editor.currentPage.root);
+        editor.pageRoot.appendChild(editor.currentPage.root);
 
         const onSelect = () => {
             if (!goToOptions) editor.home.initilize();
@@ -371,11 +371,11 @@
                                 content: "viewport",
                             },
                             {
-                                size: 20,
+                                size: 30,
                                 content: "properties",
                             },
                             {
-                                size: 30,
+                                size: 20,
                                 content: "sceneTree",
                             },
                         ],

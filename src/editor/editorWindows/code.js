@@ -17,13 +17,13 @@
             this.addButtonsAndFileSelection();
             this.appendButtonAction();
 
-            monacoManager.refreshTheme();
-
             //The two IDEs?
             this.workspace = {
-                monaco: monacoManager.inject(this.monacoArea),
+                codeMirror: mirrorManager.inject(this.codeMirrorArea, true),
                 sugarcube: sugarcube.inject(this.blocklyArea),
             };
+
+            this.codeMirrorArea.style.height = "100%";
         }
 
         //The layout of the editor
@@ -125,18 +125,18 @@
             this.blocklyArea.style.position = "absolute";
             this.blocklyArea.style.visibility = "hidden";
 
-            //Monaco
-            this.monacoArea = document.createElement("div");
-            this.monacoArea.style.width = "100%";
-            this.monacoArea.style.height = "100%";
-            this.monacoArea.style.top = "0px";
-            this.monacoArea.style.left = "0px";
-            this.monacoArea.style.position = "absolute";
-            this.monacoArea.style.visibility = "hidden";
+            //codeMirror
+            this.codeMirrorArea = document.createElement("div");
+            this.codeMirrorArea.style.width = "100%";
+            this.codeMirrorArea.style.height = "100%";
+            this.codeMirrorArea.style.top = "0px";
+            this.codeMirrorArea.style.left = "0px";
+            this.codeMirrorArea.style.position = "absolute";
+            this.codeMirrorArea.style.visibility = "hidden";
 
             this.codeArea.appendChild(this.nothingOpen);
             this.codeArea.appendChild(this.blocklyArea);
-            this.codeArea.appendChild(this.monacoArea);
+            this.codeArea.appendChild(this.codeMirrorArea);
 
             container.appendChild(this.split);
 
@@ -182,13 +182,13 @@
             const { compileFunction, useBlocklyEditor, stopCompileFileCreation } = editor.getLanguageDefFromExtension(this.readType);
 
             //Saving for our two code editors
-            project.setFile(this.filePath, useBlocklyEditor ? JSON.stringify(sugarcube.serialize()) : monacoManager.workspace.getValue(), "text/javascript").then(() => {
+            project.setFile(this.filePath, useBlocklyEditor ? JSON.stringify(sugarcube.serialize()) : mirrorManager.workspace.getValue(), "text/javascript").then(() => {
                 console.log(editor.language["editor.notification.saveScript"].replace("[path]", this.filePath));
             });
 
             //If our scripting language has a compile function compile it
             if (compileFunction) {
-                const compiled = compileFunction(useBlocklyEditor ? sugarcube.workspace : monacoManager.workspace.getValue(), this.filePath);
+                const compiled = compileFunction(useBlocklyEditor ? sugarcube.workspace : mirrorManager.workspace.getValue(), `${this.filePath.split(".")[0]}.cjs`);
                 if (!stopCompileFileCreation)
                     project.setFile(`${this.filePath.split(".")[0]}.cjs`, compiled, "text/javascript").then(() => {
                         console.log(editor.language["editor.notification.compileScript"].replace("[input]", this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));
@@ -256,17 +256,19 @@
                 const { useBlocklyEditor } = editor.getLanguageDefFromExtension(this.readType);
                 //Swap 'em
                 if (!useBlocklyEditor) {
-                    this.monacoArea.style.visibility = "visible";
+                    this.codeMirrorArea.style.visibility = "inherit";
                     this.blocklyArea.style.visibility = "hidden";
                     this.usingSugarCube = false;
 
-                    monacoManager.setScript(this.fileReader.result, editor.languageRedirects[this.readType] || this.readType);
+                    mirrorManager.setScript(this.fileReader.result, editor.languageRedirects[this.readType] || this.readType);
+                    sugarcube.deserialize({});
                 } else {
-                    this.monacoArea.style.visibility = "hidden";
-                    this.blocklyArea.style.visibility = "visible";
+                    this.codeMirrorArea.style.visibility = "hidden";
+                    this.blocklyArea.style.visibility = "inherit";
                     this.usingSugarCube = true;
 
                     sugarcube.deserialize(JSON.parse(this.fileReader.result));
+                    mirrorManager.setScript("", "");
                 }
 
                 this.title = `${this.filePath} | ${editor.language["editor.window.codeEditor"]}`;
@@ -275,7 +277,7 @@
             //If we error hide both editors in punishment
             this.fileReader.onerror = () => {
                 this.blocklyArea.style.visibility = "hidden";
-                this.monacoArea.style.visibility = "hidden";
+                this.codeMirrorArea.style.visibility = "hidden";
                 this.title = editor.language["editor.window.codeEditor"];
             };
         }

@@ -32,6 +32,7 @@ sugarcube.easyColourBlock = (block, color, hat) => {
 
 sugarcube.setToolboxBasedOnFilter = (filter) => {
     //Loop through all categories filtering
+    sugarcube.currentFilter = filter;
     sugarcube.filtered.contents = []//JSON.parse(JSON.stringify(sugarcube.toolbox.contents));
     for (let index = 0; index < sugarcube.toolbox.contents.length; index++) {
         let category = JSON.parse(JSON.stringify(sugarcube.toolbox.contents[index]));
@@ -58,6 +59,4 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
         //if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
         if (blocksInCategory > 0 || sugarcube.extensionManager.updateFunctions[category.id || "noCAT"] || category.kind == "search") sugarcube.filtered.contents.push(category);
     }
-
-    sugarcube.workspace.getToolbox().refreshSelection();
 };

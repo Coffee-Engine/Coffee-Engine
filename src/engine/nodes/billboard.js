@@ -2,14 +2,17 @@
     class billboard extends coffeeEngine.getNode("Node3D") {
         //Sprite stuff
         #spritePath = "";
+        filtering = "NEAREST"
 
         set spritePath(value) {
             this.#spritePath = value;
             coffeeEngine.renderer.fileToTexture(value).then((texture) => {
-                this.texture = texture.texture;
+                this.texture = texture;
                 this.textureWidth = texture.width;
                 this.textureHeight = texture.height;
                 this.updateMatrix();
+            }).catch(() => {
+                this.texture = null;
             });
         }
 
@@ -25,6 +28,9 @@
             this.#shaderPath = value;
             coffeeEngine.renderer.fileToShader(value).then((shader) => {
                 this.#shader = shader;
+            }).catch(() => {
+                this.#shader = null;
+                this.#shaderPath = "";
             });
         }
         get shader() {
@@ -58,7 +64,7 @@
         draw(drawID) {
             super.draw();
 
-            if (this.texture) {
+            if (this.texture && this.#shader) {
                 const translatedWorld = this.mixedMatrix.getTranslation();
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
@@ -81,10 +87,12 @@
                         .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
                         .webGLValue();
 
-                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture;
+                this.texture.setFiltering(DaveShade.filtering[this.filtering]);
+                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture.texture;
                 if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
                 if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
 
+                coffeeEngine.renderer.daveshade.cullFace();
                 this.#shader.drawFromBuffers(6);
             }
         }
@@ -109,7 +117,11 @@
                 { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 "---", 
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, 
-                { name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }, 
+                { name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } },
+                { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+                    { text: editor.language["engine.nodeProperties.Sprite.filtering.nearest"], value: "NEAREST"},
+                    { text: editor.language["engine.nodeProperties.Sprite.filtering.linear"], value: "LINEAR"},
+                ]},
                 "---", 
                 { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];

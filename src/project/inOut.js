@@ -1,8 +1,8 @@
 (function () {
     //For initial creation
-    project.addDefaultAssets = (json) => {
+    project.addDefaultAssets = async (json) => {
         //Json objects
-        project.setFile("project.json", JSON.stringify(json), "text/plain");
+        await project.setFile("project.json", JSON.stringify(json), "text/plain");
 
         //Add tiramisu :)
         project.addImageFromURL(coffeeEngine.defaultSprite, coffeeEngine.defaultSpriteName).then(() => {
@@ -25,7 +25,10 @@
             window
                 .showDirectoryPicker()
                 .then((result) => {
+                    //Add our initial directory handle
                     project.directoryHandle = result;
+                    project.fileSystem[project.directoryHandleIdentifier] = project.directoryHandle;
+
                     project.addDefaultAssets(json);
                 })
                 .catch((error) => {});
@@ -53,9 +56,15 @@
         //Parse
         if (type == "folder") {
             project.isFolder = true;
+            
+            //Make sure we set the initial directory handle
             project.directoryHandle = handle;
+            project.fileSystem[project.directoryHandleIdentifier] = project.directoryHandle;
+
             await project.scanFolder(project.directoryHandle, true, project.fileSystem);
-        } else if (type == "base64") {
+        } 
+        //Why not just use a switch? because I don't think is big enough to be a switch thing
+        else if (type == "base64") {
             project.zipObject = new JSZip();
             project.zipObject = await project.zipObject.loadAsync(handle, { base64: true });
 
@@ -64,7 +73,8 @@
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "FINISH_LOADING", src: "COFFEE_ALL" });
             if (coffeeEngine.isEditor) editor.editorPage.initilize();
             coffeeEngine.sendEvent("fileSystemUpdate", { type: "ALL", src: "COFFEE_ALL" });
-        } else {
+        } 
+        else {
             project.isFolder = false;
 
             //Make sure we are getting the file handle and not some random garbage.
@@ -137,5 +147,38 @@
             //Make sure we dispose of our instance.
             delete zipInstance;
         },
+    };
+
+    //latte storing and retrieving code
+    project.latte = {
+        saveLatteFrom: async (fileRoot) => {
+            //Get our JSzip instance
+            const zipInstance = new JSZip();
+
+            const folderRoot = await project.getFile(fileRoot.replaceAll(/\/$/g, ""));
+
+            project.decaf.loopThroughSave(fileRoot, folderRoot, zipInstance, () => {
+                zipInstance.generateAsync({ type: "blob" }).then((blob) => {
+                    //Create a blob, link it then click and revoke the blob
+                    const blobURL = URL.createObjectURL(blob);
+                    const link = document.createElement("a");
+                    link.href = blobURL;
+                    link.download = `project.${coffeeEngine.packageFormat}`;
+                    link.click();
+                    URL.revokeObjectURL(blobURL);
+                });
+            });
+            //Make sure we dispose of our instance.
+            delete zipInstance;
+        },
+
+        loadLatteFrom: async (latte) => {
+            let zipInstace = new JSZip();
+            zipInstace = await project.zipObject.loadAsync(latte);
+
+            await project.scanZip(zipInstace);
+
+            project.extensions.checkForExtensions();
+        }
     };
 })();

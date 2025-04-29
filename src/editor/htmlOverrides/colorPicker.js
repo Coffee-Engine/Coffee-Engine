@@ -46,8 +46,8 @@
 
         //Move the positions
         current.style.position = "absolute";
-        current.style.left = `${x}px`;
-        current.style.top = `${y}px`;
+        current.style.left = `min(${x}px, calc(99vw - ${current.style.width}))`;
+        current.style.top = `min(${y}px, calc(99vh - ${22.5}vh))`;
 
         //And then the background and border
         current.style.backgroundColor = "var(--background-1)";
@@ -496,14 +496,15 @@
                 this.color = this.getAttribute("color");
             }
 
-            this.style.display = "inline-block";
+            this.style.display = "relative";
             this.style.borderColor = "var(--background-3)";
             this.style.borderWidth = "4px";
             this.style.borderRadius = "50%";
             this.style.borderStyle = "solid";
+            this.style.aspectRatio = "1";
 
-            this.style.width = `${this.getAttribute("size") || 16}px`;
-            this.style.height = `${this.getAttribute("size") || 16}px`;
+            this.style.width = `auto`;
+            this.style.height = `2rem`;
 
             this.style.minWidth = "8px";
             this.style.minHeight = "8px";

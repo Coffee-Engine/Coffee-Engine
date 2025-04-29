@@ -3,6 +3,7 @@
         #parent;
         //We store our update event in here
         __storedUpdate = null;
+        __scriptStartupProps = {}; // < this one stores the properties for the script's onReady!
 
         //? And here is our matrix.
         //? The humble matrix
@@ -53,9 +54,9 @@
             }
 
             //Refresh stuff
-            if (this.#scriptObject) {
-                this.#scriptObject.target = value;
-            }
+            //if (this.#scriptObject) {
+            //    this.#scriptObject.target = value;
+            //}
 
             coffeeEngine.runtime.currentScene.castEvent("childMoved", this);
         }
@@ -73,9 +74,16 @@
 
             this.#scriptPath = value;
             if (!coffeeEngine.isEditor) {
-                coffeeEngine.behaviorManager.behaviorFromFile(value).then((classObj) => {
-                    this.#scriptObject = new classObj();
+                coffeeEngine.behaviorManager.behaviorFromFile(value).then(({ behavior }) => {
+                    this.#scriptObject = new behavior();
                     this.#scriptObject.target = this;
+
+                    //load our startup props then call ready!
+                    if (this.__scriptStartupProps) {
+                        for (let key in this.__scriptStartupProps) {
+                            this.#scriptObject[key] = this.__scriptStartupProps[key];
+                        }
+                    }
 
                     if (this.#scriptObject.ready) {
                         this.#scriptObject.ready();
@@ -210,7 +218,13 @@
             return [
                 { name: "name", translationKey: "engine.nodeProperties.Node.name", type: coffeeEngine.PropertyTypes.NAME }, 
                 "---", 
-                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" },
+            ];
+        }
+
+        extraSerialize() {
+            return [
+                "__scriptStartupProps"
             ];
         }
     }

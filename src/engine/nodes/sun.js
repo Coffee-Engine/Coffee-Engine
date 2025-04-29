@@ -40,6 +40,7 @@
                 this.shader.uniforms.u_model.value = renderMatrix;
                 this.shader.uniforms.u_colorMod.value = this.#lightColorArray;
                 this.shader.uniforms.u_objectID.value = drawID;
+                coffeeEngine.renderer.daveshade.cullFace();
                 this.shader.drawFromBuffers(6);
 
                 this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
@@ -59,7 +60,7 @@
                 { name: "position", translationKey: "engine.nodeProperties.Node.position", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 { name: "rotation", translationKey: "engine.nodeProperties.Node.rotation", type: coffeeEngine.PropertyTypes.VEC3, isRadians: true }, 
                 "---", 
-                { name: "lightColor", translationKey: "engine.nodeProperties.Lighting.lightColor", type: coffeeEngine.PropertyTypes.COLOR3 }, 
+                { name: "lightColor", translationKey: "engine.nodeProperties.Light.color", type: coffeeEngine.PropertyTypes.COLOR3 }, 
                 "---", 
                 { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];

@@ -169,7 +169,7 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "listMenu",
+                                menu: "localListMenu",
                             },
                             value: {
                                 type: sugarcube.ArgumentType.ARRAY,
@@ -184,14 +184,17 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "listMenu",
+                                menu: "localListMenu",
                             },
                         },
                     },
                 ],
                 menus: {
-                    listMenu: {
+                    localListMenu: {
                         items: "getLists",
+                    },
+                    listMenu: {
+                        items: "getListsAndGlobalLists",
                     },
                 },
                 mutators: {
@@ -204,23 +207,61 @@
                     removeList: {
                         text: editor.language["sugarcube.lists.contextMenu.removeList"],
                         opcode: "removeList",
+                        eligibility: "notGlobal",
                         weight: 4,
                     },
                 },
             };
         }
 
-        getLists() {
+        getLists(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "list") return;
 
-                returned.push(variable.name);
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
             });
 
             return returned;
+        }
+
+        getListsAndGlobalLists(advanced) {
+            const variables = sugarcube.variables.getAll();
+            const returned = [];
+            
+            for (let variable in globals) {
+                if (!Array.isArray(globals[variable])) continue;
+
+                if (!advanced) returned.push({ text: variable, value: "​" + variable });
+                else returned.push({ name: variable, global: true, type: "list", color: "#FF661A" });
+            }
+
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "list") return;
+
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
+            });
+
+            return returned;
+        }
+
+        //Simple true false
+        isGlobal(variable, callback) {
+            if (variable.startsWith("​")) {
+                const varName = variable.replace("​", "");
+                if (callback) callback(varName, globals[varName]);
+                return true;
+            }
+            return false;
+        }
+
+        notGlobal(variable) {
+            return !variable.editedState.varData.global;
         }
 
         openVariableMenu() {
@@ -239,6 +280,23 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
+                //If public add icon
+                if (state.varData.public || state.varData.global) {
+                    //create Text
+                    block.inputFromJson_({
+                        type: "input_dummy",
+                        name: `text`,
+                    });
+                    block.inputList[block.inputList.length - 1].appendField(
+                        block.fieldFromJson_({
+                            type: "field_image",
+                            src: state.varData.global ? sugarcube.earthIcon : sugarcube.publicIcon,
+                            width: 24,
+                            height: 24,
+                        })
+                    );
+                }
+
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
@@ -259,7 +317,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.variables.getAll();
+            const variables = this.getListsAndGlobalLists(true);
             const returned = [];
             let listExists = false;
 
@@ -276,6 +334,8 @@
                         varData: {
                             color: variable.color,
                             name: variable.name,
+                            public: variable.public,
+                            global: variable.global
                         },
                     },
                 });
@@ -338,89 +398,126 @@
 
         precompile_func() {
             let generated = "";
-            this.getLists().forEach((list) => {
-                generated += `this["${list.replaceAll('"', '\\"')}"] = [];\n`;
+            this.getLists(true).forEach((list) => {
+                if (list.public) generated += `@editor(array) "${list.name.replaceAll('"', '\\"')}";\n`;
+                generated += `this["${list.name.replaceAll('"', '\\"')}"] = [];\n`;
             });
 
             return generated;
         }
 
         getList_compile(block, generator) {
+            if (block.editedState.varData.global) return `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         addItem({ list, item }, { self }) {
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+
             //MAKE SURE its a list
-            if (!Array.isArray(self[list])) return;
-            self[list].push(item);
+            if (!Array.isArray(targetList)) return;
+            targetList.push(item);
         }
 
         removeItem({ list, item }, { self }) {
-            //MAKE SURE its a list
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
 
+            //MAKE SURE its a list
+            if (!Array.isArray(targetList)) return;
             item = Math.floor(item - 1);
 
             //Prevent OOB indeing
-            if (item < 0 || item >= self[list].length) return;
-            self[list].splice(item, 1);
+            if (item < 0 || item >= targetList.length) return;
+            targetList.splice(item, 1);
         }
 
         clearList({ list }, { self }) {
-            if (!Array.isArray(self[list])) return;
-            self[list] = [];
+            //Make sure we target it right
+            let targetList = self[list];
+           this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+
+            if (!Array.isArray(targetList)) return;
+            targetList = [];
         }
 
         insertItem({ list, item, value }, { self }) {
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+            
+            if (!Array.isArray(targetList)) return;
             item = Math.floor(item - 1);
             //OOB indexing works with array.splice how nice
-            self[list].splice(item, 0, value);
+            targetList.splice(item, 0, value);
         }
 
         replaceItem({ list, item, value }, { self }) {
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+            
+            if (!Array.isArray(targetList)) return;
 
             item = Math.floor(item - 1);
 
             //Prevent OOB indeing
-            if (item < 0 || item >= self[list].length) return;
-            self[list][item] = value;
+            if (item < 0 || item >= targetList.length) return;
+            targetList[item] = value;
         }
 
         getItem({ list, item }, { self }) {
-            if (!Array.isArray(self[list])) return;
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+            
+            if (!Array.isArray(targetList)) return;
 
             item = Math.floor(item - 1);
 
             //Prevent OOB indeing
-            if (item < 0 || item >= self[list].length) return;
-            return self[list][item];
+            if (item < 0 || item >= targetList.length) return;
+            return targetList[item];
         }
 
         getItemNumber({ list, value }, { self }) {
-            if (!Array.isArray(self[list])) return 0;
-            return self[list].indexOf(value) + 1;
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+            
+            if (!Array.isArray(targetList)) return 0;
+            return targetList.indexOf(value) + 1;
         }
 
         length({ list }, { self }) {
-            if (!Array.isArray(self[list])) return 0;
-            return self[list].length;
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+            
+            if (!Array.isArray(targetList)) return 0;
+            return targetList.length;
         }
 
         getItemContainment({ list, value }, { self }) {
-            if (!Array.isArray(self[list])) return false;
-            return self[list].includes(value);
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+            
+            if (!Array.isArray(targetList)) return false;
+            return targetList.includes(value);
         }
 
         substitute({ objectLike, value }, { self }) {
-            if (typeof self[objectLike] != "object" || Array.isArray(self[objectLike])) return;
+            if (!Array.isArray(self[objectLike])) return;
 
             return (self[objectLike] = value);
         }
 
         originate({ objectLike }, { self }) {
-            if (typeof self[objectLike] != "object" || Array.isArray(self[objectLike])) return;
+            if (!Array.isArray(self[objectLike])) return;
             
             return (self[objectLike] = [...self[objectLike]]);
         }

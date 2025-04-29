@@ -94,7 +94,7 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "tableMenu",
+                                menu: "localTableMenu",
                             },
                             value: {
                                 type: sugarcube.ArgumentType.OBJECT,
@@ -109,14 +109,17 @@
                         arguments: {
                             objectLike: {
                                 type: sugarcube.ArgumentType.STRING,
-                                menu: "tableMenu",
+                                menu: "localTableMenu",
                             },
                         },
                     },
                 ],
                 menus: {
-                    tableMenu: {
+                    localTableMenu: {
                         items: "getTables",
+                    },
+                    tableMenu: {
+                        items: "getTablesAndGlobalTables",
                     },
                 },
                 mutators: {
@@ -129,23 +132,61 @@
                     removeTable: {
                         text: editor.language["sugarcube.tables.contextMenu.removeTable"],
                         opcode: "removeTable",
+                        eligibility: "notGlobal",
                         weight: 4,
                     },
                 },
             };
         }
 
-        getTables() {
+        getTables(advanced) {
             const variables = sugarcube.variables.getAll();
             const returned = [];
             variables.forEach((variable) => {
                 let type = variable.type;
                 if (type != "object") return;
 
-                returned.push(variable.name);
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
             });
 
             return returned;
+        }
+
+        getTablesAndGlobalTables(advanced) {
+            const variables = sugarcube.variables.getAll();
+            const returned = [];
+            
+            for (let variable in globals) {
+                if ((typeof globals[variable] != "object") || Array.isArray(globals[variable])) continue;
+    
+                if (!advanced) returned.push({ text: variable, value: "​" + variable });
+                else returned.push({ name: variable, global: true, type: "object", color: "#8672FF" });
+            }
+
+            variables.forEach((variable) => {
+                let type = variable.type;
+                if (type != "object") return;
+
+                if (!advanced) returned.push(variable.name);
+                else returned.push(variable);
+            });
+
+            return returned;
+        }
+
+        //Simple true false
+        isGlobal(variable, callback) {
+            if (variable.startsWith("​")) {
+                const varName = variable.replace("​", "");
+                if (callback) callback(varName, globals[varName]);
+                return true;
+            }
+            return false;
+        }
+
+        notGlobal(variable) {
+            return !variable.editedState.varData.global;
         }
 
         openVariableMenu() {
@@ -159,7 +200,7 @@
         }
 
         dynamic_category_func() {
-            const variables = sugarcube.variables.getAll();
+            const variables = this.getTablesAndGlobalTables(true);
             const returned = [];
             let varExists = false;
 
@@ -175,6 +216,8 @@
                         varData: {
                             color: variable.color,
                             name: variable.name,
+                            public: variable.public,
+                            global: variable.global
                         },
                     },
                 });
@@ -216,8 +259,9 @@
 
         precompile_func() {
             let generated = "";
-            this.getTables().forEach((list) => {
-                generated += `this["${list.replaceAll('"', '\\"')}"] = {};\n`;
+            this.getTables(true).forEach((table) => {
+                if (table.public) generated += `@editor(object) "${table.name.replaceAll('"', '\\"')}";\n`;
+                generated += `this["${table.name.replaceAll('"', '\\"')}"] = {};\n`;
             });
 
             return generated;
@@ -229,6 +273,23 @@
 
         variable_Deserialize(state, block) {
             if (state.varData) {
+                //If public add icon
+                if (state.varData.public || state.varData.global) {
+                    //create Text
+                    block.inputFromJson_({
+                        type: "input_dummy",
+                        name: `text`,
+                    });
+                    block.inputList[block.inputList.length - 1].appendField(
+                        block.fieldFromJson_({
+                            type: "field_image",
+                            src: state.varData.global ? sugarcube.earthIcon : sugarcube.publicIcon,
+                            width: 24,
+                            height: 24,
+                        })
+                    );
+                }
+
                 //create Text
                 block.inputFromJson_({
                     type: "input_dummy",
@@ -249,28 +310,45 @@
         }
 
         getTable(block, generator, manager) {
+            if (block.editedState.varData.global) return `globals["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
             return `this["${block.editedState.varData.name.replaceAll('"', '\\"')}"]`;
         }
 
         //Simplicity
         setKey({ table, key, val }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            self[table][key] = val;
+            //Make sure we target it right
+            let targetTable = self[table];
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            targetTable[key] = val;
         }
 
         getKey({ table, key }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            return self[table][key];
+            //Make sure we target it right
+            let targetTable = self[table];
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            return targetTable[key];
         }
 
         getKeys({ table }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            return Object.keys(self[table]);
+            //Make sure we target it right
+            let targetTable = self[table];
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            return Object.keys(targetTable);
         }
 
         getValues({ table }, { self }) {
-            if (typeof self[table] != "object" || Array.isArray(self[table])) return;
-            return Object.values(self[table]);
+            //Make sure we target it right
+            let targetTable = self[table];
+            this.isGlobal(table, (globalName, globalVal) => {targetTable = globals[globalName]});
+            
+            if (typeof targetTable != "object" || Array.isArray(targetTable)) return;
+            return Object.values(targetTable);
         }
 
         substitute({ objectLike, value }, { self }) {

@@ -3,6 +3,8 @@ body {
     --background-2: #3d2c21;
     --background-3: #302117;
     --background-4: #291a10;
+    
+    --accent: #261100;
 
     --text-1: #e7cab7;
     --text-2: #d6ae93;
@@ -12,6 +14,9 @@ body {
     --error: #ff7878;
     --warn-text: #323546;
     --error-text: #323546;
+
+    --code-fontFamily: monospace;
+    --code-fontSize: 12px;
 
     background-color: var(--background-4);
     color: var(--text-1);
@@ -34,45 +39,6 @@ body {
     -webkit-border-radius: 10px;
     border-radius: 10px;
     background-color: var(--background-1);
-}
-
-button {
-    background-color: var(--background-2);
-    color: var(--text-1);
-
-    border-style: solid;
-    border-radius: 2px;
-    border-width: 2px;
-    border-color: var(--background-3);
-
-    transition:
-        all 100ms,
-        visibility 1ms;
-
-    font-size: large;
-
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none; /* IE 10 and IE 11 */
-    user-select: none; /* Standard syntax */
-
-    cursor: pointer;
-}
-
-button:hover {
-    color: var(--text-2);
-    background-color: var(--background-3);
-}
-
-button:active {
-    color: var(--text-1);
-    background-color: var(--background-4);
-    border-color: var(--background-4);
-}
-
-button:disabled {
-    color: var(--text-1);
-    background-color: var(--background-4);
-    border-color: var(--background-4);
 }
 
 blockquote > p {

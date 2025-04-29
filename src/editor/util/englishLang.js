@@ -4,6 +4,7 @@ editor.EnglishLang = {
     "engine.setup.layoutSelect": "Layout",
 
     "engine.projectSetup.title": "Project Setup",
+    "engine.projectSetup.create": "Create Project",
 
     "engine.home.welcome": "Welcome to Coffee Engine",
     "engine.home.splashAuthor": "Splash by [AUTHOR]",
@@ -37,6 +38,9 @@ editor.EnglishLang = {
     "engine.settings.category.Editor.changeLayout": "Change Layout",
     "engine.settings.category.Editor.clearLocalStorage": "Clear Data",
     "engine.settings.category.Editor.clearLocalStorage.cleared": "Data Cleared",
+    "engine.settings.category.Editor.startIndex": "Array Start Index",
+    "engine.settings.category.Editor.startIndex.0": "0 (Javascript Like)",
+    "engine.settings.category.Editor.startIndex.1": "1 (Sugarcube Like)",
 
     "engine.settings.category.Window": "Window",
     "engine.settings.category.Window.grabSize": "Window Resize Margin",
@@ -73,7 +77,7 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.themeColor.Astro": "Astro",
     "engine.settings.category.Theme.themeColor.Custom": "Custom",
 
-    "engine.settings.category.SugarCube": "SugarCube",
+    "engine.settings.category.SugarCube": "Sugarcube",
     "engine.settings.category.SugarCube.notchWidth": "Notch Width",
     "engine.settings.category.SugarCube.notchHeight": "Notch Height",
     "engine.settings.category.SugarCube.cornerSize": "Corner Size",
@@ -85,43 +89,74 @@ editor.EnglishLang = {
     "engine.settings.category.SugarCube.blockColoration.Dark": "Neon",
     "engine.settings.category.SugarCube.blockColoration.Monotone": "Monotone",
 
-    "engine.settings.category.Monaco": "Monaco",
-    "engine.settings.category.Monaco.fontSize": "Font Size",
-    "engine.settings.category.Monaco.fontStyle": "Font Family",
-    "engine.settings.category.Monaco.fontStyle.Serif": "Serif",
-    "engine.settings.category.Monaco.fontStyle.Sans-serif": "Sans-serif",
-    "engine.settings.category.Monaco.fontStyle.Monospace": "Monospace",
-    "engine.settings.category.Monaco.fontStyle.Cursive": "Cursive",
-    "engine.settings.category.Monaco.fontStyle.Fantasy": "Fantasy",
-    "engine.settings.category.Monaco.themeOverride": "Override Theme",
+    "engine.settings.category.CodeMirror": "Code Mirror",
+    "engine.settings.category.CodeMirror.fontSize": "Font Size",
+    "engine.settings.category.CodeMirror.fontStyle": "Font Family",
+    "engine.settings.category.CodeMirror.fontStyle.Serif": "Serif",
+    "engine.settings.category.CodeMirror.fontStyle.Sans-serif": "Sans-serif",
+    "engine.settings.category.CodeMirror.fontStyle.Monospace": "Monospace",
+    "engine.settings.category.CodeMirror.fontStyle.Cursive": "Cursive",
+    "engine.settings.category.CodeMirror.fontStyle.Fantasy": "Fantasy",
+    "engine.settings.category.CodeMirror.themeOverride": "Override Theme",
 
-    "engine.settings.category.Monaco.defaultText": "Text Color",
-    "engine.settings.category.Monaco.colorKeyword": "Keyword Color",
-    "engine.settings.category.Monaco.colorClassname": "Class Color",
-    "engine.settings.category.Monaco.colorDelimiter": "Delimiter Color",
-    "engine.settings.category.Monaco.colorDelimiterBracket": "Bracket Color",
-    "engine.settings.category.Monaco.colorNumber": "Number Color",
-    "engine.settings.category.Monaco.colorNumberUnusual": "Unusual Number Color",
-    "engine.settings.category.Monaco.colorString": "String Color",
-    "engine.settings.category.Monaco.colorStringEscape": "Escape String Color",
-    "engine.settings.category.Monaco.colorStringError": "Bad String Color",
-    "engine.settings.category.Monaco.colorRegexp": "Regular Expression Color",
-    "engine.settings.category.Monaco.colorRegexpInvalid": "Bad Regular Expression Color",
-    "engine.settings.category.Monaco.colorRegexpEscape": "Regular Expression Escape Color",
-    "engine.settings.category.Monaco.colorComment": "Comment Color",
-    "engine.settings.category.Monaco.colorCommentDoc": "JS Doc Color",
-    "engine.settings.category.Monaco.colorCommentDocKeyword": "JS Doc Keyword Color",
-    "engine.settings.category.Monaco.colorCommentDocType": "JS Doc Type Color",
+    "engine.settings.category.CodeMirror.defaultText": "Text Color",
+    "engine.settings.category.CodeMirror.colorKeyword": "Keyword Color",
+    "engine.settings.category.CodeMirror.colorClassname": "Class Color",
+    "engine.settings.category.CodeMirror.colorDelimiter": "Delimiter Color",
+    "engine.settings.category.CodeMirror.colorDelimiterBracket": "Bracket Color",
+    "engine.settings.category.CodeMirror.colorNumber": "Number Color",
+    "engine.settings.category.CodeMirror.colorAttribute": "Attribute",
+    "engine.settings.category.CodeMirror.colorString": "String Color",
+    "engine.settings.category.CodeMirror.colorVariable": "Variable",
+    "engine.settings.category.CodeMirror.colorCodeTag": "Tag",
+    "engine.settings.category.CodeMirror.colorCodeHeader": "Header",
+    "engine.settings.category.CodeMirror.colorCodeLink": "Link",
+    "engine.settings.category.CodeMirror.colorComment": "Comment Color",
 
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
 
+    "engine.projectSettings.project": "Project",
+    "engine.projectSettings.project.defaultScene": "Default Scene",
+    "engine.projectSettings.project.targetFramerate": "Target FPS",
+    "engine.projectSettings.project.VSync": "VSync Enabled",
+
+    "engine.projectSettings.viewport": "Viewport",
+    "engine.projectSettings.viewport.viewportType": "Viewport Type",
+    "engine.projectSettings.viewport.resolution": "Viewport Resolution",
+    "engine.projectSettings.viewport.antiAlias": "Anti-Aliasing",
+
+    "engine.projectSettings.viewportType.screen": "Fill Screen",
+    "engine.projectSettings.viewportType.fixed": "Fixed",
+    "engine.projectSettings.viewportType.strech": "Stretch to Fit",
+    "engine.projectSettings.viewportType.integer": "Nearest Integer",
+
+    "engine.projectSettings.broadcasts": "Broadcasts",
+    "engine.projectSettings.broadcasts.add": "Add",
+    "engine.projectSettings.broadcasts.placeholder": "Broadcast",
+
+    "engine.projectSettings.globals": "Global Variables",
+    "engine.projectSettings.globals.add": "Add",
+    "engine.projectSettings.globals.placeholder": "Global",
+
+    "engine.projectSettings.collision": "Collision",
+    "engine.projectSettings.collisionGroups": "Collision Groups",
+    "engine.projectSettings.collisionGroups.add": "Add",
+    "engine.projectSettings.collisionGroups.placeholder": "Group",
+
+    "engine.projectSettings.extensions": "Extensions",
+    "engine.projectSettings.extensions.createExtension": "Create Extension",
+    "engine.projectSettings.extensions.extensionInfo": "Author: [Author] | Version: [Version]",
+
+    "editor.fileButton.removeFile": "Remove File",
+
     "editor.dropdown.project": "Project",
+    "editor.dropdown.project.importFiles": "Import file(s)",
+    "editor.dropdown.project.importLatte": "Import .latte",
     "editor.dropdown.project.save": "Save Project",
     "editor.dropdown.project.saveSeperate": "Save a Copy",
     "editor.dropdown.project.saveDecaf": "Save Project as .decaf",
     "editor.dropdown.project.projectSettings": "Project Settings",
-    "editor.dropdown.project.importFile": "Import File",
 
     "editor.dropdown.window": "Windows",
 
@@ -130,11 +165,42 @@ editor.EnglishLang = {
     "editor.dropdown.scene.save": "Save Scene",
     "editor.dropdown.scene.load": "Load Scene",
 
+    "editor.dropdown.runtime": "Game",
+    "editor.dropdown.runtime.startHere": "Start",
+    "editor.dropdown.runtime.startDefault": "Start in default scene",
+
     "editor.notification.saveScene": "Scene saved to \"[path]\"",
     "editor.notification.saveScript": "Saved \"[path]\" sucessfully",
     "editor.notification.compileScript": "Compiled \"[input]\" as \"[output]\" sucessfully",
+    "editor.notification.extensionReloaded": "Reloaded \"[extension]\" sucessfully",
 
     "editor.window.projectManager": "Project Settings",
+    "editor.window.extensionWizard": "Extension Wizard",
+    "editor.window.extensionWizard.previous": "previous",
+    "editor.window.extensionWizard.next": "next",
+    
+    "editor.window.extensionWizard.firstPage": "Welcome to the Coffee Engine extension wizard! This is a tool that will help you quickly set up the skeleton for an extension. To continue press \"Next\"",
+
+    "editor.window.extensionWizard.secondPage.extensionName": "Extension Name",
+    "editor.window.extensionWizard.secondPage.extensionName.placeholder": "Cool Extension",
+    "editor.window.extensionWizard.secondPage.authorName": "Your Name",
+    "editor.window.extensionWizard.secondPage.authorName.placeholder": "Barista",
+    "editor.window.extensionWizard.secondPage.version": "Version",
+    "editor.window.extensionWizard.secondPage.version.placeholder": "1.0.0",
+
+    "editor.window.extensionWizard.thirdPage": "What would you like to be automatically generated for you?",
+    "editor.window.extensionWizard.thirdPage.hasScript": "Engine Script",
+    "editor.window.extensionWizard.thirdPage.hasEditorScript": "Editor Script",
+    "editor.window.extensionWizard.thirdPage.hasNode": "Custom Node",
+    "editor.window.extensionWizard.thirdPage.hasSugarcubeBlocks": "Sugarcube Blocks",
+    "editor.window.extensionWizard.thirdPage.hasWindow": "Custom Window",
+    
+    "editor.window.extensionWizard.engineText": "This script will run in both the engine and editor.",
+    "editor.window.extensionWizard.editorText": "This script will run in the editor.",
+    "editor.window.extensionWizard.logText": "Extension [name] loaded!",
+    "editor.window.extensionWizard.defaultBlock": "log timer",
+    "editor.window.extensionWizard.defaultWindow": "The \"Content\" argument in \"init\" is an HTML div",
+    "editor.window.extensionWizard.cleanupComment": "extension cleanup code",
 
     "editor.window.debugLog": "Log",
     "editor.window.debugLog.clear": "clear",
@@ -154,7 +220,15 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.reading": "Reading Files",
     "editor.window.fileExplorer.delete": "Delete",
     "editor.window.fileExplorer.rename": "Rename",
+    "editor.window.fileExplorer.package": "Package",
     "editor.window.fileExplorer.openInCode": "Open in Code Editor",
+    "editor.window.fileExplorer.refresh": "Refresh files",
+    "editor.window.fileExplorer.createFile": "New file",
+    "editor.window.fileExplorer.importFiles": "Import file(s)",
+
+    "editor.window.createFile" : "Create File",
+    "editor.window.createFile.blank" : "blank",
+    "editor.window.createFile.material" : "material",
 
     "editor.window.viewport": "Viewport",
 
@@ -173,6 +247,8 @@ editor.EnglishLang = {
     "editor.window.cappuccino": "Cappuccino",
     "editor.window.glslShader": "Shader",
 
+    "editor.window.createScene": "New Scene",
+
     "editor.window.typed.commentMessage": "This is a default behavior!",
     "editor.window.typed.initMessage": "Code for initilization goes here.",
     "editor.window.typed.updateMessage": "Code for each frame goes here.",
@@ -190,6 +266,7 @@ editor.EnglishLang = {
     "editor.window.createVar.variable": "Variable",
     "editor.window.createVar.list": "List",
     "editor.window.createVar.object": "Table",
+    "editor.window.createVar.isPublic": "Public",
 
     "editor.window.createBlock": "Create a Block",
     "editor.window.createBlock.textInput": "Text",
@@ -236,6 +313,8 @@ editor.EnglishLang = {
     "sugarcube.looks.block.getSprite": "current sprite",
     "sugarcube.looks.block.setMesh": "set mesh to [mesh]",
     "sugarcube.looks.block.getMesh": "current mesh",
+    "sugarcube.looks.block.setMaterial": "set material [id] to [material]",
+    "sugarcube.looks.block.getMaterial": "material [id]",
     "sugarcube.looks.block.setLightColor": "set light color to [color]",
     "sugarcube.looks.block.getLightColor": "light color",
     "sugarcube.looks.block.setRadius": "set light radius to [radius]",
@@ -281,14 +360,15 @@ editor.EnglishLang = {
     "sugarcube.controls.block.wait": "wait [seconds] seconds",
     "sugarcube.controls.block.ifStatement": "if [condition] then [dummy] [statement]",
     "sugarcube.controls.block.ifElse_Statement": "if [condition] then [dummy] [statement] else [dummy2] [statement2]",
-    "sugarcube.controls.block.switch_Statement": "switch [condition] [statement] default [dummy] [default]",
+    "sugarcube.controls.block.switch_Statement": "switch [condition] [image] [statement] default [dummy] [default]",
     "sugarcube.controls.block.branch_Statement": "case [condition] [statement]",
-    "sugarcube.controls.block.repeat": "repeat [num] [dummy] [statement]",
-    "sugarcube.controls.block.foreach": "for each item in [array] do [dummy] [statement]",
-    "sugarcube.controls.block.repeatUNT": "repeat until [condition] [dummy] [statement]",
-    "sugarcube.controls.block.while": "while [condition] [dummy] [statement]",
+    "sugarcube.controls.block.repeat": "repeat [num] [dummy] [statement] [image]",
+    "sugarcube.controls.block.foreach": "for each item in [array] do [dummy] [statement] [image]",
+    "sugarcube.controls.block.repeatUNT": "repeat until [condition] [dummy] [statement] [image]",
+    "sugarcube.controls.block.while": "while [condition] [dummy] [statement] [image]",
     "sugarcube.controls.block.continue": "continue [image]",
     "sugarcube.controls.block.break": "break [image]",
+    "sugarcube.controls.block.doAs": "do [image] [dummy] [statement] as [target]",
     "sugarcube.controls.block.call": "call [reference]",
 
     "sugarcube.sensing": "Sensing",
@@ -355,6 +435,9 @@ editor.EnglishLang = {
     "sugarcube.scene.block.getScript": "script of [object]",
     "sugarcube.scene.block.getChildren": "children of [object]",
     "sugarcube.scene.block.getParentOf": "parent of [object]",
+    "sugarcube.scene.block.instansiateNode": "create [node]",
+    "sugarcube.scene.block.setParentOf": "set parent of [node] to [parent]",
+    "sugarcube.scene.block.unparent": "unparent [node]",
     "sugarcube.scene.block.setVariable": "set variable [variable] of [object] to [value]",
     "sugarcube.scene.block.getVariable": "variable [variable] of [object]",
 
@@ -380,6 +463,9 @@ editor.EnglishLang = {
     "sugarcube.operators.block.or": "[A] or [B]",
     "sugarcube.operators.block.xor": "either [A] or [B]",
     "sugarcube.operators.block.not": "not [A]",
+    "sugarcube.operators.block.true": "true",
+    "sugarcube.operators.block.false": "false",
+    "sugarcube.operators.block.exists": "does [value] exist?",
     "sugarcube.operators.menu.operations.abs": "abs",
     "sugarcube.operators.menu.operations.floor": "floor",
     "sugarcube.operators.menu.operations.ceiling": "ceiling",
@@ -478,6 +564,17 @@ editor.EnglishLang = {
     "sugarcube.files.menu.asMenu.byte": "Byte Array",
     "sugarcube.files.menu.asMenu.dataURL": "Data URL",
 
+    "engine.CUGI.newElement": "New Element",
+    "engine.CUGI.key": "Key",
+    "engine.CUGI.value": "Value",
+    "engine.CUGI.number": "Number",
+    "engine.CUGI.vec2": "Vector 2",
+    "engine.CUGI.vec3": "Vector 3",
+    "engine.CUGI.vec4": "Vector 4",
+    "engine.CUGI.string": "String",
+    "engine.CUGI.array": "Array",
+    "engine.CUGI.object": "Table",
+
     "engine.nodeNames.scene": "Scene",
     "engine.nodeNames.Node": "Node",
     "engine.nodeNames.Node2D": "Node 2D",
@@ -498,33 +595,66 @@ editor.EnglishLang = {
     "engine.nodeNames.Camera": "Camera",
     "engine.nodeNames.MeshDisplay": "Mesh Display",
     "engine.nodeNames.Billboard": "Billboard",
+    "engine.nodeNames.Sprite3D": "Sprite 3D",
 
     "engine.nodePropertyLabels.NothingHere": "Nothing here!",
+    
     "engine.nodeProperties.Node.name": "Name",
     "engine.nodeProperties.Node.script": "Script",
     "engine.nodeProperties.Node.modulatedColor": "Modulated Color",
     "engine.nodeProperties.Node.position": "Position",
     "engine.nodeProperties.Node.rotation": "Rotation",
     "engine.nodeProperties.Node.scale": "Scale",
+    
     "engine.nodeProperties.Node2D.layer": "Layer",
+    
     "engine.nodeProperties.Sprite.spritePath": "Sprite Path",
     "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
+    "engine.nodeProperties.Sprite.filtering": "Filtering",
+    "engine.nodeProperties.Sprite.filtering.nearest": "Nearest",
+    "engine.nodeProperties.Sprite.filtering.linear": "Linear",
+
     "engine.nodeProperties.Billboard.omnidirectional": "Omnidirectional",
+    
     "engine.nodeProperties.MeshDisplay.meshPath": "Mesh Path",
-    "engine.nodeProperties.MeshDisplay.material": "Material",
+    "engine.nodeProperties.MeshDisplay.material": "Material [number]",
+    
     "engine.nodeProperties.Camera.fov": "FOV",
     "engine.nodeProperties.Camera.nearPlane": "Near Plane",
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
     "engine.nodeProperties.Camera.active": "Active",
+    
     "engine.nodeProperties.Light.radius": "Radius",
     "engine.nodeProperties.Light.color": "Color",
+    
     "engine.nodeProperties.SpotLight.falloff": "Falloff",
+    
+    "engine.nodeProperties.Collision.group": "Collision Group",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",
     "engine.nodeProperties.scene.groundColor": "Ground Color",
     "engine.nodeProperties.scene.centerColor": "Core Color",
+    "engine.nodeProperties.scene.ambientColor": "Ambient Color",
 
-    "engine.fileProperties.Shader.shader" : "Shader"
+    "engine.nodeProperties.scene.fogType": "Fog Type",
+    "engine.nodeProperties.scene.fogType.none": "No fog",
+    "engine.nodeProperties.scene.fogType.retro": "Retro",
+    "engine.nodeProperties.scene.fogType.simple": "Simple",
+    "engine.nodeProperties.scene.fogType.sunAffected": "Sun Affected",
+    
+    "engine.nodeProperties.scene.fogStart": "Fog Start",
+    "engine.nodeProperties.scene.fogFalloff": "Fog Falloff",
+    "engine.nodeProperties.scene.fogColor": "Fog Color",
+    "engine.nodeProperties.scene.skyEffect": "Fog Sky Mix",
+    "engine.nodeProperties.scene.sunMultiplier": "Fog Sun Affectiveness",
+
+    "engine.fileProperties.Shader.shader" : "Shader",
+    "engine.fileProperties.Shader.cullMode": "Cull Side",
+    "engine.fileProperties.Shader.cullMode.front": "Front",
+    "engine.fileProperties.Shader.cullMode.back": "Back",
+    "engine.fileProperties.Shader.cullMode.neither": "Neither",
+
+    "runtime.debugText": "Press shift + i to open the debug console"
 };

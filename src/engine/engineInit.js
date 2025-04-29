@@ -4,9 +4,40 @@ window.coffeeEngine = {
         fileSystemUpdate: [],
         extensionDispose: [],
         desktopInput: [],
+        projectSettingsLoaded: [],
     },
     broadcasts: {},
-    runtime: {},
+    runtime: {
+        TVsync: false,
+        TTF: 60,
+
+        set VSync(value) {
+            coffeeEngine.runtime.TVsync = value;
+
+            if (coffeeEngine.isEditor) return;
+
+            //Make sure our loop conforms
+            if (value) coffeeEngine.runtime.startVSyncLoop();
+            else coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
+        },
+
+        get VSync() {
+            return coffeeEngine.runtime.TVsync;
+        },
+
+        set targetFramerate(value) {
+            coffeeEngine.runtime.TTF = value;
+
+            if (coffeeEngine.isEditor) return;
+
+            //Make sure our loop conforms
+            if (!coffeeEngine.runtime.VSync) coffeeEngine.runtime.startFrameLoop(coffeeEngine.runtime.targetFramerate);
+        },
+
+        get targetFramerate() {
+            return coffeeEngine.runtime.TTF;
+        }
+    },
     classes: {},
     collisionTypes: {
         SAT:false,
@@ -16,6 +47,7 @@ window.coffeeEngine = {
     renderer: {
         nodesRendered: 0,
         sprites: {},
+        viewport: {}
     },
     preloadFunctions: {},
     nodeRegister: {},
@@ -28,6 +60,10 @@ window.coffeeEngine = {
         //Return if node already exists
         if (coffeeEngine.nodeRegister[name]) return;
         coffeeEngine.nodeRegister[name] = [node, parentNode];
+    },
+    deregisterNode: (name) => {
+        if (!coffeeEngine.nodeRegister[name]) return;
+        delete coffeeEngine.nodeRegister[name];
     },
     getNode: (name) => {
         if (!coffeeEngine.nodeRegister[name]) return;
@@ -46,57 +82,8 @@ window.coffeeEngine = {
         return "Node";
     },
 
+    //Our timer
     timer: 0,
-    addEventListener: (event, func) => {
-        if (typeof coffeeEngine.events[event] != "object") return;
-
-        coffeeEngine.events[event].push(func);
-        return func;
-    },
-
-    hasEventListener: (event, func) => {
-        if (typeof coffeeEngine.events[event] != "object") return;
-
-        return coffeeEngine.events[event].includes(func);
-    },
-
-    removeEventListener: (event, func) => {
-        if (typeof coffeeEngine.events[event] != "object") return;
-
-        if (coffeeEngine.events[event].includes(func)) {
-            coffeeEngine.events[event].splice(coffeeEngine.events[event].indexOf(func), 1);
-        }
-    },
-
-    sendEvent: (event, data) => {
-        if (typeof coffeeEngine.events[event] != "object") return;
-
-        for (const eventFunc in coffeeEngine.events[event]) {
-            coffeeEngine.events[event][eventFunc](data);
-        }
-    },
-
-    //Differences between broadcasts and events. Broadcasts are built specifically for sending signals between nodes. Broadcasts have NO arguments
-    addBroadcast: (broadcast, func) => {
-        if (!coffeeEngine.broadcasts[broadcast]) coffeeEngine.broadcasts[broadcast] = [];
-
-        coffeeEngine.broadcasts[broadcast].push(func);
-        return func;
-    },
-
-    removeBroadcast: (broadcast, func) => {
-        if (typeof coffeeEngine.broadcasts[broadcast] != "object") return;
-
-        if (coffeeEngine.broadcasts[broadcast].includes(func)) {
-            coffeeEngine.broadcasts[broadcast].splice(coffeeEngine.broadcasts[broadcast].indexOf(func), 1);
-        }
-    },
-
-    sendBroadcast: (broadcast) => {
-        if (typeof coffeeEngine.broadcasts[broadcast] != "object") return;
-
-        for (const broadcastFunc in coffeeEngine.broadcasts[broadcast]) {
-            coffeeEngine.broadcasts[broadcast][broadcastFunc]();
-        }
-    }
 };
+
+window.globals = {};
