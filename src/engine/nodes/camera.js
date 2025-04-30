@@ -50,9 +50,9 @@
                     cameraData.aspectRatio = canvas.width / canvas.height;
 
                     const translatedRender = this.mixedMatrix.getTranslation();
-                    cameraData.position.x = -translatedRender.x;
-                    cameraData.position.y = -translatedRender.y;
-                    cameraData.position.z = -translatedRender.z;
+                    cameraData.position.x = translatedRender.x;
+                    cameraData.position.y = translatedRender.y;
+                    cameraData.position.z = translatedRender.z;
 
                     coffeeEngine.renderer.cameraData.cameraRotationEul.x = -this.rotation.y;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;

@@ -146,6 +146,12 @@
             if (this.#scriptObject && this.#scriptObject.dispose) this.#scriptObject.dispose();
             if (this.parent) this.parent.removeChild(this);
 
+            //Remove children
+            for (let childID in this.children) {
+                this.children[childID]._dispose();
+            }
+
+            //remove myself
             this.dispose();
             delete this;
         }
