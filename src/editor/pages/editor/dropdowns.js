@@ -97,6 +97,7 @@
 
         editor.dropdownBar.scene.onchange = (value) => {
             if (!coffeeEngine.runtime.currentScene) return;
+            const currentScene = coffeeEngine.runtime.currentScene;
 
             switch (value) {
                 case "new":
@@ -108,8 +109,9 @@
 
                 case "save":
                     //Its actually that easy
-                    project.setFile(coffeeEngine.runtime.currentScene.scenePath, JSON.stringify(coffeeEngine.runtime.currentScene.serialize()), "application/json");
-                    console.log(editor.language["editor.notification.saveScene"].replace("[path]", coffeeEngine.runtime.currentScene.scenePath));
+                    if (!currentScene.prefabEditMode) project.setFile(currentScene.scenePath, JSON.stringify(currentScene.serialize()), "application/json");
+                    else project.setFile(currentScene.scenePath, JSON.stringify(currentScene.__serializeChildren(currentScene.children)[0]), "application/json");
+                    console.log(editor.language["editor.notification.saveScene"].replace("[path]", currentScene.scenePath));
                     break;
 
                 case "load":

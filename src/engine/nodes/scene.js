@@ -44,7 +44,7 @@
                 //Make sure our scene is JSON
                 const parsed = JSON.parse(this.fileReader.result);
                 if (!parsed) {
-                    console.log(`"${this.scenePath}" is INVALID! Opening an empty scene with that path.`);
+                    console.log(`"${this.scenePath}" is INVALID! Opening an empty ${(this.prefabEditMode ? "prefab" : "scene")} with that path.`);
                     return;
                 }
 
