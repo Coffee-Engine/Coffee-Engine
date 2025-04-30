@@ -51,6 +51,9 @@
                 //if it is deserialize it.
                 if (!this.prefabEditMode) this.deserialize(parsed);
                 else this.__setupPrefabScene(parsed);
+
+                //Notify the project that the scene loaded.
+                coffeeEngine.sendEvent("sceneLoaded", { isPrefab: this.prefabEditMode, root: (this.prefabEditMode) ? this.children[0] : this });
             };
         }
 
