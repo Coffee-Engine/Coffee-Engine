@@ -228,8 +228,10 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.importFiles": "Import file(s)",
 
     "editor.window.createFile" : "Create File",
-    "editor.window.createFile.blank" : "blank",
-    "editor.window.createFile.material" : "material",
+    "editor.window.createFile.blank" : "Blank",
+    "editor.window.createFile.json" : "JSON",
+    "editor.window.createFile.material" : "Material",
+    "editor.window.createFile.prefab": "Prefab",
 
     "editor.window.viewport": "Viewport",
 

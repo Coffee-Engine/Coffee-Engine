@@ -49,12 +49,9 @@
             this.createButton.onclick = () => {
                 //This might be the one reason I actually look for a catch :Skull Emoji:
                 project.getFile(this.path.value).catch((reason) => {
-                    //Then we set the file
-                    project.setFile(this.path.value, editor.findFileTypeFromExtension(this.type.value).contents, "text/javascript").then((path) => {
-                        editor.sendFileHook(path.split(".")[1], path);
-                        this._dispose();
-                    });
-                });
+                    this.createFile(this.path.value);
+                    this._dispose();
+                })
             };
 
             container.appendChild(this.type);
@@ -63,6 +60,12 @@
 
             //Make sure the layout corrolates
             this.type.onchange();
+        }
+
+        createFile(path) {
+            project.setFile(path, editor.findFileTypeFromExtension(this.type.value).contents, "text/javascript").then((path) => {
+                editor.sendFileHook(path.split(".")[1], path);
+            });
         }
     };    
 })();

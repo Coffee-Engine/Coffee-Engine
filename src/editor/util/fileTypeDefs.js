@@ -9,6 +9,7 @@ editor.fileTypeDefs = [
         id: "json",
         fileExtension: "json",
         contents: "{}",
+        hasTranslation: true,
     },
     {
         id: "material",

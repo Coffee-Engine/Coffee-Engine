@@ -116,8 +116,29 @@
                             break;
                         }
 
+                        //Prefab creation duh
                         case "createPrefab": {
-                            console.log(coffeeEngine.runtime.currentScene.__serializeChildren([Node]));
+                            const serialized = coffeeEngine.runtime.currentScene.__serializeChildren([Node])[0];
+
+                            //Create our file creator
+                            const fileCreator = new editor.windows.fileCreator(400, 150);
+                            fileCreator.x = (window.innerWidth/2)-200;
+                            fileCreator.y = (window.innerHeight/2)-75;
+
+                            //A hacky solution. It works
+                            fileCreator.type.innerHTML = `<option value="prefab">${editor.language[`editor.window.createFile.prefab`]} (prefab)</option>`;
+                            fileCreator.type.value = "prefab";
+
+                            //Override some stuff for the file creator pt2
+                            fileCreator.path.value = "prefabs/newPrefab.prefab";
+                            fileCreator.createFile = (path) => {
+                                project.setFile(path, JSON.stringify(serialized), "text/javascript").then((path) => {
+                                    editor.sendFileHook(path.split(".")[1], path);
+                                });
+                            };
+
+                            //Move to the top
+                            fileCreator.__moveToTop();
                             break;
                         }
 
