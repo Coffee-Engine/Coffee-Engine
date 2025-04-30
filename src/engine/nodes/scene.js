@@ -12,6 +12,8 @@
         sunColor = [0, 0, 0];
         ambientColor = [0, 0, 0];
         lightCount = 0;
+
+        prefabEditMode = false;
         
         //The layout
         //* TYPE          , FALLOFF   , START
@@ -47,7 +49,8 @@
                 }
 
                 //if it is deserialize it.
-                this.deserialize(parsed);
+                if (!this.prefabEditMode) this.deserialize(parsed);
+                else this.__setupPrefabScene(parsed);
             };
         }
 
@@ -433,8 +436,8 @@
         }
 
         //recursive child looping
-        __deserializeChildren(parent, physicalParent) {
-            parent.children.forEach((child) => {
+        __deserializeChildren(data, physicalParent) {
+            data.forEach((child) => {
                 //Get our node class
                 const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
                 const node = new nodeClass();
@@ -448,7 +451,7 @@
                     }
                 }
 
-                this.__deserializeChildren(child, node);
+                this.__deserializeChildren(child.children, node);
             });
         }
 
@@ -473,11 +476,11 @@
                 //If we have no data assume this is a new scene
                 if (!data) data = { name: "scene", nodeType: "scene", children: [] };
 
-                //Rename the scene
-                this.name = data.name;
+                //Identify us as a scene
+                this.name = "Scene";
 
                 //Now we cycle through every child
-                this.__deserializeChildren(data, this);
+                this.__deserializeChildren(data.children, this);
             };
 
             //Check if preload exists
@@ -521,9 +524,42 @@
             });
         }
 
+        //For prefabs we make it the prettiest thing ever.
+        __setupPrefabScene(data) {
+            this.skyColor = [0,0,0];
+            this.horizonColor = [0.07450980392156863, 0.09019607843137255, 0.3254901960784314];
+            this.groundColor = [0.07450980392156863, 0.09019607843137255, 0.3254901960784314];
+            this.centerColor = [0, 0, 0];
+
+            this.ambientColor = [1,1,1];
+
+            this.fogData = [
+                0, 0.125, 5,
+                [1, 1, 1],
+                8, 0, 0
+            ];
+            
+            //Identify us as a prefab
+            this.name = "Prefab";
+
+            this.__clearChildren(this);
+            this.__deserializeChildren([data], this);
+        }
+
+        openIsolatedPrefab(path) {
+            project.getFile(path).then((file) => {
+                if (file) {
+                    this.prefabEditMode = true;
+                    this.scenePath = path;
+                    this.fileReader.readAsText(file);
+                }
+            })
+        }
+
         openScene(path) {
             project.getFile(path).then((file) => {
                 if (file) {
+                    this.prefabEditMode = false;
                     this.scenePath = path;
                     this.fileReader.readAsText(file);
                 }
@@ -531,6 +567,9 @@
         }
 
         getProperties() {
+            // if we are a prefab we don't have properties.
+            if (this.prefabEditMode) return [];
+
             // prettier-ignore
             return [
                 { name: "skyColor", translationKey: "engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 
