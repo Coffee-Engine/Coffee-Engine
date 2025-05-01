@@ -129,8 +129,14 @@
             const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
             const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
 
-            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
-            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
+            //Detect if post
+            let shader = coffeeEngine.renderer.mainShaders.basis;
+            if (shaderCode.match(/\w*#define\s*is_post;/)) {
+                shader = coffeeEngine.renderer.mainShaders.postBasis;
+            }
+
+            const compiledVert = shader.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
+            const compiledFrag = shader.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
 
             const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
 

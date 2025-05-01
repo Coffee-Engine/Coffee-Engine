@@ -53,5 +53,13 @@
             SPECULAR = texture(SpecularMap, UV).x;
         }
         `);
+
+        renderer.mainShaders.bloom = renderer.compilePBRshader(`
+        #define is_post;
+
+        void fragment() {
+            COLOR = texture(SCREEN, UV + vec2(cos(UV.y + u_time), sin(UV.x + u_time)));
+        }
+        `)
     };
 })();
