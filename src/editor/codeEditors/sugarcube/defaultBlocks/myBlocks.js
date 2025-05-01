@@ -279,6 +279,7 @@
                                 //I pray to you
                                 //https://groups.google.com/g/blockly/c/hnhObVXLJw4
                                 const input = block.appendValueInput(item.id);
+                                input.setCheck(["noClones"]);
 
                                 //Block it up
                                 const blockIN = sugarcube.workspace.newBlock(declaration);
@@ -286,6 +287,7 @@
                                 blockIN.editedState.color = state.color;
                                 blockIN.editedState._shouldDuplicate_ = true;
                                 blockIN.editedState._isClone_ = false;
+                                blockIN.outputConnection.check = [...blockIN.outputConnection.check, "noClones"];
                                 blockIN.initSvg();
                                 blockIN.render();
                                 input.connection.connect(blockIN.outputConnection);
