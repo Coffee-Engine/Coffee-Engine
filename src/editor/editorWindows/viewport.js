@@ -145,6 +145,12 @@
                         let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
                         hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
                         hit = coffeeEngine.runtime.currentScene.drawList[hit];
+                        
+                        //Target our prefab if needed
+                        if (hit) {
+                            const inPrefab = hit.inPrefab;
+                            if (inPrefab) hit = inPrefab;
+                        }
 
                         //Node dragging
                         if (this.previouslySelectedNode == hit) {

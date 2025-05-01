@@ -599,6 +599,7 @@ editor.EnglishLang = {
     "engine.nodeNames.MeshDisplay": "Mesh Display",
     "engine.nodeNames.Billboard": "Billboard",
     "engine.nodeNames.Sprite3D": "Sprite 3D",
+    "engine.nodeNames.Prefab": "Prefab",
 
     "engine.nodePropertyLabels.NothingHere": "Nothing here!",
     
@@ -634,6 +635,8 @@ editor.EnglishLang = {
     "engine.nodeProperties.SpotLight.falloff": "Falloff",
     
     "engine.nodeProperties.Collision.group": "Collision Group",
+
+    "engine.nodeProperties.Prefab.prefab": "Prefab",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",

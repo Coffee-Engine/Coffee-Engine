@@ -14,6 +14,11 @@
         lightCount = 0;
 
         prefabEditMode = false;
+        __showChildren = true;
+
+        get inPrefab() {
+            return false;
+        }
         
         //The layout
         //* TYPE          , FALLOFF   , START
@@ -335,6 +340,8 @@
         //We want to recursively go downwards and get the properties and types of each child
         __serializeChildren(node) {
             const returnedObject = [];
+
+            //Make sure we return our returned object early if this is the case
             node.forEach((child) => {
                 const properties = {};
 
@@ -379,7 +386,7 @@
                 returnedObject.push({
                     name: child.name,
                     nodeType: coffeeEngine.getNodeName(child),
-                    children: this.__serializeChildren(child.children),
+                    children: (child.__showChildren) ? this.__serializeChildren(child.children) : [],
                     properties: properties,
                 });
             });
@@ -562,7 +569,7 @@
         saveScene(pathOverride) {
             pathOverride = pathOverride || this.scenePath;
             if (!this.prefabEditMode) project.setFile(pathOverride, JSON.stringify(this.serialize()), "application/json");
-            else project.this(pathOverride, JSON.stringify(this.__serializeChildren(this.children)[0]), "application/json");
+            else project.setFile(pathOverride, JSON.stringify(this.__serializeChildren([this.children])[0]), "application/json");
         }
 
         openScene(path) {

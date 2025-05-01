@@ -60,13 +60,17 @@
 
             if (!root) {
                 element.contextFunction = () => {
-                    return [
-                        { text: editor.language["editor.window.sceneTree.addChild"], value: "addChild" },
+                    //If children should
+                    const contextMenuItems = [
                         { text: editor.language["editor.window.sceneTree.addDuplicateChild"], value: "addDuplicateChild" },
                         { text: editor.language["editor.window.sceneTree.duplicate"], value: "duplicate" },
                         { text: editor.language["editor.window.sceneTree.createPrefab"], value: "createPrefab" },
-                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },
+                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },                        
                     ];
+
+                    //If we can have children, show add children
+                    if (Node.__showChildren) contextMenuItems.splice(0,0, { text: editor.language["editor.window.sceneTree.addChild"], value: "addChild" });
+                    return contextMenuItems;
                 };
 
                 element.contentAnswer = (value) => {
@@ -127,6 +131,7 @@
                         //Prefab creation duh
                         case "createPrefab": {
                             const serialized = coffeeEngine.runtime.currentScene.__serializeChildren([Node])[0];
+                            console.log(serialized);
 
                             //Create our file creator
                             const fileCreator = new editor.windows.fileCreator(400, 150);
@@ -178,9 +183,12 @@
 
             parentElement.appendChild(element);
 
-            Node.children.forEach((childNode) => {
-                this.createNodeElement(childNode, lowerDiv, !even, false);
-            });
+            //Make sure we are allowed to show our children
+            if (Node.__showChildren) {
+                Node.children.forEach((childNode) => {
+                    this.createNodeElement(childNode, lowerDiv, !even, false);
+                });
+            }
 
             return element;
         }
