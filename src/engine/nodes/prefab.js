@@ -17,10 +17,11 @@
                 //Add our new kids :)
                 if (!this.parent) return;
 
+                const currentScene = coffeeEngine.runtime.currentScene;
+
                 //If we are in the editor parent them to our prefab, if not add them to the scene and murder our prefab
                 if (coffeeEngine.isEditor) {
                     this.name = prefab.name;
-                    const currentScene = coffeeEngine.runtime.currentScene
                     currentScene.__deserializeChildren([prefab], this);
 
                     //set our child properties
@@ -35,7 +36,20 @@
                     }
                 }
                 else {
-                    if (coffeeEngine.isEditor) coffeeEngine.runtime.currentScene.__deserializeChildren([prefab], this.parent);    
+                    if (coffeeEngine.isEditor) currentScene.__deserializeChildren([prefab], this.parent);
+                    const newChild = currentScene.children[currentScene.children.length - 1]; 
+
+                    //set our child properties
+                    if (newChild) {
+                        for (let key in this.#childProps) {
+                            newChild[key] = currentScene.__deserializeValue(this.#childProps[key]);
+                        }
+                    }
+
+                    if (this.afterLoad) {
+                        this.afterLoad();
+                    }
+
                     this._dispose();                
                 }
             })
