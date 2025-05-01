@@ -145,6 +145,12 @@
                         let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
                         hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
                         hit = coffeeEngine.runtime.currentScene.drawList[hit];
+                        
+                        //Target our prefab if needed
+                        if (hit) {
+                            const inPrefab = hit.inPrefab;
+                            if (inPrefab) hit = inPrefab;
+                        }
 
                         //Node dragging
                         if (this.previouslySelectedNode == hit) {
@@ -243,6 +249,54 @@
             });
         }
 
+        setupButtons(container) {
+            //The profiler in the corner
+            this.profiler = document.createElement("div");
+            this.profiler.style.position = "absolute";
+            this.profiler.style.left = "100%";
+            this.profiler.style.top = "0%";
+            this.profiler.style.transform = "translate(-100%,0%";
+            this.profiler.style.backgroundColor = "var(--background-1)";
+
+            this.buttonHolder = document.createElement("div");
+            {
+                //Style the button holder
+                this.buttonHolder.style.position = "absolute";
+                this.buttonHolder.style.aspectRatio = "1/3";
+                this.buttonHolder.style.display = "grid";
+                this.buttonHolder.style.gridTemplateRows = "33.3333% 33.3333% 33.3333%";
+
+                this.buttonHolder.style.width = "24px";
+                this.buttonHolder.style.top = "4px";
+                this.buttonHolder.style.left = "4px";
+
+                //ortho Button
+                this.viewmodeButton = document.createElement("button");
+                this.viewmodeButton.innerHTML = perspectiveIcon;
+                this.viewmodeButton.style.position = "relative";
+                this.viewmodeButton.onclick = () => {
+                    this.orthographicMode = !this.orthographicMode;
+                    this.viewmodeButton.innerHTML = this.orthographicMode ? orthographicIcon : perspectiveIcon;
+                };
+                this.buttonHolder.appendChild(this.viewmodeButton);
+
+                //profiler Button
+                this.profilerButton = document.createElement("button");
+                this.profilerButton.innerHTML = profilerIcon;
+                this.profilerButton.style.position = "relative";
+                this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
+                {
+                    this.profilerButton.onclick = () => {
+                        this.profilerToggle = !this.profilerToggle;
+                        this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
+                    };
+                }
+                this.buttonHolder.appendChild(this.profilerButton);
+            }
+            container.appendChild(this.buttonHolder);
+            container.appendChild(this.profiler);
+        }
+
         init(container) {
             this.closable = false;
             this.title = editor.language["editor.window.viewport"];
@@ -253,15 +307,10 @@
             this.canvas.style.height = "100%";
             container.appendChild(this.canvas);
 
-            //The profiler in the corner
-            this.profiler = document.createElement("div");
-            this.profiler.style.position = "absolute";
-            this.profiler.style.left = "100%";
-            this.profiler.style.top = "0%";
-            this.profiler.style.transform = "translate(-100%,0%";
-            this.profiler.style.backgroundColor = "var(--background-1)";
-
             container.style.overflow = "hidden";
+
+            //The buttons
+            this.setupButtons(container);
 
             //Setup our renderer
             this.renderer = coffeeEngine.renderer.create(this.canvas);
@@ -308,50 +357,56 @@
                 coffeeEngine.inputs.mouse.movementY = 0;
             }, 16);
 
-            this.buttonHolder = document.createElement("div");
-            {
-                //Style the button holder
-                this.buttonHolder.style.position = "absolute";
-                this.buttonHolder.style.aspectRatio = "1/3";
-                this.buttonHolder.style.display = "grid";
-                this.buttonHolder.style.gridTemplateRows = "33.3333% 33.3333% 33.3333%";
-
-                this.buttonHolder.style.width = "24px";
-                this.buttonHolder.style.top = "4px";
-                this.buttonHolder.style.left = "4px";
-
-                //ortho Button
-                this.viewmodeButton = document.createElement("button");
-                this.viewmodeButton.innerHTML = perspectiveIcon;
-                this.viewmodeButton.style.position = "relative";
-                this.viewmodeButton.onclick = () => {
-                    this.orthographicMode = !this.orthographicMode;
-                    this.viewmodeButton.innerHTML = this.orthographicMode ? orthographicIcon : perspectiveIcon;
-                };
-                this.buttonHolder.appendChild(this.viewmodeButton);
-
-                //profiler Button
-                this.profilerButton = document.createElement("button");
-                this.profilerButton.innerHTML = profilerIcon;
-                this.profilerButton.style.position = "relative";
-                this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
-                {
-                    this.profilerButton.onclick = () => {
-                        this.profilerToggle = !this.profilerToggle;
-                        this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
-                    };
+            coffeeEngine.addEventListener("sceneLoaded", (data) => {
+                if (data.isPrefab) {
+                    //Handle different prefab positions
+                    if (data.root instanceof coffeeEngine.getNode("Node3D")) {
+                        this.previewCamera.x = -data.root.position.x;
+                        this.previewCamera.y = -data.root.position.y;
+                        this.previewCamera.z = -data.root.position.z + 4;
+    
+                        this.previewCamera.yaw = 0;
+                        this.previewCamera.pitch = 0;
+                        this.orthographicMode = false;
+                        this.wFactor = 1;
+                    }
+                    else if (data.root instanceof coffeeEngine.getNode("Node2D")) {
+                        this.previewCamera.x = -data.root.position.x;
+                        this.previewCamera.y = -data.root.position.y;
+                        this.previewCamera.z = 0;
+    
+                        this.previewCamera.yaw = 0;
+                        this.previewCamera.pitch = 0;
+                        this.orthographicMode = true;
+                        this.wFactor = 0;
+                    }
+                    //The oponomous blank node!
+                    else {
+                        this.previewCamera.x = 0;
+                        this.previewCamera.y = 0;
+                        this.previewCamera.z = 0;
+    
+                        this.previewCamera.yaw = 0;
+                        this.previewCamera.pitch = 0;
+                    }
                 }
-                this.buttonHolder.appendChild(this.profilerButton);
-            }
-            container.appendChild(this.buttonHolder);
-            container.appendChild(this.profiler);
+                //If we are a scene just move to 0,0,0
+                else {
+                    this.previewCamera.x = 0;
+                    this.previewCamera.y = 0;
+                    this.previewCamera.z = 0;
+
+                    this.previewCamera.yaw = 0;
+                    this.previewCamera.pitch = 0;
+                }
+            })
         }
 
         resized() {
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
-            coffeeEngine.renderer.drawBuffer.resize(this.canvas.width, this.canvas.height);
+            coffeeEngine.renderer.resize(this.canvas.width, this.canvas.height);
         }
     };
 

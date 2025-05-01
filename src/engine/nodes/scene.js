@@ -12,6 +12,13 @@
         sunColor = [0, 0, 0];
         ambientColor = [0, 0, 0];
         lightCount = 0;
+
+        prefabEditMode = false;
+        __showChildren = true;
+
+        get inPrefab() {
+            return false;
+        }
         
         //The layout
         //* TYPE          , FALLOFF   , START
@@ -42,12 +49,16 @@
                 //Make sure our scene is JSON
                 const parsed = JSON.parse(this.fileReader.result);
                 if (!parsed) {
-                    console.log(`"${this.scenePath}" is INVALID! Opening an empty scene with that path.`);
+                    console.log(`"${this.scenePath}" is INVALID! Opening an empty ${(this.prefabEditMode ? "prefab" : "scene")} with that path.`);
                     return;
                 }
 
                 //if it is deserialize it.
-                this.deserialize(parsed);
+                if (!this.prefabEditMode) this.deserialize(parsed);
+                else this.__setupPrefabScene(parsed);
+
+                //Notify the project that the scene loaded.
+                coffeeEngine.sendEvent("sceneLoaded", { isPrefab: this.prefabEditMode, root: (this.prefabEditMode) ? this.children[0] : this });
             };
         }
 
@@ -132,6 +143,8 @@
             const renderer = coffeeEngine.renderer;
             const GL = renderer.daveshade.GL;
 
+            const {width, height} = coffeeEngine.renderer.drawBuffer;
+
             //Clear the main renderers depth, and reset the sun
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.sunDirection = [0, 0, 0];
@@ -142,28 +155,41 @@
 
             //Clear the depth each time and draw the sky/scene
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
-            this.__drawSky(renderer);
+            this.__drawSky(renderer, width, height);
             renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
             this.__drawScene(renderer);
 
             //Render it back to the main draw pass.
-            renderer.daveshade.renderToCanvas();
             renderer.daveshade.cullFace();
+            renderer.swapPost();
+
             this.__drawFinal(renderer, renderer.mainShaders.mainPass);
+            this.__postProcess(renderer);
+
+            //The final blit!
+            renderer.daveshade.renderToCanvas();
+            renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
+            renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPost().attachments[0].texture });
+            renderer.mainShaders.viewportPass.drawFromBuffers(6);
         }
 
-        __drawSky(renderer) {
-            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            renderer.mainShaders.skyplane.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.skyplane.uniforms.horizonColor.value = this.horizonColor;
-            renderer.mainShaders.skyplane.uniforms.skyColor.value = this.skyColor;
-            renderer.mainShaders.skyplane.uniforms.groundColor.value = this.groundColor;
-            renderer.mainShaders.skyplane.uniforms.centerColor.value = this.centerColor;
+        __drawSky(renderer, width, height) {
+            renderer.cameraData.res = [width, height];
 
-            renderer.mainShaders.skyplane.drawFromBuffers(6);
+            //Set our uniforms
+            const skyShader = renderer.mainShaders.skyplane;
+            skyShader.setBuffers(coffeeEngine.shapes.plane);
+            skyShader.setUniforms({
+                horizonColor: this.horizonColor,
+                skyColor: this.skyColor,
+                groundColor: this.groundColor,
+                centerColor: this.centerColor,
+            })
+
+            skyShader.drawFromBuffers(6);
         }
 
-        __drawScene(renderer) {
+        __drawScene() {
             //Sort em
             this.drawList.sort((node1, node2) => {
                 //Don't spend the extra time recomputing the value
@@ -204,26 +230,55 @@
         }
 
         __drawFinal(renderer, mainPass) {
-            renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            const uniforms = mainPass.uniforms;
+            if (renderer.viewport.antiAlias) {
+                renderer.getPost().resize(renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul);
+                renderer.getPost().use();
+            }
+
+            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul];
+            else renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            
+            const drawBuffer =  renderer.drawBuffer.attachments;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
             
             //Neato!
-            uniforms.u_color.value = renderer.drawBuffer.attachments[0].texture;
-            uniforms.u_materialAttributes.value = renderer.drawBuffer.attachments[1].texture;
-            uniforms.u_emission.value = renderer.drawBuffer.attachments[2].texture;
-            uniforms.u_position.value = renderer.drawBuffer.attachments[3].texture;
-            uniforms.u_normal.value = renderer.drawBuffer.attachments[4].texture;
-            uniforms.u_sunDir.value = this.sunDirection;
-            uniforms.u_sunColor.value = this.sunColor;
-            uniforms.u_ambientColor.value = this.ambientColor;
-            uniforms.u_lightCount.value = this.lightCount;
-            uniforms.u_cameraPosition.value = coffeeEngine.renderer.cameraData.position.webGLValue();
-            uniforms.u_fogData.value = this.fogData.flat();
-            uniforms.u_antiAliasingRate.value = (coffeeEngine.renderer.viewport.antiAlias) ? 2 : 1;
+            mainPass.setUniforms({
+                //Textures
+                u_color: drawBuffer[0].texture, 
+                u_materialAttributes: drawBuffer[1].texture, 
+                u_emission: drawBuffer[2].texture, 
+                u_position: drawBuffer[3].texture, 
+                u_normal: drawBuffer[4].texture,
+
+                //The sun
+                u_sunDir: this.sunDirection,
+                u_sunColor: this.sunColor,
+                u_ambientColor: this.ambientColor,
+
+                //Lights
+                u_lightCount: this.lightCount,
+
+                //fog data
+                u_fogData: this.fogData.flat(),
+                u_cameraPosition: coffeeEngine.renderer.cameraData.position.webGLValue(),
+            });
 
             //Draw main pass!
             mainPass.drawFromBuffers(6);
+
+            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+        }
+
+        __postProcess(renderer) {
+            //Do our AA pass first
+            if (renderer.viewport.antiAlias) {
+                renderer.swapPost();
+                renderer.mainShaders.antiAliasPass.setBuffers(coffeeEngine.shapes.plane);
+                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.getPrevPost().attachments[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
+                renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
+
+                renderer.getPrevPost().resize(renderer.canvas.width, renderer.canvas.height);
+            }
         }
 
         //Child management
@@ -285,6 +340,8 @@
         //We want to recursively go downwards and get the properties and types of each child
         __serializeChildren(node) {
             const returnedObject = [];
+
+            //Make sure we return our returned object early if this is the case
             node.forEach((child) => {
                 const properties = {};
 
@@ -329,7 +386,7 @@
                 returnedObject.push({
                     name: child.name,
                     nodeType: coffeeEngine.getNodeName(child),
-                    children: this.__serializeChildren(child.children),
+                    children: (child.__showChildren) ? this.__serializeChildren(child.children) : [],
                     properties: properties,
                 });
             });
@@ -389,8 +446,8 @@
         }
 
         //recursive child looping
-        __deserializeChildren(parent, physicalParent) {
-            parent.children.forEach((child) => {
+        __deserializeChildren(data, physicalParent) {
+            data.forEach((child) => {
                 //Get our node class
                 const nodeClass = coffeeEngine.getNode(child.nodeType) || coffeeEngine.getNode("Node");
                 const node = new nodeClass();
@@ -404,7 +461,7 @@
                     }
                 }
 
-                this.__deserializeChildren(child, node);
+                this.__deserializeChildren(child.children, node);
             });
         }
 
@@ -429,11 +486,11 @@
                 //If we have no data assume this is a new scene
                 if (!data) data = { name: "scene", nodeType: "scene", children: [] };
 
-                //Rename the scene
-                this.name = data.name;
+                //Identify us as a scene
+                this.name = "Scene";
 
                 //Now we cycle through every child
-                this.__deserializeChildren(data, this);
+                this.__deserializeChildren(data.children, this);
             };
 
             //Check if preload exists
@@ -477,9 +534,48 @@
             });
         }
 
+        //For prefabs we make it the prettiest thing ever.
+        __setupPrefabScene(data) {
+            this.skyColor = [0,0,0];
+            this.horizonColor = [0.07450980392156863, 0.09019607843137255, 0.3254901960784314];
+            this.groundColor = [0.07450980392156863, 0.09019607843137255, 0.3254901960784314];
+            this.centerColor = [0, 0, 0];
+
+            this.ambientColor = [1,1,1];
+
+            this.fogData = [
+                0, 0.125, 5,
+                [1, 1, 1],
+                8, 0, 0
+            ];
+            
+            //Identify us as a prefab
+            this.name = "Prefab";
+
+            this.__clearChildren(this);
+            this.__deserializeChildren([data], this);
+        }
+
+        openIsolatedPrefab(path) {
+            project.getFile(path).then((file) => {
+                if (file) {
+                    this.prefabEditMode = true;
+                    this.scenePath = path;
+                    this.fileReader.readAsText(file);
+                }
+            })
+        }
+
+        saveScene(pathOverride) {
+            pathOverride = pathOverride || this.scenePath;
+            if (!this.prefabEditMode) project.setFile(pathOverride, JSON.stringify(this.serialize()), "application/json");
+            else project.setFile(pathOverride, JSON.stringify(this.__serializeChildren([this.children])[0]), "application/json");
+        }
+
         openScene(path) {
             project.getFile(path).then((file) => {
                 if (file) {
+                    this.prefabEditMode = false;
                     this.scenePath = path;
                     this.fileReader.readAsText(file);
                 }
@@ -487,6 +583,9 @@
         }
 
         getProperties() {
+            // if we are a prefab we don't have properties.
+            if (this.prefabEditMode) return [];
+
             // prettier-ignore
             return [
                 { name: "skyColor", translationKey: "engine.nodeProperties.scene.skyColor", type: coffeeEngine.PropertyTypes.COLOR3, smallRange: true }, 

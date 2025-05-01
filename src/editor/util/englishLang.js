@@ -211,6 +211,7 @@ editor.EnglishLang = {
     "editor.window.sceneTree.addChild": "Add Child",
     "editor.window.sceneTree.addDuplicateChild": "Duplicate as Child",
     "editor.window.sceneTree.duplicate": "Duplicate Node",
+    "editor.window.sceneTree.createPrefab": "Create Prefab",
     "editor.window.sceneTree.delete": "Remove Node",
 
     "editor.window.nodeMaker": "Add a Node",
@@ -227,8 +228,10 @@ editor.EnglishLang = {
     "editor.window.fileExplorer.importFiles": "Import file(s)",
 
     "editor.window.createFile" : "Create File",
-    "editor.window.createFile.blank" : "blank",
-    "editor.window.createFile.material" : "material",
+    "editor.window.createFile.blank" : "Blank",
+    "editor.window.createFile.json" : "JSON",
+    "editor.window.createFile.material" : "Material",
+    "editor.window.createFile.prefab": "Prefab",
 
     "editor.window.viewport": "Viewport",
 
@@ -596,6 +599,7 @@ editor.EnglishLang = {
     "engine.nodeNames.MeshDisplay": "Mesh Display",
     "engine.nodeNames.Billboard": "Billboard",
     "engine.nodeNames.Sprite3D": "Sprite 3D",
+    "engine.nodeNames.Prefab": "Prefab",
 
     "engine.nodePropertyLabels.NothingHere": "Nothing here!",
     
@@ -631,6 +635,8 @@ editor.EnglishLang = {
     "engine.nodeProperties.SpotLight.falloff": "Falloff",
     
     "engine.nodeProperties.Collision.group": "Collision Group",
+
+    "engine.nodeProperties.Prefab.prefab": "Prefab",
 
     "engine.nodeProperties.scene.skyColor": "Sky Color",
     "engine.nodeProperties.scene.horizonColor": "Horizon Color",

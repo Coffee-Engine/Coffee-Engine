@@ -3,6 +3,7 @@
     coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
         renderer.canvas = canvas;
+        renderer.drawBufferSizeMul = 1;
 
         //Firefox's blending is wierd
         renderer.daveshade = DaveShade.createInstance(renderer.canvas, {
@@ -14,22 +15,6 @@
             antialias: antialias == true,
         });
         const daveshadeInstance = renderer.daveshade;
-
-        //Add our draw buffer
-        renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
-            //Colors
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
-            //Material Attributes
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
-            //Emission
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
-            //Position
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
-            //Normal
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA,
-            DaveShade.RENDERBUFFER_TYPES.DEPTH,
-        ]);
 
         //We do use the ZBuffer
         daveshadeInstance.useZBuffer(true);
@@ -179,9 +164,10 @@
         renderer.initilizeMaterials();
         renderer.initilizeShapes();
         renderer.initilizeDebugSprites(renderer);
+        renderer.createFramebuffers(renderer, daveshadeInstance);
 
-        renderer.drawBuffer.resize(renderer.canvas.width, renderer.canvas.height);
-        renderer.canvas.addEventListener("resize", () => {});
+        //Just hit it with the good old double wammy!
+        renderer.resize(renderer.canvas.width, renderer.canvas.height);
 
         return renderer;
     };
@@ -249,7 +235,7 @@
                 break;
         }
 
-        renderer.drawBuffer.resize(renderer.canvas.width,renderer.canvas.height);
+        renderer.resize(renderer.canvas.width,renderer.canvas.height);
     }
 
     coffeeEngine.renderer.dispose = () => {

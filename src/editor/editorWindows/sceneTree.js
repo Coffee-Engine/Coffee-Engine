@@ -1,6 +1,7 @@
 (function () {
     editor.windows.sceneTree = class extends editor.windows.base {
         init(container) {
+            const currentScene = coffeeEngine.runtime.currentScene;
             this.title = editor.language["editor.window.sceneTree"];
 
             //create our shiz
@@ -25,6 +26,9 @@
 
                 createdWindow.x = window.innerWidth / 2 - 200;
                 createdWindow.y = window.innerHeight / 2 - 175;
+
+                //If we are a prefab set our scene root to the prefab
+                if (currentScene.prefabEditMode) createdWindow.TargetRoot = currentScene.children[0];
             };
 
             this.logControls.appendChild(this.addObject);
@@ -37,27 +41,36 @@
                 //Remove 'em
                 myself.sceneContainer.innerHTML = "";
 
-                myself.createNodeElement(coffeeEngine.runtime.currentScene, myself.sceneContainer, false, true);
+                //If we are a scene show the scene, if we are a prefab, show only the prefab
+                if (!currentScene.prefabEditMode) myself.createNodeElement(currentScene, myself.sceneContainer, false, true);
+                else myself.createNodeElement(currentScene.children[0], myself.sceneContainer, false, true);
             };
 
             this.refreshContents();
-            coffeeEngine.runtime.currentScene.addEventListener("childAdded", this.refreshContents);
-            coffeeEngine.runtime.currentScene.addEventListener("childMoved", this.refreshContents);
+            currentScene.addEventListener("childAdded", this.refreshContents);
+            currentScene.addEventListener("childMoved", this.refreshContents);
         }
 
         createNodeElement(Node, parentElement, even, root) {
+            if (!Node) return;
+
             const element = document.createElement("div");
             element.setAttribute("even", even.toString());
             element.className = "fileButton";
 
             if (!root) {
                 element.contextFunction = () => {
-                    return [
-                        { text: editor.language["editor.window.sceneTree.addChild"], value: "addChild" },
+                    //If children should
+                    const contextMenuItems = [
                         { text: editor.language["editor.window.sceneTree.addDuplicateChild"], value: "addDuplicateChild" },
                         { text: editor.language["editor.window.sceneTree.duplicate"], value: "duplicate" },
-                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },
+                        { text: editor.language["editor.window.sceneTree.createPrefab"], value: "createPrefab" },
+                        { text: editor.language["editor.window.sceneTree.delete"], value: "delete" },                        
                     ];
+
+                    //If we can have children, show add children
+                    if (Node.__showChildren) contextMenuItems.splice(0,0, { text: editor.language["editor.window.sceneTree.addChild"], value: "addChild" });
+                    return contextMenuItems;
                 };
 
                 element.contentAnswer = (value) => {
@@ -115,6 +128,32 @@
                             break;
                         }
 
+                        //Prefab creation duh
+                        case "createPrefab": {
+                            const serialized = coffeeEngine.runtime.currentScene.__serializeChildren([Node])[0];
+
+                            //Create our file creator
+                            const fileCreator = new editor.windows.fileCreator(400, 150);
+                            fileCreator.x = (window.innerWidth/2)-200;
+                            fileCreator.y = (window.innerHeight/2)-75;
+
+                            //A hacky solution. It works
+                            fileCreator.type.innerHTML = `<option value="prefab">${editor.language[`editor.window.createFile.prefab`]} (prefab)</option>`;
+                            fileCreator.type.value = "prefab";
+
+                            //Override some stuff for the file creator pt2
+                            fileCreator.path.value = "prefabs/newPrefab.prefab";
+                            fileCreator.createFile = (path) => {
+                                project.setFile(path, JSON.stringify(serialized), "text/javascript").then((path) => {
+                                    editor.sendFileHook(path.split(".")[1], path);
+                                });
+                            };
+
+                            //Move to the top
+                            fileCreator.__moveToTop();
+                            break;
+                        }
+
                         case "delete":
                             Node._dispose();
                             break;
@@ -143,9 +182,12 @@
 
             parentElement.appendChild(element);
 
-            Node.children.forEach((childNode) => {
-                this.createNodeElement(childNode, lowerDiv, !even, false);
-            });
+            //Make sure we are allowed to show our children
+            if (Node.__showChildren) {
+                Node.children.forEach((childNode) => {
+                    this.createNodeElement(childNode, lowerDiv, !even, false);
+                });
+            }
 
             return element;
         }

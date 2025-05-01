@@ -362,6 +362,14 @@
             this
         );
 
+        editor.addFileOpenHook(
+            "prefab",
+            (path) => {
+                coffeeEngine.runtime.currentScene.openIsolatedPrefab(path);
+            },
+            this
+        );
+
         //Open the user into the defaultScene (once the project config is loaded)
         coffeeEngine.addEventListener("projectSettingsLoaded", () => {
             //Deserialize our windows

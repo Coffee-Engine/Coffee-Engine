@@ -163,7 +163,7 @@
                     const blobURL = URL.createObjectURL(blob);
                     const link = document.createElement("a");
                     link.href = blobURL;
-                    link.download = `project.${coffeeEngine.packageFormat}`;
+                    link.download = `package.${coffeeEngine.packageFormat}`;
                     link.click();
                     URL.revokeObjectURL(blobURL);
                 });

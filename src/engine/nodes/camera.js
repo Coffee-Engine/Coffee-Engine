@@ -49,10 +49,10 @@
                     cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     cameraData.aspectRatio = canvas.width / canvas.height;
 
-                    const translatedRender = cameraRender.getTranslation();
-                    cameraData.position.x = -translatedRender.x;
-                    cameraData.position.y = -translatedRender.y;
-                    cameraData.position.z = -translatedRender.z;
+                    const translatedRender = this.mixedMatrix.getTranslation();
+                    cameraData.position.x = translatedRender.x;
+                    cameraData.position.y = translatedRender.y;
+                    cameraData.position.z = translatedRender.z;
 
                     coffeeEngine.renderer.cameraData.cameraRotationEul.x = -this.rotation.y;
                     coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;

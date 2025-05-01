@@ -5,6 +5,7 @@ window.coffeeEngine = {
         extensionDispose: [],
         desktopInput: [],
         projectSettingsLoaded: [],
+        sceneLoaded: [],
     },
     broadcasts: {},
     runtime: {

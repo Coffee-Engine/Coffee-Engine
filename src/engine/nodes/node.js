@@ -4,6 +4,7 @@
         //We store our update event in here
         __storedUpdate = null;
         __scriptStartupProps = {}; // < this one stores the properties for the script's onReady!
+        __showChildren = true;
 
         //? And here is our matrix.
         //? The humble matrix
@@ -62,6 +63,10 @@
         }
         get parent() {
             return this.#parent;
+        }
+
+        get inPrefab() {
+            return this.parent.inPrefab;
         }
 
         #scriptPath;
@@ -146,6 +151,12 @@
             if (this.#scriptObject && this.#scriptObject.dispose) this.#scriptObject.dispose();
             if (this.parent) this.parent.removeChild(this);
 
+            //Remove children
+            for (let childID in this.children) {
+                this.children[childID]._dispose();
+            }
+
+            //remove myself
             this.dispose();
             delete this;
         }

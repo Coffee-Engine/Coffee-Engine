@@ -8,6 +8,7 @@
             coffeeEngine.mesh.fromProjectFile(value).then((data) => {
                 this.meshData = data;
                 this.parseMeshProperties();
+                if (this.afterLoad) this.afterLoad();
             }).catch(() => {
                 this.meshData = null;
             });
@@ -152,9 +153,7 @@
                 { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 "---",
                 { name: "meshPath", translationKey: "engine.nodeProperties.MeshDisplay.meshPath", type: coffeeEngine.PropertyTypes.FILE, fileType: "obj,dae,glb", onchange: (value) => {
-                    this.setMeshPath(value).then(() => {
-                        refreshListing();
-                    })
+                    this.afterLoad = refreshListing;
                 }}, 
                 ...extraProperties,
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, "---", { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }

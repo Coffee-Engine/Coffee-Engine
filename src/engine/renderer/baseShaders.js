@@ -1,5 +1,16 @@
 (function() {
     coffeeEngine.renderer.createBaseShaders = (daveshadeInstance) => {
+        coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX = `
+        precision highp float;
+
+        attribute vec4 a_position;
+
+        void main()
+        {    
+            //Transform my stuff!
+            gl_Position = a_position;
+        }
+        `;
         //Our base shaders
         coffeeEngine.renderer.mainShaders = {
             basis: daveshadeInstance.createShader(
@@ -245,17 +256,7 @@
             ),
             mainPass: daveshadeInstance.createShader(
                 //Vertex
-                `
-                precision highp float;
-    
-                attribute vec4 a_position;
-    
-                void main()
-                {    
-                    //Transform my stuff!
-                    gl_Position = a_position;
-                }
-                `,
+                coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
                 //Fragment
                 `
                 precision highp float;
@@ -276,15 +277,11 @@
                 uniform mat4 u_camera;
                 uniform vec3 u_cameraPosition;
 
-                uniform float u_antiAliasingRate;
-
                 uniform vec2 u_res;
                 uniform highp int u_fullBright;
 
                 vec3 viewToFrag;
                 vec3 F0;
-
-                vec4 finalFrag;
 
                 float lightDot(vec3 a,vec3 b) {
                     return min(1.0,max(0.0,dot(a,b)));
@@ -407,7 +404,7 @@
                         fogData[0][1] //Falloff
                     );
 
-                    return mix(finalFrag.xyz, fogData[1], mixAmount);
+                    return mix(gl_FragColor.xyz, fogData[1], mixAmount);
                 }
 
                 vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
@@ -419,18 +416,12 @@
                     float sunAmount = max(dot(toPoint, -u_sunDir), 0.0);
                     vec3 sunEffection = mix(u_ambientColor, u_sunColor, pow(sunAmount, fogData[2][0]));
 
-                    return mix(finalFrag.xyz, fogData[1] * sunEffection, mixAmount);
+                    return mix(gl_FragColor.xyz, fogData[1] * sunEffection, mixAmount);
                 }
-
-                //CAA
-                //Coffee Anti-Aliasing
-                vec4 renderPixel(vec2 fragCoord) {
-                    finalFrag = vec4(0,0,0,0);
-
-                    fragCoord.x = max(0.0, min(u_res.x - 1.0, fragCoord.x));
-                    fragCoord.y = max(0.0, min(u_res.y - 1.0, fragCoord.y));
-
-                    vec2 screenUV = fragCoord / u_res;
+                
+                void main()
+                {
+                    vec2 screenUV = gl_FragCoord.xy / u_res;
                     vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
                     vec3 position = texture2D(u_position, screenUV).xyz;
                     viewToFrag = normalize(u_cameraPosition - position);
@@ -440,16 +431,16 @@
                     //}
                     vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
 
-                    finalFrag = texture2D(u_color,screenUV);
-                    if (finalFrag.w > 1.0) {
-                        finalFrag.w = 1.0;
+                    gl_FragColor = texture2D(u_color,screenUV);
+                    if (gl_FragColor.w > 1.0) {
+                        gl_FragColor.w = 1.0;
                     }
 
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0 && u_fullBright == 0) {
                         //Calculate F0
-                        F0 = mix(vec3(0.04), finalFrag.xyz, matAttributes.y);
+                        F0 = mix(vec3(0.04), gl_FragColor.xyz, matAttributes.y);
 
                         //Add the sun
                         lightColor += u_sunColor * lightDot(normal, u_sunDir);
@@ -462,15 +453,15 @@
                             //Stuff required to calculate the end result
                             mat4 light = u_lights[i];
 
-                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, finalFrag.xyz, position, normal, matAttributes.xyz);}
+                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, gl_FragColor.xyz, position, normal, matAttributes.xyz);}
                             else {lightColor.xyz += calculateLight(light, position, normal);}
                         }
 
                         matAttributes.z -= ceil(matAttributes.z) - 1.0;
-                        finalFrag.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
+                        gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
                     }
 
-                    finalFrag += texture2D(u_emission,screenUV);
+                    gl_FragColor += texture2D(u_emission,screenUV);
 
                     int fogType = int(u_fogData[0][0]);
                     //Handle sky plane
@@ -486,33 +477,60 @@
                         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
                         else if (fogType == 3) { fogColour = fogDefault((vec4(position,1) * u_camera).z, viewToFrag, u_fogData); }
 
-                        if (matAttributes.x < -0.1) { finalFrag.xyz = mix(finalFrag.xyz, fogColour, u_fogData[2][1]); }
-                        else { finalFrag.xyz = fogColour; }
+                        if (matAttributes.x < -0.1) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
+                        else { gl_FragColor.xyz = fogColour; }
                     }
-
-                    return finalFrag;
-                }
-                
-                void main()
-                {
-                    vec4 averageFrag = vec4(0,0,0,0);
-                    averageFrag = renderPixel(gl_FragCoord.xy);
-                    if (u_antiAliasingRate >= 2.0) {
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,0));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(0,-1));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,0));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(0,1));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,1));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,1));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(-1,-1));
-                        averageFrag += renderPixel(gl_FragCoord.xy + vec2(1,-1));
-                        averageFrag /= 9.0;
-                    }
-
-                    gl_FragColor = averageFrag;
                 }
                 `
             ),
+            antiAliasPass: daveshadeInstance.createShader(
+                coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
+                `
+                precision highp float;
+                
+                uniform sampler2D u_texture;
+                uniform vec2 u_res;
+                uniform int u_reductionAmount;
+                
+                void main() {
+                    vec2 texCoord = gl_FragCoord.xy / u_res;
+                    vec2 stepSize = (1.0 / u_res) / float(u_reductionAmount);
+
+                    vec4 averageColor = vec4(0,0,0,0);
+
+                    for (int x=0; x<16; x++) {
+                        if (x>=u_reductionAmount) break;
+
+                        for (int y=0; y<16; y++) {
+                            if (y>=u_reductionAmount) break;
+
+                            //There we go
+                            vec2 sampleCoord = texCoord + (stepSize * vec2(x, y));
+                            sampleCoord.x = min(1.0, sampleCoord.x);
+                            sampleCoord.y = min(1.0, sampleCoord.y);
+
+                            averageColor += texture2D(u_texture, sampleCoord);
+                        }
+                    }
+
+                    //Average it out
+                    gl_FragColor = averageColor / float(u_reductionAmount * u_reductionAmount);
+                }
+                `
+            ),
+            viewportPass: daveshadeInstance.createShader(
+                coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
+                `
+                precision highp float;
+                
+                uniform sampler2D u_texture;
+                uniform vec2 u_res;
+
+                void main() {
+                    gl_FragColor = texture2D(u_texture, gl_FragCoord.xy / u_res);
+                }
+                `
+            )
         };
     }
 })();
