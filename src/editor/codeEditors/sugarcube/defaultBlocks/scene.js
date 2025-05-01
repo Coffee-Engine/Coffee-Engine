@@ -90,6 +90,17 @@
                         },
                     },
                     {
+                        opcode: "instansiatePrefab",
+                        type: sugarcube.BlockType.OBJECT,
+                        text: editor.language["sugarcube.scene.block.instansiatePrefab"],
+                        arguments: {
+                            prefab: {
+                                type: sugarcube.ArgumentType.CUSTOM,
+                                customType: "Prefab",
+                            },
+                        },
+                    },
+                    {
                         opcode: "setParentOf",
                         type: sugarcube.BlockType.COMMAND,
                         text: editor.language["sugarcube.scene.block.setParentOf"],
@@ -159,6 +170,12 @@
 
                         initilize: "generic_Init",
                     },
+                    Prefab: {
+                        acceptReporters: true,
+                        editor: "prefab_Editor",
+
+                        initilize: "generic_Init",
+                    },
                 },
             };
         }
@@ -205,6 +222,22 @@
             };
         }
 
+        prefab_Editor(field) {
+            //Its like some sort of loading. :trol:
+            const newLoadal = new editor.windows.modalFileExplorer(400, 400);
+
+            newLoadal.__moveToTop();
+
+            newLoadal.acceptTypes = "prefab";
+
+            const bounding = field.borderRect_.getBoundingClientRect();
+            newLoadal.x = bounding.x + bounding.width / 2;
+            newLoadal.y = bounding.y + bounding.height;
+            newLoadal.onFileSelected = (path) => {
+                field.value = path;
+            };
+        }
+
         loadScene({ scene }) {
             coffeeEngine.runtime.currentScene.openScene(scene);
         }
@@ -232,6 +265,12 @@
         instansiateNode({ node }) {
             if (!coffeeEngine.nodeRegister[node]) return;
             return new coffeeEngine.nodeRegister[node][0]();
+        }
+
+        async instansiatePrefab({ prefab }) {
+            if (!prefab) return;
+            const instantiated = await coffeeEngine.prefabManager.instantiatePrefab(prefab);
+            return instantiated;
         }
 
         setParentOf({ node, parent }) {
