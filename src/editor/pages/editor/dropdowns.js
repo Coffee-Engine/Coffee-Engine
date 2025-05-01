@@ -109,8 +109,7 @@
 
                 case "save":
                     //Its actually that easy
-                    if (!currentScene.prefabEditMode) project.setFile(currentScene.scenePath, JSON.stringify(currentScene.serialize()), "application/json");
-                    else project.setFile(currentScene.scenePath, JSON.stringify(currentScene.__serializeChildren(currentScene.children)[0]), "application/json");
+                    currentScene.saveScene();
                     console.log(editor.language["editor.notification.saveScene"].replace("[path]", currentScene.scenePath));
                     break;
 

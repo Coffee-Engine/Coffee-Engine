@@ -559,6 +559,12 @@
             })
         }
 
+        saveScene(pathOverride) {
+            pathOverride = pathOverride || this.scenePath;
+            if (!this.prefabEditMode) project.setFile(pathOverride, JSON.stringify(this.serialize()), "application/json");
+            else project.this(pathOverride, JSON.stringify(this.__serializeChildren(this.children)[0]), "application/json");
+        }
+
         openScene(path) {
             project.getFile(path).then((file) => {
                 if (file) {
