@@ -131,7 +131,6 @@
                         //Prefab creation duh
                         case "createPrefab": {
                             const serialized = coffeeEngine.runtime.currentScene.__serializeChildren([Node])[0];
-                            console.log(serialized);
 
                             //Create our file creator
                             const fileCreator = new editor.windows.fileCreator(400, 150);

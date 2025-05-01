@@ -535,7 +535,7 @@ window.DaveShade = {};
 
                 //* The setter legacy (DS2)
                 shader.attributes[attributeDef.name].setRaw = (newValue) => {
-                    daveShadeInstance.oldAttributes[attributeDef.name] = 0;
+                    daveShadeInstance.oldAttributes[attributeID] = 0;
                     GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                     GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
@@ -543,8 +543,8 @@ window.DaveShade = {};
 
                 //* The setter
                 shader.attributes[attributeDef.name].set = (newValue) => {
-                    if (daveShadeInstance.oldAttributes[attributeDef.name] == newValue.bufferID) return;
-                    daveShadeInstance.oldAttributes[attributeDef.name] = newValue.bufferID;
+                    if (daveShadeInstance.oldAttributes[attributeID] == newValue.bufferID) return;
+                    daveShadeInstance.oldAttributes[attributeID] = newValue.bufferID;
                     GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
                     GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
                 };
