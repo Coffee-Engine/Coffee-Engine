@@ -1,7 +1,7 @@
 (function () {
     let shader = { uniforms: {} };
 
-    const uniformTypes = {
+    coffeeEngine.renderer.uniformTypesToCUGI = {
         35670: { name: "", type: coffeeEngine.PropertyTypes.BOOLEAN },
 
         5124: { name: "", type: coffeeEngine.PropertyTypes.INT },
@@ -38,7 +38,7 @@
                     if (exclude.includes(uniform)) continue;
 
                     //* Band aid and duct tape solution
-                    uniforms.push(Object.assign({}, uniformTypes[shader.uniforms[uniform].type]));
+                    uniforms.push(Object.assign({}, coffeeEngine.renderer.uniformTypesToCUGI[shader.uniforms[uniform].type]));
                     uniforms[uniforms.length - 1].name = uniform;
                 }
 

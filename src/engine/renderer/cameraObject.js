@@ -9,6 +9,7 @@
         rotationEuler = new coffeeEngine.vector3(0,0,0);
         wFactor = [1, 1, 0.05];
         aspectRatio = 1;
+        postProcessing = [];
 
         //Matrix setting
         set matrix(value) { 
@@ -63,6 +64,9 @@
             //Misc
             cameraData.wFactor = this.wFactor;
             cameraData.aspectRatio = this.aspectRatio;
+
+            //Finally set our post processing
+            coffeeEngine.renderer.pipeline.postProcessOrder = this.postProcessing;
         }
     }
 

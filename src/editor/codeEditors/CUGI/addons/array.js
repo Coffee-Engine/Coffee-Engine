@@ -108,22 +108,19 @@
 
         const elementAdder = document.createElement("dropdown-menu");
         //Fancy vs not fancy
-        if (data.notFancy) elementAdder.innerHTML = `
-                ${editor.language["engine.projectSettings.broadcasts.add"]}
-                <dropdown-item value="string">${editor.language["engine.CUGI.value"]}</dropdown-item>
-                <dropdown-item value="array">${editor.language["engine.CUGI.array"]}</dropdown-item>
-                <dropdown-item value="object">${editor.language["engine.CUGI.object"]}</dropdown-item>
-            `;
-        else elementAdder.innerHTML = `
-                ${editor.language["engine.CUGI.newElement"]}
-                <dropdown-item value="float">${editor.language["engine.CUGI.number"]}</dropdown-item>
-                <dropdown-item value="vec2">${editor.language["engine.CUGI.vec2"]}</dropdown-item>
-                <dropdown-item value="vec3">${editor.language["engine.CUGI.vec3"]}</dropdown-item>
-                <dropdown-item value="vec4">${editor.language["engine.CUGI.vec4"]}</dropdown-item>
-                <dropdown-item value="string">${editor.language["engine.CUGI.string"]}</dropdown-item>
-                <dropdown-item value="array">${editor.language["engine.CUGI.array"]}</dropdown-item>
-                <dropdown-item value="object">${editor.language["engine.CUGI.object"]}</dropdown-item>
-            `;
+        data.types = data.types || ["number", "vec2", "vec3", "vec4", "string", "array", "object"];
+        data.createText = data.createText || editor.language["engine.projectSettings.broadcasts.newElement"];
+        if (data.notFancy) {
+            data.types = data.types || ["string", "array", "object"];
+            data.createText = data.createText || editor.language["engine.projectSettings.broadcasts.add"];
+        }
+
+        //Element adder
+        elementAdder.innerHTML = editor.language["engine.projectSettings.broadcasts.add"];
+
+        data.types.forEach(element => {
+            elementAdder.innerHTML += `<dropdown-item value="${element}">${editor.language[`engine.CUGI.${element}`] || element}</dropdown-item>`;            
+        });
 
         //Refresh data
         const refreshData = () => {

@@ -150,18 +150,6 @@
             }
         }
 
-        __postProcess(renderer) {
-            //Do our AA pass first
-            if (renderer.viewport.antiAlias) {
-                renderer.swapPost();
-                renderer.mainShaders.antiAliasPass.setBuffers(coffeeEngine.shapes.plane);
-                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.getPrevPost().attachments[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
-                renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
-
-                renderer.getPrevPost().resize(renderer.canvas.width, renderer.canvas.height);
-            }
-        }
-
         //Child management
         addChild(child) {
             if (child == this) return;

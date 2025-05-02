@@ -13,6 +13,9 @@
         //The difference between this camera data and the one in the renderer is the fact this may or may not currently be in use.
         cameraData = new coffeeEngine.renderer.pipeline.CameraData();
 
+        //Shhhh
+        postProcessing = [];
+
         //We have two ways to do this. The actual view matrix, and the "Fake" editor matrix
         updateMatrix() {
             //Editor ordering
@@ -47,6 +50,11 @@
                     this.cameraData.rotationEuler = this.rotation;
                     this.cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     this.cameraData.aspectRatio = canvas.width / canvas.height;
+
+                    this.cameraData.postProcessing = [];
+                    for (let shaderID in this.postProcessing) {
+                        this.cameraData.postProcessing.push(this.postProcessing[shaderID].shader);
+                    }
 
                     coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
                 }
@@ -99,7 +107,8 @@
                 "---",
                 { name: "activeCamera", translationKey: "engine.nodeProperties.Camera.active", type: coffeeEngine.PropertyTypes.BOOLEAN},
                 "---", 
-                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
+                { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" },
+                { name: "TEMP", translationKey:"TEMP", type: "shader" }
             ];
         }
     }

@@ -2,6 +2,7 @@
     const renderer = coffeeEngine.renderer;
     renderer.pipeline = {
         cameraDrawQueue: [],
+        postProcessOrder: [],
         
         addCameraToQueue: (camera) => { renderer.pipeline.cameraDrawQueue.push(camera); },
 
