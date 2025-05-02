@@ -41,14 +41,14 @@
                     const audioListener = coffeeEngine.audio.context.listener;
 
                     //Update our camera data
-                    //const cameraRender = this.matrix.multiply(this.parent.mixedMatrix.inverse());
+                    const cameraRender = this.matrix.multiply(this.parent.mixedMatrix.inverse());
                     //cameraData.transform = cameraRender.webGLValue();
                     //cameraData.unflattenedTransform = this.mixedMatrix;
                     //cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
                     //cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     //cameraData.aspectRatio = canvas.width / canvas.height;
 
-                    //const translatedRender = this.mixedMatrix.getTranslation();
+                    const translatedRender = this.mixedMatrix.getTranslation();
                     //cameraData.position.x = translatedRender.x;
                     //cameraData.position.y = translatedRender.y;
                     //cameraData.position.z = translatedRender.z;

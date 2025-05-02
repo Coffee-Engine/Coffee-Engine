@@ -140,86 +140,7 @@
 
         //This big drawing stuff
         draw() {
-            const renderer = coffeeEngine.renderer;
-            const GL = renderer.daveshade.GL;
-
-            const {width, height} = coffeeEngine.renderer.drawBuffer;
-
-            //Clear the main renderers depth, and reset the sun
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            this.sunDirection = [0, 0, 0];
-            this.lightCount = 0;
-
-            //Use our draw buffer
-            renderer.drawBuffer.use();
-
-            //Clear the depth each time and draw the sky/scene
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
-            this.__drawSky(renderer, width, height);
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
-            this.__drawScene(renderer);
-
-            //Render it back to the main draw pass.
-            renderer.daveshade.cullFace();
-            renderer.swapPost();
-
-            this.__drawFinal(renderer, renderer.mainShaders.mainPass);
-            this.__postProcess(renderer);
-
-            //The final blit!
-            renderer.daveshade.renderToCanvas();
-            renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPost().attachments[0].texture });
-            renderer.mainShaders.viewportPass.drawFromBuffers(6);
-        }
-
-        __drawSky(renderer, width, height) {
-            renderer.cameraData.res = [width, height];
-
-            //Set our uniforms
-            const skyShader = renderer.mainShaders.skyplane;
-            skyShader.setBuffers(coffeeEngine.shapes.plane);
-            skyShader.setUniforms({
-                horizonColor: this.horizonColor,
-                skyColor: this.skyColor,
-                groundColor: this.groundColor,
-                centerColor: this.centerColor,
-            })
-
-            skyShader.drawFromBuffers(6);
-        }
-
-        __drawScene() {
-            //Sort em
-            this.drawList.sort((node1, node2) => {
-                //Don't spend the extra time recomputing the value
-                let node1Sort = node1.sortValue(false);
-                let node2Sort = node2.sortValue(false);
-                if (node1Sort < node2Sort) {
-                    return -1;
-                } else if (node1Sort > node2Sort) {
-                    return 1;
-                }
-                //Dual pass sorting, just in case two are the same value
-                else {
-                    node1Sort = node1.sortValue(true);
-                    node2Sort = node2.sortValue(true);
-
-                    if (node1Sort < node2Sort) {
-                        return -1;
-                    } else if (node1Sort > node2Sort) {
-                        return 1;
-                    }
-                }
-
-                return 0;
-            });
-
-            //Now lets draw the objects
-            for (let drawItem = this.drawList.length - 1; drawItem >= 0; drawItem--) {
-                const node = this.drawList[drawItem];
-                node.draw(drawItem + 1);
-            }
+            coffeeEngine.renderer.pipeline.draw(this);
         }
 
         __setLight(id, value) {
@@ -227,46 +148,6 @@
             if (mainPass.uniforms.u_lights && mainPass.uniforms.u_lights[id]) {
                 mainPass.uniforms.u_lights[id].value = value;
             }
-        }
-
-        __drawFinal(renderer, mainPass) {
-            if (renderer.viewport.antiAlias) {
-                renderer.getPost().resize(renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul);
-                renderer.getPost().use();
-            }
-
-            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul];
-            else renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
-            
-            const drawBuffer =  renderer.drawBuffer.attachments;
-            mainPass.setBuffers(coffeeEngine.shapes.plane);
-            
-            //Neato!
-            mainPass.setUniforms({
-                //Textures
-                u_color: drawBuffer[0].texture, 
-                u_materialAttributes: drawBuffer[1].texture, 
-                u_emission: drawBuffer[2].texture, 
-                u_position: drawBuffer[3].texture, 
-                u_normal: drawBuffer[4].texture,
-
-                //The sun
-                u_sunDir: this.sunDirection,
-                u_sunColor: this.sunColor,
-                u_ambientColor: this.ambientColor,
-
-                //Lights
-                u_lightCount: this.lightCount,
-
-                //fog data
-                u_fogData: this.fogData.flat(),
-                u_cameraPosition: coffeeEngine.renderer.cameraData.position.webGLValue(),
-            });
-
-            //Draw main pass!
-            mainPass.drawFromBuffers(6);
-
-            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
         }
 
         __postProcess(renderer) {
