@@ -110,8 +110,6 @@
             this.name = "node";
         }
 
-        ready() {}
-
         update(deltaTime, noChildren) {
             // prettier-ignore
             this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);

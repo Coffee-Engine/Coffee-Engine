@@ -1,7 +1,17 @@
 (function() {
     const renderer = coffeeEngine.renderer;
     renderer.pipeline = {
+        cameraDrawQueue: [],
+        
+        addCameraToQueue: (camera) => { renderer.pipeline.cameraDrawQueue.push(camera); },
+
+        clearCameraQueue: () => { renderer.pipeline.cameraDrawQueue = []; },
+
         draw: (scene) => {
+            //use our camera first
+            if (!renderer.pipeline.cameraDrawQueue[0]) return;
+            renderer.pipeline.cameraDrawQueue[0].use(true);
+
             const GL = renderer.daveshade.GL;
             const {width, height} = renderer.drawBuffer;
 

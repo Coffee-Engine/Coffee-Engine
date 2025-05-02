@@ -10,6 +10,9 @@
         shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
         sprite = coffeeEngine.renderer.sprites.camera;
 
+        //The difference between this camera data and the one in the renderer is the fact this may or may not currently be in use.
+        cameraData = new coffeeEngine.renderer.pipeline.CameraData();
+
         //We have two ways to do this. The actual view matrix, and the "Fake" editor matrix
         updateMatrix() {
             //Editor ordering
@@ -36,50 +39,16 @@
             if (!coffeeEngine.isEditor) {
                 if (this.activeCamera) {
                     const translatedWorld = this.mixedMatrix.getTranslation();
-                    const cameraData = coffeeEngine.renderer.cameraData;
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
-                    const audioListener = coffeeEngine.audio.context.listener;
 
-                    //Update our camera data
-                    const cameraRender = this.matrix.multiply(this.parent.mixedMatrix.inverse());
-                    //cameraData.transform = cameraRender.webGLValue();
-                    //cameraData.unflattenedTransform = this.mixedMatrix;
-                    //cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000).webGLValue();
-                    //cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
-                    //cameraData.aspectRatio = canvas.width / canvas.height;
+                    this.cameraData.matrix = this.matrix.multiply(this.parent.mixedMatrix.inverse());
+                    this.cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000);
+                    this.cameraData.position = translatedWorld;
+                    this.cameraData.rotationEuler = this.rotation;
+                    this.cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
+                    this.cameraData.aspectRatio = canvas.width / canvas.height;
 
-                    const translatedRender = this.mixedMatrix.getTranslation();
-                    //cameraData.position.x = translatedRender.x;
-                    //cameraData.position.y = translatedRender.y;
-                    //cameraData.position.z = translatedRender.z;
-
-                    //coffeeEngine.renderer.cameraData.cameraRotationEul.x = -this.rotation.y;
-                    //coffeeEngine.renderer.cameraData.cameraRotationEul.y = -this.rotation.x;
-                    //coffeeEngine.renderer.cameraData.cameraRotationEul.z = -this.rotation.z;
-
-                    ////Set audio data
-                    //if (audioListener.positionX) audioListener.positionX.value = -translatedWorld.x;
-                    //if (audioListener.positionY) audioListener.positionY.value = -translatedWorld.y;
-                    //if (audioListener.positionZ) audioListener.positionZ.value = (this.orthographic) ? 0 : -translatedWorld.z;
-
-                    //const rotationData = this.mixedMatrix.getRotation();
-
-                    ////Now our rotations
-                    //if (audioListener.forwardX) audioListener.forwardX.value = rotationData.contents[2][0];
-                    //if (audioListener.forwardY) audioListener.forwardY.value = rotationData.contents[2][1];
-                    //if (audioListener.forwardZ) audioListener.forwardZ.value = rotationData.contents[2][2];
-
-                    ////Now our rotations
-                    //if (audioListener.upX) audioListener.upX.value = rotationData.contents[1][0];
-                    //if (audioListener.upY) audioListener.upY.value = rotationData.contents[1][1];
-                    //if (audioListener.upZ) audioListener.upZ.value = rotationData.contents[1][2];
-
-                    return {
-                        type: "CAMERA_DAT",
-                        render: cameraRender,
-                        position: translatedRender,
-                        rotationEuler: { x: -this.rotation.y, y: -this.rotation.x, z: -this.rotation.z }
-                    }
+                    coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
                 }
             }
         }
