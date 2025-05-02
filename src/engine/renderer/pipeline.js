@@ -8,8 +8,13 @@
         clearCameraQueue: () => { renderer.pipeline.cameraDrawQueue = []; },
 
         draw: (scene) => {
-            //use our camera first
-            if (!renderer.pipeline.cameraDrawQueue[0]) return;
+            //If we have no cameras add a backup
+            if (renderer.pipeline.cameraDrawQueue.length == 0) {
+                renderer.pipeline.BackupCamera.aspectRatio = renderer.canvas.width / renderer.canvas.height;
+                renderer.pipeline.addCameraToQueue(renderer.pipeline.BackupCamera);
+            }
+
+            //now render
             renderer.pipeline.cameraDrawQueue[0].use(true);
 
             const GL = renderer.daveshade.GL;

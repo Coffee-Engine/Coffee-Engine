@@ -3,11 +3,11 @@
         #matrix = coffeeEngine.matrix4.identity();
         #webglMatrix = coffeeEngine.matrix4.identity().webGLValue();
         #projection = coffeeEngine.matrix4.projection(90, 1, 0.01, 1000);
-        #webglProjection = coffeeEngine.matrix4.projection(90, 1, 0.01, 1000);
+        #webglProjection = coffeeEngine.matrix4.projection(90, 1, 0.01, 1000).webGLValue();
 
         position = new coffeeEngine.vector3(0,0,0);
         rotationEuler = new coffeeEngine.vector3(0,0,0);
-        wFactor = [1, 1, 0.1];
+        wFactor = [1, 1, 0.05];
         aspectRatio = 1;
 
         //Matrix setting
@@ -65,4 +65,6 @@
             cameraData.aspectRatio = this.aspectRatio;
         }
     }
+
+    coffeeEngine.renderer.pipeline.BackupCamera = new coffeeEngine.renderer.pipeline.CameraData();
 })();
