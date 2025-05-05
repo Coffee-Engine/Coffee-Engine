@@ -159,7 +159,7 @@ void fragment() {
 }`;
         },
 
-        compileFunction: (code, path) => {
+        compileFunction: (code, compiledPath, path) => {
             coffeeEngine.renderer.fileToShader(path, true);
             return code;
         },

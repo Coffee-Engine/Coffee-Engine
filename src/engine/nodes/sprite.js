@@ -111,7 +111,7 @@
                     { text: editor.language["engine.nodeProperties.Sprite.filtering.nearest"], value: "NEAREST"},
                     { text: editor.language["engine.nodeProperties.Sprite.filtering.linear"], value: "LINEAR"},
                 ]},
-                { name: "shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }, 
+                { name: "shader", translationKey: "engine.fileProperties.Shader.shader",  type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } }, 
                 "---", 
                 { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" }
             ];

@@ -114,18 +114,15 @@
             else this.viewportControlsProjection();
 
             //Set our matrices
-            coffeeEngine.renderer.cameraData.transform = this.matrix.webGLValue();
-            coffeeEngine.renderer.cameraData.unflattenedTransform = this.matrix;
-            coffeeEngine.renderer.cameraData.projection = this.projection.webGLValue();
-            coffeeEngine.renderer.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
-            coffeeEngine.renderer.cameraData.aspectRatio = this.aspectRatio;
-            coffeeEngine.renderer.cameraData.position.x = -this.previewCamera.x;
-            coffeeEngine.renderer.cameraData.position.y = -this.previewCamera.y;
-            coffeeEngine.renderer.cameraData.position.z = -this.previewCamera.z;
+            this.cameraData.matrix = this.matrix;
+            this.cameraData.projection = this.projection;
+            this.cameraData.position = { x: -this.previewCamera.x, y: -this.previewCamera.y, z: -this.previewCamera.z};
+            this.cameraData.rotationEuler = { x: -this.previewCamera.pitch, y: -this.previewCamera.yaw, z: 0 };
+            this.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
+            this.cameraData.aspectRatio = this.aspectRatio;
+            this.cameraData.postProcessing = [];
 
-            coffeeEngine.renderer.cameraData.cameraRotationEul.x = this.previewCamera.yaw;
-            coffeeEngine.renderer.cameraData.cameraRotationEul.y = this.previewCamera.pitch;
-            coffeeEngine.renderer.cameraData.cameraRotationEul.z = 0;
+            coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
 
             coffeeEngine.runtime.currentScene.draw();
         }
@@ -298,6 +295,8 @@
         }
 
         init(container) {
+            coffeeEngine.mainViewport = this;
+
             this.closable = false;
             this.title = editor.language["editor.window.viewport"];
 
@@ -336,6 +335,8 @@
                 fov: 90,
                 speed: 1,
             };
+
+            this.cameraData = new coffeeEngine.renderer.pipeline.CameraData();
 
             this.setupInput();
 

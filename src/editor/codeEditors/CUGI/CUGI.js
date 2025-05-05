@@ -79,6 +79,7 @@
         types:{
             float: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || 0;
 
                 //Create our input, make sure it is in degrees if its radians
                 let value = Number(target[key]);
@@ -103,6 +104,7 @@
 
             slider: (data) => {
                 const {target, key} = data;
+                target[key] = target[key] || 0;
 
                 data.min = data.min || 0;
                 data.max = (data.max !== undefined) ? data.max : 100;
@@ -141,6 +143,7 @@
 
             int: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || 0;
 
                 //Create our input
                 const input = CUGI.macros.inputElement("number", { 
@@ -160,6 +163,7 @@
 
             vec2: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || { x: 0, y: 0 };
 
                 const containerDiv = document.createElement("div");
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec2";
@@ -176,6 +180,7 @@
 
             vec3: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || { x: 0, y: 0, z: 0 };
 
                 const containerDiv = document.createElement("div");
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec3";
@@ -194,6 +199,7 @@
 
             vec4: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || { x: 0, y: 0, z: 0, w: 0 };
 
                 const containerDiv = document.createElement("div");
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec4";
@@ -214,6 +220,7 @@
 
             string: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || "";
 
                 const input = CUGI.macros.inputElement("text", {
                     value: String(target[key]),
@@ -233,6 +240,7 @@
 
             multiline: (data) => {
                 const {target, key} = data;
+                target[key] = target[key] || "";
 
                 //Create our textarea
                 const input = document.createElement("textarea");
@@ -265,6 +273,7 @@
 
             boolean: (data) => {
                 const { target, key } = data;
+                target[key] = target[key] || false;
 
                 const input = CUGI.macros.inputElement("checkbox", {
                     checked: Boolean(target[key]),

@@ -629,6 +629,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
     "engine.nodeProperties.Camera.active": "Active",
+    "engine.nodeProperties.Camera.postProcessing": "Post Processing",
     
     "engine.nodeProperties.Light.radius": "Radius",
     "engine.nodeProperties.Light.color": "Color",

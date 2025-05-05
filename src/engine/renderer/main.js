@@ -1,4 +1,7 @@
 (function () {
+    //Uniforms provided by the engine for the engine.
+    coffeeEngine.renderer.engineUniforms = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID", "u_time", "SCREEN"];
+    
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
@@ -129,8 +132,14 @@
             const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
             const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
 
-            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
-            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
+            //Detect if post
+            let shader = coffeeEngine.renderer.mainShaders.basis;
+            if (shaderCode.match(/\w*#define\s*is_post;/)) {
+                shader = coffeeEngine.renderer.mainShaders.postBasis;
+            }
+
+            const compiledVert = shader.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
+            const compiledFrag = shader.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
 
             const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
 
