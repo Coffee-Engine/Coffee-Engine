@@ -36,6 +36,31 @@
             }
         }
 
+        pushPostProcessData(target, data) {
+            target.postProcessing = [];
+            for (let shaderID in data) {
+                if (data[shaderID]) {
+                    //Check to see if we have a processed shader
+                    if (data[shaderID].$processedShader && data[shaderID].$processedShader != "processing") {
+                        target.postProcessing.push(data[shaderID]);
+                    }
+                    //If not processing, process.
+                    else if (!data[shaderID].$processedShader) {
+                        data[shaderID].$processedShader = "processing";
+
+                        //Make it our processed shader
+                        coffeeEngine.renderer.fileToShader(data[shaderID].shader).then((shader) => {
+                            data[shaderID].$processedShader = shader;
+                        }).catch(() => {
+                            data[shaderID].$processedShader = null;
+                        });
+                    }
+                }
+            }
+
+            return target.postProcessing;
+        }
+
         update(deltaTime, noChildren) {
             super.update(deltaTime, noChildren);
             // prettier-ignore
@@ -51,9 +76,10 @@
                     this.cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     this.cameraData.aspectRatio = canvas.width / canvas.height;
 
+                    this.pushPostProcessData(this.cameraData, this.postProcessing);
                     this.cameraData.postProcessing = [];
                     for (let shaderID in this.postProcessing) {
-                        this.cameraData.postProcessing.push(this.postProcessing[shaderID].shader);
+                        this.cameraData.postProcessing.push(this.postProcessing[shaderID].processedshader);
                     }
 
                     coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
@@ -89,6 +115,10 @@
                 this.shaderArrow.uniforms.u_colorMod.value = [1, 1, 1, 1];
                 this.shaderArrow.uniforms.u_objectID.value = drawID;
                 this.shaderArrow.drawFromBuffers(48);
+
+                if (editor.lastSelectedNode == this) {
+                    this.pushPostProcessData(coffeeEngine.mainViewport.cameraData, this.postProcessing);
+                }
             }
         }
 

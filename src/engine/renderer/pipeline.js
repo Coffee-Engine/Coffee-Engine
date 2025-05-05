@@ -40,7 +40,11 @@
             renderer.swapPost();
 
             renderer.pipeline.drawFinal(scene, renderer.mainShaders.mainPass);
-            renderer.pipeline.postProcess();
+
+            //If we are in the editor make sure we use the camera once more to account for things
+            if (coffeeEngine.isEditor) renderer.pipeline.cameraDrawQueue[0].use(true);
+
+            renderer.pipeline.postProcess(scene);
 
             //The final blit!
             renderer.daveshade.renderToCanvas();
@@ -138,7 +142,10 @@
             if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
         },
 
-        postProcess: () => {
+        postProcess: (scene) => {
+            //For some sillies!
+            const drawBuffer =  renderer.drawBuffer.attachments;
+
             //Do our AA pass first
             if (renderer.viewport.antiAlias) {
                 renderer.swapPost();
@@ -147,6 +154,46 @@
                 renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
 
                 renderer.getPrevPost().resize(renderer.canvas.width, renderer.canvas.height);
+            }
+
+            //Yeah
+            const conjoiner = {
+                //Textures
+                u_color: drawBuffer[0].texture, 
+                u_materialAttributes: drawBuffer[1].texture, 
+                u_emission: drawBuffer[2].texture, 
+                u_position: drawBuffer[3].texture, 
+                u_normal: drawBuffer[4].texture,
+
+                //The sun
+                u_sunDir: scene.sunDirection,
+                u_sunColor: scene.sunColor,
+                u_ambientColor: scene.ambientColor,
+
+                //Lights
+                u_lightCount: scene.lightCount,
+
+                //fog data
+                u_fogData: scene.fogData.flat(),
+                u_cameraPosition: renderer.cameraData.position.webGLValue(),
+
+                u_time: coffeeEngine.timer
+            }
+
+            //Do our post processing
+            for (let shaderID in renderer.pipeline.postProcessOrder) {
+                renderer.swapPost();
+
+                const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
+                shader.setBuffers(coffeeEngine.shapes.plane);
+                shader.setUniforms({
+                    ...conjoiner,
+                    ...shader.parameters,
+
+                    //The previous pipeline object
+                    SCREEN: renderer.getPrevPost().attachments[0].texture,
+                });
+                shader.drawFromBuffers(6);
             }
         }
     }

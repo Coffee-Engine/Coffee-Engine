@@ -21,6 +21,7 @@
             const items = [
                 {target: target[key], key: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem }, onchange: (value) => {
                     coffeeEngine.renderer.fileToShader(value).then((shader) => {
+                        target[key].$processedShader = null;
                         display(shader);
                     });
                 }}
@@ -136,7 +137,7 @@
             for (let item in target[key]) {
                 //Get the CUGI type and add the element
                 const newInputData = {...data, target: target[key], key: item};
-                const input = CUGI.types["shader"](newInputData);
+                const input = CUGI.displays["shader"](newInputData);
                 const itemText = item + Number(editor.settings.values.Editor.startIndex);
                 arrayContainer.appendChild(createArrayElementContainer(itemText, input, refreshData, newInputData));
             }

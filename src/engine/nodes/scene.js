@@ -196,6 +196,7 @@
             
             if (typeof rValue == "object") {
                 for (let key in rValue) {
+                    if (key.startsWith("$")) continue;
                     returned[key] = this.__serializeValue(rValue[key]);
                 }
             }

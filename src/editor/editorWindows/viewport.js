@@ -120,6 +120,7 @@
             this.cameraData.rotationEuler = { x: -this.previewCamera.pitch, y: -this.previewCamera.yaw, z: 0 };
             this.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
             this.cameraData.aspectRatio = this.aspectRatio;
+            this.cameraData.postProcessing = [];
 
             coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
 
@@ -294,6 +295,8 @@
         }
 
         init(container) {
+            coffeeEngine.mainViewport = this;
+
             this.closable = false;
             this.title = editor.language["editor.window.viewport"];
 

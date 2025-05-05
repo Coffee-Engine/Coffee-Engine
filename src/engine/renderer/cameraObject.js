@@ -66,7 +66,7 @@
             cameraData.aspectRatio = this.aspectRatio;
 
             //Finally set our post processing
-            coffeeEngine.renderer.pipeline.postProcessOrder = this.postProcessing;
+            coffeeEngine.renderer.pipeline.postProcessOrder = [...this.postProcessing];
         }
     }
 
