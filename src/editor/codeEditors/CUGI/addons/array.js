@@ -79,7 +79,7 @@
                 data.target.splice(data.key, 1);
                 refreshData();
 
-                if (data.onchange) data.onchange();
+                if (data.onchange) data.onchange(null, {});
             }
 
             const textEl = document.createElement("p");
@@ -153,7 +153,7 @@
                 const itemText = ID + Number(editor.settings.values.Editor.startIndex);
                 arrayContainer.insertBefore(createArrayElementContainer(itemText, input, refreshData, newInputData), elementAdder);
 
-                if (data.onchange) data.onchange();
+                if (data.onchange) data.onchange(null, {target, key});
             }
         }
 

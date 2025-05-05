@@ -1,4 +1,7 @@
 (function () {
+    //Uniforms provided by the engine for the engine.
+    coffeeEngine.renderer.engineUniforms = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID", "u_time"];
+    
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;

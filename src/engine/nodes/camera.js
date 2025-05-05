@@ -108,7 +108,7 @@
                 { name: "activeCamera", translationKey: "engine.nodeProperties.Camera.active", type: coffeeEngine.PropertyTypes.BOOLEAN},
                 "---", 
                 { name: "script", translationKey: "engine.nodeProperties.Node.script", type: coffeeEngine.PropertyTypes.FILE, fileType: "cjs,js" },
-                { name: "TEMP", translationKey:"TEMP", type: "shader" }
+                { name: "postProcessing", translationKey:"engine.nodeProperties.Camera.postProcessing", type: "shaderArray", types: ["shader"] }
             ];
         }
     }

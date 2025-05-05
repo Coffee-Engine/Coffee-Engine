@@ -20,9 +20,6 @@
         35679: { name: "", type: coffeeEngine.PropertyTypes.FILE, fileType: "vox" },
     };
 
-    //To exclude or not to exclude
-    const exclude = ["u_model", "u_projection", "u_camera", "u_wFactor", "u_aspectRatio", "u_model", "u_colorMod", "u_res", "u_objectID", "u_time"];
-
     const matEditor = ({ panel, refreshListing, path }) => {
         return {
             getProperties: (material, initial) => {
@@ -35,7 +32,7 @@
 
                 let uniforms = [];
                 for (const uniform in shader.uniforms) {
-                    if (exclude.includes(uniform)) continue;
+                    if (coffeeEngine.renderer.engineUniforms.includes(uniform)) continue;
 
                     //* Band aid and duct tape solution
                     uniforms.push(Object.assign({}, coffeeEngine.renderer.uniformTypesToCUGI[shader.uniforms[uniform].type]));
