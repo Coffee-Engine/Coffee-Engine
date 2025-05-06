@@ -18,6 +18,9 @@
 
         //Yeah
         renderer.postBuffer = 0;
+        renderer.usingStore = false;
+
+        //Our buffers
         renderer.post0 = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT
         ]);
@@ -26,17 +29,31 @@
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT
         ]);
 
+        renderer.storeBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width, renderer.canvas.height, [
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT
+        ]);
+
         //Yippie!
         renderer.swapPost = () => {
             //Swap our post buffers
             renderer.postBuffer++;
             renderer.postBuffer = renderer.postBuffer % 2;
+            renderer.usingStore = false;
 
             renderer[`post${renderer.postBuffer}`].use();
             renderer.daveshade.clear(renderer.daveshade.GL.COLOR_BUFFER_BIT);
         }
 
-        renderer.getPost = () => {
+        //Our store buffer
+        renderer.swapStore = () => {
+            renderer.usingStore = !renderer.usingStore;
+            if (!renderer.usingStore) renderer[`post${renderer.postBuffer}`].use();
+            else renderer.storeBuffer.use();
+            renderer.daveshade.clear(renderer.daveshade.GL.COLOR_BUFFER_BIT);
+        }
+
+        renderer.getPost = (forcePost) => {
+            if (renderer.usingStore && !forcePost) renderer.storeBuffer;
             return renderer[`post${renderer.postBuffer}`];
         }
 
@@ -52,6 +69,7 @@
             renderer.drawBuffer.resize(width * renderer.drawBufferSizeMul, height * renderer.drawBufferSizeMul);
             renderer.post0.resize(width, height);
             renderer.post1.resize(width, height);
+            renderer.storeBuffer.resize(width, height);
         }
     }
 })();

@@ -138,8 +138,8 @@
                 shader = coffeeEngine.renderer.mainShaders.postBasis;
             }
 
-            const compiledVert = shader.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
-            const compiledFrag = shader.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
+            const compiledVert = shader.vertex.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
+            const compiledFrag = shader.fragment.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
 
             const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
 

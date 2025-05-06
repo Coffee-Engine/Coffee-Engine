@@ -177,12 +177,15 @@
                 u_fogData: scene.fogData.flat(),
                 u_cameraPosition: renderer.cameraData.position.webGLValue(),
 
-                u_time: coffeeEngine.timer
+                u_time: coffeeEngine.timer,
             }
 
             //Do our post processing
             for (let shaderID in renderer.pipeline.postProcessOrder) {
                 renderer.swapPost();
+                
+                //Our previous
+                const previous = renderer.getPrevPost().attachments[0].texture;
 
                 const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
                 shader.setBuffers(coffeeEngine.shapes.plane);
@@ -191,7 +194,9 @@
                     ...shader.parameters,
 
                     //The previous pipeline object
-                    SCREEN: renderer.getPrevPost().attachments[0].texture,
+                    u_initial: previous,
+                    u_screen: previous,
+                    u_renderPass: 0
                 });
                 shader.drawFromBuffers(6);
             }
