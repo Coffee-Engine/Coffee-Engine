@@ -134,8 +134,18 @@
 
             //Detect if post
             let shader = coffeeEngine.renderer.mainShaders.basis;
+            let passes = 1;
             if (shaderCode.match(/\w*#define\s*is_post;/)) {
                 shader = coffeeEngine.renderer.mainShaders.postBasis;
+
+                //Grab our passes if we have a defined amount
+                const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
+                if (renderPasses) {
+                    //Get our passes
+                    passes = Number(renderPasses[0].replaceAll(/\D/g, ""));
+                    if (isNaN(passes)) passes = 1;
+                    passes = Math.floor(Math.max(1, passes));
+                } 
             }
 
             const compiledVert = shader.vertex.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
@@ -144,6 +154,9 @@
             const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
 
             if (!compiledShader) return;
+
+            //Set our passes variable
+            compiledShader.passes = passes;
 
             //Now use the hints
             for (let hintLineID in hintLines) {
