@@ -52,6 +52,11 @@
             renderer.daveshade.clear(renderer.daveshade.GL.COLOR_BUFFER_BIT);
         }
 
+        renderer.getPrevStore = () => {
+            if (!renderer.usingStore) return renderer.storeBuffer;
+            return renderer[`post${renderer.postBuffer}`];
+        }
+
         renderer.getPost = (forcePost) => {
             if (renderer.usingStore && !forcePost) renderer.storeBuffer;
             return renderer[`post${renderer.postBuffer}`];

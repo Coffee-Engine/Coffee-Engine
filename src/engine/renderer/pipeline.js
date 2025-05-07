@@ -186,19 +186,38 @@
                 
                 //Our previous
                 const previous = renderer.getPrevPost().attachments[0].texture;
-
                 const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
-                shader.setBuffers(coffeeEngine.shapes.plane);
-                shader.setUniforms({
-                    ...conjoiner,
-                    ...shader.parameters,
+                const parameters = renderer.pipeline.postProcessOrder[shaderID].parameters;
 
-                    //The previous pipeline object
-                    u_initial: previous,
-                    u_screen: previous,
-                    u_renderPass: 0
-                });
-                shader.drawFromBuffers(6);
+                //Do our passes
+                let increment = 0;
+                for (increment = 0; increment<shader.passes; increment++) {
+                    shader.setBuffers(coffeeEngine.shapes.plane);
+                    console.log(shader.parameters);
+                    shader.setUniforms({
+                        ...conjoiner,
+                        ...parameters,
+    
+                        //The previous pipeline object
+                        u_initial: previous,
+                        u_screen: (increment > 0) ? renderer.getPrevStore().attachments[0].texture : previous,
+                        u_renderPass: increment
+                    });
+
+                    shader.drawFromBuffers(6);
+
+                    //Swap our store buffer
+                    if (shader.passes > 1) renderer.swapStore();
+                }
+
+                if (!renderer.usingStore) {
+                    renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
+                    renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPrevStore().attachments[0].texture });
+                    renderer.mainShaders.viewportPass.drawFromBuffers(6);
+                }
+                else {
+                    renderer.usingStore = false;
+                }
             }
         }
     }
