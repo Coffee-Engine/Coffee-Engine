@@ -77,10 +77,6 @@
                     this.cameraData.aspectRatio = canvas.width / canvas.height;
 
                     this.pushPostProcessData(this.cameraData, this.postProcessing);
-                    this.cameraData.postProcessing = [];
-                    for (let shaderID in this.postProcessing) {
-                        this.cameraData.postProcessing.push(this.postProcessing[shaderID].processedshader);
-                    }
 
                     coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
                 }

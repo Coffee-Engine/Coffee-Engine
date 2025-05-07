@@ -182,6 +182,8 @@
 
             //Do our post processing
             for (let shaderID in renderer.pipeline.postProcessOrder) {
+                if (!renderer.pipeline.postProcessOrder[shaderID]) return;
+                
                 renderer.swapPost();
                 
                 //Our previous
