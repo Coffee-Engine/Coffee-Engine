@@ -17,6 +17,8 @@
         //Most likely Tauri
         "Deno": "Tauri",
 
+        //Cool ain't it?
+        "Ladybird": "Ladybird",
         "Chrome": "Chrome",
         "Firefox": "Firefox",
         "Safari": "Safari",
