@@ -104,6 +104,7 @@
             //Set our browser
             if (coffeeEngine.agentData.includes(i)) {
                 returned.runtime = browserID[i];
+                break;
             }
         }
         
