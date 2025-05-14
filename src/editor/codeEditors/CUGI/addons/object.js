@@ -23,7 +23,7 @@
                 delete data.target[data.key];
                 refreshData();
 
-                if (data.onchange) data.onchange();
+                if (data.onchange) data.onchange(null, {});
             }
 
             const textEl = document.createElement("p");
@@ -114,7 +114,7 @@
 
                 elementName.value = "";
 
-                if (data.onchange) data.onchange();
+                if (data.onchange) data.onchange(null, {target, key});
             }
         }
 

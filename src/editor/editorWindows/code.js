@@ -188,7 +188,7 @@
 
             //If our scripting language has a compile function compile it
             if (compileFunction) {
-                const compiled = compileFunction(useBlocklyEditor ? sugarcube.workspace : mirrorManager.workspace.getValue(), `${this.filePath.split(".")[0]}.cjs`);
+                const compiled = compileFunction(useBlocklyEditor ? sugarcube.workspace : mirrorManager.workspace.getValue(), `${this.filePath.split(".")[0]}.cjs`, this.filePath);
                 if (!stopCompileFileCreation)
                     project.setFile(`${this.filePath.split(".")[0]}.cjs`, compiled, "text/javascript").then(() => {
                         console.log(editor.language["editor.notification.compileScript"].replace("[input]", this.filePath).replace("[output]", `${this.filePath.split(".")[0]}.cjs`));

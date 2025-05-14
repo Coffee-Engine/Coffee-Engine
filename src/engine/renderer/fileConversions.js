@@ -123,7 +123,7 @@
                     })
                     .catch(() => {
                         delete coffeeEngine.renderer.shaderStorage[src];
-                        reject("File does not exist");
+                        reject(`File ${src} doesn't exist`);
                     });
             });
         };
@@ -165,7 +165,7 @@
                             fileReader.readAsText(file);
                         })
                         .catch(() => {
-                            reject("File doesn't exist");
+                            reject(`File ${src} doesn't exist`);
                         });
                 }
             });
