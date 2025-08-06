@@ -191,15 +191,18 @@
                 const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
                 const parameters = renderer.pipeline.postProcessOrder[shaderID].parameters;
 
+                //Buffers and uniforms
+                shader.setBuffers(coffeeEngine.shapes.plane);
+                shader.setUniforms({
+                    ...conjoiner,
+                    ...parameters,
+                });
+
                 //Do our passes
                 let increment = 0;
                 for (increment = 0; increment<shader.passes; increment++) {
-                    shader.setBuffers(coffeeEngine.shapes.plane);
-                    console.log(shader.parameters);
+                    //Set uniforms
                     shader.setUniforms({
-                        ...conjoiner,
-                        ...parameters,
-    
                         //The previous pipeline object
                         u_initial: previous,
                         u_screen: (increment > 0) ? renderer.getPrevStore().attachments[0].texture : previous,
