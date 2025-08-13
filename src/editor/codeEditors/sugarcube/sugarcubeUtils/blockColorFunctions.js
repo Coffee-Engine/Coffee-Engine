@@ -21,7 +21,15 @@ sugarcube.blockColorFunctions = {
         color2.s *= 0.4;
         color3.v *= 0.8;
 
-        return [coffeeEngine.ColorMath.HSVToHex(color1).substring(0, 7), coffeeEngine.ColorMath.HSVToHex(color2).substring(0, 7), coffeeEngine.ColorMath.HSVToHex(color3).substring(0, 7), color4 || "#0f0f0f", color5 || "#ffffff", true, coffeeEngine.ColorMath.HSVToHex(color1).substring(0, 7)];
+        return [
+            coffeeEngine.ColorMath.HSVToHex(color1).substring(0, 7), 
+            coffeeEngine.ColorMath.HSVToHex(color2).substring(0, 7), 
+            coffeeEngine.ColorMath.HSVToHex(color3).substring(0, 7), 
+            color4 || "#0f0f0f", 
+            coffeeEngine.ColorMath.HSVToHex(color1).substring(0, 7), 
+            true, 
+            coffeeEngine.ColorMath.HSVToHex(color1).substring(0, 7)
+        ];
     },
 
     Dark: (color3, a, b, color4, color5) => {

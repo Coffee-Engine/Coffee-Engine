@@ -144,7 +144,7 @@
 
         postProcess: (scene) => {
             //For some sillies!
-            const drawBuffer =  renderer.drawBuffer.attachments;
+            const drawBuffer = renderer.drawBuffer.attachments;
 
             //Do our AA pass first
             if (renderer.viewport.antiAlias) {
