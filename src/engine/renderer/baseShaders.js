@@ -558,8 +558,8 @@
 
                             //There we go
                             vec2 sampleCoord = texCoord + (stepSize * vec2(x, y));
-                            sampleCoord.x = min(1.0, sampleCoord.x);
-                            sampleCoord.y = min(1.0, sampleCoord.y);
+                            sampleCoord.x = max(min(1.0, sampleCoord.x), 0.0);
+                            sampleCoord.y = max(min(1.0, sampleCoord.y), 0.0);
 
                             averageColor += texture(u_texture, sampleCoord);
                         }
