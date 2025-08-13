@@ -213,7 +213,13 @@
         }
 
         webGLValue() {
-            return [...this.contents[0], ...this.contents[1], ...this.contents[2], ...this.contents[3]];
+            // prettier-ignore
+            return [
+                this.contents[0][0], this.contents[0][1], this.contents[0][2], this.contents[0][3],
+                this.contents[1][0], this.contents[1][1], this.contents[1][2], this.contents[1][3],
+                this.contents[2][0], this.contents[2][1], this.contents[2][2], this.contents[2][3],
+                this.contents[3][0], this.contents[3][1], this.contents[3][2], this.contents[3][3]
+            ];
         }
 
         __duplicate(to) {

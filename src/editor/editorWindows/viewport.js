@@ -41,14 +41,18 @@
 </svg><!--rotationCenter:40.09411684282881:40.094116842829095-->`;
 
     editor.windows.viewport = class extends editor.windows.base {
+        //3D camera
         viewportControlsProjection() {
             //Dragging on the screen!
             if (this.controlling) {
+                //Look around with the mouse
                 this.previewCamera.yaw -= (coffeeEngine.inputs.mouse.movementX / 360) * editor.mouseSensitivity;
                 this.previewCamera.pitch += (coffeeEngine.inputs.mouse.movementY / 360) * editor.mouseSensitivity;
 
+                //Clamp it
                 this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch, -1.5707), 1.5707);
 
+                //Then do some basic fps flight controls
                 if (coffeeEngine.inputs.keys[editor.controls.up]) this.previewCamera.y -= 0.05 * this.previewCamera.speed;
                 if (coffeeEngine.inputs.keys[editor.controls.down]) this.previewCamera.y += 0.05 * this.previewCamera.speed;
 
@@ -71,10 +75,11 @@
                 }
             }
 
-            this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
-            this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
+            //Then set our matrices
+            this.matrix = this.matrix.rotationX(this.previewCamera.pitch)
+            .rotationY(this.previewCamera.yaw)
+            .translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
             this.projection = coffeeEngine.matrix4.projection(this.previewCamera.fov, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
@@ -85,18 +90,21 @@
         }
 
         viewportControlsOrtho() {
+            //Viewport dragging
             if (this.controlling) {
                 this.previewCamera.x += (coffeeEngine.inputs.mouse.movementX / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
                 this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
             }
 
+            //No camera rotation
             this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
             this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
 
-            this.matrix = this.matrix.rotationX(this.previewCamera.pitch);
-            this.matrix = this.matrix.rotationY(this.previewCamera.yaw);
+            //Then set the matrices
+            this.matrix = this.matrix.rotationX(this.previewCamera.pitch)
+            .rotationY(this.previewCamera.yaw)
+            .translate(this.previewCamera.x, this.previewCamera.y, 1);
 
-            this.matrix = this.matrix.translate(this.previewCamera.x, this.previewCamera.y, 1);
             this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
             this.aspectRatio = this.canvas.width / this.canvas.height;
 
@@ -131,6 +139,7 @@
             //Our controls and render time
             this.canvas.addEventListener("mousedown", (event) => {
                 switch (event.button) {
+                    //Camera control
                     case 2: {
                         this.canvas.requestPointerLock();
 
@@ -138,6 +147,7 @@
                         break;
                     }
 
+                    //Mouse selection
                     case 0: {
                         let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
                         hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;

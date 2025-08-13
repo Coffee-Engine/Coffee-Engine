@@ -3,7 +3,7 @@
         //Add our draw buffer
         renderer.drawBuffer = daveshadeInstance.createFramebuffer(renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul, [
             //Colors
-            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
+            DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA,
             //Material Attributes
             DaveShade.RENDERBUFFER_TYPES.TEXTURE_RGBA_FLOAT,
             //Emission

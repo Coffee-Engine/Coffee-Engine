@@ -113,6 +113,7 @@
                     const data = this.meshData.data[subMeshIndex];
                     const pointCount = this.meshData.pointCount[subMeshIndex];
 
+                    //Set the buffers and prepare to draw
                     myMaterial.shader.setBuffers(data);
                     myMaterial.shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
                     if (myMaterial.shader.uniforms.u_colorMod) myMaterial.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
