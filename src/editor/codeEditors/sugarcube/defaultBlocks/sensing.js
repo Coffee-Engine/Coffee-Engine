@@ -1,6 +1,8 @@
 (function () {
     class sensing {
         date = new Date(Date.now());
+        d_1970 = new Date(1970, 0, 1);
+        d_2000 = new Date(2000, 0, 1);
 
         controllerSVG = `<svg style="width:100%; height:100%; padding:0px; margin:0px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="279.53576"
     height="340.84147" viewBox="0,0,279.53576,340.84147">
@@ -325,6 +327,17 @@
                             },
                         },
                     },
+                    "---",
+                    {
+                        opcode: "daysSince1970",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sensing.block.daysSince1970"]
+                    },
+                    {
+                        opcode: "daysSince2000",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.sensing.block.daysSince2000"]
+                    }
                 ],
                 menus: {
                     keys: {
@@ -514,6 +527,25 @@
                     if (this.date[timespan]) return this.date[timespan]();
                     return 0;
             }
+        }
+
+        //Days since blocks
+        //Unlike ███████ team we will not recalculate the amount of MS per day.
+        //It is 86400000 MS per day
+        daysSince1970() {
+            this.date.setTime();
+            const timeZone = this.date.getTimezoneOffset() - this.d_1970.getTimezoneOffset();
+            let milliseconds = this.date.valueOf() - this.d_1970.valueOf();
+            milliseconds += ((this.date.getTimezoneOffset() - timeZone) * 60000);
+            return milliseconds / 86400000;
+        }
+
+        daysSince2000() {
+            this.date.setTime();
+            const timeZone = this.date.getTimezoneOffset() - this.d_2000.getTimezoneOffset();
+            let milliseconds = this.date.valueOf() - this.d_2000.valueOf();
+            milliseconds += ((this.date.getTimezoneOffset() - timeZone) * 60000);
+            return milliseconds / 86400000;
         }
 
         //Fields
