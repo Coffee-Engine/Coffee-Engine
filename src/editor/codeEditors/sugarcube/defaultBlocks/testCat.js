@@ -2,6 +2,7 @@
     const blockTypesBlocks = [];
     const argumentTypeBlocks = [];
 
+    /*
     Object.keys(sugarcube.BlockType).forEach((type) => {
         blockTypesBlocks.push({
             opcode: type,
@@ -22,6 +23,7 @@
             },
         });
     });
+    */
 
     class testCategory {
         getInfo() {
