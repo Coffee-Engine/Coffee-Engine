@@ -84,11 +84,11 @@
                 for(int i = 1; i < 5; ++i)
                 {
                     vec2 SUV = UV + vec2(screenStep.x * float(i), 0);
-                    SUV.x = min(0.99999, SUV.x);
+                    SUV.x = min(1.0, SUV.x);
                     COLOR.xyz += sampleBloom(u_screen, SUV).xyz * weight[i];
 
                     SUV = UV - vec2(screenStep.x * float(i), 0);
-                    SUV.x = max(0.00001, SUV.x);
+                    SUV.x = max(0.0, SUV.x);
                     COLOR.xyz += sampleBloom(u_screen, SUV).xyz * weight[i];
                 }
                 break;
@@ -99,11 +99,11 @@
                 for(int i = 1; i < 5; ++i)
                 {
                     vec2 SUV = UV + vec2(0, screenStep.y * float(i));
-                    SUV.y = min(0.99999, SUV.y);
+                    SUV.y = min(1.0, SUV.y);
                     COLOR.xyz += texture(u_screen, SUV).xyz * weight[i];
 
                     SUV = UV - vec2(0, screenStep.y * float(i));
-                    SUV.y = max(0.00001, SUV.y);
+                    SUV.y = max(0.0, SUV.y);
                     COLOR.xyz += texture(u_screen, SUV).xyz * weight[i];
                 }
                 
