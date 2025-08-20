@@ -106,6 +106,17 @@
                         },
                     },
                     {
+                        opcode: "reverse",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.lists.block.reverse"],
+                        hideFromPalette: true,
+                        arguments: {
+                            list: {
+                                menu: "listMenu",
+                            },
+                        },
+                    },
+                    {
                         opcode: "getItem",
                         type: sugarcube.BlockType.REPORTER_ANY,
                         text: editor.language["sugarcube.lists.block.getItem"],
@@ -147,6 +158,21 @@
                         },
                     },
                     {
+                        opcode: "amountOf",
+                        type: sugarcube.BlockType.REPORTER,
+                        text: editor.language["sugarcube.lists.block.amountOf"],
+                        hideFromPalette: true,
+                        arguments: {
+                            value: {
+                                defaultValue: editor.language["sugarcube.lists.value.greeting"],
+                                type: sugarcube.ArgumentType.STRING,
+                            },
+                            list: {
+                                menu: "listMenu",
+                            },
+                        },
+                    },
+                    {
                         opcode: "getItemContainment",
                         type: sugarcube.BlockType.BOOLEAN,
                         text: editor.language["sugarcube.lists.block.getItemContainment"],
@@ -155,6 +181,21 @@
                             value: {
                                 defaultValue: editor.language["sugarcube.lists.value.greeting"],
                                 type: sugarcube.ArgumentType.STRING,
+                            },
+                            list: {
+                                menu: "listMenu",
+                            },
+                        },
+                    },
+                    {
+                        opcode: "itemExists",
+                        type: sugarcube.BlockType.BOOLEAN,
+                        text: editor.language["sugarcube.lists.block.itemExists"],
+                        hideFromPalette: true,
+                        arguments: {
+                            item: {
+                                defaultValue: 1,
+                                type: sugarcube.ArgumentType.NUMBER,
                             },
                             list: {
                                 menu: "listMenu",
@@ -355,6 +396,10 @@
                 },
                 {
                     type: sugarcube.BlockType.DUPLICATE,
+                    of: "reverse",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
                     of: "clearList",
                 },
                 {
@@ -376,11 +421,19 @@
                 },
                 {
                     type: sugarcube.BlockType.DUPLICATE,
+                    of: "amountOf",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
                     of: "length",
                 },
                 {
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "getItemContainment",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "itemExists",
                 },
                 "---",
                 {
@@ -433,6 +486,14 @@
             //Prevent OOB indeing
             if (item < 0 || item >= targetList.length) return;
             targetList.splice(item, 1);
+        }
+
+        reverse({ list }, { self }) {
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+
+            if (!Array.isArray(targetList)) return;
+            targetList.reverse();
         }
 
         clearList({ list }, { self }) {
@@ -501,6 +562,15 @@
             return targetList.length;
         }
 
+        amountOf({ value, list }, { self }) {
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+
+            if (!Array.isArray(targetList)) return 0;
+            return targetList.filter((x) => x == value).length;
+        }
+
         getItemContainment({ list, value }, { self }) {
             //Make sure we target it right
             let targetList = self[list];
@@ -508,6 +578,15 @@
             
             if (!Array.isArray(targetList)) return false;
             return targetList.includes(value);
+        }
+
+        itemExists({ item, list }, {}) {
+            //Make sure we target it right
+            let targetList = self[list];
+            this.isGlobal(list, (globalName, globalVal) => {targetList = globals[globalName]});
+
+            if (!Array.isArray(targetList)) return false;
+            return (item > 0) || (item <= targetList.length);
         }
 
         substitute({ objectLike, value }, { self }) {
