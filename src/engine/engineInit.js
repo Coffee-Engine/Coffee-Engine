@@ -1,4 +1,5 @@
 window.coffeeEngine = {
+    agentData: window.navigator.userAgent,
     events: {
         consoleUpdate: [],
         fileSystemUpdate: [],

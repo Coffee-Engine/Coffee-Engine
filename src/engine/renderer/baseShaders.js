@@ -1,9 +1,9 @@
 (function() {
     coffeeEngine.renderer.createBaseShaders = (daveshadeInstance) => {
-        coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX = `
+        coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX = `#version 300 es
         precision highp float;
 
-        attribute vec4 a_position;
+        in vec4 a_position;
 
         void main()
         {    
@@ -258,8 +258,10 @@
                 //Vertex
                 coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
                 //Fragment
-                `
+                `#version 300 es
                 precision highp float;
+
+                layout (location = 0) out vec4 o_color;
     
                 uniform sampler2D u_color;
                 uniform sampler2D u_materialAttributes;
@@ -404,7 +406,7 @@
                         fogData[0][1] //Falloff
                     );
 
-                    return mix(gl_FragColor.xyz, fogData[1], mixAmount);
+                    return mix(o_color.xyz, fogData[1], mixAmount);
                 }
 
                 vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
@@ -416,31 +418,31 @@
                     float sunAmount = max(dot(toPoint, -u_sunDir), 0.0);
                     vec3 sunEffection = mix(u_ambientColor, u_sunColor, pow(sunAmount, fogData[2][0]));
 
-                    return mix(gl_FragColor.xyz, fogData[1] * sunEffection, mixAmount);
+                    return mix(o_color.xyz, fogData[1] * sunEffection, mixAmount);
                 }
                 
                 void main()
                 {
                     vec2 screenUV = gl_FragCoord.xy / u_res;
-                    vec4 matAttributes = texture2D(u_materialAttributes, screenUV);
-                    vec3 position = texture2D(u_position, screenUV).xyz;
+                    vec4 matAttributes = texture(u_materialAttributes, screenUV);
+                    vec3 position = texture(u_position, screenUV).xyz;
                     viewToFrag = normalize(u_cameraPosition - position);
 
                     //if (matAttributes.z < 0.0) {
                     //    position -= vec3(u_camera[3][0],u_camera[3][1],u_camera[3][2]);
                     //}
-                    vec3 normal = normalize(texture2D(u_normal,screenUV).xyz);
+                    vec3 normal = normalize(texture(u_normal,screenUV).xyz);
 
-                    gl_FragColor = texture2D(u_color,screenUV);
-                    if (gl_FragColor.w > 1.0) {
-                        gl_FragColor.w = 1.0;
+                    o_color = texture(u_color,screenUV);
+                    if (o_color.w > 1.0) {
+                        o_color.w = 1.0;
                     }
 
                     vec3 lightColor = u_ambientColor;
 
                     if (matAttributes.z > 0.0 && u_fullBright == 0) {
                         //Calculate F0
-                        F0 = mix(vec3(0.04), gl_FragColor.xyz, matAttributes.y);
+                        F0 = mix(vec3(0.04), o_color.xyz, matAttributes.y);
 
                         //Add the sun
                         lightColor += u_sunColor * lightDot(normal, u_sunDir);
@@ -453,15 +455,15 @@
                             //Stuff required to calculate the end result
                             mat4 light = u_lights[i];
 
-                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, gl_FragColor.xyz, position, normal, matAttributes.xyz);}
+                            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, o_color.xyz, position, normal, matAttributes.xyz);}
                             else {lightColor.xyz += calculateLight(light, position, normal);}
                         }
 
                         matAttributes.z -= ceil(matAttributes.z) - 1.0;
-                        gl_FragColor.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
+                        o_color.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
                     }
 
-                    gl_FragColor += texture2D(u_emission,screenUV);
+                    o_color += texture(u_emission,screenUV);
 
                     int fogType = int(u_fogData[0][0]);
                     //Handle sky plane
@@ -477,16 +479,66 @@
                         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
                         else if (fogType == 3) { fogColour = fogDefault((vec4(position,1) * u_camera).z, viewToFrag, u_fogData); }
 
-                        if (matAttributes.x < -0.1) { gl_FragColor.xyz = mix(gl_FragColor.xyz, fogColour, u_fogData[2][1]); }
-                        else { gl_FragColor.xyz = fogColour; }
+                        if (matAttributes.x < -0.1) { o_color.xyz = mix(o_color.xyz, fogColour, u_fogData[2][1]); }
+                        else { o_color.xyz = fogColour; }
                     }
+                }
+                `
+            ),
+            postBasis: daveshadeInstance.createShader(
+                coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
+                `#version 300 es
+                precision highp float;
+
+                uniform sampler2D u_initial;
+                uniform sampler2D u_screen;
+                uniform int u_renderPass;
+
+                vec4 COLOR;
+                vec2 UV;
+
+                layout (location = 0) out vec4 o_color;
+
+                uniform vec2 u_res;
+                uniform float u_time;
+                uniform mat4 u_projection;
+                uniform mat4 u_camera;
+                uniform vec3 u_wFactor;
+                uniform float u_aspectRatio;
+                
+                uniform sampler2D u_color;
+                uniform sampler2D u_materialAttributes;
+                uniform sampler2D u_emission;
+                uniform sampler2D u_position;
+                uniform sampler2D u_normal;
+
+                uniform mat4 u_lights[64];
+                uniform int u_lightCount;
+
+                uniform vec3 u_sunDir;
+                uniform vec3 u_sunColor;
+                uniform mat3 u_fogData;
+                uniform vec3 u_ambientColor;
+                uniform vec3 u_cameraPosition;
+
+                //SHADER DEFINED UNIFORMS
+
+                void fragment() {}
+
+                void main() {
+                    UV = gl_FragCoord.xy / u_res;
+                    fragment();
+
+                    o_color = COLOR;
                 }
                 `
             ),
             antiAliasPass: daveshadeInstance.createShader(
                 coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
-                `
+                `#version 300 es
                 precision highp float;
+
+                layout (location = 0) out vec4 o_color;
                 
                 uniform sampler2D u_texture;
                 uniform vec2 u_res;
@@ -506,28 +558,29 @@
 
                             //There we go
                             vec2 sampleCoord = texCoord + (stepSize * vec2(x, y));
-                            sampleCoord.x = min(1.0, sampleCoord.x);
-                            sampleCoord.y = min(1.0, sampleCoord.y);
+                            sampleCoord.x = max(min(1.0, sampleCoord.x), 0.0);
+                            sampleCoord.y = max(min(1.0, sampleCoord.y), 0.0);
 
-                            averageColor += texture2D(u_texture, sampleCoord);
+                            averageColor += texture(u_texture, sampleCoord);
                         }
                     }
 
                     //Average it out
-                    gl_FragColor = averageColor / float(u_reductionAmount * u_reductionAmount);
+                    o_color = averageColor / float(u_reductionAmount * u_reductionAmount);
                 }
                 `
             ),
             viewportPass: daveshadeInstance.createShader(
                 coffeeEngine.renderer.POSTPROCESS_BASE_VERTEX,
-                `
+                `#version 300 es
                 precision highp float;
+                layout (location = 0) out vec4 o_color;
                 
                 uniform sampler2D u_texture;
                 uniform vec2 u_res;
 
                 void main() {
-                    gl_FragColor = texture2D(u_texture, gl_FragCoord.xy / u_res);
+                    o_color = texture(u_texture, gl_FragCoord.xy / u_res);
                 }
                 `
             )

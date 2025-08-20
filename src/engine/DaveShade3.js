@@ -533,22 +533,6 @@ window.DaveShade = {};
                 GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
                 GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(65536), GL.STATIC_DRAW);
 
-                //* The setter legacy (DS2)
-                shader.attributes[attributeDef.name].setRaw = (newValue) => {
-                    daveShadeInstance.oldAttributes[attributeID] = 0;
-                    GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
-                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
-                    GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
-                };
-
-                //* The setter
-                shader.attributes[attributeDef.name].set = (newValue) => {
-                    if (daveShadeInstance.oldAttributes[attributeID] == newValue.bufferID) return;
-                    daveShadeInstance.oldAttributes[attributeID] = newValue.bufferID;
-                    GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
-                    GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
-                };
-
                 //* Assign values dependant on types
                 switch (shader.attributes[attributeDef.name].type) {
                     case 5126:
@@ -572,7 +556,26 @@ window.DaveShade = {};
                         break;
                 }
 
-                GL.vertexAttribPointer(shader.attributes[attributeDef.name].location, shader.attributes[attributeDef.name].divisions, GL.FLOAT, false, 0, 0);
+                const location = shader.attributes[attributeDef.name].location;
+                const divisions = shader.attributes[attributeDef.name].divisions;
+
+                //* The setter legacy (DS2)
+                shader.attributes[attributeDef.name].setRaw = (newValue) => {
+                    daveShadeInstance.oldAttributes[location] = 0;
+                    GL.bindBuffer(GL.ARRAY_BUFFER, shader.attributes[attributeDef.name].buffer);
+                    GL.bufferData(GL.ARRAY_BUFFER, newValue, GL.STATIC_DRAW);
+                    GL.vertexAttribPointer(location, divisions, GL.FLOAT, false, 0, 0);
+                };
+
+                //* The setter
+                shader.attributes[attributeDef.name].set = (newValue) => {
+                    if (daveShadeInstance.oldAttributes[location] == newValue.bufferID) return;
+                    daveShadeInstance.oldAttributes[location] = newValue.bufferID;
+                    GL.bindBuffer(GL.ARRAY_BUFFER, newValue);
+                    GL.vertexAttribPointer(location, divisions, GL.FLOAT, false, 0, 0);
+                };
+
+                GL.vertexAttribPointer(location, divisions, GL.FLOAT, false, 0, 0);
             });
 
             //* The buffer setter! the Legacy ONE!

@@ -97,7 +97,12 @@
         }
 
         webGLValue() {
-            return this.contents.flat(2);
+            // prettier-ignore
+            return [
+                this.contents[0][0], this.contents[0][1], this.contents[0][2],
+                this.contents[1][0], this.contents[1][1], this.contents[1][2],
+                this.contents[2][0], this.contents[2][1], this.contents[2][2]
+            ];
         }
 
         __duplicate(to) {

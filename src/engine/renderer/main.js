@@ -1,4 +1,25 @@
 (function () {
+    //Uniforms provided by the engine for the engine.
+    coffeeEngine.renderer.engineUniforms = [
+        //Transformations
+        "u_model", 
+        "u_projection", 
+        "u_camera", 
+        "u_wFactor", 
+        "u_aspectRatio", 
+        
+        //Other stuff
+        "u_colorMod", 
+        "u_res", 
+        "u_objectID", 
+        "u_time", 
+        
+        //Post processing
+        "u_initial", 
+        "u_screen", 
+        "u_renderPass"
+    ];
+    
     //Just set up the renderer. Not much to do here.
     coffeeEngine.renderer.create = (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
@@ -129,12 +150,31 @@
             const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
             const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
 
-            const compiledVert = coffeeEngine.renderer.mainShaders.basis.vertex.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void vertex() {}", vertex || "void vertex() {}");
-            const compiledFrag = coffeeEngine.renderer.mainShaders.basis.fragment.src.replace("//SHADER DEFINED UNIFORMS", uniforms).replace("void fragment() {}", frag || "void fragment() {}");
+            //Detect if post
+            let shader = coffeeEngine.renderer.mainShaders.basis;
+            let passes = 1;
+            if (shaderCode.match(/\w*#define\s*is_post;/)) {
+                shader = coffeeEngine.renderer.mainShaders.postBasis;
+
+                //Grab our passes if we have a defined amount
+                const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
+                if (renderPasses) {
+                    //Get our passes
+                    passes = Number(renderPasses[0].replaceAll(/\D/g, ""));
+                    if (isNaN(passes)) passes = 1;
+                    passes = Math.floor(Math.max(1, passes));
+                } 
+            }
+
+            const compiledVert = shader.vertex.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
+            const compiledFrag = shader.fragment.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
 
             const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
 
             if (!compiledShader) return;
+
+            //Set our passes variable
+            compiledShader.passes = passes;
 
             //Now use the hints
             for (let hintLineID in hintLines) {

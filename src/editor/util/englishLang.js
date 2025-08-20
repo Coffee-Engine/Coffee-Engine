@@ -391,6 +391,8 @@ editor.EnglishLang = {
     "sugarcube.sensing.block.timer": "timer",
     "sugarcube.sensing.block.deltaTime": "frame time",
     "sugarcube.sensing.block.dayMonthYear": "current [timespan]",
+    "sugarcube.sensing.block.daysSince1970": "days since 1970",
+    "sugarcube.sensing.block.daysSince2000": "days since 2000",
     "sugarcube.sensing.menu.mouseButtons.primary": "primary",
     "sugarcube.sensing.menu.mouseButtons.secondary": "secondary",
     "sugarcube.sensing.menu.mouseButtons.tertiary": "tertiary",
@@ -629,6 +631,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.Camera.flatten": "Orthographic",
     "engine.nodeProperties.Camera.zoom": "Camera Zoom",
     "engine.nodeProperties.Camera.active": "Active",
+    "engine.nodeProperties.Camera.postProcessing": "Post Processing",
     
     "engine.nodeProperties.Light.radius": "Radius",
     "engine.nodeProperties.Light.color": "Color",
