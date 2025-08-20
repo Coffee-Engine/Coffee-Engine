@@ -90,6 +90,8 @@
             "ArchLinux": "Arch",
             "Linux/SmartTV": "WebOS",
             "webOS": "WebOS",
+            
+            "x86_64": "Generic X86_64"
         }
     };
 
