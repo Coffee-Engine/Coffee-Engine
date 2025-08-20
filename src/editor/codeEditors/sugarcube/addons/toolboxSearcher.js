@@ -75,7 +75,7 @@
          * Registers a shortcut for displaying the toolbox search category.
          */
         registerShortcut() {
-            const shortcut = Blockly.ShortcutRegistry.registry.createSerializedKey(Blockly.utils.KeyCodes.B, [Blockly.utils.KeyCodes.CTRL]);
+            const shortcut = Blockly.ShortcutRegistry.registry.createSerializedKey(Blockly.utils.KeyCodes.SPACE, [Blockly.utils.KeyCodes.CTRL]);
             Blockly.ShortcutRegistry.registry.register({
                 name: ToolboxSearchCategory.START_SEARCH_SHORTCUT,
                 callback: () => {

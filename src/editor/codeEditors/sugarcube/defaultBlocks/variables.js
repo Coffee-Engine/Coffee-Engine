@@ -71,6 +71,21 @@
                             },
                         },
                     },
+                    {
+                        opcode: "divideVariable",
+                        type: sugarcube.BlockType.COMMAND,
+                        text: editor.language["sugarcube.variables.block.divideVariable"],
+                        hideFromPalette: true,
+                        arguments: {
+                            variable: {
+                                menu: "varMenu",
+                            },
+                            val: {
+                                type: sugarcube.ArgumentType.NUMBER,
+                                defaultValue: 10,
+                            },
+                        },
+                    },
                 ],
                 menus: {
                     localVarMenu: {
@@ -225,7 +240,7 @@
             });
 
             if (!varExists) return returned;
-
+            
             returned.push(
                 {
                     type: sugarcube.BlockType.DUPLICATE,
@@ -238,6 +253,10 @@
                 {
                     type: sugarcube.BlockType.DUPLICATE,
                     of: "multiplyVariable",
+                },
+                {
+                    type: sugarcube.BlockType.DUPLICATE,
+                    of: "divideVariable",
                 }
             );
 
@@ -273,6 +292,11 @@
         multiplyVariable({ variable, val }, { self }) {
             if (this.isGlobal(variable, (globalName, globalVal) => { globals[globalName] = sugarcube.cast.toNumber(globalVal) * val })) return;
             self[variable] = sugarcube.cast.toNumber(self[variable]) * sugarcube.cast.toNumber(val);
+        }
+
+        divideVariable({ variable, val }, { self }) {
+            if (this.isGlobal(variable, (globalName, globalVal) => { globals[globalName] = sugarcube.cast.toNumber(globalVal) * val })) return;
+            self[variable] = sugarcube.cast.toNumber(self[variable]) / sugarcube.cast.toNumber(val);
         }
 
         removeVariable(block) {
