@@ -12272,9 +12272,14 @@ ${b} to its parent, because: ${a}`);
     }
     applyColour() {
       const parentBlock = (this.sourceBlock_.styleName_) ? this.sourceBlock_ : this.sourceBlock_.parentBlock_;
+      const sourceBlock = this.sourceBlock_;
       if (parentBlock) {
         if (this.borderRect_) this.borderRect_.style.fill = (parentBlock.style.useBlackWhiteFields) ? "#fff" : (parentBlock.style.colourQuinary || "#ffffff");
-        if (this.textElement_) this.textElement_.style.fill = (this.sourceBlock_.isShadow_ && parentBlock.style.useBlackWhiteFields) ? "#000" : parentBlock.style.colourQuaternary;
+
+        if (this.textElement_) {
+          if (sourceBlock.styleName_) this.textElement_.style.fill = sourceBlock.style.colourQuaternary;
+          else this.textElement_.style.fill = (this.sourceBlock_.isShadow_ && parentBlock.style.useBlackWhiteFields) ? "#000" : parentBlock.style.colourQuaternary;
+        }
       }
     }
     forceApplyColour() {
