@@ -515,6 +515,7 @@ editor.EnglishLang = {
     "sugarcube.variables.block.setVariable.defaultValue": "cocoa",
     "sugarcube.variables.block.changeVariable": "change [variable] by [val]",
     "sugarcube.variables.block.multiplyVariable": "multiply [variable] by [val]",
+    "sugarcube.variables.block.divideVariable": "divide [variable] by [val]",
     "sugarcube.variables.contextMenu.removeVariable": "Remove Variable",
 
     "sugarcube.variables.objectLike.substitute": "substitute [objectLike] with [value]",

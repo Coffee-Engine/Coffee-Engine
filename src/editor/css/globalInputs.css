@@ -227,3 +227,8 @@ button:disabled {
     font: 500 16pt helvetica;
     stroke: transparent;
 }
+
+.blocklyFlyoutButton > .blocklyText {
+    fill: var(--text-1);
+    stroke: none;
+}
