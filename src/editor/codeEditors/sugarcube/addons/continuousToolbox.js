@@ -622,6 +622,9 @@
   .blocklyTreeLabel {
     margin: auto;
   }
+  .blocklyToolboxContents {
+    max-width: 96px;
+  }
   `);
 
     sugarcube.ContinuousCategory = ContinuousCategory;
