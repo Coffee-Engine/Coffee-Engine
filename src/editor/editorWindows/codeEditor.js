@@ -54,8 +54,8 @@
             //And add our context functions
             button.contextFunction = () => {
                 return [
-                    { text: editor.language["editor.window.codeEditor.openScript"], value: "open" },
-                    { text: editor.language["editor.window.codeEditor.closeScript"], value: "close" },
+                    { text: editor.language["editor.window.codeEditor.openShortcut"], value: "open" },
+                    { text: editor.language["editor.window.codeEditor.closeShortcut"], value: "close" },
                 ];
             };
 

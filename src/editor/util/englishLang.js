@@ -235,14 +235,18 @@ editor.EnglishLang = {
 
     "editor.window.viewport": "Viewport",
 
+    "editor.window.codeEditor.openShortcut": "Open Shortcut",
+    "editor.window.codeEditor.closeShortcut": "Remove Shortcut",
+    
     "editor.window.codeEditor": "Code Editor",
     "editor.window.codeEditor.newScript": "New Script",
     "editor.window.codeEditor.saveScript": "Save Script",
     "editor.window.codeEditor.loadScript": "Load Script",
-    "editor.window.codeEditor.openScript": "Open Shortcut",
-    "editor.window.codeEditor.closeScript": "Remove Shortcut",
 
     "editor.window.artEditor": "Art Editor",
+    "editor.window.codeEditor.newScript": "New Image",
+    "editor.window.codeEditor.saveScript": "Save Image",
+    "editor.window.codeEditor.loadScript": "Load Image",
 
     "editor.window.createScript": "New Script",
     "editor.window.createScript.inherits": "inherits",

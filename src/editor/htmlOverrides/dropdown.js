@@ -102,4 +102,36 @@
 
     customElements.define("dropdown-menu", editor.dropdown.class);
     customElements.define("dropdown-item", editor.dropdown.itemClass);
+
+    //Easy creation
+    editor.createDropdown = (definition) => {
+        if(typeof definition == "object" && !Array.isArray(definition)) {
+            const element = document.createElement("dropdown-menu");
+            element.innerText = definition.text || "dropdown";
+
+            for (let item in definition.items) {
+                const elementItem = document.createElement("dropdown-item");
+                elementItem.className = "dropdown-menu-fill-down";
+
+                switch (typeof definition.items[item]) {
+                    case "object":
+                        elementItem.setAttribute("value", definition.items[item].value);
+                        elementItem.innerText = definition.items[item].text;
+                        break;
+
+                    case "string":
+                        elementItem.setAttribute("value", definition.items[item]);
+                        elementItem.innerText = definition.items[item];
+                        break;
+                
+                    default:
+                        break;
+                }
+
+                element.appendChild(elementItem);
+            }
+
+            return element;
+        }
+    };
 })();

@@ -15,6 +15,18 @@ window.editor = {
 
     //File hooks these send out signals when we try to open a file
     addFileOpenHook: (fileExtension, callback, parent) => {
+        //Arrays
+        if (Array.isArray(fileExtension)) {
+            for (let itemExtension in fileExtension) {
+                itemExtension = fileExtension[itemExtension].toLowerCase();
+                if (!editor.fileHooks[itemExtension]) editor.fileHooks[itemExtension] = [];
+                callback.parent = parent;
+                editor.fileHooks[itemExtension].push(callback);
+            }
+            return callback;
+        }
+
+        //Single items
         fileExtension = fileExtension.toLowerCase();
         if (!editor.fileHooks[fileExtension]) editor.fileHooks[fileExtension] = [];
         callback.parent = parent;
@@ -22,6 +34,23 @@ window.editor = {
         return callback;
     },
     removeOpenFileHook: (fileExtension, callback, parent) => {
+        //Arrays
+        if (Array.isArray(fileExtension)) {
+            for (let itemExtension in fileExtension) {
+                itemExtension = fileExtension[itemExtension].toLowerCase();
+                if (!editor.fileHooks[itemExtension]) continue;
+
+                //Find the index and remove the hook
+                callback.parent = parent;
+                const foundIndex = editor.fileHooks[itemExtension].indexOf(callback);
+                if (foundIndex == -1) continue;
+                editor.fileHooks[itemExtension].splice(foundIndex, 1);
+            }
+
+            return;
+        }
+
+        //Single item
         fileExtension = fileExtension.toLowerCase();
         if (!editor.fileHooks[fileExtension]) return;
 
