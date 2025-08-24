@@ -242,6 +242,8 @@ editor.EnglishLang = {
     "editor.window.codeEditor.openScript": "Open Shortcut",
     "editor.window.codeEditor.closeScript": "Remove Shortcut",
 
+    "editor.window.artEditor": "Art Editor",
+
     "editor.window.createScript": "New Script",
     "editor.window.createScript.inherits": "inherits",
     "editor.window.createScript.selectInheritence": "choose inheritor",

@@ -25,11 +25,19 @@ sugarcube.setToolboxBasedOnFilter = (filter) => {
                     blockID--;
                 } else {
                     if (block.kind != "label") blocksInCategory++;
+                    else if (blocksInCategory <= 0 && block.text == "") {
+                            category.contents.splice(blockID, 1);
+                            blockID--;
+                    }
                 }
             }
             //if we don't add the ticker up
             else {
                 if (block.kind != "label") blocksInCategory++;
+                else if (blocksInCategory <= 0 && block.text == "") {
+                        category.contents.splice(blockID, 1);
+                        blockID--;
+                }
             }
         }
         //If we don't have any blocks don't show the category
