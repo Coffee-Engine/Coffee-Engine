@@ -23,14 +23,30 @@
             this.topBar = document.createElement("div");
             this.topBar.style.backgroundColor = "var(--background-2)";
 
-            this.topBar.appendChild(editor.createDropdown({
+            this.fileDropdown = editor.dropdown.create({
                 text:"File",
                 items: [
                     "New",
                     "Save",
                     "Load"
                 ]
-            }));
+            });
+            this.fileDropdown.onchange = (value) => {
+                console.log(value);
+            }
+            this.topBar.appendChild(this.fileDropdown);
+
+            this.spriteDropdown = editor.dropdown.create({
+                text:"Sprite",
+                items: [
+                    "Resize Sprite",
+                    "Resize Canvas"
+                ]
+            });
+            this.spriteDropdown.onchange = (value) => {
+                console.log(value);
+            }
+            this.topBar.appendChild(this.spriteDropdown);
             container.appendChild(this.topBar);
         }
 

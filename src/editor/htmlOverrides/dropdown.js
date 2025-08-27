@@ -104,7 +104,7 @@
     customElements.define("dropdown-item", editor.dropdown.itemClass);
 
     //Easy creation
-    editor.createDropdown = (definition) => {
+    editor.dropdown.create = (definition) => {
         if(typeof definition == "object" && !Array.isArray(definition)) {
             const element = document.createElement("dropdown-menu");
             element.innerText = definition.text || "dropdown";

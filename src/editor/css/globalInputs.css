@@ -63,6 +63,7 @@ select {
 }
 
 dropdown-menu {
+    margin-right: 4px;
     display: inline-block;
     background-color: var(--background-2);
     color: var(--text-1);

@@ -25,7 +25,7 @@
                 height:100%;
 
                 display:grid;
-                grid-template-rows: 24px calc(100% - 16px);
+                grid-template-rows: auto 100%;
             }
 
             .dropdownsTopbar {
@@ -264,18 +264,15 @@
                             : //Or if we are in a folder/in an enviornment we can't save directly
                               `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
                     }
-                    <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}</dropdown-item>
-                </dropdown-menu>
-                <dropdown-menu id="coffeeEngineWindowDropdown">
+                    <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}
+                </dropdown-item></dropdown-menu><dropdown-menu id="coffeeEngineWindowDropdown">
                     ${editor.language["editor.dropdown.window"]}
-                </dropdown-menu>
-                <dropdown-menu id="coffeeEngineSceneDropdown">
+                </dropdown-menu><dropdown-menu id="coffeeEngineSceneDropdown">
                     ${editor.language["editor.dropdown.scene"]}
                     <dropdown-item class="dropdown-menu-fill-down"  value="new">${editor.language["editor.dropdown.scene.new"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="save">${editor.language["editor.dropdown.scene.save"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="load">${editor.language["editor.dropdown.scene.load"]}</dropdown-item>
-                </dropdown-menu>
-                <dropdown-menu id="coffeeEngineRuntimeDropdown">
+                </dropdown-menu><dropdown-menu id="coffeeEngineRuntimeDropdown">
                     ${editor.language["editor.dropdown.runtime"]}
                     <dropdown-item class="dropdown-menu-fill-down"  value="startHere">${editor.language["editor.dropdown.runtime.startHere"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="startDefault">${editor.language["editor.dropdown.runtime.startDefault"]}</dropdown-item>
