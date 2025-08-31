@@ -24,9 +24,8 @@
                 else {
                     //Calculations
                     const halfSize = Math.floor(toolProperties.strokeSize / 2);
-                    const offset = (toolProperties.strokeSize % 2);
-                    const rx = Math.floor(x - halfSize) - offset;
-                    const ry = Math.floor(y - halfSize) - offset;
+                    const rx = Math.floor(x - halfSize);
+                    const ry = Math.floor(y - halfSize);
 
                     gl.fillRect(rx,ry,toolProperties.strokeSize,toolProperties.strokeSize);
                 }
@@ -36,15 +35,14 @@
                     //For non-AA line drawing;
                     const {linePos, strokeSize} = toolProperties;
                     const halfSize = Math.floor(strokeSize / 2);
-                    const offset = (strokeSize % 2);
                     const distance = 1 / Math.sqrt(Math.pow(linePos[0] - x, 2.0) + Math.pow(linePos[1] - y, 2.0));
 
                     //Draw the line
                     for (let i = 0; i <= 1; i+=distance) {
-                        const rx = Math.floor((linePos[0] + (x - linePos[0]) * i) - halfSize) - offset;
-                        const ry = Math.floor((linePos[1] + (y - linePos[1]) * i) - halfSize) - offset;
+                        const rx = Math.floor((linePos[0] + (x - linePos[0]) * i) - halfSize);
+                        const ry = Math.floor((linePos[1] + (y - linePos[1]) * i) - halfSize);
 
-                        gl.fillRect(rx,ry,strokeSize,strokeSize);
+                        gl.fillRect(rx - 1,ry - 1,strokeSize,strokeSize);
                     }
 
                     toolProperties.linePos = [x,y];
@@ -208,10 +206,10 @@
             this.toolOptions.appendChild(CUGI.createList(this.toolFunction.CUGI(this)));
         }
 
-        getCanvasPosition(x, y) {
+        getCanvasPosition(x, y, noCanvasOffset) {
             const {top, left} = this.canvas.getBoundingClientRect();
-            console.log([Math.floor((x - left) / this.zoom), Math.floor((y - top) / this.zoom)]);
-            return [Math.floor((x - left) / this.zoom), Math.floor((y - top) / this.zoom)];
+            if (!noCanvasOffset) return [Math.floor((x - left) / this.zoom), Math.floor((y - top) / this.zoom)];
+            else return [Math.floor((x - left) / this.zoom), Math.floor((y - top) / this.zoom)];
         }
 
         setupCanvas(container) {
@@ -224,7 +222,7 @@
             container.appendChild(this.canvas);
 
             //Setup the background grid
-            this.canvas.style.backgroundSize = "8.2px 8px";
+            this.canvas.style.backgroundSize = "8px 8px";
             this.canvas.style.backgroundColor = "var(--background-2)";
             this.canvas.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAA5JREFUCJljYICAaDgBAAVnALfcXD16AAAAAElFTkSuQmCC)";
             this.canvas.style.imageRendering = "pixelated";
@@ -249,11 +247,8 @@
                         break;
 
                     case 2:
-                        const [red, green, blue, alpha] = this.GL.getImageData(...this.getCanvasPosition(event.clientX, event.clientY), 1, 1).data;
+                        const [red, green, blue, alpha] = this.GL.getImageData(...this.getCanvasPosition(event.clientX, event.clientY, true), 1, 1).data;
                         const converted = coffeeEngine.ColorMath.RGBtoHex({ r:red, g:green, b:blue, a:alpha });
-
-                        console.log(event);
-                        console.log(event.offsetX, event.offsetY)
 
                         this.toolProperties.strokeColor = converted;
                         this.toolProperties.fillColor = converted;
