@@ -53,9 +53,10 @@
                     if (distance > 1) {
                         gl.lineTo(x,y);
                         gl.stroke();
-                        gl.closePath();
-                        gl.moveTo(x,y);
+
+                        gl.closePath(); //! We do it in this order or else firefox throws a fit.
                         gl.beginPath();
+                        gl.moveTo(x,y);
 
                         toolProperties.linePos = [x,y];
                     }
@@ -229,10 +230,14 @@
 
             //Drawing
             this.canvas.addEventListener("mousedown", (event) => {
+                if (event.button != 0) return;
+
                 if (this.toolFunction.mouseDown && !this.toolDown) this.toolFunction.mouseDown(this.GL, event.offsetX, event.offsetY, this.toolProperties);
                 this.toolDown = true;
             });
-            this.canvas.addEventListener("mouseup", (event) => { 
+            this.canvas.addEventListener("mouseup", (event) => {
+                if (event.button != 0) return;
+                
                 if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, event.offsetX, event.offsetY, this.toolProperties);
                 this.toolDown = false; 
             });
