@@ -244,9 +244,13 @@ editor.EnglishLang = {
     "editor.window.codeEditor.loadScript": "Load Script",
 
     "editor.window.artEditor": "Art Editor",
-    "editor.window.codeEditor.newScript": "New Image",
-    "editor.window.codeEditor.saveScript": "Save Image",
-    "editor.window.codeEditor.loadScript": "Load Image",
+    "editor.window.artEditor.newImage": "New Image",
+    "editor.window.artEditor.saveImage": "Save Image",
+    "editor.window.artEditor.loadImage": "Load Image",
+    "editor.window.artEditor.tools.paintBrush": "Brush",
+    "editor.window.artEditor.tools.line": "Line",
+    "editor.window.artEditor.tools.square": "Square",
+    "editor.window.artEditor.tools.circle": "Circle",
 
     "editor.window.createScript": "New Script",
     "editor.window.createScript.inherits": "inherits",

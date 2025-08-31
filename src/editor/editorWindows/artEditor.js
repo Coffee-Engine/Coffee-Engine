@@ -22,9 +22,11 @@
                     gl.stroke();
                 }
                 else {
+                    //Calculations
                     const halfSize = Math.floor(toolProperties.strokeSize / 2);
-                    const rx = Math.floor(x - halfSize);
-                    const ry = Math.floor(y - halfSize);
+                    const offset = (toolProperties.strokeSize % 2);
+                    const rx = Math.floor(x - halfSize) - offset;
+                    const ry = Math.floor(y - halfSize) - offset;
 
                     gl.fillRect(rx,ry,toolProperties.strokeSize,toolProperties.strokeSize);
                 }
@@ -34,10 +36,13 @@
                     //For non-AA line drawing;
                     const {linePos, strokeSize} = toolProperties;
                     const halfSize = Math.floor(strokeSize / 2);
+                    const offset = (strokeSize % 2);
                     const distance = 1 / Math.sqrt(Math.pow(linePos[0] - x, 2.0) + Math.pow(linePos[1] - y, 2.0));
+
+                    //Draw the line
                     for (let i = 0; i <= 1; i+=distance) {
-                        const rx = Math.floor((linePos[0] + (x - linePos[0]) * i) - halfSize);
-                        const ry = Math.floor((linePos[1] + (y - linePos[1]) * i) - halfSize);
+                        const rx = Math.floor((linePos[0] + (x - linePos[0]) * i) - halfSize) - offset;
+                        const ry = Math.floor((linePos[1] + (y - linePos[1]) * i) - halfSize) - offset;
 
                         gl.fillRect(rx,ry,strokeSize,strokeSize);
                     }
@@ -98,7 +103,7 @@
 
         #zoom = 2;
         set zoom(value) {
-            this.#zoom = Math.max(Math.min(value, 10), 0.25);
+            this.#zoom = Math.max(Math.min(value, 25), 0.25);
             this.Content.style.setProperty("--zoom", value);
         }
         get zoom() { return this.#zoom; }
@@ -128,7 +133,8 @@
             this.toolProperties = {
                 strokeColor: "#ffffff",
                 strokeSize: 2,
-                pixelBrush: true
+                pixelBrush: true,
+                fillColor: "#ffffff"
             };
 
             //Setup some CSS
@@ -202,6 +208,12 @@
             this.toolOptions.appendChild(CUGI.createList(this.toolFunction.CUGI(this)));
         }
 
+        getCanvasPosition(x, y) {
+            const {top, left} = this.canvas.getBoundingClientRect();
+            console.log([Math.floor((x - left) / this.zoom), Math.floor((y - top) / this.zoom)]);
+            return [Math.floor((x - left) / this.zoom), Math.floor((y - top) / this.zoom)];
+        }
+
         setupCanvas(container) {
             //Create the canvas and setup the layout
             this.canvas = document.createElement("canvas");
@@ -212,7 +224,7 @@
             container.appendChild(this.canvas);
 
             //Setup the background grid
-            this.canvas.style.backgroundSize = "16px 16px";
+            this.canvas.style.backgroundSize = "8.2px 8px";
             this.canvas.style.backgroundColor = "var(--background-2)";
             this.canvas.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAA5JREFUCJljYICAaDgBAAVnALfcXD16AAAAAElFTkSuQmCC)";
             this.canvas.style.imageRendering = "pixelated";
@@ -225,28 +237,44 @@
             this.canvas.style.margin = "0%";
 
             this.GL = this.canvas.getContext("2d");
-            //this.GL.translate(0.5, 0.5);
+            //this.GL.translate(-0.5, -0.5);
             this.GL.imageSmoothingEnabled = false;
 
             //Drawing
             this.canvas.addEventListener("mousedown", (event) => {
-                if (event.button != 0) return;
+                switch (event.button) {
+                    case 0:
+                        if (this.toolFunction.mouseDown && !this.toolDown) this.toolFunction.mouseDown(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), this.toolProperties);
+                        this.toolDown = true;
+                        break;
 
-                if (this.toolFunction.mouseDown && !this.toolDown) this.toolFunction.mouseDown(this.GL, event.offsetX, event.offsetY, this.toolProperties);
-                this.toolDown = true;
+                    case 2:
+                        const [red, green, blue, alpha] = this.GL.getImageData(...this.getCanvasPosition(event.clientX, event.clientY), 1, 1).data;
+                        const converted = coffeeEngine.ColorMath.RGBtoHex({ r:red, g:green, b:blue, a:alpha });
+
+                        console.log(event);
+                        console.log(event.offsetX, event.offsetY)
+
+                        this.toolProperties.strokeColor = converted;
+                        this.toolProperties.fillColor = converted;
+                        break;
+                
+                    default:
+                        break;
+                }
             });
             this.canvas.addEventListener("mouseup", (event) => {
                 if (event.button != 0) return;
                 
-                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, event.offsetX, event.offsetY, this.toolProperties);
+                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), this.toolProperties);
                 this.toolDown = false; 
             });
             this.canvas.addEventListener("mouseout", (event) => { 
-                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, event.offsetX, event.offsetY, this.toolProperties);
+                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), this.toolProperties);
                 this.toolDown = false; 
             });
             this.canvas.addEventListener("mousemove", (event) => {
-                if (this.toolDown && this.toolFunction.mouseMove) this.toolFunction.mouseMove(this.GL, event.offsetX, event.offsetY, event.movementX / this.zoom, event.movementY / this.zoom, this.toolProperties);
+                if (this.toolDown && this.toolFunction.mouseMove) this.toolFunction.mouseMove(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), event.movementX / this.zoom, event.movementY / this.zoom, this.toolProperties);
             });
 
             //Add movement
@@ -270,7 +298,7 @@
                 }
             });
 
-            document.addEventListener("wheel", (event) => {
+            this.canvasArea.addEventListener("wheel", (event) => {
                 if (event.ctrlKey) {
                     event.preventDefault();
                     this.zoom += event.deltaY / -100;
