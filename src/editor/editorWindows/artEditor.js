@@ -170,6 +170,9 @@
 
                         this.toolProperties.strokeColor = converted;
                         this.toolProperties.fillColor = converted;
+
+                        //Refresh options
+                        this.refreshToolOptions();
                         break;
                 
                     default:
