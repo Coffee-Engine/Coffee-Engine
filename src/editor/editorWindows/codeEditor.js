@@ -85,54 +85,57 @@
             this.scriptContainer.appendChild(button);
             this.scriptShortcuts.push(path);
         }
+
         makeLayout(container) {
             container.style.position = "relative";
             container.style.overflowY = "clip";
             this.split = document.createElement("div");
-            this.split.style.display = "grid";
-            this.split.style.gridTemplateColumns = "128px auto";
-            this.split.style.height = "100%";
+            editor.quickCSS(this.split, {
+                display: "grid",
+                gridTemplateColumns: "128px auto",
+                height: "100%"
+            });
 
             //This is where we put our actions
             this.actionBar = document.createElement("div");
-            this.actionBar.style.display = "grid";
-            this.actionBar.style.height = "100%";
-            this.actionBar.style.overflowY = "hidden";
-            this.actionBar.style.backgroundColor = "var(--background-1)";
-            this.actionBar.style.gridTemplateRows = "32px 32px 32px 1fr";
+            editor.quickCSS(this.actionBar, {
+                display: "grid",
+                overflowY: "hidden",
+                height: "100%",
+                backgroundColor: "var(--background-1)",
+                gridTemplateRows: "32px 32px 32px 1fr",
+            });
 
             //code area!
             this.codeArea = document.createElement("div");
-            this.codeArea.style.height = "100%";
-            this.codeArea.style.position = "relative";
+            editor.quickCSS(this.codeArea, {
+                height: "100%",
+                position: "relative"
+            });
 
             //Nothing Open text
             this.nothingOpen = document.createElement("div");
-            this.nothingOpen.style.top = "50%";
-            this.nothingOpen.style.left = "50%";
-            this.nothingOpen.style.transform = "translate(-50%,-50%)";
-            this.nothingOpen.style.fontSize = "xx-large";
-            this.nothingOpen.style.position = "absolute";
             this.nothingOpen.innerText = "Nothing Open";
             this.nothingOpen.className = "genericNonSelect";
+            editor.quickCSS(this.nothingOpen, {
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                fontSize: "xx-large",
+                position: "absolute"
+            });
 
             //Blockly
             this.blocklyArea = document.createElement("div");
-            this.blocklyArea.style.width = "100%";
-            this.blocklyArea.style.height = "100%";
-            this.blocklyArea.style.top = "0px";
-            this.blocklyArea.style.left = "0px";
-            this.blocklyArea.style.position = "absolute";
-            this.blocklyArea.style.visibility = "hidden";
-
-            //codeMirror
             this.codeMirrorArea = document.createElement("div");
-            this.codeMirrorArea.style.width = "100%";
-            this.codeMirrorArea.style.height = "100%";
-            this.codeMirrorArea.style.top = "0px";
-            this.codeMirrorArea.style.left = "0px";
-            this.codeMirrorArea.style.position = "absolute";
-            this.codeMirrorArea.style.visibility = "hidden";
+            editor.quickCSS([this.blocklyArea, this.codeMirrorArea], {
+                width: "100%",
+                height: "100%",
+                top: "0px",
+                left: "0px",
+                position: "absolute",
+                visibility: "hidden"
+            });
 
             this.codeArea.appendChild(this.nothingOpen);
             this.codeArea.appendChild(this.blocklyArea);
@@ -143,37 +146,35 @@
             this.split.appendChild(this.actionBar);
             this.split.appendChild(this.codeArea);
         }
+
         addButtonsAndFileSelection() {
             this.newScriptButton = document.createElement("button");
-            this.newScriptButton.style.width = "120px";
-            this.newScriptButton.style.margin = "4px";
-            this.newScriptButton.innerText = editor.language["editor.window.codeEditor.newScript"];
-            this.actionBar.appendChild(this.newScriptButton);
-
             this.saveScriptButton = document.createElement("button");
-            this.saveScriptButton.style.width = "120px";
-            this.saveScriptButton.style.margin = "4px";
-            this.saveScriptButton.innerText = editor.language["editor.window.codeEditor.saveScript"];
-            this.actionBar.appendChild(this.saveScriptButton);
-
             this.loadScriptButton = document.createElement("button");
-            this.loadScriptButton.style.width = "120px";
-            this.loadScriptButton.style.margin = "4px";
-            this.loadScriptButton.innerText = editor.language["editor.window.codeEditor.loadScript"];
-            this.actionBar.appendChild(this.loadScriptButton);
-
             this.scriptContainer = document.createElement("button");
-            this.scriptContainer.style.width = "120px";
-            this.scriptContainer.style.margin = "4px";
-            this.scriptContainer.style.padding = "0px";
-            this.scriptContainer.style.backgroundColor = "var(--background-2)";
-            this.scriptContainer.style.overflowX = "hidden";
-            this.scriptContainer.style.overflowY = "scroll";
-            //this.scriptContainer.style.alignContent = "start";
-            //this.scriptContainer.style.alignItems = "start";
-            this.scriptContainer.style.display = "flex";
-            this.scriptContainer.style.flexDirection = "column";
+            
+            this.newScriptButton.innerText = editor.language["editor.window.codeEditor.newScript"];
+            this.saveScriptButton.innerText = editor.language["editor.window.codeEditor.saveScript"];
+            this.loadScriptButton.innerText = editor.language["editor.window.codeEditor.loadScript"];
+
+            this.actionBar.appendChild(this.newScriptButton);
+            this.actionBar.appendChild(this.saveScriptButton);
+            this.actionBar.appendChild(this.loadScriptButton);
             this.actionBar.appendChild(this.scriptContainer);
+
+            editor.quickCSS([this.newScriptButton, this.saveScriptButton, this.loadScriptButton, this.scriptContainer], {
+                width: "120px",
+                margin: "4px"
+            });
+
+            editor.quickCSS(this.scriptContainer, {
+                padding: "0px",
+                backgroundColor: "var(--background-2)",
+                overflowX: "hidden",
+                overflowY: "scroll",
+                flex: "flex",
+                flowDirection: "column",
+            });
         }
 
         saveCurrentFile() {

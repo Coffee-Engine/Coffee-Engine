@@ -140,19 +140,23 @@
             container.appendChild(this.canvas);
 
             //Setup the background grid
-            this.canvas.style.backgroundSize = "8px 8px";
-            this.canvas.style.backgroundColor = "var(--background-2)";
-            this.canvas.style.backgroundImage = "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAA5JREFUCJljYICAaDgBAAVnALfcXD16AAAAAElFTkSuQmCC)";
-            this.canvas.style.imageRendering = "pixelated";
-            
-            //The scrolling functionality
-            this.canvas.style.transform = "scale(var(--zoom)) translate(var(--scrollX), var(--scrollY))";
-            this.canvas.style.position = "relative";
-            this.canvas.style.top = "50%";
-            this.canvas.style.left = "50%";
-            this.canvas.style.margin = "0%";
+            editor.quickCSS(this.canvas, {
+                backgroundSize: "8px 8px",
+                backgroundColor: "var(--background-2)",
+                backgroundImage: "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAAXNSR0IArs4c6QAAAA5JREFUCJljYICAaDgBAAVnALfcXD16AAAAAElFTkSuQmCC)",
+                imageRendering: "pixelated",
+
+                //Scroller
+                transform: "scale(var(--zoom)) translate(var(--scrollX), var(--scrollY))",
+                position: "relative",
+                top: "50%",
+                left: "50%",
+                margin: "0%",
+            });
 
             this.GL = this.canvas.getContext("2d");
+            //Sometimes we need this. Sometimes we don't?
+            //I dunno, just no IE11
             //this.GL.translate(-0.5, -0.5);
             this.GL.imageSmoothingEnabled = false;
 
