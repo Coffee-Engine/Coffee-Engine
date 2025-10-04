@@ -18,11 +18,11 @@
             //now render
             renderer.pipeline.cameraDrawQueue[0].use(true);
 
-            const GL = renderer.daveshade.GL;
+            const daveshade = renderer.daveshade;
             const {width, height} = renderer.drawBuffer;
 
             //Clear the main renderers depth, and reset the sun
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            daveshade.clear(daveshade.CLEAR_TARGET.DEPTH);
             scene.sunDirection = [0, 0, 0];
             scene.lightCount = 0;
 
@@ -30,13 +30,13 @@
             renderer.drawBuffer.use();
 
             //Clear the depth each time and draw the sky/scene
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT | GL.COLOR_BUFFER_BIT);
+            daveshade.clear(daveshade.CLEAR_TARGET.DEPTH | daveshade.CLEAR_TARGET.COLOR);
             renderer.pipeline.drawSky(scene, width, height);
-            renderer.daveshade.clear(GL.DEPTH_BUFFER_BIT);
+            daveshade.clear(daveshade.CLEAR_TARGET.DEPTH);
             renderer.pipeline.drawScene(scene);
 
             //Render it back to the main draw pass.
-            renderer.daveshade.cullFace();
+            daveshade.cullFace();
             renderer.swapPost();
 
             renderer.pipeline.drawFinal(scene, renderer.mainShaders.mainPass);
@@ -47,9 +47,9 @@
             renderer.pipeline.postProcess(scene);
 
             //The final blit!
-            renderer.daveshade.renderToCanvas();
+            daveshade.renderToCanvas();
             renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPost().attachments[0].texture });
+            renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPost().ATTACHMENTS[0].texture });
             renderer.mainShaders.viewportPass.drawFromBuffers(6);
         },
 
@@ -64,7 +64,7 @@
                 skyColor: scene.skyColor,
                 groundColor: scene.groundColor,
                 centerColor: scene.centerColor,
-            })
+            });
 
             skyShader.drawFromBuffers(6);
         },
@@ -111,7 +111,7 @@
             if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul];
             else renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
             
-            const drawBuffer =  renderer.drawBuffer.attachments;
+            const drawBuffer =  renderer.drawBuffer.ATTACHMENTS;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
             
             //Neato!
@@ -144,13 +144,13 @@
 
         postProcess: (scene) => {
             //For some sillies!
-            const drawBuffer = renderer.drawBuffer.attachments;
+            const drawBuffer = renderer.drawBuffer.ATTACHMENTS;
 
             //Do our AA pass first
             if (renderer.viewport.antiAlias) {
                 renderer.swapPost();
                 renderer.mainShaders.antiAliasPass.setBuffers(coffeeEngine.shapes.plane);
-                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.getPrevPost().attachments[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
+                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.getPrevPost().ATTACHMENTS[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
                 renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
 
                 renderer.getPrevPost().resize(renderer.canvas.width, renderer.canvas.height);
@@ -187,7 +187,7 @@
                 renderer.swapPost();
                 
                 //Our previous
-                const previous = renderer.getPrevPost().attachments[0].texture;
+                const previous = renderer.getPrevPost().ATTACHMENTS[0].texture;
                 const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
                 const parameters = renderer.pipeline.postProcessOrder[shaderID].parameters;
 

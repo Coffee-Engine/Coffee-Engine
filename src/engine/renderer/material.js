@@ -12,7 +12,7 @@
     const specialHandling = {
         35678: (param, key, shader, material) => {
             //Set the texture filtering.
-            if (param[0].setFiltering) param[0].setFiltering(DaveShade.filtering[material.filtering || "NEAREST"]);
+            if (param[0].setFiltering) param[0].setFiltering(coffeeEngine.renderer.daveshade.FILTERING[material.filtering || "NEAREST"]);
             shader.uniforms[key].value = param[0].texture;
         }
     }
@@ -21,6 +21,12 @@
         //? what does this do exactly?
         //* It stores material data. thats it;
         coffeeEngine.renderer.material = class {
+
+            cullData = {
+                0: undefined,
+                1: coffeeEngine.renderer.daveshade.SIDE.BACK,
+                2: coffeeEngine.renderer.daveshade.SIDE.FRONT
+            }
 
             constructor({shader, params, cullMode, filtering}) {
                 shader = shader || "coffee:/basis"
@@ -41,6 +47,7 @@
                 }
                 this.shaderPath = shader;
                 this.params = params;
+
                 this.cullMode = Number(cullMode);
                 this.filtering = filtering || "NEAREST";
             }
@@ -51,7 +58,7 @@
                     const filledKeys = Object.keys(this.params);
                     const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
 
-                    coffeeEngine.renderer.daveshade.cullFace(this.cullMode);
+                    coffeeEngine.renderer.daveshade.cullFace(this.cullData[this.cullMode]);
 
                     for (const key in this.params) {
                         const param = this.params[key];

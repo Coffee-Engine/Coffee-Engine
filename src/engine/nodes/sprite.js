@@ -77,7 +77,7 @@
 
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
-                this.texture.setFiltering(DaveShade.filtering[this.filtering]);
+                this.texture.setFiltering(coffeeEngine.renderer.daveshade.FILTERING[this.filtering]);
                 if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture.texture;
                 if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
                 if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
