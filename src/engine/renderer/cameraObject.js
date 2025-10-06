@@ -10,6 +10,7 @@
         wFactor = [1, 1, 0.05];
         aspectRatio = 1;
         postProcessing = [];
+        resolution = [480, 360];
 
         //Matrix setting
         set matrix(value) { 
@@ -27,17 +28,11 @@
 
         //The main sauce
         use(isMain) {
-            const cameraData = coffeeEngine.renderer.cameraData;
             const audioListener = coffeeEngine.audio.context.listener;
             const matrixRotationData = this.#matrix.getRotation();
 
             //Positional non matrix (E,G billboard, audio)
-            cameraData.position.x = this.position.x;
-            cameraData.position.y = this.position.y;
-            cameraData.position.z = this.position.z;
-            cameraData.cameraRotationEul.x = -this.rotationEuler.y;
-            cameraData.cameraRotationEul.y = -this.rotationEuler.x;
-            cameraData.cameraRotationEul.z = -this.rotationEuler.z;
+            coffeeEngine.renderer.currentCamera = this;
 
             //Auditorial
             if (isMain && audioListener) {
@@ -56,17 +51,20 @@
                 if (audioListener.upZ !== undefined) audioListener.upZ.value = matrixRotationData.contents[1][2];
             }
 
-            //Our matrices
-            cameraData.unflattenedTransform = this.#matrix;
-            cameraData.transform = this.#webglMatrix;
-            cameraData.projection = this.#webglProjection;
-
-            //Misc
-            cameraData.wFactor = this.wFactor;
-            cameraData.aspectRatio = this.aspectRatio;
-
             //Finally set our post processing
             coffeeEngine.renderer.pipeline.postProcessOrder = [...this.postProcessing];
+        }
+
+        apply(shader) {
+            //Make sure we supply a shader.
+            if (!(shader instanceof DaveShade.shader)) return;
+            shader.setUniforms({
+                u_camera: this.#webglMatrix,
+                u_projection: this.#webglProjection,
+                u_res: this.resolution,
+                u_aspectRatio: this.aspectRatio,
+                u_wFactor: this.wFactor,
+            });
         }
     }
 

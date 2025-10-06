@@ -124,8 +124,15 @@
             //Set our matrices
             this.cameraData.matrix = this.matrix;
             this.cameraData.projection = this.projection;
-            this.cameraData.position = { x: -this.previewCamera.x, y: -this.previewCamera.y, z: -this.previewCamera.z};
-            this.cameraData.rotationEuler = { x: -this.previewCamera.pitch, y: -this.previewCamera.yaw, z: 0 };
+            
+            this.cameraData.position.x = -this.previewCamera.x;
+            this.cameraData.position.y = -this.previewCamera.y;
+            this.cameraData.position.z = -this.previewCamera.z;
+
+            this.cameraData.rotationEuler.x = -this.previewCamera.pitch; 
+            this.cameraData.rotationEuler.y = -this.previewCamera.yaw;
+            this.cameraData.rotationEuler.z = 0;
+            
             this.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
             this.cameraData.aspectRatio = this.aspectRatio;
             this.cameraData.postProcessing = [];

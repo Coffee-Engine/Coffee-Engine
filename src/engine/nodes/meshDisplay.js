@@ -176,12 +176,13 @@
         // 2. where is the furthest point infront of the camera?
         sortValue(drawID) {
             if (this.meshData) {
+                const currentCamera = coffeeEngine.renderer.currentCamera
                 const low = this.mixedMatrix.multiplyVector(this.meshData.lowestBound);
                 const high = this.mixedMatrix.multiplyVector(this.meshData.highestBound);
-                const camForward = coffeeEngine.renderer.cameraData.unflattenedTransform.contents[2];
+                const camForward = currentCamera.matrix.contents[2];
 
                 //Just like a really far vector.
-                const cameraPosition = coffeeEngine.renderer.cameraData.position;
+                const cameraPosition = currentCamera.position;
                 const farVec = cameraPosition.add({ x: camForward[0] * 9999, y: camForward[1] * 9999, z: camForward[2] * 9999 });
 
                 farVec.x = Math.min(Math.max(farVec.x, low.x), high.x);

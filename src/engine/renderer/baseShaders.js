@@ -241,7 +241,7 @@
                     else {
                         o_color = vec4(mix(horizonColor,skyColor,SkySphere.y),1);
                     }
-                        
+                    
                     o_color.w = 1.0;
                     o_emission = vec4(0);
                     o_matAtr = vec4(-1,0,0,1);

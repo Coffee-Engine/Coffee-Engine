@@ -16,7 +16,8 @@
             }
 
             //now render
-            renderer.pipeline.cameraDrawQueue[0].use(true);
+            const currentCamera = renderer.pipeline.cameraDrawQueue[0];
+            currentCamera.use(true);
 
             const daveshade = renderer.daveshade;
             const {width, height} = renderer.drawBuffer;
@@ -30,21 +31,21 @@
             renderer.drawBuffer.use();
 
             //Clear the depth each time and draw the sky/scene
-            daveshade.clear(daveshade.CLEAR_TARGET.DEPTH | daveshade.CLEAR_TARGET.COLOR);
-            renderer.pipeline.drawSky(scene, width, height);
             daveshade.clear(daveshade.CLEAR_TARGET.DEPTH);
-            renderer.pipeline.drawScene(scene);
+            renderer.pipeline.drawSky(scene, currentCamera, width, height);
+            daveshade.clear(daveshade.CLEAR_TARGET.DEPTH);
+            renderer.pipeline.drawScene(scene, currentCamera);
 
             //Render it back to the main draw pass.
             daveshade.cullFace();
             renderer.swapPost();
 
-            renderer.pipeline.drawFinal(scene, renderer.mainShaders.mainPass);
+            renderer.pipeline.drawFinal(scene, currentCamera, renderer.mainShaders.mainPass);
 
             //If we are in the editor make sure we use the camera once more to account for things
             if (coffeeEngine.isEditor) renderer.pipeline.cameraDrawQueue[0].use(true);
 
-            renderer.pipeline.postProcess(scene);
+            renderer.pipeline.postProcess(scene, currentCamera);
 
             //The final blit!
             daveshade.renderToCanvas();
@@ -53,17 +54,20 @@
             renderer.mainShaders.viewportPass.drawFromBuffers(6);
         },
 
-        drawSky: (scene, width, height) => {
-            renderer.cameraData.res = [width, height];
+        drawSky: (scene, currentCamera, width, height) => {
 
             //Set our uniforms
             const skyShader = renderer.mainShaders.skyplane;
+
+            currentCamera.apply(skyShader);
+
             skyShader.setBuffers(coffeeEngine.shapes.plane);
             skyShader.setUniforms({
                 horizonColor: scene.horizonColor,
                 skyColor: scene.skyColor,
                 groundColor: scene.groundColor,
                 centerColor: scene.centerColor,
+                u_res: [width, height]
             });
 
             skyShader.drawFromBuffers(6);
@@ -102,14 +106,16 @@
             }
         },
 
-        drawFinal: (scene, mainPass) => {
+        drawFinal: (scene, currentCamera, mainPass) => {
+            const canvas = renderer.canvas;
+
             if (renderer.viewport.antiAlias) {
-                renderer.getPost().resize(renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul);
+                renderer.getPost().resize(canvas.width * renderer.drawBufferSizeMul, canvas.height * renderer.drawBufferSizeMul);
                 renderer.getPost().use();
             }
 
-            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width * renderer.drawBufferSizeMul, renderer.canvas.height * renderer.drawBufferSizeMul];
-            else renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            if (renderer.viewport.antiAlias) currentCamera.resolution = [canvas.width * renderer.drawBufferSizeMul, canvas.height * renderer.drawBufferSizeMul];
+            else currentCamera.resolution = [canvas.width, canvas.height];
             
             const drawBuffer =  renderer.drawBuffer.ATTACHMENTS;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
@@ -133,16 +139,16 @@
 
                 //fog data
                 u_fogData: scene.fogData.flat(),
-                u_cameraPosition: renderer.cameraData.position.webGLValue(),
+                u_cameraPosition: currentCamera.position.webGLValue(),
             });
 
             //Draw main pass!
             mainPass.drawFromBuffers(6);
 
-            if (renderer.viewport.antiAlias) renderer.cameraData.res = [renderer.canvas.width, renderer.canvas.height];
+            if (renderer.viewport.antiAlias) currentCamera.resolution = [renderer.canvas.width, renderer.canvas.height];
         },
 
-        postProcess: (scene) => {
+        postProcess: (scene, currentCamera) => {
             //For some sillies!
             const drawBuffer = renderer.drawBuffer.ATTACHMENTS;
 
@@ -175,7 +181,7 @@
 
                 //fog data
                 u_fogData: scene.fogData.flat(),
-                u_cameraPosition: renderer.cameraData.position.webGLValue(),
+                u_cameraPosition: currentCamera.position.webGLValue(),
 
                 u_time: coffeeEngine.timer,
             }
