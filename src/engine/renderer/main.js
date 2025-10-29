@@ -21,7 +21,131 @@
     ];
     
     //Just set up the renderer. Not much to do here.
-    coffeeEngine.renderer.create = (canvas, antialias) => {
+    coffeeEngine.rendererClass = class {
+        daveShade = null;
+        canvas = null;
+        drawBufferSizeMul = 1;
+        currentCamera = null;
+
+        mainShaders = {};
+
+        textureStorage = {};
+        shaderStorage = {};
+        materialStorage = {};
+
+        shaderHintRegex = /^.*\/\/\s*\?HINT:.*$/gm;
+        shaderUniformRegex = /\s[\w\d\[\]_]*\s*;/g;
+        extractionRegex = /(?:\/\/\s*\?HINT:)(.*)/g;
+        cleanupRegex = /\/\/\s*\?HINT:/g;
+
+        ready = false;
+        
+        constructor(canvas, antialias) {
+            this.canvas = canvas;
+            this.daveShade = DaveShade.createInstance(canvas, {
+                preserveDrawingBuffer: true,
+                alpha: true,
+                premultipliedAlpha: true,
+                blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
+                powerPreference: "high-performance",
+                antialias: antialias == true,
+            });
+
+            this.daveShade.useZBuffer(true);
+
+            const renderer = this;
+            new Promise(async () => {
+                renderer.createBaseShaders()
+                renderer.initilizeDefaultShaders(renderer);
+                renderer.initilizeFileConversions();
+                renderer.initilizeMaterials();
+                renderer.initilizeShapes();
+                renderer.initilizeDebugSprites(renderer);
+                renderer.createFramebuffers(renderer, daveshadeInstance);
+            }).then(() => {
+                renderer.ready = true;
+            });
+        }
+
+        async createBaseShaders() {
+            this.POSTPROCESS_BASE_VERTEX = `#version 300 es
+                precision highp float;
+
+                in vec4 a_position;
+
+                void main()
+                {    
+                    //Transform my stuff!
+                    gl_Position = a_position;
+                }
+            `;
+            //Our base shaders
+            this.mainShaders = {
+                basis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basis.vert", "engine/renderer/shaders/basis.frag"),
+                skyplane: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/sky.frag"),
+                mainPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/mainPass.frag"),
+                postBasis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/post.frag"),
+                antiAliasPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/antiAlias.frag"),
+                viewportPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/basePass.frag"),
+            };
+        }
+
+        compilePBRshader(shaderCode) {
+            if (this.ready) {
+                //Find hints in shader code
+                const hintLines = shaderCode.match(renderer.shaderHintRegex);
+                
+                //Compile our shader
+                const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
+                const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
+                const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
+
+                //Detect if post
+                let shader = this.mainShaders.basis;
+                let passes = 1;
+                if (shaderCode.match(/\w*#define\s*is_post;/)) {
+                    shader = coffeeEngine.renderer.mainShaders.postBasis;
+
+                    //Grab our passes if we have a defined amount
+                    const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
+                    if (renderPasses) {
+                        //Get our passes
+                        passes = Number(renderPasses[0].replaceAll(/\D/g, ""));
+                        if (isNaN(passes)) passes = 1;
+                        passes = Math.floor(Math.max(1, passes));
+                    } 
+                }
+
+                const compiledVert = shader.VERTEX.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
+                const compiledFrag = shader.FRAGMENT.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
+
+                const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
+
+                if (!compiledShader) return;
+
+                //Set our passes variable
+                compiledShader.passes = passes;
+
+                //Now use the hints
+                for (let hintLineID in hintLines) {
+                    let hint = hintLines[hintLineID].trim();
+
+                    if (hint.startsWith("uniform")) {
+                        //Get our uniform's name
+                        const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
+                        
+                        if (compiledShader.uniforms[hintUniform]) {
+                            //Clean up our hints
+                            compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].replace(renderer.cleanupRegex, "").trim().split(" ");
+                        }
+                    }
+                }
+
+                return compiledShader;
+            }
+        };
+    }
+    coffeeEngine.renderer.create = async (canvas, antialias) => {
         const renderer = coffeeEngine.renderer;
         renderer.canvas = canvas;
         renderer.drawBufferSizeMul = 1;
@@ -43,74 +167,7 @@
         renderer.currentCamera = null;
 
         //Our shader compiler
-        renderer.shaderHintRegex = /^.*\/\/\s*\?HINT:.*$/gm;
-        renderer.shaderUniformRegex = /\s[\w\d\[\]_]*\s*;/g;
-        renderer.extractionRegex = /(?:\/\/\s*\?HINT:)(.*)/g;
-        renderer.cleanupRegex = /\/\/\s*\?HINT:/g;
-        renderer.compilePBRshader = (shaderCode) => {
-            //Find hints in shader code
-            const hintLines = shaderCode.match(renderer.shaderHintRegex);
-            
-            //Compile our shader
-            const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
-            const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
-            const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
-
-            //Detect if post
-            let shader = coffeeEngine.renderer.mainShaders.basis;
-            let passes = 1;
-            if (shaderCode.match(/\w*#define\s*is_post;/)) {
-                shader = coffeeEngine.renderer.mainShaders.postBasis;
-
-                //Grab our passes if we have a defined amount
-                const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
-                if (renderPasses) {
-                    //Get our passes
-                    passes = Number(renderPasses[0].replaceAll(/\D/g, ""));
-                    if (isNaN(passes)) passes = 1;
-                    passes = Math.floor(Math.max(1, passes));
-                } 
-            }
-
-            const compiledVert = shader.VERTEX.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
-            const compiledFrag = shader.FRAGMENT.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
-
-            const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
-
-            if (!compiledShader) return;
-
-            //Set our passes variable
-            compiledShader.passes = passes;
-
-            //Now use the hints
-            for (let hintLineID in hintLines) {
-                let hint = hintLines[hintLineID].trim();
-
-                if (hint.startsWith("uniform")) {
-                    //Get our uniform's name
-                    const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
-                    
-                    if (compiledShader.uniforms[hintUniform]) {
-                        //Clean up our hints
-                        compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].replace(renderer.cleanupRegex, "").trim().split(" ");
-                    }
-                }
-            }
-
-            return compiledShader;
-        };
-
-        renderer.textureStorage = {};
-        renderer.shaderStorage = {};
-        renderer.materialStorage = {};
-
-        renderer.createBaseShaders(daveshadeInstance)
-        renderer.initilizeDefaultShaders(renderer);
-        renderer.initilizeFileConversions();
-        renderer.initilizeMaterials();
-        renderer.initilizeShapes();
-        renderer.initilizeDebugSprites(renderer);
-        renderer.createFramebuffers(renderer, daveshadeInstance);
+        renderer.
 
         //Just hit it with the good old double wammy!
         renderer.resize(renderer.canvas.width, renderer.canvas.height);

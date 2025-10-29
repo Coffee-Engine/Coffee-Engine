@@ -1,18 +1,6 @@
 #version 300 es
 precision highp float;
 
-in vec4 a_position;
-
-void main()
-{    
-    //Transform my stuff!
-    gl_Position = a_position;
-}
-`,
-//Fragment
-`#version 300 es
-precision highp float;
-
 uniform mat4 u_camera;
 uniform mat4 u_projection;
 uniform vec2 u_res;

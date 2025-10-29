@@ -105,6 +105,18 @@ DaveShade.module = class {
     setupTextureReader(CANVAS, SETTINGS) { console.warn(`${this.TYPE} doesn't have a "setupTextureReader" function. Does it exist?`) }
     readTexture(TEXTURE, X, Y, W, H) {}
 
+    async shaderFromURL(VERTEX, FRAGMENT) {
+        if (VERTEX && FRAGMENT) {
+            const fetchedVertex = await fetch(VERTEX).then(result => result.text());
+            const fetchedFragment = await fetch(FRAGMENT).then(result => result.text());
+            return this.createShader(fetchedVertex, fetchedFragment);
+        }
+
+        //For single file shaders
+        const fetched = await fetch(VERTEX).then(result => result.text());
+        return this.createShader(fetched);
+    }
+
     constructor(CANVAS, SETTINGS) {
         //Remove ourselves if canvas doesn't exist
         if (!CANVAS) {
@@ -476,7 +488,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
         //? could potentially be better?
         if (!this.GL.getShaderParameter(createdShader.FRAGMENT.shader, this.GL.COMPILE_STATUS)) {
             console.error(`shader not compiled!\nclearing memory\nCompile Log\n***\n${this.GL.getShaderInfoLog(createdShader.FRAGMENT.shader)}\n***`);
-            this.clearShaderFromMemory(createdShader);
+            this.disposeShader(createdShader);
             return {
                 status: this.COMPILE_STATUS.FAILURE,
             };
@@ -493,7 +505,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
         //? could potentially be better?
         if (!this.GL.getProgramParameter(createdShader.PROGRAM, this.GL.LINK_STATUS)) {
             console.error(`shader not compiled!\nerror in program linking!\nclearing memory\nlink log\n***\n${gl.getProgramInfoLog(createdShader.PROGRAM)}\n***`);
-            this.clearShaderFromMemory(createdShader);
+            this.disposeShader(createdShader);
             return {
                 status: this.COMPILE_STATUS.FAILURE,
             };
