@@ -38,9 +38,73 @@
         extractionRegex = /(?:\/\/\s*\?HINT:)(.*)/g;
         cleanupRegex = /\/\/\s*\?HINT:/g;
 
-        ready = false;
+        viewport = {
+            resolution: [480, 360],
+            type: "default"
+        }
+
+        //Also we pass in renderer, this is so folk can make their own resize modes through extensions.
+        resizeModes = {
+            fixed: (renderer, width, height) => {
+                renderer.canvas.width = width;
+                renderer.canvas.height = height;
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `${width}/${height}`;
+                renderer.canvas.style.width = "auto";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "50%";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(-50%, 0%)";
+            },
+
+            stretch: (renderer, width, height) => {
+                renderer.canvas.width = width;
+                renderer.canvas.height = height;
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `0`;
+                renderer.canvas.style.width = "100%";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "0px";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(0%, 0%)";
+            },
+
+            integer: (renderer, width, height) => {    
+                renderer.canvas.width = width;
+                renderer.canvas.height = height;
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `${width}/${height}`;
+                renderer.canvas.style.width = "auto";
+                renderer.canvas.style.height = `${height * Math.max(1, Math.floor(window.innerHeight / height))}px`;
+                renderer.canvas.style.left = "50%";
+                renderer.canvas.style.top = "50%";
+                renderer.canvas.style.transform = "translate(-50%, -50%)";
+            },
+
+            default: (renderer, width, height) => {
+                renderer.canvas.width = width;
+                renderer.canvas.height = height;
+
+                //Style it
+                renderer.canvas.style.aspectRatio = `auto`;
+                renderer.canvas.style.width = "100%";
+                renderer.canvas.style.height = "100%";
+                renderer.canvas.style.left = "0px";
+                renderer.canvas.style.top = "0px";
+                renderer.canvas.style.transform = "translate(0%, 0%)";    
+            }
+        }
+
+        //Ready is a private variable that should be unchangable outside of the main renderer object.
+        #ready = false;
+        get ready() {
+            return this.ready;
+        }
         
-        constructor(canvas, antialias) {
+        constructor(canvas, onReady) {
             this.canvas = canvas;
             this.daveShade = DaveShade.createInstance(canvas, {
                 preserveDrawingBuffer: true,
@@ -51,9 +115,14 @@
                 antialias: antialias == true,
             });
 
+            //Setup our canvas
             this.daveShade.useZBuffer(true);
+            this.resize(this.canvas.width, this.canvas.height);
 
+            //Define the renderer because sometimes promises replace the "this" object
             const renderer = this;
+
+            //Render setup;
             new Promise(async () => {
                 renderer.createBaseShaders()
                 renderer.initilizeDefaultShaders(renderer);
@@ -63,8 +132,33 @@
                 renderer.initilizeDebugSprites(renderer);
                 renderer.createFramebuffers(renderer, daveshadeInstance);
             }).then(() => {
-                renderer.ready = true;
+                //Set our ready status and call onReady.
+                renderer.#ready = true;
+                onReady(renderer);
             });
+        }
+
+        //For use outside the class
+        onReady(renderer) {}
+
+        resize(width, height) {
+            //Prevent older devices from dying
+            if (width * this.drawBufferSizeMul > 2560 || height * this.drawBufferSizeMul > 1440) this.drawBufferSizeMul = 1;
+            else if (width * 2 <= 2560 || height * 2 <= 1440) this.drawBufferSizeMul = 2;
+
+            this.drawBuffer.resize(width * this.drawBufferSizeMul, height * this.drawBufferSizeMul);
+            this.post0.resize(width, height);
+            this.post1.resize(width, height);
+            this.storeBuffer.resize(width, height);
+        }
+
+        setupWait() {
+            const renderer = this;
+
+            return new Promise((resolve, reject) => {
+                renderer.queuedActions.push(() => {resolve()});
+                console.log(this);
+            })
         }
 
         async createBaseShaders() {
@@ -91,159 +185,84 @@
         }
 
         compilePBRshader(shaderCode) {
-            if (this.ready) {
-                //Find hints in shader code
-                const hintLines = shaderCode.match(renderer.shaderHintRegex);
-                
-                //Compile our shader
-                const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
-                const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
-                const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
+            //Find hints in shader code
+            const hintLines = shaderCode.match(renderer.shaderHintRegex);
+            
+            //Compile our shader
+            const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
+            const frag = DaveShade.findFunctionInGLSL(shaderCode, "fragment");
+            const uniforms = shaderCode.replace(vertex, "").replace(frag, "");
 
-                //Detect if post
-                let shader = this.mainShaders.basis;
-                let passes = 1;
-                if (shaderCode.match(/\w*#define\s*is_post;/)) {
-                    shader = coffeeEngine.renderer.mainShaders.postBasis;
+            //Detect if post
+            let shader = this.mainShaders.basis;
+            let passes = 1;
+            if (shaderCode.match(/\w*#define\s*is_post;/)) {
+                shader = coffeeEngine.renderer.mainShaders.postBasis;
 
-                    //Grab our passes if we have a defined amount
-                    const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
-                    if (renderPasses) {
-                        //Get our passes
-                        passes = Number(renderPasses[0].replaceAll(/\D/g, ""));
-                        if (isNaN(passes)) passes = 1;
-                        passes = Math.floor(Math.max(1, passes));
-                    } 
-                }
+                //Grab our passes if we have a defined amount
+                const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
+                if (renderPasses) {
+                    //Get our passes
+                    passes = Number(renderPasses[0].replaceAll(/\D/g, ""));
+                    if (isNaN(passes)) passes = 1;
+                    passes = Math.floor(Math.max(1, passes));
+                } 
+            }
 
-                const compiledVert = shader.VERTEX.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
-                const compiledFrag = shader.FRAGMENT.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
+            const compiledVert = shader.VERTEX.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
+            const compiledFrag = shader.FRAGMENT.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
 
-                const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
+            const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
 
-                if (!compiledShader) return;
+            if (!compiledShader) return;
 
-                //Set our passes variable
-                compiledShader.passes = passes;
+            //Set our passes variable
+            compiledShader.passes = passes;
 
-                //Now use the hints
-                for (let hintLineID in hintLines) {
-                    let hint = hintLines[hintLineID].trim();
+            //Now use the hints
+            for (let hintLineID in hintLines) {
+                let hint = hintLines[hintLineID].trim();
 
-                    if (hint.startsWith("uniform")) {
-                        //Get our uniform's name
-                        const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
-                        
-                        if (compiledShader.uniforms[hintUniform]) {
-                            //Clean up our hints
-                            compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].replace(renderer.cleanupRegex, "").trim().split(" ");
-                        }
+                if (hint.startsWith("uniform")) {
+                    //Get our uniform's name
+                    const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
+                    
+                    if (compiledShader.uniforms[hintUniform]) {
+                        //Clean up our hints
+                        compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].replace(renderer.cleanupRegex, "").trim().split(" ");
                     }
                 }
-
-                return compiledShader;
             }
-        };
-    }
-    coffeeEngine.renderer.create = async (canvas, antialias) => {
-        const renderer = coffeeEngine.renderer;
-        renderer.canvas = canvas;
-        renderer.drawBufferSizeMul = 1;
 
-        //Firefox's blending is wierd
-        renderer.daveshade = DaveShade.createInstance(renderer.canvas, {
-            preserveDrawingBuffer: true,
-            alpha: true,
-            premultipliedAlpha: true,
-            blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
-            powerPreference: "high-performance",
-            antialias: antialias == true,
-        });
-        const daveshadeInstance = renderer.daveshade;
-
-        //We do use the ZBuffer
-        daveshadeInstance.useZBuffer(true);
-
-        renderer.currentCamera = null;
-
-        //Our shader compiler
-        renderer.
-
-        //Just hit it with the good old double wammy!
-        renderer.resize(renderer.canvas.width, renderer.canvas.height);
-
-        return renderer;
-    };
-
-    coffeeEngine.renderer.resizeToProject = () => {
-        const renderer = coffeeEngine.renderer;
-        if (!(renderer.canvas && renderer.drawBuffer)) return;
-
-        const resolution = coffeeEngine.renderer.viewport.resolution;
-        renderer.canvas.style.position = "absolute";
-
-        switch (coffeeEngine.renderer.viewport.viewportType) {
-            case "fixed":
-                renderer.canvas.width = resolution[0];
-                renderer.canvas.height = resolution[1];
-
-                //Style it
-                renderer.canvas.style.aspectRatio = `${resolution[0]}/${resolution[1]}`;
-                renderer.canvas.style.width = "auto";
-                renderer.canvas.style.height = "100%";
-                renderer.canvas.style.left = "50%";
-                renderer.canvas.style.top = "0px";
-                renderer.canvas.style.transform = "translate(-50%, 0%)";
-                break;
-
-            case "stretch":
-                renderer.canvas.width = resolution[0];
-                renderer.canvas.height = resolution[1];
-
-                //Style it
-                renderer.canvas.style.aspectRatio = `0`;
-                renderer.canvas.style.width = "100%";
-                renderer.canvas.style.height = "100%";
-                renderer.canvas.style.left = "0px";
-                renderer.canvas.style.top = "0px";
-                renderer.canvas.style.transform = "translate(0%, 0%)";
-                break;
-
-            //We need some special math for this
-            case "integer": {
-                renderer.canvas.width = resolution[0];
-                renderer.canvas.height = resolution[1];
-
-                //Style it
-                renderer.canvas.style.aspectRatio = `${resolution[0]}/${resolution[1]}`;
-                renderer.canvas.style.width = "auto";
-                renderer.canvas.style.height = `${resolution[1] * Math.max(1, Math.floor(window.innerHeight / resolution[1]))}px`;
-                renderer.canvas.style.left = "50%";
-                renderer.canvas.style.top = "50%";
-                renderer.canvas.style.transform = "translate(-50%, -50%)";
-                break;
-            }
-        
-            default:
-                renderer.canvas.width = window.innerWidth;
-                renderer.canvas.height = window.innerHeight;
-
-                //Style it
-                renderer.canvas.style.aspectRatio = `auto`;
-                renderer.canvas.style.width = "100%";
-                renderer.canvas.style.height = "100%";
-                renderer.canvas.style.left = "0px";
-                renderer.canvas.style.top = "0px";
-                renderer.canvas.style.transform = "translate(0%, 0%)";
-                break;
+            return compiledShader;
         }
 
-        renderer.resize(renderer.canvas.width,renderer.canvas.height);
+        dispose() {
+            if (!this.canvas) return;
+            this.canvas.parentElement.removeChild(this.canvas);
+            this.daveShade.dispose();
+        }
+
+        resizeToProject() {
+            //Make sure our canvas and drawbuffer exist;
+            if (!(this.canvas && this.drawBuffer)) return;
+
+            const resolution = this.viewport.resolution;
+            this.canvas.style.position = "absolute";
+
+            //Call our current type or the default one, with the current resolution.
+            (this.resizeModes[this.viewport.type] || this.resizeModes.default)(this, resolution[0], resolution[1]);
+        }
     }
 
-    coffeeEngine.renderer.dispose = () => {
-        if (!coffeeEngine.renderer.canvas) return;
-        coffeeEngine.renderer.canvas.parentElement.removeChild(coffeeEngine.renderer.canvas);
-        coffeeEngine.renderer.daveshadeInstance.dispose();
-    };
+    //This is important, don't forget.
+    coffeeEngine.createMainRenderer = () => {
+        return new Promise((resolve) => {
+            const canvas = document.createElement("canvas");
+            new coffeeEngine.rendererClass(canvas, (renderer) => {
+                coffeeEngine.renderer = renderer;
+                resolve(renderer);
+            });
+        })
+    }
 })();
