@@ -43,6 +43,9 @@
             type: "default"
         }
 
+        postBuffer = 0;
+        usingStore = false;
+
         //Also we pass in renderer, this is so folk can make their own resize modes through extensions.
         resizeModes = {
             fixed: (renderer, width, height) => {
@@ -124,13 +127,13 @@
 
             //Render setup;
             new Promise(async () => {
-                renderer.createBaseShaders()
-                renderer.initilizeDefaultShaders(renderer);
-                renderer.initilizeFileConversions();
-                renderer.initilizeMaterials();
-                renderer.initilizeShapes();
-                renderer.initilizeDebugSprites(renderer);
-                renderer.createFramebuffers(renderer, daveshadeInstance);
+                renderer.createBaseShaders.call(renderer)
+                renderer.initilizeDefaultShaders.call(renderer);
+                renderer.initilizeFileConversions.call(renderer);
+                renderer.initilizeMaterials.call(renderer);
+                renderer.initilizeShapes.call(renderer);
+                renderer.initilizeDebugSprites.call(renderer);
+                renderer.createFramebuffers.call(renderer);
             }).then(() => {
                 //Set our ready status and call onReady.
                 renderer.#ready = true;
@@ -138,9 +141,7 @@
             });
         }
 
-        //For use outside the class
-        onReady(renderer) {}
-
+        //? General use functions
         resize(width, height) {
             //Prevent older devices from dying
             if (width * this.drawBufferSizeMul > 2560 || height * this.drawBufferSizeMul > 1440) this.drawBufferSizeMul = 1;
@@ -152,38 +153,25 @@
             this.storeBuffer.resize(width, height);
         }
 
-        setupWait() {
-            const renderer = this;
-
-            return new Promise((resolve, reject) => {
-                renderer.queuedActions.push(() => {resolve()});
-                console.log(this);
-            })
+        dispose() {
+            if (!this.canvas) return;
+            this.canvas.parentElement.removeChild(this.canvas);
+            this.daveShade.dispose();
         }
 
-        async createBaseShaders() {
-            this.POSTPROCESS_BASE_VERTEX = `#version 300 es
-                precision highp float;
+        resizeToProject() {
+            //Make sure our canvas and drawbuffer exist;
+            if (!(this.canvas && this.drawBuffer)) return;
 
-                in vec4 a_position;
+            const resolution = this.viewport.resolution;
+            this.canvas.style.position = "absolute";
 
-                void main()
-                {    
-                    //Transform my stuff!
-                    gl_Position = a_position;
-                }
-            `;
-            //Our base shaders
-            this.mainShaders = {
-                basis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basis.vert", "engine/renderer/shaders/basis.frag"),
-                skyplane: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/sky.frag"),
-                mainPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/mainPass.frag"),
-                postBasis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/post.frag"),
-                antiAliasPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/antiAlias.frag"),
-                viewportPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/basePass.frag"),
-            };
+            //Call our current type or the default one, with the current resolution.
+            (this.resizeModes[this.viewport.type] || this.resizeModes.default)(this, resolution[0], resolution[1]);
         }
 
+        
+        //? Shaders
         compilePBRshader(shaderCode) {
             //Find hints in shader code
             const hintLines = shaderCode.match(renderer.shaderHintRegex);
@@ -237,21 +225,87 @@
             return compiledShader;
         }
 
-        dispose() {
-            if (!this.canvas) return;
-            this.canvas.parentElement.removeChild(this.canvas);
-            this.daveShade.dispose();
+        //? Framebuffers
+        swapPost() {
+            //Swap our post buffers
+            this.postBuffer =  (this.postBuffer + 1) % 2;
+            this.usingStore = false;
+            this[`post${renderer.postBuffer}`].use();
+            //this.daveShade.clear(this.daveShade.CLEAR_TARGET.COLOR);
         }
 
-        resizeToProject() {
-            //Make sure our canvas and drawbuffer exist;
-            if (!(this.canvas && this.drawBuffer)) return;
+        swapStore = () => {
+            this.usingStore = !this.usingStore;
+            if (!this.usingStore) renderer[`post${this.postBuffer}`].use();
+            else this.storeBuffer.use();
+            //this.daveShade.clear(this.daveShade.CLEAR_TARGET.COLOR);
+        }
 
-            const resolution = this.viewport.resolution;
-            this.canvas.style.position = "absolute";
+        get prevStore() {
+            if (!renderer.usingStore) return renderer.storeBuffer;
+            return renderer[`post${renderer.postBuffer}`];
+        }
 
-            //Call our current type or the default one, with the current resolution.
-            (this.resizeModes[this.viewport.type] || this.resizeModes.default)(this, resolution[0], resolution[1]);
+        get prevPost() { return renderer[`post${(renderer.postBuffer + 1) % 2}`]; }
+
+        get curPost() {
+            if (renderer.usingStore && !forcePost) renderer.storeBuffer;
+            return renderer[`post${renderer.postBuffer}`];
+        }
+
+        //? Setup functions
+        async createBaseShaders() {
+            this.POSTPROCESS_BASE_VERTEX = `#version 300 es
+                precision highp float;
+
+                in vec4 a_position;
+
+                void main()
+                {    
+                    //Transform my stuff!
+                    gl_Position = a_position;
+                }
+            `;
+            //Our base shaders
+            this.mainShaders = {
+                basis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basis.vert", "engine/renderer/shaders/basis.frag"),
+                skyplane: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/sky.frag"),
+                mainPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/mainPass.frag"),
+                postBasis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/post.frag"),
+                antiAliasPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/antiAlias.frag"),
+                viewportPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/basePass.frag"),
+            };
+        }
+
+        createFramebuffers = () => {
+            //Add our draw buffer
+            this.drawBuffer = this.daveShade.createFramebuffer(this.canvas.width * this.drawBufferSizeMul, this.canvas.height * this.drawBufferSizeMul, [
+                //Colors
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
+                //Material Attributes
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                //Emission
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                //Position
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                //Normal
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
+                this.daveShade.RENDERBUFFER_TYPE.DEPTH,
+            ]);
+
+            //Our buffers
+            this.post0 = this.daveShade.createFramebuffer(this.canvas.width, this.canvas.height, [
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
+            ]);
+
+            this.post1 = this.daveShade.createFramebuffer(this.canvas.width, this.canvas.height, [
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
+            ]);
+
+            this.storeBuffer = this.daveShade.createFramebuffer(this.canvas.width, this.canvas.height, [
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
+            ]);
         }
     }
 
