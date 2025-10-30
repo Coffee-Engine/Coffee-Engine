@@ -29,6 +29,7 @@
 
         mainShaders = {};
 
+        engineTextures = {};
         textureStorage = {};
         shaderStorage = {};
         materialStorage = {};
@@ -132,7 +133,7 @@
                 renderer.initilizeFileConversions.call(renderer);
                 renderer.initilizeMaterials.call(renderer);
                 renderer.initilizeShapes.call(renderer);
-                renderer.initilizeDebugSprites.call(renderer);
+                renderer.createEngineTextures.call(renderer);
                 renderer.createFramebuffers.call(renderer);
             }).then(() => {
                 //Set our ready status and call onReady.
@@ -170,6 +171,21 @@
             (this.resizeModes[this.viewport.type] || this.resizeModes.default)(this, resolution[0], resolution[1]);
         }
 
+        //? Sprites, or built in textures
+        addEngineTexture(name, data) {
+            const renderer = this;
+
+            return new Promise((resolve) => {
+                const image = new Image();
+                image.onload = () => {
+                    renderer.engineTextures[name] = renderer.daveShade.createTexture(image);
+
+                    resolve(renderer.engineTextures[name]);
+                };
+
+                image.src = data;
+            });
+        };
         
         //? Shaders
         //Previously compilePBRShader
@@ -288,6 +304,16 @@
                 PBR: this.compileEngineShader(await fetch("engine/renderer/shaders/material/PBR.glsl").then(result => result.text())),
                 bloom: this.compileEngineShader(await fetch("engine/renderer/shaders/material/bloom.glsl").then(result => result.text())),
             });
+        }
+
+        async createEngineTextures() {
+            await this.addEngineTexture("sun", "engine/renderer/textures/sun.png");
+            await this.addEngineTexture("camera", "engine/renderer/textures/camera.png");
+            await this.addEngineTexture("light", "engine/renderer/textures/light.png");
+            await this.addEngineTexture("spotlight", "engine/renderer/textures/spotlight.png");
+            await this.addEngineTexture("Default_WHITE", "engine/renderer/textures/white.png");
+            await this.addEngineTexture("Default_BLACK", "engine/renderer/textures/black.png");
+            await this.addEngineTexture("Default_NORMAL", "engine/renderer/textures/normal.png");
         }
 
         createFramebuffers = () => {
