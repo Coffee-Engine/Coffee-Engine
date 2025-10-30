@@ -280,13 +280,13 @@
 
         async createMaterialShaders() {
             this.mainShaders = Object.assign(this.mainShaders, {
-                unlit: this.compileEngineShader(await fetch("engine/renderer/shaders/material/unlit.glsl")),
-                editorCircle: this.compileEngineShader(await fetch("engine/renderer/shaders/material/editorCircle.glsl")),
-                editorShape: this.compileEngineShader(await fetch("engine/renderer/shaders/material/editorShape.glsl")),
-                lit: this.compileEngineShader(await fetch("engine/renderer/shaders/material/lit.glsl")),
-                unlitSolid: this.compileEngineShader(await fetch("engine/renderer/shaders/material/unlitSolid.glsl")),
-                PBR: this.compileEngineShader(await fetch("engine/renderer/shaders/material/PBR.glsl")),
-                bloom: this.compileEngineShader(await fetch("engine/renderer/shaders/material/bloom.glsl")),
+                unlit: this.compileEngineShader(await fetch("engine/renderer/shaders/material/unlit.glsl").then(result => result.text())),
+                editorCircle: this.compileEngineShader(await fetch("engine/renderer/shaders/material/editorCircle.glsl").then(result => result.text())),
+                editorShape: this.compileEngineShader(await fetch("engine/renderer/shaders/material/editorShape.glsl").then(result => result.text())),
+                lit: this.compileEngineShader(await fetch("engine/renderer/shaders/material/lit.glsl").then(result => result.text())),
+                unlitSolid: this.compileEngineShader(await fetch("engine/renderer/shaders/material/unlitSolid.glsl").then(result => result.text())),
+                PBR: this.compileEngineShader(await fetch("engine/renderer/shaders/material/PBR.glsl").then(result => result.text())),
+                bloom: this.compileEngineShader(await fetch("engine/renderer/shaders/material/bloom.glsl").then(result => result.text())),
             });
         }
 
