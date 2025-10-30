@@ -128,7 +128,7 @@
             //Render setup;
             new Promise(async () => {
                 renderer.createBaseShaders.call(renderer)
-                renderer.initilizeDefaultShaders.call(renderer);
+                renderer.createMaterialShaders.call(renderer);
                 renderer.initilizeFileConversions.call(renderer);
                 renderer.initilizeMaterials.call(renderer);
                 renderer.initilizeShapes.call(renderer);
@@ -172,7 +172,8 @@
 
         
         //? Shaders
-        compilePBRshader(shaderCode) {
+        //Previously compilePBRShader
+        compileEngineShader(shaderCode) {
             //Find hints in shader code
             const hintLines = shaderCode.match(renderer.shaderHintRegex);
             
@@ -185,7 +186,7 @@
             let shader = this.mainShaders.basis;
             let passes = 1;
             if (shaderCode.match(/\w*#define\s*is_post;/)) {
-                shader = coffeeEngine.renderer.mainShaders.postBasis;
+                shader = this.mainShaders.postBasis;
 
                 //Grab our passes if we have a defined amount
                 const renderPasses = shaderCode.match(/\w*#define\s*passCount\s*\d*\s*;/); 
@@ -200,7 +201,7 @@
             const compiledVert = shader.VERTEX.src.replace("//SHADER DEFINED UNIFORMS", `#define is_vertex;\n${uniforms}`).replace("void vertex() {}", vertex || "void vertex() {}");
             const compiledFrag = shader.FRAGMENT.src.replace("//SHADER DEFINED UNIFORMS", `#define is_fragment;\n${uniforms}`).replace("void fragment() {}", frag || "void fragment() {}");
 
-            const compiledShader = daveshadeInstance.createShader(compiledVert, compiledFrag);
+            const compiledShader = this.daveShade.createShader(compiledVert, compiledFrag);
 
             if (!compiledShader) return;
 
@@ -213,11 +214,11 @@
 
                 if (hint.startsWith("uniform")) {
                     //Get our uniform's name
-                    const hintUniform = hint.match(renderer.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
+                    const hintUniform = hint.match(this.shaderUniformRegex)[0].trim().replace(";","").split("[")[0];
                     
                     if (compiledShader.uniforms[hintUniform]) {
                         //Clean up our hints
-                        compiledShader.uniforms[hintUniform].hints = hint.match(renderer.extractionRegex)[0].replace(renderer.cleanupRegex, "").trim().split(" ");
+                        compiledShader.uniforms[hintUniform].hints = hint.match(this.extractionRegex)[0].replace(this.cleanupRegex, "").trim().split(" ");
                     }
                 }
             }
@@ -275,6 +276,18 @@
                 antiAliasPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/antiAlias.frag"),
                 viewportPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/basePass.frag"),
             };
+        }
+
+        async createMaterialShaders() {
+            this.mainShaders = Object.assign(this.mainShaders, {
+                unlit: this.compileEngineShader(await fetch("engine/renderer/shaders/material/unlit.glsl")),
+                editorCircle: this.compileEngineShader(await fetch("engine/renderer/shaders/material/editorCircle.glsl")),
+                editorShape: this.compileEngineShader(await fetch("engine/renderer/shaders/material/editorShape.glsl")),
+                lit: this.compileEngineShader(await fetch("engine/renderer/shaders/material/lit.glsl")),
+                unlitSolid: this.compileEngineShader(await fetch("engine/renderer/shaders/material/unlitSolid.glsl")),
+                PBR: this.compileEngineShader(await fetch("engine/renderer/shaders/material/PBR.glsl")),
+                bloom: this.compileEngineShader(await fetch("engine/renderer/shaders/material/bloom.glsl")),
+            });
         }
 
         createFramebuffers = () => {
