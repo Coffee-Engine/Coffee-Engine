@@ -12,7 +12,7 @@
         },
 
         //Returns stored
-        finalizeAndParse: (data, stored) => {
+        finalizeAndParse: (renderer, data, stored) => {
             for (const index in data) {
                 //Look through each vertex in position
                 const positions = data[index].a_position;
@@ -95,13 +95,13 @@
                 data[index].a_bitangent = new Float32Array(data[index].a_bitangent.flat(4));
 
                 //Convert it to buffers
-                data[index] = coffeeEngine.renderer.daveshade.buffersFromJSON(data[index]);
+                data[index] = renderer.daveShade.buffersFromJSON(data[index]);
             }
 
             return data;
         },
 
-        fromProjectFile: (src) => {
+        fromProjectFile: (src, overrideRenderer) => {
             const fileReader = new FileReader();
             return new Promise((resolve, reject) => {
                 //If the mesh exists in RAM, load it
@@ -127,7 +127,7 @@
                             Object.keys(stored.data).forEach(key => {
                                 stored.unparsed.push(stored.data[key]);
                             });
-                            stored.data = coffeeEngine.mesh.finalizeAndParse(stored.data, stored);
+                            stored.data = coffeeEngine.mesh.finalizeAndParse(overrideRenderer || coffeeEngine.renderer, stored.data, stored);
 
                             resolve(stored);
                         };

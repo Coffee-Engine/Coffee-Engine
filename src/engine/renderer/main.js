@@ -33,6 +33,7 @@
         textureStorage = {};
         shaderStorage = {};
         materialStorage = {};
+        shapes = {};
 
         typeConversions = {};
         specialHandling = {};
@@ -134,7 +135,7 @@
                 await renderer.createBaseShaders.call(renderer)
                 await renderer.createMaterialShaders.call(renderer);
                 renderer.createBaseMaterials.call(renderer);
-                renderer.initilizeShapes.call(renderer);
+                await renderer.createShapes.call(renderer);
                 renderer.createEngineTextures.call(renderer);
                 renderer.createFramebuffers.call(renderer);
             }).then(() => {
@@ -540,6 +541,16 @@
         createBaseMaterials() {
             this.defaultMaterial = new this.material(this,  {shader: "coffee:/basis", params: {}, cullMode: 0});
         };
+
+        async createShapes() {
+            this.shapes =  {
+                plane: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/plane.json").then(result => result.text()))]),
+                cube: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/cube.json").then(result => result.text()))]),
+                arrow: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/arrow.json").then(result => result.text()))]),
+            }
+
+            console.log(this.shapes);
+        }
     }
 
     //? what does this do exactly?
@@ -625,7 +636,11 @@
             const canvas = document.createElement("canvas");
             new coffeeEngine.rendererClass(canvas, (renderer) => {
                 coffeeEngine.renderer = renderer;
+
+                //Make global shapes the main renderer's shapes. We will be using these more often
+                coffeeEngine.shapes = renderer.shapes;
                 
+                //Link preload functions to the main renderer.
                 coffeeEngine.preloadFunctions["shaders"] = { function: renderer.fileToShader, storage: renderer.shaderStorage };
                 coffeeEngine.preloadFunctions["materials"] = { function: renderer.fileToMaterial, storage: renderer.materialStorage };
                 coffeeEngine.preloadFunctions["textures"] = { function: renderer.fileToTexture, storage: renderer.textureStorage };
