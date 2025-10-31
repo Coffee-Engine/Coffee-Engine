@@ -52,6 +52,7 @@ DaveShade.module = class {
     POINT_COUNT = 0;
 
     //Enums set at start time
+    TYPES = {};
     RENDER_TYPE = {};
     SETTERS = {};
     SIDE = {};
@@ -999,6 +1000,28 @@ DaveShade.webGLModule = class extends DaveShade.module {
         this.DEPTH_FUNC.GEQUAL = this.GL.GEQUAL;
         this.DEPTH_FUNC.GREATER = this.GL.GREATER;
         this.DEPTH_FUNC.ALWAYS = this.GL.ALWAYS;
+
+        //Types
+
+        //Bitty
+        this.TYPES.BOOL = this.GL.BOOL;
+        this.TYPES.INT = this.GL.INT;
+        this.TYPES.UNSIGNED_INT = this.GL.UNSIGNED_INT;
+
+        //Floaty
+        this.TYPES.FLOAT = this.GL.FLOAT;
+        this.TYPES.FLOAT_VEC2 = this.GL.FLOAT_VEC2;
+        this.TYPES.FLOAT_VEC3 = this.GL.FLOAT_VEC3;
+        this.TYPES.FLOAT_VEC4 = this.GL.FLOAT_VEC4;
+
+        this.TYPES.FLOAT_MAT2 = this.GL.FLOAT_MAT2;
+        this.TYPES.FLOAT_MAT3 = this.GL.FLOAT_MAT3;
+        this.TYPES.FLOAT_MAT4 = this.GL.FLOAT_MAT4;
+
+        //Textures
+        this.TYPES.SAMPLER_2D = this.GL.SAMPLER_2D;
+        this.TYPES.SAMPLER_CUBE = this.GL.SAMPLER_CUBE;
+        this.TYPES.SAMPLER_3D = this.GL.SAMPLER_3D;
 
         //Setters
         

@@ -34,6 +34,9 @@
         shaderStorage = {};
         materialStorage = {};
 
+        typeConversions = {};
+        specialHandling = {};
+
         shaderHintRegex = /^.*\/\/\s*\?HINT:.*$/gm;
         shaderUniformRegex = /\s[\w\d\[\]_]*\s*;/g;
         extractionRegex = /(?:\/\/\s*\?HINT:)(.*)/g;
@@ -127,9 +130,10 @@
 
             //Render setup;
             new Promise(async () => {
+                renderer.addSpecials.call(renderer);
                 await renderer.createBaseShaders.call(renderer)
                 await renderer.createMaterialShaders.call(renderer);
-                await renderer.initilizeMaterials.call(renderer);
+                renderer.createBaseMaterials.call(renderer);
                 renderer.initilizeShapes.call(renderer);
                 renderer.createEngineTextures.call(renderer);
                 renderer.createFramebuffers.call(renderer);
@@ -262,7 +266,7 @@
             return renderer[`post${renderer.postBuffer}`];
         }
 
-        get prevPost() { return renderer[`post${(renderer.postBuffer + 1) % 2}`]; }
+        get prevPost() { return this[`post${(this.postBuffer + 1) % 2}`]; }
 
         get curPost() {
             if (renderer.usingStore && !forcePost) renderer.storeBuffer;
@@ -423,7 +427,7 @@
                     fileReader.onload = () => {
                         const materialData = JSON.parse(fileReader.result) || { shader: "coffee:/basis.glsl", params: {} };
 
-                        this.materialStorage[src] = new this.material(materialData || {});
+                        this.materialStorage[src] = new this.material(this, materialData || {});
 
                         resolve(this.materialStorage[src]);
                     };
@@ -441,6 +445,22 @@
         }
 
         //? Setup functions
+        addSpecials() {
+            this.typeConversions[this.daveShade.TYPES.SAMPLER_2D] = (param) => {
+                const path = param[0];
+                param[0] = null;
+                this.fileToTexture(path).then((texture) => {
+                    param[0] = texture;
+                });
+            };
+
+            this.specialHandling[this.daveShade.TYPES.SAMPLER_2D] = (param, key, shader, material) => {
+                //Set the texture filtering.
+                if (param[0].setFiltering) param[0].setFiltering(this.daveShade.FILTERING[material.filtering || "NEAREST"]);
+                shader.uniforms[key].value = param[0].texture;
+            };
+        }
+
         async createBaseShaders() {
             this.POSTPROCESS_BASE_VERTEX = `#version 300 es
                 precision highp float;
@@ -486,7 +506,7 @@
             await this.addEngineTexture("Default_NORMAL", "engine/renderer/textures/normal.png");
         }
 
-        createFramebuffers = () => {
+        createFramebuffers() {
             //Add our draw buffer
             this.drawBuffer = this.daveShade.createFramebuffer(this.canvas.width * this.drawBufferSizeMul, this.canvas.height * this.drawBufferSizeMul, [
                 //Colors
@@ -516,7 +536,88 @@
                 this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
             ]);
         }
+
+        createBaseMaterials() {
+            this.defaultMaterial = new this.material(this,  {shader: "coffee:/basis", params: {}, cullMode: 0});
+        };
     }
+
+    //? what does this do exactly?
+    //* It stores material data. thats it;
+    coffeeEngine.rendererClass.prototype.material = class {
+            constructor(renderer, {shader, params, cullMode, filtering}) {
+                //Store parent renderer.
+                this.renderer = renderer;
+
+                //Add cull data
+                this.cullData = {
+                    0: undefined,
+                    1: renderer.daveShade.SIDE.BACK,
+                    2: renderer.daveShade.SIDE.FRONT
+                }
+
+                //Setup needed values
+                shader = shader || "coffee:/basis"
+                params = params || {};
+                cullMode = (cullMode !== undefined) ? cullMode : 2;
+
+                this.shader = {};
+                this.cullMode = 2;
+                //Internal shaders
+                if (shader.startsWith("coffee:/")) {
+                    //Remove the coffee predesessor, and get the default shader
+                    this.shader = this.renderer.mainShaders[shader.replace("coffee:/", "").replace(".glsl", "")];
+                } else {
+                    //Get it from the path
+                    this.renderer.fileToShader(shader).then((shader) => {
+                        this.shader = shader;
+                    }).catch(() => {});
+                }
+                this.shaderPath = shader;
+                this.params = params;
+
+                this.cullMode = Number(cullMode);
+                this.filtering = filtering || "NEAREST";
+            }
+
+            use() {
+                //Loop through our params and set the keys
+                if (this.shader) {
+                    const filledKeys = Object.keys(this.params);
+                    const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
+
+                    this.renderer.daveshade.cullFace(this.cullData[this.cullMode]);
+
+                    for (const key in this.params) {
+                        const param = this.params[key];
+                        if (typeof param[0] === "string") typeConversions[param[1]](param);
+
+                        //The actual setter
+                        else if (this.shader.uniforms[key] && param[0]) {
+                            if (specialHandling[param[1]]) specialHandling[param[1]](param, key, this.shader, this);
+                            else this.shader.uniforms[key].value = param[0];
+                        }
+                    }
+
+                    //Set non filled keys
+                    for (const keyID in nonFilledKeys) {
+                        const key = this.shader.uniforms[nonFilledKeys[keyID]];
+                        const hints = key.hints;
+                        switch (key.type) {
+                            case 35678:
+                                if (!key.hints) break;
+                                if (this.renderer.engineTextures[hints[0]]) key.value = this.renderer.engineTextures[hints[0]].texture;
+                                break;
+                        
+                            default:
+                                break;
+                        }
+                    }
+
+                    if (this.shader.uniforms.u_time) this.shader.uniforms.u_time.value = coffeeEngine.timer;
+                }
+            }
+        }
 
     //This is important, don't forget.
     coffeeEngine.createMainRenderer = () => {
