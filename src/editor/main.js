@@ -77,7 +77,6 @@ window.editor = {
 
     changePage: () => {
         if (editor.currentPage.root) {
-            coffeeEngine.renderer.dispose();
             editor.currentPage.root.parentElement.removeChild(editor.currentPage.root);
             delete editor.currentPage.root;
         }

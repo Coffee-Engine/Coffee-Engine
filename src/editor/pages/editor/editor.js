@@ -369,16 +369,20 @@
 
         //Open the user into the defaultScene (once the project config is loaded)
         coffeeEngine.addEventListener("projectSettingsLoaded", () => {
-            //Deserialize our windows
-            editor.dock.refreshLayout(true);
-            editor.__deserializeLayout();
-            editor.__setupDropdownFunctionality();
+            //Initialize the renderer, because we need that.
+            coffeeEngine.createMainRenderer().then(() => {
+                //Deserialize our windows
+                editor.dock.refreshLayout(true);
+                editor.__deserializeLayout();
+                editor.__setupDropdownFunctionality();
 
-            //Then load default scene
-            project.getFile(coffeeEngine.runtime.defaultScene).then((file) => {
-                if (!file) return;
-                coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.defaultScene);
-            }).catch(() => {});
+                //Then load default scene
+                project.getFile(coffeeEngine.runtime.defaultScene).then((file) => {
+                    if (!file) return;
+                    coffeeEngine.runtime.currentScene.openScene(coffeeEngine.runtime.defaultScene);
+                }).catch(() => {});
+            })
+
         });
     };
 })();

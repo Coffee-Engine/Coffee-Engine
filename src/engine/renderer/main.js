@@ -116,28 +116,27 @@
                 premultipliedAlpha: true,
                 blendFunc: ["FUNC_ADD", "ONE", "ONE_MINUS_SRC_ALPHA"],
                 powerPreference: "high-performance",
-                antialias: antialias == true,
+                antialias: false,
             });
 
             //Setup our canvas
             this.daveShade.useZBuffer(true);
-            this.resize(this.canvas.width, this.canvas.height);
 
             //Define the renderer because sometimes promises replace the "this" object
             const renderer = this;
 
             //Render setup;
             new Promise(async () => {
-                renderer.createBaseShaders.call(renderer)
-                renderer.createMaterialShaders.call(renderer);
-                renderer.initilizeFileConversions.call(renderer);
-                renderer.initilizeMaterials.call(renderer);
+                await renderer.createBaseShaders.call(renderer)
+                await renderer.createMaterialShaders.call(renderer);
+                await renderer.initilizeMaterials.call(renderer);
                 renderer.initilizeShapes.call(renderer);
                 renderer.createEngineTextures.call(renderer);
                 renderer.createFramebuffers.call(renderer);
             }).then(() => {
                 //Set our ready status and call onReady.
                 renderer.#ready = true;
+                renderer.resize(renderer.canvas.width, renderer.canvas.height);
                 onReady(renderer);
             });
         }
@@ -191,7 +190,7 @@
         //Previously compilePBRShader
         compileEngineShader(shaderCode) {
             //Find hints in shader code
-            const hintLines = shaderCode.match(renderer.shaderHintRegex);
+            const hintLines = shaderCode.match(this.shaderHintRegex);
             
             //Compile our shader
             const vertex = DaveShade.findFunctionInGLSL(shaderCode, "vertex");
@@ -268,6 +267,177 @@
         get curPost() {
             if (renderer.usingStore && !forcePost) renderer.storeBuffer;
             return renderer[`post${renderer.postBuffer}`];
+        }
+
+        //? Conversion files
+        fileToTexture(src) {
+            //Then we make our promise
+            return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+                
+                if (this.textureStorage[src]) {
+                    resolve(this.textureStorage[src]);
+                    return;
+                }
+
+                this.textureStorage[src] = {};
+                let fileExtension = src.split(".");
+                fileExtension = fileExtension[fileExtension.length - 1];
+
+                project
+                    .getFile(src)
+                    .then((file) => {
+                        //VVV SVG VVV
+                        if (fileExtension.toLowerCase() == "svg") {
+                            const fileReader = new FileReader();
+
+                            //Load the SVG
+                            fileReader.onload = () => {
+                                const trackedImage = new Image();
+
+                                trackedImage.onload = () => {
+                                    this.textureStorage[src] = this.daveshade.createTexture(trackedImage);
+                                    resolve(this.textureStorage[src]);
+                                };
+
+                                trackedImage.onerror = () => {
+                                    reject("error loading image");
+                                };
+
+                                trackedImage.src = fileReader.result.replace("data:application/octet-stream", "data:image/svg+xml;charset=utf-8");
+                            };
+
+                            fileReader.readAsDataURL(file);
+                        }
+                        //VVV Bitmap VVV
+                        else {
+                            const trackedImage = new Image();
+
+                            trackedImage.onload = () => {
+                                this.textureStorage[src] = this.daveshade.createTexture(trackedImage);
+                                resolve(this.textureStorage[src]);
+                            };
+
+                            trackedImage.onerror = () => {
+                                reject("error loading image");
+                            };
+
+                            trackedImage.src = window.URL.createObjectURL(file);
+                        }
+                    })
+                    .catch((exception) => {
+                        reject("file doesn't exist");
+                    });
+            });
+        };
+
+        fileToShader(src, override) {
+            //Then we make our promise
+            return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+
+                //If we want to override the shader override.
+                if (!override) {
+                    //Make sure we allocate this in storage first
+                    if (this.shaderStorage[src]) {
+                        resolve(this.shaderStorage[src]);
+                        return;
+                    }
+                    this.shaderStorage[src] = {};
+                }
+
+                if (src.startsWith("coffee:/")) {
+                    this.shaderStorage[src] = this.mainShaders[src.replace("coffee:/", "").replace(".glsl", "")];
+                    resolve(this.shaderStorage[src]);
+                    return;
+                }
+
+                const fileReader = new FileReader();
+
+                //When our file loads we get our shader to compile
+                fileReader.onload = () => {
+                    if (!override) {
+                        this.shaderStorage[src] = this.compilePBRshader(fileReader.result);
+                    }
+                    else {
+                        const shader = this.compilePBRshader(fileReader.result);
+                        if (this.shaderStorage[src]) {
+                            //Check to make sure our status is good
+                            if (shader.status == 0) return;
+
+                            //If so dispose
+                            if (this.shaderStorage[src].dispose) this.shaderStorage[src].dispose();
+
+                            //Replace the shader
+                            for (let key in shader) {
+                                this.shaderStorage[src][key] = shader[key];
+                            }
+                        }
+                        else this.shaderStorage[src] = shader;
+                    }
+
+                    resolve(this.shaderStorage[src]);
+                };
+
+                project
+                    .getFile(src)
+                    .then((file) => {
+                        fileReader.readAsText(file);
+                    })
+                    .catch(() => {
+                        delete this.shaderStorage[src];
+                        reject(`File ${src} doesn't exist`);
+                    });
+            });
+        }
+
+        fileToMaterial(src) {
+            //Then we make our promise
+            return new Promise((resolve, reject) => {
+                if (!src) {
+                    reject();
+                    return;
+                }
+                
+                //Make sure we allocate this in storage first
+                if (this.materialStorage[src]) {
+                    resolve(this.materialStorage[src]);
+                    return;
+                }
+                this.materialStorage[src] = {};
+
+                //Hardcoding this for funsies
+                if (src == "coffee:/default.material") {
+                    this.materialStorage[src] = this.defaultMaterial;
+                    resolve(this.defaultMaterial);
+                } else {
+                    const fileReader = new FileReader();
+
+                    //When our file loads we get our shader to compile
+                    fileReader.onload = () => {
+                        const materialData = JSON.parse(fileReader.result) || { shader: "coffee:/basis.glsl", params: {} };
+
+                        this.materialStorage[src] = new this.material(materialData || {});
+
+                        resolve(this.materialStorage[src]);
+                    };
+
+                    project
+                        .getFile(src)
+                        .then((file) => {
+                            fileReader.readAsText(file);
+                        })
+                        .catch(() => {
+                            reject(`File ${src} doesn't exist`);
+                        });
+                }
+            });
         }
 
         //? Setup functions
@@ -354,6 +524,11 @@
             const canvas = document.createElement("canvas");
             new coffeeEngine.rendererClass(canvas, (renderer) => {
                 coffeeEngine.renderer = renderer;
+                
+                coffeeEngine.preloadFunctions["shaders"] = { function: renderer.fileToShader, storage: renderer.shaderStorage };
+                coffeeEngine.preloadFunctions["materials"] = { function: renderer.fileToMaterial, storage: renderer.materialStorage };
+                coffeeEngine.preloadFunctions["textures"] = { function: renderer.fileToTexture, storage: renderer.textureStorage };
+
                 resolve(renderer);
             });
         })
