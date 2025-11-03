@@ -318,18 +318,19 @@
             this.title = editor.language["editor.window.viewport"];
 
             //The main canvas
-            this.canvas = document.createElement("canvas");
-            this.canvas.style.width = "100%";
-            this.canvas.style.height = "100%";
-            container.appendChild(this.canvas);
 
             container.style.overflow = "hidden";
 
             //The buttons
             this.setupButtons(container);
 
-            //Setup our renderer
-            this.renderer = coffeeEngine.renderer.create(this.canvas);
+            //Setup our renderer, make sure to grab and configure the canvas
+            this.renderer = coffeeEngine.renderer;
+
+            this.canvas = this.renderer.canvas;
+            this.canvas.style.width = "100%";
+            this.canvas.style.height = "100%";
+            container.appendChild(this.canvas);
 
             //Size it to be practical
             this.resized();

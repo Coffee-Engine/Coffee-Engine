@@ -109,7 +109,7 @@
         //Ready is a private variable that should be unchangable outside of the main renderer object.
         #ready = false;
         get ready() {
-            return this.ready;
+            return this.#ready;
         }
         
         constructor(canvas, onReady) {
@@ -635,7 +635,6 @@
         return new Promise((resolve) => {
             const canvas = document.createElement("canvas");
             new coffeeEngine.rendererClass(canvas, (renderer) => {
-                console.log("wa")
                 coffeeEngine.renderer = renderer;
 
                 //Make global shapes the main renderer's shapes. We will be using these more often
