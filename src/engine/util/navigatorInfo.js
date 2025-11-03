@@ -13,7 +13,7 @@
         "Edg": "Edge",
 
         //Electron
-        "Electron": "Native App",
+        "Electron": "Electron",
         //Most likely Tauri
         "Deno": "Tauri",
 
