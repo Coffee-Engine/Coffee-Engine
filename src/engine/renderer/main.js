@@ -130,7 +130,7 @@
             const renderer = this;
 
             //Render setup;
-            new Promise(async () => {
+            new Promise(async (resolve) => {
                 renderer.addSpecials.call(renderer);
                 await renderer.createBaseShaders.call(renderer)
                 await renderer.createMaterialShaders.call(renderer);
@@ -138,6 +138,8 @@
                 await renderer.createShapes.call(renderer);
                 renderer.createEngineTextures.call(renderer);
                 renderer.createFramebuffers.call(renderer);
+
+                resolve();
             }).then(() => {
                 //Set our ready status and call onReady.
                 renderer.#ready = true;
@@ -548,8 +550,6 @@
                 cube: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/cube.json").then(result => result.text()))]),
                 arrow: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/arrow.json").then(result => result.text()))]),
             }
-
-            console.log(this.shapes);
         }
     }
 
@@ -635,6 +635,7 @@
         return new Promise((resolve) => {
             const canvas = document.createElement("canvas");
             new coffeeEngine.rendererClass(canvas, (renderer) => {
+                console.log("wa")
                 coffeeEngine.renderer = renderer;
 
                 //Make global shapes the main renderer's shapes. We will be using these more often
