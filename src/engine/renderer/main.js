@@ -144,6 +144,11 @@
                 //Set our ready status and call onReady.
                 renderer.#ready = true;
                 renderer.resize(renderer.canvas.width, renderer.canvas.height);
+
+                //Setup pipeline
+                this.pipeline = new coffeeEngine.renderPipeline(this);
+                this.pipeline.BackupCamera = new this.pipeline.CameraData();
+                
                 onReady(renderer);
             });
         }
