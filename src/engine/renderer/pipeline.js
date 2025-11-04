@@ -50,8 +50,8 @@
             //Sort nodes within the scene
             scene.drawList.sort((node1, node2) => {
                 //Don't spend the extra time recomputing the value
-                let node1Sort = node1.sortValue(false);
-                let node2Sort = node2.sortValue(false);
+                let node1Sort = node1.sortValue(camera, false);
+                let node2Sort = node2.sortValue(camera, false);
                 if (node1Sort < node2Sort) {
                     return -1;
                 } else if (node1Sort > node2Sort) {
@@ -59,8 +59,8 @@
                 }
                 //Dual pass sorting, just in case two are the same value
                 else {
-                    node1Sort = node1.sortValue(true);
-                    node2Sort = node2.sortValue(true);
+                    node1Sort = node1.sortValue(camera, true);
+                    node2Sort = node2.sortValue(camera, true);
 
                     if (node1Sort < node2Sort) {
                         return -1;

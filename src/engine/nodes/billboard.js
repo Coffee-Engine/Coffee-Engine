@@ -125,12 +125,12 @@
             ];
         }
 
-        sortValue(secondPass) {
+        sortValue(camera, secondPass) {
             if (secondPass) {
-                return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
+                return this.position.sub(camera.position).length();
             }
 
-            const transformed = coffeeEngine.renderer.cameraData.unflattenedTransform.multiplyVector({
+            const transformed = camera.unflattenedTransform.multiplyVector({
                 x: this.position.x,
                 y: this.position.y,
                 z: this.position.z,
