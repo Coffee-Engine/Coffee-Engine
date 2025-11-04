@@ -61,38 +61,36 @@
             this.matrix = this.matrix.translate(this.position.x, this.position.y, this.position.z);
         }
 
-        draw(drawID) {
-            super.draw();
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
 
             if (this.texture && this.#shader) {
                 const translatedWorld = this.mixedMatrix.getTranslation();
+
+                //Move matrix to be at the entity's position;
+                let modelMat = coffeeEngine.matrix4.identity().translate(translatedWorld.x, translatedWorld.y, translatedWorld.z);
+                
+                //Rotate it
+                if (this.omnidirectional) modelMat = modelMat.rotationY(-camera.rotationEuler.x).rotationX(-camera.rotationEuler.y);
+                else modelMat = modelMat.rotationY(-camera.rotationEuler.x);
+                
+                //Then finally scale it.
+                modelMat = modelMat.scale(this.scale.x, this.scale.y, -1)
+                        .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
+                        .webGLValue();
+                
+                this.#shader.setUniforms({
+                    u_model: modelMat,
+                    u_texture: this.texture.TEXTURE,
+                    u_colorMod: this.#modulatedColorArr,
+                    u_objectID: drawID
+                });
+
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
 
-                //Rotate and scale our billboard depending on MULTIPLE variables
-                if (this.omnidirectional)
-                    this.#shader.uniforms.u_model.value = coffeeEngine.matrix4
-                        .identity()
-                        .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
-                        .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
-                        .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
-                        .scale(this.scale.x, this.scale.y, -1)
-                        .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
-                        .webGLValue();
-                else
-                    this.#shader.uniforms.u_model.value = coffeeEngine.matrix4
-                        .identity()
-                        .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
-                        .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
-                        .scale(this.scale.x, this.scale.y, -1)
-                        .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
-                        .webGLValue();
+                this.texture.setFiltering(daveShade.FILTERING[this.filtering]);
 
-                this.texture.setFiltering(coffeeEngine.renderer.daveshade.FILTERING[this.filtering]);
-                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture.texture;
-                if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-                if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
-
-                coffeeEngine.renderer.daveshade.cullFace();
+                daveShade.cullFace();
                 this.#shader.drawFromBuffers(6);
             }
         }

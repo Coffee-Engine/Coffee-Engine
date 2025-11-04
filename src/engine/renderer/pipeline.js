@@ -44,7 +44,7 @@
             skyShader.drawFromBuffers(6);
         }
 
-        drawScene(_renderer, daveShade, scene) {
+        drawScene(renderer, daveShade, scene, camera) {
             daveShade.clear(daveShade.CLEAR_TARGET.DEPTH);
             
             //Sort nodes within the scene
@@ -75,7 +75,7 @@
             //Now lets draw the objects
             for (let drawItem = scene.drawList.length - 1; drawItem >= 0; drawItem--) {
                 const node = scene.drawList[drawItem];
-                node.draw(drawItem + 1);
+                node.draw(renderer, daveShade, camera, drawItem + 1);
             }
         }
 
