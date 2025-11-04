@@ -953,7 +953,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
     clear(TARGET) {
         if (typeof TARGET != "number") return;
 
-        this.TRI_COUNT = 0;
+        this.POINT_COUNT = 0;
         this.GL.clear(TARGET);
     }
 

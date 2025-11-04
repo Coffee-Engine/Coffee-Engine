@@ -258,7 +258,7 @@
             //Swap our post buffers
             this.postBuffer =  (this.postBuffer + 1) % 2;
             this.usingStore = false;
-            this[`post${renderer.postBuffer}`].use();
+            this[`post${this.postBuffer}`].use();
             //this.daveShade.clear(this.daveShade.CLEAR_TARGET.COLOR);
         }
 
@@ -277,8 +277,8 @@
         get prevPost() { return this[`post${(this.postBuffer + 1) % 2}`]; }
 
         get curPost() {
-            if (renderer.usingStore && !forcePost) renderer.storeBuffer;
-            return renderer[`post${renderer.postBuffer}`];
+            if (this.usingStore && !forcePost) this.storeBuffer;
+            return this[`post${this.postBuffer}`];
         }
 
         //? Conversion files
@@ -311,7 +311,7 @@
                                 const trackedImage = new Image();
 
                                 trackedImage.onload = () => {
-                                    this.textureStorage[src] = this.daveshade.createTexture(trackedImage);
+                                    this.textureStorage[src] = this.daveShade.createTexture(trackedImage);
                                     resolve(this.textureStorage[src]);
                                 };
 
@@ -329,7 +329,7 @@
                             const trackedImage = new Image();
 
                             trackedImage.onload = () => {
-                                this.textureStorage[src] = this.daveshade.createTexture(trackedImage);
+                                this.textureStorage[src] = this.daveShade.createTexture(trackedImage);
                                 resolve(this.textureStorage[src]);
                             };
 
@@ -551,9 +551,9 @@
 
         async createShapes() {
             this.shapes =  {
-                plane: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/plane.json").then(result => result.text()))]),
-                cube: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/cube.json").then(result => result.text()))]),
-                arrow: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/arrow.json").then(result => result.text()))]),
+                plane: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/plane.json").then(result => result.text()))])[0],
+                cube: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/cube.json").then(result => result.text()))])[0],
+                arrow: coffeeEngine.mesh.finalizeAndParse(this, [JSON.parse(await fetch("engine/renderer/mesh/arrow.json").then(result => result.text()))])[0],
             }
         }
     }
@@ -602,7 +602,7 @@
                     const filledKeys = Object.keys(this.params);
                     const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
 
-                    this.renderer.daveshade.cullFace(this.cullData[this.cullMode]);
+                    this.renderer.daveShade.cullFace(this.cullData[this.cullMode]);
 
                     for (const key in this.params) {
                         const param = this.params[key];

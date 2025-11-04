@@ -362,8 +362,8 @@
                 this.profiler.innerHTML = `
                 FPS:${Math.floor(1 / coffeeEngine.runtime.deltaTime)}<br>
                 Delta:${coffeeEngine.runtime.deltaTime}<br>
-                Triangles:${coffeeEngine.renderer.daveshade.triCount}<br>
-                Nodes:${coffeeEngine.renderer.nodesRendered}<br>
+                Triangles:${this.renderer.daveShade.POINT_COUNT / 3}<br>
+                Nodes:${this.renderer.nodesRendered}<br>
                 Lights:${coffeeEngine.runtime.currentScene.lightCount}`;
 
                 coffeeEngine.timer += coffeeEngine.runtime.deltaTime;

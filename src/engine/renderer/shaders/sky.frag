@@ -19,7 +19,7 @@ layout (location = 5) out vec4 o_OID;
 
 void main()
 {
-    vec2 screenUV = gl_FragCoord.xy / u_res;
+    vec2 screenUV = (gl_FragCoord.xy / u_res);
     mat4 mixed = u_camera; //* u_projection;
     vec3 right = vec3(mixed[0][0],mixed[0][1],mixed[0][2]);
     vec3 up = vec3(mixed[1][0],mixed[1][1],mixed[1][2]);

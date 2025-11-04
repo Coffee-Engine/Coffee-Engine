@@ -12,12 +12,13 @@
 
         draw(scene) {
             //We will assume the item is a function, and camera is a camera.
-            for (let camera in this.cameraDrawQueue) {
+            for (let cameraID in this.cameraDrawQueue) {
                 //Use camera
+                const camera = this.cameraDrawQueue[cameraID];
                 camera.use(true); 
                 
                 for (let item in this.pipelineOrder) {
-                    item(this.renderer, this.daveShade, scene, camera);
+                    this.pipelineOrder[item](this.renderer, this.daveShade, scene, camera);
                 }
             }
         }
@@ -27,7 +28,7 @@
 
             //Set our uniforms
             const skyShader = renderer.mainShaders.skyplane;
-            const {width, height} = renderer.drawBuffer;
+            const drawBuffer = renderer.drawBuffer;
 
             camera.apply(skyShader);
 
@@ -37,13 +38,13 @@
                 skyColor: scene.skyColor,
                 groundColor: scene.groundColor,
                 centerColor: scene.centerColor,
-                u_res: [width, height]
+                u_res: [drawBuffer.WIDTH, drawBuffer.HEIGHT]
             });
 
             skyShader.drawFromBuffers(6);
         }
 
-        drawScene(_renderer, _daveShade, scene) {
+        drawScene(_renderer, daveShade, scene) {
             daveShade.clear(daveShade.CLEAR_TARGET.DEPTH);
             
             //Sort nodes within the scene
@@ -87,13 +88,14 @@
 
             //If we are using antiAliasing resize the buffer to support it.
             if (viewport.antiAlias) {
-                renderer.getPost().resize(canvas.width * drawBufferSizeMul, canvas.height * drawBufferSizeMul);
-                renderer.getPost().use();
+                renderer.curPost.resize(canvas.width * drawBufferSizeMul, canvas.height * drawBufferSizeMul);
+                renderer.curPost.use();
             }
 
             if (viewport.antiAlias) camera.resolution = [canvas.width * drawBufferSizeMul, canvas.height * drawBufferSizeMul];
             else camera.resolution = [canvas.width, canvas.height];
             
+            const mainPass = renderer.mainShaders.mainPass;
             const drawBuffer =  renderer.drawBuffer.ATTACHMENTS;
             mainPass.setBuffers(coffeeEngine.shapes.plane);
             
@@ -117,6 +119,8 @@
                 //fog data
                 u_fogData: scene.fogData.flat(),
                 u_cameraPosition: camera.position.webGLValue(),
+
+                u_res: camera.resolution
             });
 
             //Draw main pass!
@@ -136,10 +140,10 @@
             if (renderer.viewport.antiAlias) {
                 renderer.swapPost();
                 renderer.mainShaders.antiAliasPass.setBuffers(coffeeEngine.shapes.plane);
-                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.getPrevPost().ATTACHMENTS[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
+                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.prevPost.ATTACHMENTS[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
                 renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
 
-                renderer.getPrevPost().resize(renderer.canvas.width, renderer.canvas.height);
+                renderer.prevPost.resize(renderer.canvas.width, renderer.canvas.height);
             }
 
             //Yeah
@@ -173,7 +177,7 @@
                 renderer.swapPost();
                 
                 //Our previous
-                const previous = renderer.getPrevPost().ATTACHMENTS[0].texture;
+                const previous = renderer.prevPost.ATTACHMENTS[0].texture;
                 const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
                 const parameters = renderer.pipeline.postProcessOrder[shaderID].parameters;
 
@@ -214,10 +218,35 @@
 
         drawCanvas(renderer, daveShade) {
             //The final blit!
+            const viewportPass = renderer.mainShaders.viewportPass;
             daveShade.renderToCanvas();
-            renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
-            renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPost().ATTACHMENTS[0].texture });
-            renderer.mainShaders.viewportPass.drawFromBuffers(6);
+            viewportPass.setBuffers(coffeeEngine.shapes.plane);
+            viewportPass.setUniforms({ 
+                u_texture: renderer.curPost.ATTACHMENTS[0].texture,
+                u_res: [renderer.canvas.width, renderer.canvas.height]
+            });
+            viewportPass.drawFromBuffers(6);
+        }
+
+        //Only meant for troubleshooting issues
+        debugDraw(renderer, daveShade) {
+            if (!renderer.engineTextures.sun) return;
+            daveShade.renderToCanvas();
+            daveShade.clear(daveShade.CLEAR_TARGET.DEPTH | daveShade.CLEAR_TARGET.COLOR);
+            daveShade.TEXTURE_READING_SHADER.setBuffers(daveShade.TEXTURE_READING_QUAD);
+            daveShade.TEXTURE_READING_SHADER.setUniforms({
+                u_texture: renderer.drawBuffer.ATTACHMENTS[1].texture
+            });
+
+            daveShade.TEXTURE_READING_SHADER.drawFromBuffers(6);
+        }
+
+        moveToBuffer(buffer) {
+            return () => { buffer.use(); }
+        }
+
+        moveToCanvas() {
+            return (_renderer, daveShade) => { daveShade.renderToCanvas(); }
         }
         
         constructor(renderer) {
@@ -225,11 +254,13 @@
             this.daveShade = renderer.daveShade;
 
             this.pipelineOrder.push(
+                this.moveToBuffer(renderer.drawBuffer),
                 this.drawSky,
                 this.drawScene,
                 this.drawFinal,
                 this.drawPost,
-                this.drawCanvas
+                this.drawCanvas,
+                //this.debugDraw
             );
         }
     }
