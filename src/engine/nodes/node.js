@@ -8,7 +8,15 @@
 
         //? And here is our matrix.
         //? The humble matrix
-        matrix = coffeeEngine.matrix4.identity();
+        #matrix = coffeeEngine.matrix4.identity();
+        set matrix(value) {
+            this.#matrix = value;
+            this._updateMixedMatrix();
+        }
+        get matrix() {
+            return this.#matrix;
+        }
+        
         mixedMatrix = coffeeEngine.matrix4.identity();
 
         set parent(value) {
@@ -28,6 +36,7 @@
                 // prettier-ignore
                 if (!coffeeEngine.runtime.currentScene.inDrawList(this)) {
                     coffeeEngine.runtime.currentScene.addToDrawList(this);
+                    this._updateMixedMatrix();
                 }
 
                 value.addChild(this, true);
@@ -110,6 +119,17 @@
             this.name = "node";
         }
 
+        //Not to be edited
+        _updateMixedMatrix() {
+            if (!this.parent) return;
+
+            this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
+
+            for (let child in this.children) {
+                this.children[child]._updateMixedMatrix();
+            }
+        }
+
         update(deltaTime, noChildren) {
             // prettier-ignore
             this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
@@ -132,7 +152,6 @@
         }
 
         draw(_renderer, _daveShade, _camera, _drawID) {
-            this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
             // prettier-ignore
             coffeeEngine.renderer.nodesRendered += 1;
             if (this.#scriptObject && this.#scriptObject.draw) {
