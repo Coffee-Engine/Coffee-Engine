@@ -69,20 +69,27 @@
             this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
         }
 
-        draw(drawID) {
-            super.draw();
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
 
-            if (this.texture && this.#shader) {
-                this.#shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
+            if (this.texture && this.#shader) {                
+                //Then finally scale it.
+                let modelMat = this.mixedMatrix.scale(this.scale.x, this.scale.y, -1)
+                        .scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1)
+                        .webGLValue();
+                
+                //This sets uniforms and creates a camera stamp to prevent resetting un-needed uniforms.
+                renderer.pipeline.setUniforms(camera, this.#shader, {
+                    u_model: modelMat,
+                    u_texture: this.texture.TEXTURE,
+                    u_colorMod: this.#modulatedColorArr,
+                    u_objectID: drawID
+                });
 
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
+                this.texture.setFiltering(daveShade.FILTERING[this.filtering]);
 
-                this.texture.setFiltering(coffeeEngine.renderer.daveshade.FILTERING[this.filtering]);
-                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture.texture;
-                if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-                if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
-
-                coffeeEngine.renderer.daveshade.cullFace();
+                daveShade.cullFace();
                 this.#shader.drawFromBuffers(6);
             }
         }

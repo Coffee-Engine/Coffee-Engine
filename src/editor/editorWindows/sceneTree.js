@@ -51,6 +51,30 @@
             currentScene.addEventListener("childMoved", this.refreshContents);
         }
 
+        duplicate(Node) {
+            const nodeKeys = Node.getProperties();
+            const duplicated = new Node.constructor();
+
+            for (let keyID in nodeKeys) {
+                const key = nodeKeys[keyID];
+
+                if (typeof key != "object") continue;
+                if (key == "parent" || key == "children") continue;
+
+                if (Node[key.name] && Node[key.name].__duplicate) {
+                    Node[key.name].__duplicate(duplicated[key.name]);
+                } else {
+                    duplicated[key.name] = Node[key.name];
+                }
+            }
+
+            for (let childID in Node.children) {
+                duplicated.addChild(this.duplicate(Node.children[childID]));
+            }
+
+            return duplicated
+        }
+
         createNodeElement(Node, parentElement, even, root) {
             if (!Node) return;
 
@@ -108,23 +132,7 @@
                         }
 
                         case "duplicate": {
-                            const nodeKeys = Node.getProperties();
-                            const duplicated = new Node.constructor();
-
-                            for (let keyID in nodeKeys) {
-                                const key = nodeKeys[keyID];
-
-                                if (typeof key != "object") continue;
-                                if (key == "parent" || key == "children") continue;
-
-                                if (Node[key.name] && Node[key.name].__duplicate) {
-                                    Node[key.name].__duplicate(duplicated[key.name]);
-                                } else {
-                                    duplicated[key.name] = Node[key.name];
-                                }
-                            }
-
-                            Node.parent.addChild(duplicated);
+                            Node.parent.addChild(this.duplicate(Node));
                             break;
                         }
 

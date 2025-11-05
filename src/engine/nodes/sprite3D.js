@@ -54,22 +54,29 @@
 
         //Billboard settings
         omnidirectional = false;
-        scaleMultiplier = 1.0;
+        scaleDivider = 1.0;
 
-        draw(drawID) {
-            super.draw();
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
 
-            if (this.texture && this.#shader) {
+            if (this.texture && this.#shader) {                
+                //Then finally scale it.
+                let modelMat = this.mixedMatrix.scale(this.scale.x, this.scale.y, -1)
+                        .scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1)
+                        .webGLValue();
+                
+                //This sets uniforms and creates a camera stamp to prevent resetting un-needed uniforms.
+                renderer.pipeline.setUniforms(camera, this.#shader, {
+                    u_model: modelMat,
+                    u_texture: this.texture.TEXTURE,
+                    u_colorMod: this.#modulatedColorArr,
+                    u_objectID: drawID
+                });
+
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
+                if (this.texture instanceof DaveShade.texture)this.texture.setFiltering(daveShade.FILTERING[this.filtering]);
 
-                this.#shader.uniforms.u_model.value = this.mixedMatrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1).webGLValue();
-
-                this.texture.setFiltering(coffeeEngine.renderer.daveshade.FILTERING[this.filtering]);
-                if (this.#shader.uniforms.u_texture) this.#shader.uniforms.u_texture.value = this.texture.texture;
-                if (this.#shader.uniforms.u_colorMod) this.#shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-                if (this.#shader.uniforms.u_objectID) this.#shader.uniforms.u_objectID.value = drawID;
-
-                coffeeEngine.renderer.daveshade.cullFace();
+                daveShade.cullFace();
                 this.#shader.drawFromBuffers(6);
             }
         }
@@ -90,7 +97,7 @@
                 { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC3 }, 
                 "---", 
                 { name: "spritePath", translationKey: "engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
-                { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "scaleDivider", translationKey: "engine.nodeProperties.Sprite.scaleDivider", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 "---", 
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 },
                 { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
@@ -103,12 +110,12 @@
             ];
         }
 
-        sortValue(secondPass) {
+        sortValue(camera, secondPass) {
             if (secondPass) {
-                return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
+                return this.position.sub(camera.position).length();
             }
 
-            const transformed = coffeeEngine.renderer.cameraData.unflattenedTransform.multiplyVector({
+            const transformed = camera.matrix.multiplyVector({
                 x: this.position.x,
                 y: this.position.y,
                 z: this.position.z,

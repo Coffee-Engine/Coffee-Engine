@@ -381,7 +381,8 @@
                 if (preloadFunction) {
                     data.preload[preloadCategory].forEach((path) => {
                         preloadFunction
-                            .function(path)
+                            //Run it as a call so we don't have the engine freaking out
+                            .function.call(coffeeEngine.renderer, path)
                             .then(() => {
                                 //Increment our preload finished, and check if we are done
                                 preloadFinished++;
@@ -389,7 +390,7 @@
                                     loadNodes();
                                 }
                             })
-                            .catch(() => {
+                            .catch((err) => {
                                 //!THIS "ERROR" SOMETIMES WORKS SOMETIMES DOESN'T
                                 //!FOR SOME REASON IT ERRORS AT 'default.material' AND ONLY 'default.material'
                                 //!EVEN THOUGH WE RESOLVE THE PROMISE BEFORE IT CAN EVEN CHECK FOR 'default.material' IN THE MAIN FILESYSTEM!

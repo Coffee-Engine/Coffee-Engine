@@ -54,7 +54,7 @@
 
         //Billboard settings
         omnidirectional = false;
-        scaleMultiplier = 1.0;
+        scaleDivider = 1.0;
 
         updateMatrix() {
             this.matrix = coffeeEngine.matrix4.identity();
@@ -71,24 +71,23 @@
                 let modelMat = coffeeEngine.matrix4.identity().translate(translatedWorld.x, translatedWorld.y, translatedWorld.z);
                 
                 //Rotate it
-                if (this.omnidirectional) modelMat = modelMat.rotationY(-camera.rotationEuler.x).rotationX(-camera.rotationEuler.y);
-                else modelMat = modelMat.rotationY(-camera.rotationEuler.x);
+                if (this.omnidirectional) modelMat = modelMat.rotationY(camera.rotationEuler.y).rotationX(camera.rotationEuler.x);
+                else modelMat = modelMat.rotationY(camera.rotationEuler.y);
                 
                 //Then finally scale it.
                 modelMat = modelMat.scale(this.scale.x, this.scale.y, -1)
-                        .scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1)
+                        .scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1)
                         .webGLValue();
                 
-                this.#shader.setUniforms({
+                //This sets uniforms and creates a camera stamp to prevent resetting un-needed uniforms.
+                renderer.pipeline.setUniforms(camera, this.#shader, {
                     u_model: modelMat,
                     u_texture: this.texture.TEXTURE,
                     u_colorMod: this.#modulatedColorArr,
-                    u_objectID: drawID,
-                    ...camera.getShaderData()
+                    u_objectID: drawID
                 });
 
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);
-
                 this.texture.setFiltering(daveShade.FILTERING[this.filtering]);
 
                 daveShade.cullFace();
@@ -113,7 +112,7 @@
                 "---", 
                 { name: "spritePath", translationKey: "engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
                 { name: "omnidirectional", translationKey: "engine.nodeProperties.Billboard.omnidirectional", type: coffeeEngine.PropertyTypes.BOOLEAN }, 
-                { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "scaleDivider", translationKey: "engine.nodeProperties.Sprite.scaleDivider", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 "---", 
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, 
                 { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
@@ -131,7 +130,7 @@
                 return this.position.sub(camera.position).length();
             }
 
-            const transformed = camera.unflattenedTransform.multiplyVector({
+            const transformed = camera.matrix.multiplyVector({
                 x: this.position.x,
                 y: this.position.y,
                 z: this.position.z,

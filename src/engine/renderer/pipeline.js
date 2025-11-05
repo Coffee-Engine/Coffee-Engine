@@ -10,9 +10,16 @@
 
         pipelineOrder = [];
 
+        lastRender = Date.now();
+        renderID = `${this.lastRender}_invalid`;
+
         draw(scene) {
+            this.lastRender = Date.now();
             //We will assume the item is a function, and camera is a camera.
             for (let cameraID in this.cameraDrawQueue) {
+                //So we can get now data for each position
+                this.renderID = `${this.lastRender}_${cameraID}`;
+
                 //Use camera
                 const camera = this.cameraDrawQueue[cameraID];
                 camera.use(true); 
@@ -247,6 +254,21 @@
 
         moveToCanvas() {
             return (_renderer, daveShade) => { daveShade.renderToCanvas(); }
+        }
+
+        setUniforms(camera, shader, exUni) {
+            //Make sure we don't set or retrieve data that isn't needed.
+            if (shader.lastRender == this.renderID) {
+                shader.setUniforms(exUni);
+            }
+            else {
+                shader.setUniforms({
+                    ...camera.getShaderData(),
+                    ...exUni
+                })
+
+                shader.lastRender = this.renderID;
+            }
         }
         
         constructor(renderer) {

@@ -131,7 +131,7 @@
             }
         }
 
-        draw(drawID) {
+        draw(_renderer, _daveShade, _camera, _drawID) {
             this.mixedMatrix = this.parent.mixedMatrix.multiply(this.matrix);
             // prettier-ignore
             coffeeEngine.renderer.nodesRendered += 1;

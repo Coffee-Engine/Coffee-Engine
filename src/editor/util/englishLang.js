@@ -631,7 +631,7 @@ editor.EnglishLang = {
     "engine.nodeProperties.Node2D.layer": "Layer",
     
     "engine.nodeProperties.Sprite.spritePath": "Sprite Path",
-    "engine.nodeProperties.Sprite.scaleMultiplier": "Scale Multiplier",
+    "engine.nodeProperties.Sprite.scaleDivider": "Scale Divider",
     "engine.nodeProperties.Sprite.filtering": "Filtering",
     "engine.nodeProperties.Sprite.filtering.nearest": "Nearest",
     "engine.nodeProperties.Sprite.filtering.linear": "Linear",
