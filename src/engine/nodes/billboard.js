@@ -83,7 +83,8 @@
                     u_model: modelMat,
                     u_texture: this.texture.TEXTURE,
                     u_colorMod: this.#modulatedColorArr,
-                    u_objectID: drawID
+                    u_objectID: drawID,
+                    ...camera.getShaderData()
                 });
 
                 this.#shader.setBuffers(coffeeEngine.shapes.plane);

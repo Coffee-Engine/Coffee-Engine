@@ -324,13 +324,15 @@
         apply(shader) {
             //Make sure we supply a shader.
             if (!(shader instanceof DaveShade.shader)) return;
-            shader.setUniforms({
-                u_camera: this.#webglMatrix,
-                u_projection: this.#webglProjection,
-                u_res: this.resolution,
-                u_aspectRatio: this.aspectRatio,
-                u_wFactor: this.wFactor,
-            });
+            shader.setUniforms(this.getShaderData());
         }
+
+        getShaderData() { return {
+            u_camera: this.#webglMatrix,
+            u_projection: this.#webglProjection,
+            u_res: this.resolution,
+            u_aspectRatio: this.aspectRatio,
+            u_wFactor: this.wFactor,
+        }}
     }
 })();
