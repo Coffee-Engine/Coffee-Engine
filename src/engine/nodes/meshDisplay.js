@@ -97,8 +97,8 @@
             return this.#modulatedColor;
         }
 
-        draw(drawID) {
-            super.draw();
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
 
             if (this.meshData && this.meshData instanceof coffeeEngine.mesh.class) {
                 for (let subMeshIndex in this.meshData.pointCount) {
@@ -114,10 +114,13 @@
                     const pointCount = this.meshData.pointCount[subMeshIndex];
 
                     //Set the buffers and prepare to draw
+                    renderer.pipeline.setUniforms(camera, myMaterial.shader, {
+                        u_model: modelMat,
+                        u_colorMod: this.#modulatedColorArr,
+                        u_objectID: drawID
+                    });
+
                     myMaterial.shader.setBuffers(data);
-                    myMaterial.shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
-                    if (myMaterial.shader.uniforms.u_colorMod) myMaterial.shader.uniforms.u_colorMod.value = this.#modulatedColorArr;
-                    if (myMaterial.shader.uniforms.u_objectID) myMaterial.shader.uniforms.u_objectID.value = drawID;
                     myMaterial.shader.drawFromBuffers(pointCount);
                 }
             }

@@ -1,13 +1,13 @@
 #? Various IDEs... if any are missing please feel free to add them!
-.vscode                 #* VsCode who would've thunk?
-.idea                   #* IntelliJ/Webstorm
-.sublime-project        #* Sublime Text
-.sublime-workspace      #* Sublime Text
-.project                #* Eclipse
-.settings               #* Eclipse
-.swp                    #* Vim
-.sfdx                   #* SFDX
-.cci                    #* Cumulus
+.vscode/                 #* VsCode who would've thunk?
+.idea/                   #* IntelliJ/Webstorm
+.sublime-project/        #* Sublime Text
+.sublime-workspace/      #* Sublime Text
+.project/                #* Eclipse
+.settings/               #* Eclipse
+.swp/                    #* Vim
+.sfdx/                   #* SFDX
+.cci/                    #* Cumulus
 
 #? The node libraries used for this project!
 node_modules/
@@ -18,4 +18,3 @@ out/
 
 src-tauri/target/debug/
 src-tauri/target/release/
-src/project/jszip.min.js
