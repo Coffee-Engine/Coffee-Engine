@@ -375,10 +375,10 @@
                 //When our file loads we get our shader to compile
                 fileReader.onload = () => {
                     if (!override) {
-                        this.shaderStorage[src] = this.compilePBRshader(fileReader.result);
+                        this.shaderStorage[src] = this.compileEngineShader(fileReader.result);
                     }
                     else {
-                        const shader = this.compilePBRshader(fileReader.result);
+                        const shader = this.compileEngineShader(fileReader.result);
                         if (this.shaderStorage[src]) {
                             //Check to make sure our status is good
                             if (shader.status == 0) return;

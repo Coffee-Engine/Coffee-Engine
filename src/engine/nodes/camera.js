@@ -1,14 +1,10 @@
 (function () {
-    class cameraNode extends coffeeEngine.getNode("Node3D") {
+    class cameraNode extends coffeeEngine.getNode("EditorVisible") {
         activeCamera = false;
         fov = 90;
         orthographic = false;
         zoom = 1.0;
         nearPlane = 0.05;
-
-        shader = coffeeEngine.renderer.mainShaders.unlit;
-        shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
-        sprite = coffeeEngine.renderer.sprites.camera;
 
         //The difference between this camera data and the one in the renderer is the fact this may or may not currently be in use.
         cameraData = new coffeeEngine.renderer.pipeline.CameraData();
@@ -83,34 +79,12 @@
             }
         }
 
-        draw(drawID) {
-            super.draw();
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
             //Editor display
             if (coffeeEngine.isEditor) {
-                this.shader.setBuffers(coffeeEngine.shapes.plane);
-                const translatedWorld = this.mixedMatrix.getTranslation();
-
-                const renderMatrix = coffeeEngine.matrix4
-                    .identity()
-                    .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
-                    .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
-                    .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
-                    .scale((this.sprite.width / this.sprite.height) * 0.5, 0.5, 0.5)
-                    .webGLValue();
-
-                this.shader.uniforms.u_texture.value = this.sprite.texture;
-                this.shader.uniforms.u_model.value = renderMatrix;
-                this.shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
-                this.shader.uniforms.u_objectID.value = drawID;
-                coffeeEngine.renderer.daveshade.cullFace();
-                this.shader.drawFromBuffers(6);
-
-                this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
-
-                this.shaderArrow.uniforms.u_model.value = this.mixedMatrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
-                this.shaderArrow.uniforms.u_colorMod.value = [1, 1, 1, 1];
-                this.shaderArrow.uniforms.u_objectID.value = drawID;
-                this.shaderArrow.drawFromBuffers(48);
+                this.drawBillboard(renderer, daveShade, camera, drawID, coffeeEngine.renderer.engineTextures.camera);
+                this.drawDirectionalArrow(renderer, camera, drawID);                
 
                 if (editor.lastSelectedNode == this) {
                     this.pushPostProcessData(coffeeEngine.mainViewport.cameraData, this.postProcessing);

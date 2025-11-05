@@ -52,22 +52,31 @@
             return this.#modulatedColor;
         }
 
-        //Billboard settings
-        omnidirectional = false;
-        scaleDivider = 1.0;
+        $scaleDivider = 1.0;
+        set scaleDivider(value) {
+            this.$scaleDivider = value;
+            this.updateMatrix();
+        }
+        get scaleDivider() {
+            return this.$scaleDivider;
+        }
+
+        updateMatrix() {
+            this.matrix = coffeeEngine.matrix4.identity();
+            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.position.z);
+            this.matrix = this.matrix.rotationZ(this.rotation);
+            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
+            this.matrix = this.matrix.scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1);
+        }
 
         draw(renderer, daveShade, camera, drawID) {
             super.draw(renderer, daveShade, camera, drawID);
 
-            if (this.texture && this.#shader) {                
-                //Then finally scale it.
-                let modelMat = this.mixedMatrix.scale(this.scale.x, this.scale.y, -1)
-                        .scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1)
-                        .webGLValue();
+            if (this.texture && this.#shader) {
                 
                 //This sets uniforms and creates a camera stamp to prevent resetting un-needed uniforms.
                 renderer.pipeline.setUniforms(camera, this.#shader, {
-                    u_model: modelMat,
+                    u_model: this.mixedMatrix.webGLValue(),
                     u_texture: this.texture.TEXTURE,
                     u_colorMod: this.#modulatedColorArr,
                     u_objectID: drawID

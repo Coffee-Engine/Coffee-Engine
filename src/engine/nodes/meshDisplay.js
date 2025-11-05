@@ -115,7 +115,7 @@
 
                     //Set the buffers and prepare to draw
                     renderer.pipeline.setUniforms(camera, myMaterial.shader, {
-                        u_model: modelMat,
+                        u_model: this.mixedMatrix.webGLValue(),
                         u_colorMod: this.#modulatedColorArr,
                         u_objectID: drawID
                     });
@@ -177,15 +177,14 @@
         //We sort on two different principals
         // 1. Where are we relative to the camera?
         // 2. where is the furthest point infront of the camera?
-        sortValue(drawID) {
+        sortValue(camera, drawID) {
             if (this.meshData) {
-                const currentCamera = coffeeEngine.renderer.currentCamera
                 const low = this.mixedMatrix.multiplyVector(this.meshData.lowestBound);
                 const high = this.mixedMatrix.multiplyVector(this.meshData.highestBound);
-                const camForward = currentCamera.matrix.contents[2];
+                const camForward = camera.matrix.contents[2];
 
                 //Just like a really far vector.
-                const cameraPosition = currentCamera.position;
+                const cameraPosition = camera.position;
                 const farVec = cameraPosition.add({ x: camForward[0] * 9999, y: camForward[1] * 9999, z: camForward[2] * 9999 });
 
                 farVec.x = Math.min(Math.max(farVec.x, low.x), high.x);
@@ -194,7 +193,7 @@
                 
                 return farVec.sub(cameraPosition).length();
             }
-            return this.position.sub(coffeeEngine.renderer.cameraData.position).length();
+            return this.position.sub(camera.position).length();
         }
     }
 

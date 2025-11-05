@@ -52,13 +52,13 @@
             return this.#modulatedColor;
         }
 
-        $scaleMultiplier = 1.0;
-        set scaleMultiplier(value) {
-            this.$scaleMultiplier = value;
+        $scaleDivider = 1.0;
+        set scaleDivider(value) {
+            this.$scaleDivider = value;
             this.updateMatrix();
         }
-        get scaleMultiplier() {
-            return this.$scaleMultiplier;
+        get scaleDivider() {
+            return this.$scaleDivider;
         }
 
         updateMatrix() {
@@ -66,21 +66,17 @@
             this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
             this.matrix = this.matrix.rotationZ(this.rotation);
             this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
-            this.matrix = this.matrix.scale(this.textureWidth * this.scaleMultiplier, this.textureHeight * this.scaleMultiplier, 1);
+            this.matrix = this.matrix.scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1);
         }
 
         draw(renderer, daveShade, camera, drawID) {
             super.draw(renderer, daveShade, camera, drawID);
 
-            if (this.texture && this.#shader) {                
-                //Then finally scale it.
-                let modelMat = this.mixedMatrix.scale(this.scale.x, this.scale.y, -1)
-                        .scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1)
-                        .webGLValue();
+            if (this.texture && this.#shader) {
                 
                 //This sets uniforms and creates a camera stamp to prevent resetting un-needed uniforms.
                 renderer.pipeline.setUniforms(camera, this.#shader, {
-                    u_model: modelMat,
+                    u_model: this.mixedMatrix.webGLValue(),
                     u_texture: this.texture.TEXTURE,
                     u_colorMod: this.#modulatedColorArr,
                     u_objectID: drawID
@@ -111,7 +107,7 @@
                 { name: "scale", translationKey: "engine.nodeProperties.Node.scale", type: coffeeEngine.PropertyTypes.VEC2 }, 
                 "---", 
                 { name: "spritePath", translationKey: "engine.nodeProperties.Sprite.spritePath", type: coffeeEngine.PropertyTypes.FILE, fileType: "png,jpeg,jpg,webp,bmp,gif,svg" }, 
-                { name: "scaleMultiplier", translationKey: "engine.nodeProperties.Sprite.scaleMultiplier", type: coffeeEngine.PropertyTypes.FLOAT }, 
+                { name: "scaleDivider", translationKey: "engine.nodeProperties.Sprite.scaleDivider", type: coffeeEngine.PropertyTypes.FLOAT }, 
                 "---", 
                 { name: "modulatedColor", translationKey: "engine.nodeProperties.Node.modulatedColor", type: coffeeEngine.PropertyTypes.COLOR4 }, 
                 { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
