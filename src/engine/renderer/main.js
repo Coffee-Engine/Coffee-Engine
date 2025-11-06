@@ -606,11 +606,11 @@
 
                     for (const key in this.params) {
                         const param = this.params[key];
-                        if (typeof param[0] === "string") typeConversions[param[1]](param);
+                        if (typeof param[0] === "string") this.renderer.typeConversions[param[1]](param);
 
                         //The actual setter
                         else if (this.shader.uniforms[key] && param[0]) {
-                            if (specialHandling[param[1]]) specialHandling[param[1]](param, key, this.shader, this);
+                            if (this.renderer.specialHandling[param[1]]) this.renderer.specialHandling[param[1]](param, key, this.shader, this);
                             else this.shader.uniforms[key].value = param[0];
                         }
                     }
