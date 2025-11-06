@@ -1,6 +1,6 @@
 (function () {
     //Its the sun controller. Allows you to control. The sun
-    class sun extends coffeeEngine.getNode("Node3D") {
+    class sun extends coffeeEngine.getNode("EditorVisible") {
         shader = coffeeEngine.renderer.mainShaders.unlit;
         shaderArrow = coffeeEngine.renderer.mainShaders.unlitSolid;
 
@@ -22,8 +22,8 @@
             return this.#lightColor;
         }
 
-        draw(drawID) {
-            super.draw();
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
 
             //Rotate our sun variable in the scene
             coffeeEngine.runtime.currentScene.sunDirection = [-this.mixedMatrix.contents[0][2], -this.mixedMatrix.contents[1][2], -this.mixedMatrix.contents[2][2]];
@@ -31,24 +31,8 @@
 
             //Editor display
             if (coffeeEngine.isEditor) {
-                this.shader.setBuffers(coffeeEngine.shapes.plane);
-
-                const translatedWorld = this.mixedMatrix.getTranslation();
-                const renderMatrix = coffeeEngine.matrix4.identity().translate(translatedWorld.x, translatedWorld.y, translatedWorld.z).rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x).rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y).webGLValue();
-
-                this.shader.uniforms.u_texture.value = coffeeEngine.renderer.sprites.sun.texture;
-                this.shader.uniforms.u_model.value = renderMatrix;
-                this.shader.uniforms.u_colorMod.value = this.#lightColorArray;
-                this.shader.uniforms.u_objectID.value = drawID;
-                coffeeEngine.renderer.daveshade.cullFace();
-                this.shader.drawFromBuffers(6);
-
-                this.shaderArrow.setBuffers(coffeeEngine.shapes.arrow);
-
-                this.shaderArrow.uniforms.u_model.value = this.mixedMatrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue();
-                this.shaderArrow.uniforms.u_colorMod.value = this.#lightColorArray;
-                this.shaderArrow.uniforms.u_objectID.value = drawID;
-                this.shaderArrow.drawFromBuffers(48);
+                this.drawBillboard(renderer, daveShade, camera, drawID, coffeeEngine.renderer.engineTextures.sun);
+                this.drawDirectionalArrow(renderer, camera, drawID);
             }
         }
 
