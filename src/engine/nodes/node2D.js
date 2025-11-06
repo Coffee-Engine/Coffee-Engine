@@ -41,10 +41,10 @@
         }
 
         updateMatrix() {
-            this.matrix = coffeeEngine.matrix4.identity();
-            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
-            this.matrix = this.matrix.rotationZ(this.rotation);
-            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
+            this.matrix = coffeeEngine.matrix4.identity()
+            .translate(this.position.x, this.position.y, this.layer)
+            .rotationZ(this.rotation)
+            .scale(this.scale.x, this.scale.y, 1);
         }
 
         constructor() {

@@ -62,11 +62,10 @@
         }
 
         updateMatrix() {
-            this.matrix = coffeeEngine.matrix4.identity();
-            this.matrix = this.matrix.translate(this.position.x, this.position.y, this.layer);
-            this.matrix = this.matrix.rotationZ(this.rotation);
-            this.matrix = this.matrix.scale(this.scale.x, this.scale.y, 1);
-            this.matrix = this.matrix.scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1);
+            this.matrix = coffeeEngine.matrix4.identity()
+            .translate(this.position.x, this.position.y, this.layer)
+            .rotationZ(this.rotation)
+            .scale(this.scale.x, this.scale.y, 1);
         }
 
         draw(renderer, daveShade, camera, drawID) {
@@ -76,7 +75,8 @@
                 
                 //This sets uniforms and creates a camera stamp to prevent resetting un-needed uniforms.
                 renderer.pipeline.setUniforms(camera, this.#shader, {
-                    u_model: this.mixedMatrix.webGLValue(),
+                    u_model: this.mixedMatrix
+                    .scale(this.textureWidth / this.scaleDivider, this.textureHeight / this.scaleDivider, 1).webGLValue(),
                     u_texture: this.texture.TEXTURE,
                     u_colorMod: this.#modulatedColorArr,
                     u_objectID: drawID
