@@ -8,27 +8,22 @@
 
             this.collision.radius = this.radius;
         }
-        
-        draw(drawID) {
-            super.draw();
-            //Editor display
-            if (coffeeEngine.isEditor) {
-                if (editor.lastSelectedNode != this) return;
 
-                //Get our shader and draw our circle
-                const shader = coffeeEngine.renderer.mainShaders.editorCircle;
+        shader = coffeeEngine.renderer.mainShaders.editorCircle;
 
-                const halfRadius = this.radius/2.0;
+        editorDisplay(renderer, daveShade, camera, drawID) {
+            //Set our buffers and draw
+            this.shader.setBuffers(coffeeEngine.shapes.plane);
+            const halfRadius = this.radius / 2.0;
 
-                shader.setBuffers(coffeeEngine.shapes.plane);
-                shader.uniforms.u_model.value = this.mixedMatrix.scale(halfRadius, halfRadius, halfRadius).webGLValue();
+            renderer.pipeline.setUniforms(camera, this.shader, {
+                u_model: this.mixedMatrix.scale(halfRadius, halfRadius, halfRadius).webGLValue(),
+                u_colorMod: [1, 1, 1, 1],
+                u_objectID: drawID
+            });
 
-                //Simple debug test
-                shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
-                shader.uniforms.u_objectID.value = drawID;
-                coffeeEngine.renderer.daveshade.cullFace();
-                shader.drawFromBuffers(6);
-            }
+            daveShade.cullFace();
+            this.shader.drawFromBuffers(6);
         }
         
         getProperties() {

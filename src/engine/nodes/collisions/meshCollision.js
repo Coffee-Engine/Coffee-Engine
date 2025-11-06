@@ -20,36 +20,26 @@
             return this.#meshPath;
         }
 
-        draw(drawID) {
-            super.draw();
-            //Editor display
-            if (coffeeEngine.isEditor) {
-                if (editor.lastSelectedNode != this) return;
-                //Get our shader
-                const shader = coffeeEngine.renderer.mainShaders.editorShape;
-                
-                //Cull the faces
-                coffeeEngine.renderer.daveshade.cullFace(DaveShade.side.FRONT);
+        editorDisplay(renderer, daveShade, camera, drawID) {
+            renderer.pipeline.setUniforms(camera, this.shader, {
+                u_model: this.mixedMatrix.webGLValue(),
+                u_colorMod: [1, 1, 1, 1],
+                u_objectID: drawID
+            });
+            daveShade.cullFace(daveShade.side.FRONT);
 
-                //Set our buffers and draw
-                shader.setBuffers(coffeeEngine.shapes.cube);
-                shader.uniforms.u_model.value = this.mixedMatrix.webGLValue();
-                shader.uniforms.u_objectID.value = drawID;
-                shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
+            //Draw mesh
+            if (this.meshData && this.meshData instanceof coffeeEngine.mesh.class) {
+                for (let subMeshIndex = 0; subMeshIndex < this.meshData.pointCount.length; subMeshIndex++) {
+                    const data = this.meshData.data[subMeshIndex];
+                    const pointCount = this.meshData.pointCount[subMeshIndex];
 
-                //Draw mesh
-                if (this.meshData && this.meshData instanceof coffeeEngine.mesh.class) {
-                    for (let subMeshIndex = 0; subMeshIndex < this.meshData.pointCount.length; subMeshIndex++) {
-                        const data = this.meshData.data[subMeshIndex];
-                        const pointCount = this.meshData.pointCount[subMeshIndex];
-    
-                        shader.setBuffers(data);
-                        shader.drawFromBuffers(pointCount);
-                    }
+                    this.shader.setBuffers(data);
+                    this.shader.drawFromBuffers(pointCount);
                 }
-
-                coffeeEngine.renderer.daveshade.cullFace();
             }
+
+            coffeeEngine.renderer.daveshade.cullFace();
         }
 
         getProperties() {

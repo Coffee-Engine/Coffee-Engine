@@ -2,6 +2,9 @@
     class node extends coffeeEngine.getNode("Node2D") {
         collisionGroup = "default";
 
+        //For polygonal shapes
+        shader = coffeeEngine.renderer.mainShaders.editorShape;
+
         update(deltaTime, noChildren) {
             super.update(deltaTime, noChildren);
             if (this.collision) this.collision.matrix = this.mixedMatrix;
@@ -28,6 +31,19 @@
             coffeeEngine.runtime.currentScene.isColliding(this, collisionList);
 
             return collisionList.length > 0;
+        }
+
+        editorDisplay(renderer, daveShade, camera, drawID) {}
+
+        draw(renderer, daveShade, camera, drawID) {
+            super.draw(renderer, daveShade, camera, drawID);
+
+            //Editor display
+            if (coffeeEngine.isEditor) {
+                if (editor.lastSelectedNode != this) return;
+
+                this.editorDisplay(renderer, daveShade, camera, drawID);
+            }     
         }
 
         getProperties() {

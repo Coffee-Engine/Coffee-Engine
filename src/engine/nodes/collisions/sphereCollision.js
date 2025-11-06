@@ -8,36 +8,31 @@
 
             this.collision.radius = this.radius;
         }
+
+        shader = coffeeEngine.renderer.mainShaders.editorCircle;
         
-        draw(drawID) {
-            super.draw();
-            //Editor display
-            if (coffeeEngine.isEditor) {
-                if (editor.lastSelectedNode != this) return;
+        editorDisplay(renderer, daveShade, camera, drawID) {
+            const halfRadius = this.radius/2.0;
+            const translatedWorld = this.mixedMatrix.getTranslation();
 
-                //Get our shader and draw our circle
-                const shader = coffeeEngine.renderer.mainShaders.editorCircle;
+            const renderMatrix = coffeeEngine.matrix4
+                .identity()
+                .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
+                .rotationY(camera.rotationEuler.y)
+                .rotationX(camera.rotationEuler.x)
+                .scale(halfRadius, halfRadius, halfRadius)
+                .webGLValue();
 
-                const halfRadius = this.radius/2.0;
-                const translatedWorld = this.mixedMatrix.getTranslation();
+                
+            renderer.pipeline.setUniforms(camera, this.shader, {
+                u_model: renderMatrix,
+                u_colorMod: [1, 1, 1, 1],
+                u_objectID: drawID
+            });
+            this.shader.setBuffers(coffeeEngine.shapes.plane);
 
-                const renderMatrix = coffeeEngine.matrix4
-                    .identity()
-                    .translate(translatedWorld.x, translatedWorld.y, translatedWorld.z)
-                    .rotationY(-coffeeEngine.renderer.cameraData.cameraRotationEul.x)
-                    .rotationX(-coffeeEngine.renderer.cameraData.cameraRotationEul.y)
-                    .scale(halfRadius, halfRadius, halfRadius)
-                    .webGLValue();  
-
-                    shader.setBuffers(coffeeEngine.shapes.plane);
-                    shader.uniforms.u_model.value = renderMatrix;
-
-                    //Simple debug test
-                    shader.uniforms.u_colorMod.value = [1, 1, 1, 1];
-                    shader.uniforms.u_objectID.value = drawID;
-                    coffeeEngine.renderer.daveshade.cullFace();
-                    shader.drawFromBuffers(6);
-            }
+            daveShade.cullFace();
+            this.shader.drawFromBuffers(6);
         }
         
         getProperties() {
