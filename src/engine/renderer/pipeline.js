@@ -14,6 +14,7 @@
         renderID = `${this.lastRender}_invalid`;
 
         draw(scene) {
+            scene.lightCount = 0;
             this.lastRender = Date.now();
             //We will assume the item is a function, and camera is a camera.
             for (let cameraID in this.cameraDrawQueue) {
