@@ -42,6 +42,10 @@
 
         setter() {}
 
+        invert() {
+            return new coffeeEngine.vector4(-this.x, -this.y, -this.z, -this.w);
+        }
+
         add(b) {
             return new coffeeEngine.vector4(this.x + b.x, this.y + b.y, this.z + b.z, this.w + b.w);
         }
@@ -127,4 +131,12 @@
         property.w = Number(data[3]);
         return property;
     };
+
+    coffeeEngine.vector4.zero = () => {
+        return new coffeeEngine.vector4(0);
+    }
+
+    coffeeEngine.vector4.one = () => {
+        return new coffeeEngine.vector4(1);
+    }
 })();

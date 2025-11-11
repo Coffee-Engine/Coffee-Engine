@@ -646,8 +646,8 @@ DaveShade.webGLModule = class extends DaveShade.module {
             //define our info
             const renderBufferInfo = {
                 texture: this.GL.createTexture(), resize: (width, height) => {
-                    renderBufferInfo.width = width;
-                    renderBufferInfo.height = height;
+                    renderBufferInfo.WIDTH = width;
+                    renderBufferInfo.HEIGHT = height;
                     this.GL.bindTexture(this.GL.TEXTURE_2D, renderBufferInfo.texture);
                     this.GL.texImage2D(this.GL.TEXTURE_2D, 0, INTERNAL_FORMAT, width, height, 0, FORMAT, TYPE, null);
                 },
@@ -1085,8 +1085,8 @@ DaveShade.webGLModule = class extends DaveShade.module {
             const renderBufferInfo = {
                 renderBuffer: this.GL.createRenderbuffer(),
                 resize: (width, height) => {
-                    renderBufferInfo.width = width;
-                    renderBufferInfo.height = height;
+                    renderBufferInfo.WIDTH = width;
+                    renderBufferInfo.HEIGHT = height;
                     this.GL.bindRenderbuffer(this.GL.RENDERBUFFER, renderBufferInfo.renderBuffer);
                     this.GL.renderbufferStorage(this.GL.RENDERBUFFER, this.GL.DEPTH_COMPONENT16, width, height);
                 },
@@ -1096,7 +1096,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
             };
 
             //Resize and attach our buffer
-            renderBufferInfo.resize(FRAMEBUFFER.width, FRAMEBUFFER.height);
+            renderBufferInfo.resize(FRAMEBUFFER.WIDTH, FRAMEBUFFER.HEIGHT);
             this.GL.framebufferRenderbuffer(this.GL.FRAMEBUFFER, this.GL.DEPTH_ATTACHMENT, this.GL.RENDERBUFFER, renderBufferInfo.renderBuffer);
 
             return renderBufferInfo;

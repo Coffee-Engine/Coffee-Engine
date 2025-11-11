@@ -36,6 +36,16 @@
             ]);
             return this.multiply(rotator);
         }
+
+        rotation(x, y, z) {
+            if (x instanceof coffeeEngine.vector3) {
+                z = x.z;
+                y = x.y;
+                x = x.x;
+            }
+
+            return this.rotationZ(z).rotationX(x).rotationY(y);
+        }
         /*
 
 1.0 - 2.0*y*y - 2.0*z*z, 2.0*x*y - 2.0*z*w, 2.0*x*z + 2.0*y*w, 0.0,
@@ -80,6 +90,12 @@
         }
 
         translate(x, y, z) {
+            if (x instanceof coffeeEngine.vector3) {
+                z = x.z;
+                y = x.y;
+                x = x.x;
+            }
+
             // prettier-ignore
             const rotator = new coffeeEngine.matrix4([
                 [1,0,0,x],

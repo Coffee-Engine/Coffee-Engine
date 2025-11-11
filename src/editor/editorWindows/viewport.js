@@ -41,108 +41,9 @@
 </svg><!--rotationCenter:40.09411684282881:40.094116842829095-->`;
 
     editor.windows.viewport = class extends editor.windows.base {
-        //3D camera
-        viewportControlsProjection() {
-            //Dragging on the screen!
-            if (this.controlling) {
-                //Look around with the mouse
-                this.previewCamera.yaw -= (coffeeEngine.inputs.mouse.movementX / 360) * editor.mouseSensitivity;
-                this.previewCamera.pitch += (coffeeEngine.inputs.mouse.movementY / 360) * editor.mouseSensitivity;
+        camera = null;
 
-                //Clamp it
-                this.previewCamera.pitch = Math.min(Math.max(this.previewCamera.pitch, -1.5707), 1.5707);
-
-                //Then do some basic fps flight controls
-                if (coffeeEngine.inputs.keys[editor.controls.up]) this.previewCamera.y -= 0.05 * this.previewCamera.speed;
-                if (coffeeEngine.inputs.keys[editor.controls.down]) this.previewCamera.y += 0.05 * this.previewCamera.speed;
-
-                if (coffeeEngine.inputs.keys[editor.controls.right]) {
-                    this.previewCamera.x -= Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                    this.previewCamera.z -= Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                }
-                if (coffeeEngine.inputs.keys[editor.controls.left]) {
-                    this.previewCamera.x += Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                    this.previewCamera.z += Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                }
-
-                if (coffeeEngine.inputs.keys[editor.controls.forward]) {
-                    this.previewCamera.x += Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                    this.previewCamera.z -= Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                }
-                if (coffeeEngine.inputs.keys[editor.controls.back]) {
-                    this.previewCamera.x -= Math.sin(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                    this.previewCamera.z += Math.cos(this.previewCamera.yaw) * 0.05 * this.previewCamera.speed;
-                }
-            }
-
-            //Then set our matrices
-            this.matrix = this.matrix.rotationX(this.previewCamera.pitch)
-            .rotationY(this.previewCamera.yaw)
-            .translate(this.previewCamera.x, this.previewCamera.y, this.previewCamera.z);
-
-            this.projection = coffeeEngine.matrix4.projection(this.previewCamera.fov, 1, 0.001, 1000);
-            this.aspectRatio = this.canvas.width / this.canvas.height;
-
-            this.wFactor += (1 - this.wFactor) * 0.125;
-            if (this.wFactor > 0.9875) {
-                this.wFactor = 1;
-            }
-        }
-
-        viewportControlsOrtho() {
-            //Viewport dragging
-            if (this.controlling) {
-                this.previewCamera.x += (coffeeEngine.inputs.mouse.movementX / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
-                this.previewCamera.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.previewCamera.zoom * editor.mouseSensitivity;
-            }
-
-            //No camera rotation
-            this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
-            this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
-
-            //Then set the matrices
-            this.matrix = this.matrix.rotationX(this.previewCamera.pitch)
-            .rotationY(this.previewCamera.yaw)
-            .translate(this.previewCamera.x, this.previewCamera.y, 1);
-
-            this.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
-            this.aspectRatio = this.canvas.width / this.canvas.height;
-
-            //Smooth transition
-            this.wFactor += (0 - this.wFactor) * 0.125;
-            if (this.wFactor < 0.0125) {
-                this.wFactor = 0;
-            }
-        }
-
-        renderLoop() {
-            this.matrix = coffeeEngine.matrix4.identity();
-
-            if (this.orthographicMode) this.viewportControlsOrtho();
-            else this.viewportControlsProjection();
-
-            //Set our matrices
-            this.cameraData.matrix = this.matrix;
-            this.cameraData.projection = this.projection;
-            
-            this.cameraData.position.x = -this.previewCamera.x;
-            this.cameraData.position.y = -this.previewCamera.y;
-            this.cameraData.position.z = -this.previewCamera.z;
-
-            this.cameraData.rotationEuler.x = -this.previewCamera.pitch; 
-            this.cameraData.rotationEuler.y = -this.previewCamera.yaw;
-            this.cameraData.rotationEuler.z = 0;
-            
-            this.cameraData.wFactor = [this.wFactor, this.previewCamera.zoom, 0.05];
-            this.cameraData.aspectRatio = this.aspectRatio;
-            this.cameraData.postProcessing = [];
-
-            coffeeEngine.renderer.pipeline.addCameraToQueue(this.cameraData);
-
-            coffeeEngine.runtime.currentScene.draw();
-        }
-
-        setupInput() {
+        setupInput(camera) {
             //Our controls and render time
             this.canvas.addEventListener("mousedown", (event) => {
                 switch (event.button) {
@@ -150,13 +51,14 @@
                     case 2: {
                         this.canvas.requestPointerLock();
 
-                        this.controlling = true;
+                        this.dragging = true;
                         break;
                     }
 
                     //Mouse selection
                     case 0: {
-                        let hit = coffeeEngine.renderer.daveshade.readTexturePixel(coffeeEngine.renderer.drawBuffer.attachments[5], event.layerX, event.layerY);
+                        let hit = coffeeEngine.renderer.daveShade.readTexture(coffeeEngine.renderer.drawBuffer.ATTACHMENTS[5], event.layerX, event.layerY);
+                        console.log(hit)
                         hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
                         hit = coffeeEngine.runtime.currentScene.drawList[hit];
                         
@@ -230,33 +132,33 @@
 
             //Removal of control
             document.addEventListener("pointerlockerror", () => {
-                this.controlling = false;
+                this.dragging = false;
             });
             this.canvas.addEventListener("mouseup", (event) => {
                 if (event.button == 2) {
                     document.exitPointerLock();
-                    this.controlling = false;
+                    this.dragging = false;
                 }
             });
 
             //Wheel stuff
             this.canvas.addEventListener("wheel", (event) => {
                 event.preventDefault();
-                if (this.orthographicMode) {
-                    this.previewCamera.zoom += event.deltaY * 0.0125;
+                if (camera.orthographic) {
+                    camera.zoom += event.deltaY * 0.0125;
 
-                    if (this.previewCamera.zoom > 25) {
-                        this.previewCamera.zoom = 25;
-                    } else if (this.previewCamera.zoom < 1) {
-                        this.previewCamera.zoom = 1;
+                    if (camera.zoom > 25) {
+                        camera.zoom = 25;
+                    } else if (camera.zoom < 1) {
+                        camera.zoom = 1;
                     }
                 } else {
-                    if (this.controlling) {
-                        this.previewCamera.speed -= event.deltaY * 0.0125;
-                        if (this.previewCamera.speed < 0.25) {
-                            this.previewCamera.speed = 0.25;
-                        } else if (this.previewCamera.speed > 10) {
-                            this.previewCamera.speed = 10;
+                    if (this.dragging) {
+                        camera.speed -= event.deltaY * 0.0125;
+                        if (camera.speed < 0.25) {
+                            camera.speed = 0.25;
+                        } else if (camera.speed > 10) {
+                            camera.speed = 10;
                         }
                     }
                 }
@@ -289,8 +191,8 @@
                 this.viewmodeButton.innerHTML = perspectiveIcon;
                 this.viewmodeButton.style.position = "relative";
                 this.viewmodeButton.onclick = () => {
-                    this.orthographicMode = !this.orthographicMode;
-                    this.viewmodeButton.innerHTML = this.orthographicMode ? orthographicIcon : perspectiveIcon;
+                    this.camera.orthographic = !this.camera.orthographic;
+                    this.viewmodeButton.innerHTML = this.camera.orthographic ? orthographicIcon : perspectiveIcon;
                 };
                 this.buttonHolder.appendChild(this.viewmodeButton);
 
@@ -327,6 +229,9 @@
             //Setup our renderer, make sure to grab and configure the canvas
             this.renderer = coffeeEngine.renderer;
 
+            this.camera = new editor.viewportCamera(this.renderer);
+            const camera = this.camera;
+
             this.canvas = this.renderer.canvas;
             this.canvas.style.width = "100%";
             this.canvas.style.height = "100%";
@@ -338,25 +243,7 @@
                 this.resized();
             });
 
-            //Our camera
-            this.controlling = false;
-            this.orthographicMode = false;
-            this.profilerToggle = false;
-            this.wFactor = 1;
-            this.previewCamera = {
-                x: 0,
-                y: 0,
-                z: 0,
-                yaw: 0,
-                pitch: 0,
-                zoom: 1,
-                fov: 90,
-                speed: 1,
-            };
-
-            this.cameraData = new coffeeEngine.renderer.pipeline.CameraData();
-
-            this.setupInput();
+            this.setupInput(camera);
 
             setInterval(() => {
                 this.profiler.innerHTML = `
@@ -370,7 +257,10 @@
 
                 //Make sure the mouse movement goes unupdated in this.
                 coffeeEngine.runtime.frameStart(true);
-                if (window.getComputedStyle(this.canvas).visibility == "visible") this.renderLoop();
+                if (window.getComputedStyle(this.canvas).visibility == "visible") {
+                    camera.update(coffeeEngine.runtime.deltaTime, this.dragging);
+                    coffeeEngine.runtime.currentScene.draw();
+                }
                 //Now we update the mouse movement
                 coffeeEngine.inputs.mouse.movementX = 0;
                 coffeeEngine.inputs.mouse.movementY = 0;
@@ -380,43 +270,41 @@
                 if (data.isPrefab) {
                     //Handle different prefab positions
                     if (data.root instanceof coffeeEngine.getNode("Node3D")) {
-                        this.previewCamera.x = -data.root.position.x;
-                        this.previewCamera.y = -data.root.position.y;
-                        this.previewCamera.z = -data.root.position.z + 4;
+                        camera.position.x = -data.root.position.x;
+                        camera.position.y = -data.root.position.y;
+                        camera.position.z = -data.root.position.z + 4;
     
-                        this.previewCamera.yaw = 0;
-                        this.previewCamera.pitch = 0;
-                        this.orthographicMode = false;
-                        this.wFactor = 1;
+                        camera.rotation.y = 0;
+                        camera.rotation.x = 0;
+                        camera.orthographic = false;
                     }
                     else if (data.root instanceof coffeeEngine.getNode("Node2D")) {
-                        this.previewCamera.x = -data.root.position.x;
-                        this.previewCamera.y = -data.root.position.y;
-                        this.previewCamera.z = 0;
+                        camera.position.x = -data.root.position.x;
+                        camera.position.y = -data.root.position.y;
+                        camera.position.z = 0;
     
-                        this.previewCamera.yaw = 0;
-                        this.previewCamera.pitch = 0;
-                        this.orthographicMode = true;
-                        this.wFactor = 0;
+                        camera.rotation.y = 0;
+                        camera.rotation.x = 0;
+                        camera.orthographic = true;
                     }
                     //The oponomous blank node!
                     else {
-                        this.previewCamera.x = 0;
-                        this.previewCamera.y = 0;
-                        this.previewCamera.z = 0;
+                        camera.position.x = 0;
+                        camera.position.y = 0;
+                        camera.position.z = 0;
     
-                        this.previewCamera.yaw = 0;
-                        this.previewCamera.pitch = 0;
+                        camera.rotation.yaw = 0;
+                        camera.rotation.pitch = 0;
                     }
                 }
                 //If we are a scene just move to 0,0,0
                 else {
-                    this.previewCamera.x = 0;
-                    this.previewCamera.y = 0;
-                    this.previewCamera.z = 0;
+                    camera.position.x = 0;
+                    camera.position.y = 0;
+                    camera.position.z = 0;
 
-                    this.previewCamera.yaw = 0;
-                    this.previewCamera.pitch = 0;
+                    camera.rotation.yaw = 0;
+                    camera.rotation.pitch = 0;
                 }
             })
         }

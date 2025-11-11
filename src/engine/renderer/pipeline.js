@@ -304,7 +304,10 @@
         //Matrix setting
         set matrix(value) { 
             this.#matrix = value; 
-            this.#webglMatrix = value.webGLValue(); 
+            this.#webglMatrix = value.webGLValue();
+            
+            this.position = value.getTranslation();
+            this.rotationEuler = value.getRotation();
         }
         get matrix() { return this.#matrix; }
 

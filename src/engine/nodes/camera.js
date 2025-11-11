@@ -16,19 +16,11 @@
         updateMatrix() {
             //Editor ordering
             if (coffeeEngine.isEditor) {
-                this.matrix = coffeeEngine.matrix4.identity();
-                this.matrix = this.matrix.translate(this.position.x, this.position.y, this.position.z);
-                this.matrix = this.matrix.rotationY(this.rotation.y);
-                this.matrix = this.matrix.rotationX(this.rotation.x);
-                this.matrix = this.matrix.rotationZ(this.rotation.z);
+                this.matrix = coffeeEngine.matrix4.identity().translate(this.position).rotation(this.rotation);
             } 
             //In game ordering
             else {
-                this.matrix = coffeeEngine.matrix4.identity();
-                this.matrix = this.matrix.rotationZ(-this.rotation.z);
-                this.matrix = this.matrix.rotationX(-this.rotation.x);
-                this.matrix = this.matrix.rotationY(-this.rotation.y);
-                this.matrix = this.matrix.translate(-this.position.x, -this.position.y, -this.position.z);
+                this.matrix = coffeeEngine.matrix4.identity().rotation(this.rotation.invert()).translate(-this.position.invert());
             }
         }
 

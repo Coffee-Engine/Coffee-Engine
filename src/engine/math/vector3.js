@@ -33,6 +33,10 @@
 
         setter() {}
 
+        invert() {
+            return new coffeeEngine.vector3(-this.x, -this.y, -this.z);
+        }
+
         add(b) {
             return new coffeeEngine.vector3(this.x + b.x, this.y + b.y, this.z + b.z);
         }
@@ -131,4 +135,12 @@
         property.z = Number(data[2]);
         return property;
     };
+
+    coffeeEngine.vector3.zero = () => {
+        return new coffeeEngine.vector3(0);
+    }
+
+    coffeeEngine.vector3.one = () => {
+        return new coffeeEngine.vector3(1);
+    }
 })();
