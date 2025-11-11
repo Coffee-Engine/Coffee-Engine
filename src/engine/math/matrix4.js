@@ -286,6 +286,16 @@
             //Return the matrix
             return returned;
         }
+
+        //Adapted from https://stackoverflow.com/a/15029416
+        getEuler() {
+            const rotationMat = this.getRotation().contents;
+            return new coffeeEngine.vector3(
+                -Math.atan2(-rotationMat[2][1], Math.sqrt( Math.pow(rotationMat[2][0], 2) + Math.pow(rotationMat[2][2], 2) )),
+                Math.atan2(rotationMat[2][0], rotationMat[2][2]),
+                Math.atan2(rotationMat[1][0], rotationMat[0][0])
+            );
+        }
     };
 
     coffeeEngine.matrix4.identity = () => {

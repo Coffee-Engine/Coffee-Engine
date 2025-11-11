@@ -294,8 +294,8 @@
         #projection = coffeeEngine.matrix4.projection(90, 1, 0.01, 1000);
         #webglProjection = coffeeEngine.matrix4.projection(90, 1, 0.01, 1000).webGLValue();
 
-        position = new coffeeEngine.vector3(0,0,0);
-        rotationEuler = new coffeeEngine.vector3(0,0,0);
+        position = new coffeeEngine.vector3(0);
+        rotationEuler = new coffeeEngine.vector3(0);
         wFactor = [1, 1, 0.05];
         aspectRatio = 1;
         postProcessing = [];
@@ -307,7 +307,7 @@
             this.#webglMatrix = value.webGLValue();
             
             this.position = value.getTranslation();
-            this.rotationEuler = value.getRotation();
+            this.rotationEuler = value.getEuler();
         }
         get matrix() { return this.#matrix; }
 
