@@ -1,44 +1,4 @@
 (function () {
-    const perspectiveIcon = `<svg style="position:absolute;top:0px;left:0px;width:16px;height:16px;margin:4px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80.36947" height="73.61275" viewBox="0,0,80.36947,73.61275">
-    <g transform="translate(-197.88792,-143.21948)">
-        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill="none" fill-rule="nonzero" stroke="currentColor"
-            stroke-width="5.5" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray=""
-            stroke-dashoffset="0" style="mix-blend-mode: normal">
-            <path d="M204.4926,179.52866l71.01479,-32.05092l0,65.04452z" />
-            <path d="M274.72183,180l-33.30782,0" />
-        </g>
-    </g>
-</svg>
-<!--rotationCenter:42.112076450298645:36.78052141087767-->`;
-
-    const orthographicIcon = `<svg version="1.1" style="position:absolute;top:0px;left:0px;width:16px;height:16px;margin:4px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="77.61458"
-    height="73.05832" viewBox="0,0,77.61458,73.05832">
-    <g transform="translate(-199.85726,-143.47084)">
-        <g data-paper-data="{&quot;isPaintingLayer&quot;:true}" fill="none" fill-rule="nonzero" stroke="currentColor"
-            stroke-width="5.5" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0"
-            style="mix-blend-mode: normal">
-            <path d="M274.72183,180h-33.30782" stroke-linecap="round" />
-            <path d="M202.60726,213.77916v-67.55832h72.11458v67.55832z" stroke-linecap="butt" />
-        </g>
-    </g>
-</svg>
-<!--rotationCenter:40.14274417710297:36.529159655786174-->`;
-
-    const profilerIcon = `<svg style="position:absolute;top:0px;left:0px;width:16px;height:16px;margin:4px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-    width="80.18823" height="80.18823" viewBox="0,0,80.18823,80.18823">
-    <g transform="translate(-199.90588,-139.90588)">
-        <g fill="none" stroke-miterlimit="10">
-            <path d="M206.48312,211.805h67.03375v-63.60999" stroke="currentColor" stroke-width="4"
-                stroke-linecap="round" />
-            <path
-                d="M207.20392,201.53369l8.46689,-7.439l16.70362,9.66789l16.79956,-11.82384l7.27997,8.54477l13.45895,-47.42317"
-                stroke="currentColor" stroke-width="4" stroke-linecap="round" />
-            <path d="M199.90588,220.09412v-80.18823h80.18823v80.18823z" stroke="none"
-                stroke-width="0" stroke-linecap="butt" />
-        </g>
-    </g>
-</svg><!--rotationCenter:40.09411684282881:40.094116842829095-->`;
-
     editor.windows.viewport = class extends editor.windows.base {
         async setupIcons() {
             this.orthographicIcon = editor.elementFromString(await fetch("editor/images/viewport/orthographic.svg").then(result => result.text()));
