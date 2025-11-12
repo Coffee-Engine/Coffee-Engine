@@ -125,7 +125,7 @@
         </style>
         <div id="centerPanel" class="CenterPanel CenterPanel-Home">
             <div class="fullWidth">
-                <img class="fullWidth" style="height:auto" src="editor/images/splash.png">
+                <img class="fullWidth" style="height:auto" src="${editor.splashLocation}">
             </div>
             <div class="fullWidth">
                 <p class="centerText" style="margin:1px;">${editor.language["engine.home.splashAuthor"].replace("[AUTHOR]", editor.home.splashAuthor)}</p>

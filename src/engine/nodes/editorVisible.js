@@ -3,9 +3,15 @@
         #shader = coffeeEngine.renderer.mainShaders.unlit;
         #shaderShape = coffeeEngine.renderer.mainShaders.unlitSolid;
 
-        drawBillboard(renderer, daveShade, camera, drawID, sprite) {
+        drawBillboard(renderer, daveShade, camera, drawID, sprite, color) {
             //This is only for editor objects so any draw this stuff if it is visible.
             if (coffeeEngine.isEditor && sprite) {
+                //Colours :3
+                if (!color) color = [1, 1, 1, 1];
+                else {
+                    if (color.length < 4) color = color = [...color, 1];
+                }
+
                 const translatedWorld = this.mixedMatrix.getTranslation();
 
                 //Move matrix to be at the entity's position;
@@ -21,7 +27,7 @@
                 renderer.pipeline.setUniforms(camera, this.#shader, {
                     u_model: modelMat,
                     u_texture: sprite.TEXTURE,
-                    u_colorMod: [1, 1, 1, 1],
+                    u_colorMod: color,
                     u_objectID: drawID
                 });
 
@@ -33,10 +39,16 @@
             }
         }
 
-        drawDirectionalArrow(renderer, camera, drawID) {
+        drawDirectionalArrow(renderer, camera, drawID, color) {
+            //Colours :3
+            if (!color) color = [1, 1, 1, 1];
+            else {
+                if (color.length < 4) color = color = [...color, 1];
+            }
+
             renderer.pipeline.setUniforms(camera, this.#shaderShape, {
                 u_model: this.mixedMatrix.rotationY(3.1415962).translate(0, 0, -1).webGLValue(),
-                u_colorMod: [1, 1, 1, 1],
+                u_colorMod: color,
                 u_objectID: drawID
             });
             

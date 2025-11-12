@@ -31,8 +31,8 @@
 
             //Editor display
             if (coffeeEngine.isEditor) {
-                this.drawBillboard(renderer, daveShade, camera, drawID, coffeeEngine.renderer.engineTextures.sun);
-                this.drawDirectionalArrow(renderer, camera, drawID);
+                this.drawBillboard(renderer, daveShade, camera, drawID, coffeeEngine.renderer.engineTextures.sun, this.color);
+                this.drawDirectionalArrow(renderer, camera, drawID, this.color);
             }
         }
 

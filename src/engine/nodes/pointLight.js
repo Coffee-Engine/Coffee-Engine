@@ -13,7 +13,7 @@
             scene.lightCount += 1;
 
             //Editor display
-            if (coffeeEngine.isEditor) this.drawBillboard(renderer, daveShade, camera, drawID, coffeeEngine.renderer.engineTextures.light);
+            if (coffeeEngine.isEditor) this.drawBillboard(renderer, daveShade, camera, drawID, coffeeEngine.renderer.engineTextures.light, this.color);
         }
 
         getProperties() {
