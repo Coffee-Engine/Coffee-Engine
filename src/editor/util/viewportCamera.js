@@ -79,6 +79,12 @@
                 //No camera rotation
                 this.rotation.y += (0 - this.rotation.y) * 0.125;
                 this.rotation.x += (0 - this.rotation.x) * 0.125;
+
+                //Now we can do fun controls
+                if (coffeeEngine.inputs.keys[editor.controls.forward]) this.position.y += delta * this.speed;
+                if (coffeeEngine.inputs.keys[editor.controls.back]) this.position.y -= delta * this.speed;
+                if (coffeeEngine.inputs.keys[editor.controls.left]) this.position.x -= delta * this.speed;
+                if (coffeeEngine.inputs.keys[editor.controls.right]) this.position.x += delta * this.speed;
             }
             else {
                 this.wFactor += (1 - this.wFactor) * 0.125;
