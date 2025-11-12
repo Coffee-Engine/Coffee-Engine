@@ -1,8 +1,6 @@
 (function () {
     editor.home = {};
 
-    editor.home.splashAuthor = "ObviousAlexC";
-
     editor.home.initilize = () => {
         console.log("Initilizing Home Page");
 
