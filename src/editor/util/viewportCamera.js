@@ -1,6 +1,5 @@
 (function() {
     editor.viewportCamera = class {
-        matrix = coffeeEngine.matrix4.identity();
 
         orthographic = false;
         speed = 1;
@@ -9,6 +8,10 @@
         rotation = new coffeeEngine.vector3(0);
 
         cameraData = new coffeeEngine.renderer.pipeline.CameraData();
+
+        get matrix() {
+            return this.cameraData.matrix;
+        }
 
         wFactor = 1;
         zoom = 1;

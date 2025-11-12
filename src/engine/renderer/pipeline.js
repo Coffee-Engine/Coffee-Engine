@@ -110,11 +110,11 @@
             //Neato!
             mainPass.setUniforms({
                 //Textures
-                u_color: drawBuffer[0].texture, 
-                u_materialAttributes: drawBuffer[1].texture, 
-                u_emission: drawBuffer[2].texture, 
-                u_position: drawBuffer[3].texture, 
-                u_normal: drawBuffer[4].texture,
+                u_color: drawBuffer[0].TEXTURE, 
+                u_materialAttributes: drawBuffer[1].TEXTURE, 
+                u_emission: drawBuffer[2].TEXTURE, 
+                u_position: drawBuffer[3].TEXTURE, 
+                u_normal: drawBuffer[4].TEXTURE,
 
                 //The sun
                 u_sunDir: scene.sunDirection,
@@ -148,7 +148,7 @@
             if (renderer.viewport.antiAlias) {
                 renderer.swapPost();
                 renderer.mainShaders.antiAliasPass.setBuffers(coffeeEngine.shapes.plane);
-                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.prevPost.ATTACHMENTS[0].texture, u_reductionAmount: renderer.drawBufferSizeMul });
+                renderer.mainShaders.antiAliasPass.setUniforms({ u_texture: renderer.prevPost.ATTACHMENTS[0].TEXTURE, u_reductionAmount: renderer.drawBufferSizeMul });
                 renderer.mainShaders.antiAliasPass.drawFromBuffers(6);
 
                 renderer.prevPost.resize(renderer.canvas.width, renderer.canvas.height);
@@ -157,11 +157,11 @@
             //Yeah
             const conjoiner = {
                 //Textures
-                u_color: drawBuffer[0].texture, 
-                u_materialAttributes: drawBuffer[1].texture, 
-                u_emission: drawBuffer[2].texture, 
-                u_position: drawBuffer[3].texture, 
-                u_normal: drawBuffer[4].texture,
+                u_color: drawBuffer[0].TEXTURE, 
+                u_materialAttributes: drawBuffer[1].TEXTURE, 
+                u_emission: drawBuffer[2].TEXTURE, 
+                u_position: drawBuffer[3].TEXTURE, 
+                u_normal: drawBuffer[4].TEXTURE,
 
                 //The sun
                 u_sunDir: scene.sunDirection,
@@ -185,7 +185,7 @@
                 renderer.swapPost();
                 
                 //Our previous
-                const previous = renderer.prevPost.ATTACHMENTS[0].texture;
+                const previous = renderer.prevPost.ATTACHMENTS[0].TEXTURE;
                 const shader = renderer.pipeline.postProcessOrder[shaderID].$processedShader;
                 const parameters = renderer.pipeline.postProcessOrder[shaderID].parameters;
 
@@ -203,7 +203,7 @@
                     shader.setUniforms({
                         //The previous pipeline object
                         u_initial: previous,
-                        u_screen: (increment > 0) ? renderer.getPrevStore().attachments[0].texture : previous,
+                        u_screen: (increment > 0) ? renderer.getPrevStore().attachments[0].TEXTURE : previous,
                         u_renderPass: increment
                     });
 
@@ -215,7 +215,7 @@
 
                 if (!renderer.usingStore) {
                     renderer.mainShaders.viewportPass.setBuffers(coffeeEngine.shapes.plane);
-                    renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPrevStore().attachments[0].texture });
+                    renderer.mainShaders.viewportPass.setUniforms({ u_texture: renderer.getPrevStore().attachments[0].TEXTURE });
                     renderer.mainShaders.viewportPass.drawFromBuffers(6);
                 }
                 else {
@@ -230,7 +230,7 @@
             daveShade.renderToCanvas();
             viewportPass.setBuffers(coffeeEngine.shapes.plane);
             viewportPass.setUniforms({ 
-                u_texture: renderer.curPost.ATTACHMENTS[0].texture,
+                u_texture: renderer.curPost.ATTACHMENTS[0].TEXTURE,
                 u_res: [renderer.canvas.width, renderer.canvas.height]
             });
             viewportPass.drawFromBuffers(6);
@@ -243,7 +243,7 @@
             daveShade.clear(daveShade.CLEAR_TARGET.DEPTH | daveShade.CLEAR_TARGET.COLOR);
             daveShade.TEXTURE_READING_SHADER.setBuffers(daveShade.TEXTURE_READING_QUAD);
             daveShade.TEXTURE_READING_SHADER.setUniforms({
-                u_texture: renderer.drawBuffer.ATTACHMENTS[1].texture
+                u_texture: renderer.drawBuffer.ATTACHMENTS[1].TEXTURE
             });
 
             daveShade.TEXTURE_READING_SHADER.drawFromBuffers(6);

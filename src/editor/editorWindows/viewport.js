@@ -41,9 +41,7 @@
 </svg><!--rotationCenter:40.09411684282881:40.094116842829095-->`;
 
     editor.windows.viewport = class extends editor.windows.base {
-        camera = null;
-
-        setupInput(camera) {
+        setupInput() {
             //Our controls and render time
             this.canvas.addEventListener("mousedown", (event) => {
                 switch (event.button) {
@@ -57,8 +55,9 @@
 
                     //Mouse selection
                     case 0: {
-                        let hit = coffeeEngine.renderer.daveShade.readTexture(coffeeEngine.renderer.drawBuffer.ATTACHMENTS[5], event.layerX, event.layerY);
-                        console.log(hit)
+                        const drawBufferSizeMul = this.renderer.drawBufferSizeMul;
+
+                        let hit = this.renderer.daveShade.readTexture(this.renderer.drawBuffer.ATTACHMENTS[5], event.layerX * drawBufferSizeMul, event.layerY * drawBufferSizeMul);
                         hit = (((hit[2]*65536)+hit[1]*256)+hit[0]) - 1;
                         hit = coffeeEngine.runtime.currentScene.drawList[hit];
                         
@@ -71,6 +70,8 @@
                         //Node dragging
                         if (this.previouslySelectedNode == hit) {
                             const moveEvent = (event) => {
+                                const cameraMatrix = this.camera.matrix.contents;
+
                                 if (!this.previouslySelectedNode) return;
                                 
                                 if (!this.draggingNode) {
@@ -80,8 +81,8 @@
                                 //Make sure we don't fling it immediately
                                 else if (hit instanceof coffeeEngine.getNode("Node2D")) {
                                     const moveArr = [
-                                        event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05,
-                                        event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05
+                                        event.movementX * cameraMatrix[0][0] * 0.05,
+                                        event.movementY * cameraMatrix[1][1] * 0.05
                                     ];
 
                                     if (!isNaN(moveArr[0])) hit.position.x += moveArr[0];
@@ -89,13 +90,13 @@
                                 }
                                 else if (hit instanceof coffeeEngine.getNode("Node3D")) {
                                     const moveArr = [
-                                        event.movementX * coffeeEngine.renderer.cameraData.transform[0] * 0.05,
-                                        event.movementX * coffeeEngine.renderer.cameraData.transform[1] * 0.05,
-                                        event.movementX * coffeeEngine.renderer.cameraData.transform[2] * 0.05,
+                                        event.movementX * cameraMatrix[0][0] * 0.05,
+                                        event.movementX * cameraMatrix[0][1] * 0.05,
+                                        event.movementX * cameraMatrix[0][2] * 0.05,
 
-                                        -event.movementY * coffeeEngine.renderer.cameraData.transform[4] * 0.05,
-                                        -event.movementY * coffeeEngine.renderer.cameraData.transform[5] * 0.05,
-                                        -event.movementY * coffeeEngine.renderer.cameraData.transform[6] * 0.05,
+                                        -event.movementY * cameraMatrix[1][0] * 0.05,
+                                        -event.movementY * cameraMatrix[1][1] * 0.05,
+                                        -event.movementY * cameraMatrix[1][2] * 0.05,
                                     ];
 
                                     if (!isNaN(moveArr[0])) hit.position.x += moveArr[0];
@@ -144,21 +145,21 @@
             //Wheel stuff
             this.canvas.addEventListener("wheel", (event) => {
                 event.preventDefault();
-                if (camera.orthographic) {
-                    camera.zoom += event.deltaY * 0.0125;
+                if (this.camera.orthographic) {
+                    this.camera.zoom += event.deltaY * 0.0125;
 
-                    if (camera.zoom > 25) {
-                        camera.zoom = 25;
-                    } else if (camera.zoom < 1) {
-                        camera.zoom = 1;
+                    if (this.camera.zoom > 25) {
+                        this.camera.zoom = 25;
+                    } else if (this.camera.zoom < 1) {
+                        this.camera.zoom = 1;
                     }
                 } else {
                     if (this.dragging) {
-                        camera.speed -= event.deltaY * 0.0125;
-                        if (camera.speed < 0.25) {
-                            camera.speed = 0.25;
-                        } else if (camera.speed > 10) {
-                            camera.speed = 10;
+                        this.camera.speed -= event.deltaY * 0.0125;
+                        if (this.camera.speed < 0.25) {
+                            this.camera.speed = 0.25;
+                        } else if (this.camera.speed > 10) {
+                            this.camera.speed = 10;
                         }
                     }
                 }
@@ -313,7 +314,7 @@
             const clientSize = this.canvas.getBoundingClientRect();
             this.canvas.width = clientSize.width;
             this.canvas.height = clientSize.height;
-            coffeeEngine.renderer.resize(this.canvas.width, this.canvas.height);
+            this.renderer.resize(this.canvas.width, this.canvas.height);
         }
     };
 

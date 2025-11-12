@@ -645,14 +645,14 @@ DaveShade.webGLModule = class extends DaveShade.module {
 
             //define our info
             const renderBufferInfo = {
-                texture: this.GL.createTexture(), resize: (width, height) => {
+                TEXTURE: this.GL.createTexture(), resize: (width, height) => {
                     renderBufferInfo.WIDTH = width;
                     renderBufferInfo.HEIGHT = height;
-                    this.GL.bindTexture(this.GL.TEXTURE_2D, renderBufferInfo.texture);
+                    this.GL.bindTexture(this.GL.TEXTURE_2D, renderBufferInfo.TEXTURE);
                     this.GL.texImage2D(this.GL.TEXTURE_2D, 0, INTERNAL_FORMAT, width, height, 0, FORMAT, TYPE, null);
                 },
                 dispose: () => {
-                    this.GL.deleteTexture(renderBufferInfo.texture);
+                    this.GL.deleteTexture(renderBufferInfo.TEXTURE);
                 },
             };
 
@@ -666,7 +666,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
                 ? this.DRAWBUFFER_MANAGER[`COLOR_ATTACHMENT${FRAMEBUFFER.COLOR_ATTACHMENTS}`]
                 : this.GL[`COLOR_ATTACHMENT${FRAMEBUFFER.COLOR_ATTACHMENTS}`];
             
-            this.GL.framebufferTexture2D(this.GL.FRAMEBUFFER, attachedBuffer, this.GL.TEXTURE_2D, renderBufferInfo.texture, 0);
+            this.GL.framebufferTexture2D(this.GL.FRAMEBUFFER, attachedBuffer, this.GL.TEXTURE_2D, renderBufferInfo.TEXTURE, 0);
 
             //Increment color attachments
             FRAMEBUFFER.COLOR_ATTACHMENTS++;
@@ -1153,13 +1153,13 @@ DaveShade.webGLModule = class extends DaveShade.module {
                 1, 1, 0, 1
             ]),
             a_texcoord: new Float32Array([
-                1, 0,
-                0, 0,
                 1, 1,
-
-                0, 0,
                 0, 1,
-                1, 1
+                1, 0,
+
+                0, 1,
+                0, 0,
+                1, 0
             ]),
         });
 
