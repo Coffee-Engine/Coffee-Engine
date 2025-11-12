@@ -1,4 +1,3 @@
-//Old obsolete window. Here for historical reasons. and incase I want to restore some LOST MEDIA
 (function () {
     const perspectiveIcon = `<svg style="position:absolute;top:0px;left:0px;width:16px;height:16px;margin:4px;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="80.36947" height="73.61275" viewBox="0,0,80.36947,73.61275">
     <g transform="translate(-197.88792,-143.21948)">
@@ -41,6 +40,15 @@
 </svg><!--rotationCenter:40.09411684282881:40.094116842829095-->`;
 
     editor.windows.viewport = class extends editor.windows.base {
+        async setupIcons() {
+            this.orthographicIcon = editor.elementFromString(await fetch("editor/images/viewport/orthographic.svg").then(result => result.text()));
+            this.perspectiveIcon = editor.elementFromString(await fetch("editor/images/viewport/perspective.svg").then(result => result.text()));
+            this.profilerIcon = editor.elementFromString(await fetch("editor/images/viewport/profiler.svg").then(result => result.text()));
+
+            this.profilerButton.appendChild(this.profilerIcon);
+            this.viewmodeButton.appendChild(this.camera.orthographic ? this.orthographicIcon : this.perspectiveIcon);
+        }
+
         setupInput() {
             //Our controls and render time
             this.canvas.addEventListener("mousedown", (event) => {
@@ -178,28 +186,31 @@
             this.buttonHolder = document.createElement("div");
             {
                 //Style the button holder
-                this.buttonHolder.style.position = "absolute";
-                this.buttonHolder.style.aspectRatio = "1/3";
-                this.buttonHolder.style.display = "grid";
-                this.buttonHolder.style.gridTemplateRows = "33.3333% 33.3333% 33.3333%";
+                editor.quickCSS(this.buttonHolder, {
+                    position: "absolute",
+                    aspectRatio: "1/3",
+                    display: "grid",
+                    gridTemplateRows: "33.3333% 33.3333% 33.3333%",
 
-                this.buttonHolder.style.width = "24px";
-                this.buttonHolder.style.top = "4px";
-                this.buttonHolder.style.left = "4px";
+                    width: "24px",
+                    top: "4px",
+                    left: "4px"
+                });
 
                 //ortho Button
                 this.viewmodeButton = document.createElement("button");
-                this.viewmodeButton.innerHTML = perspectiveIcon;
                 this.viewmodeButton.style.position = "relative";
                 this.viewmodeButton.onclick = () => {
                     this.camera.orthographic = !this.camera.orthographic;
-                    this.viewmodeButton.innerHTML = this.camera.orthographic ? orthographicIcon : perspectiveIcon;
+                    if (this.orthographicIcon && this.perspectiveIcon) {
+                        this.viewmodeButton.removeChild(this.viewmodeButton.children[0]);
+                        this.viewmodeButton.appendChild(this.camera.orthographic ? this.orthographicIcon : this.perspectiveIcon);
+                    }
                 };
                 this.buttonHolder.appendChild(this.viewmodeButton);
 
                 //profiler Button
                 this.profilerButton = document.createElement("button");
-                this.profilerButton.innerHTML = profilerIcon;
                 this.profilerButton.style.position = "relative";
                 this.profiler.style.visibility = this.profilerToggle ? "visible" : "hidden";
                 {
@@ -225,6 +236,7 @@
             container.style.overflow = "hidden";
 
             //The buttons
+            this.setupIcons();
             this.setupButtons(container);
 
             //Setup our renderer, make sure to grab and configure the canvas
@@ -246,26 +258,31 @@
 
             this.setupInput(camera);
 
-            setInterval(() => {
-                this.profiler.innerHTML = `
+            const viewport = this;
+            const loop = () => {
+                viewport.profiler.innerHTML = `
                 FPS:${Math.floor(1 / coffeeEngine.runtime.deltaTime)}<br>
                 Delta:${coffeeEngine.runtime.deltaTime}<br>
-                Triangles:${this.renderer.daveShade.POINT_COUNT / 3}<br>
-                Nodes:${this.renderer.nodesRendered}<br>
+                Triangles:${viewport.renderer.daveShade.POINT_COUNT / 3}<br>
+                Nodes:${viewport.renderer.nodesRendered}<br>
                 Lights:${coffeeEngine.runtime.currentScene.lightCount}`;
 
                 coffeeEngine.timer += coffeeEngine.runtime.deltaTime;
 
                 //Make sure the mouse movement goes unupdated in this.
                 coffeeEngine.runtime.frameStart(true);
-                if (window.getComputedStyle(this.canvas).visibility == "visible") {
-                    camera.update(coffeeEngine.runtime.deltaTime, this.dragging);
+                if (window.getComputedStyle(viewport.canvas).visibility == "visible") {
+                    camera.update(coffeeEngine.runtime.deltaTime, viewport.dragging);
                     coffeeEngine.runtime.currentScene.draw();
                 }
                 //Now we update the mouse movement
                 coffeeEngine.inputs.mouse.movementX = 0;
                 coffeeEngine.inputs.mouse.movementY = 0;
-            }, 16);
+
+                requestAnimationFrame(loop);
+            }
+
+            requestAnimationFrame(loop);
 
             coffeeEngine.addEventListener("sceneLoaded", (data) => {
                 if (data.isPrefab) {

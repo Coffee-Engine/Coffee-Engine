@@ -22,7 +22,7 @@
             this.daveShade = renderer.daveShade;
         }
 
-        orthographic(delta) {
+        orthographicFunc(delta) {
             this.position.x += (coffeeEngine.inputs.mouse.movementX / 180) * this.zoom * editor.mouseSensitivity;
             this.position.y -= (coffeeEngine.inputs.mouse.movementY / 180) * this.zoom * editor.mouseSensitivity;
 
@@ -67,7 +67,7 @@
         update(delta, dragging) {
             //Make sure we are dragging to do the main controls
             if (dragging) {
-                if (this.orthographic) this.orthographic(delta);
+                if (this.orthographic) this.orthographicFunc(delta);
                 else this.perspective(delta);
             }
 
@@ -77,8 +77,8 @@
                 if (this.wFactor < 0.0125) { this.wFactor = 0; }
 
                 //No camera rotation
-                this.previewCamera.yaw += (0 - this.previewCamera.yaw) * 0.125;
-                this.previewCamera.pitch += (0 - this.previewCamera.pitch) * 0.125;
+                this.rotation.y += (0 - this.rotation.y) * 0.125;
+                this.rotation.x += (0 - this.rotation.x) * 0.125;
             }
             else {
                 this.wFactor += (1 - this.wFactor) * 0.125;
