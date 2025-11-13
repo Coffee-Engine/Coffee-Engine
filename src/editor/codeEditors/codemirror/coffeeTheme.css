@@ -105,6 +105,10 @@
     color: var(--class-name);
 }
 
+.cm-s-coffee-engine span.cm-qualifier {
+    color: var(--class-name);
+}
+
 .cm-s-coffee-engine span.cm-bracket {
     color: var(--delimiter-bracket);
 }

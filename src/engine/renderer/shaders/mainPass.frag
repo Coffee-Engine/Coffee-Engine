@@ -73,9 +73,9 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 }
 
 vec3 calculateLightPBR(mat4 light, vec3 albedo, vec3 position, vec3 normal, vec3 matAttributes) {
-    vec3 lightPosition = vec3(light[0][0],light[0][1],light[0][2]);
-    vec3 lightColour = vec3(light[1][0],light[1][1],light[1][2]);
-    vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
+    vec3 lightPosition = light[0].xyz;
+    vec3 lightColour = light[1].xyz;
+    vec3 facingDirection = light[2].xyz;
 
     vec3 lightToFrag = normalize(lightPosition - position);
     vec3 halfway = normalize(viewToFrag + lightToFrag);
@@ -196,6 +196,9 @@ void main()
 
             //Stuff required to calculate the end result
             mat4 light = u_lights[i];
+            vec3 lightPosition = light[0].xyz;
+
+            if (length(position - lightPosition) > (light[0][3] * 2.0)) { continue; }
 
             if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, o_color.xyz, position, normal, matAttributes.xyz);}
             else {lightColor.xyz += calculateLight(light, position, normal);}

@@ -38,8 +38,10 @@ window.mirrorManager = {
         return newWorkspace;
     },
 
-    setScript: (contents,type) => {
-        mirrorManager.workspace.setValue(contents);
-        mirrorManager.workspace.setOption("mode", type);
+    setScript: (contents, type, workspace) => {
+        workspace = workspace || mirrorManager.workspace;
+
+        workspace.setValue(contents);
+        workspace.setOption("mode", type);
     },
 }

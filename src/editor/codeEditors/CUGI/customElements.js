@@ -136,4 +136,32 @@
 
         return button;
     }
+
+    CUGI.types["codeMirror"] = (data) => {
+        const { target, key } = data;
+
+        const container = document.createElement("div");
+
+        editor.quickCSS(container, {
+            minWidth: "256px",
+            minHeight: "256px",
+            maxWidth: "75%",
+            maxHeight: "75%",
+        })
+
+        const workspace = mirrorManager.inject(container);
+
+        workspace.on("changes", () => {
+            data.target[data.key] = workspace.getValue();
+            data.onchange(data.target[data.key], data);
+        });
+
+        //Wait a second and then update
+        setTimeout(() => {
+            workspace.refresh();
+            mirrorManager.setScript(target[key] || "", data.language || "js", workspace);
+        }, 33)
+
+        return container;
+    }
 })();

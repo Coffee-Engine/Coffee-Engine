@@ -518,9 +518,8 @@
                     target: editor.settings.values.Theme,
                     key: "customCSSCode",
                     defaultValue: "",
-                    type: "multiline",
-                    rows: 10,
-                    spellcheck: false,
+                    type: "codeMirror",
+                    language: "css",
                     onchange: (value) => {
                         if (editor.settings.values.Theme.customCSS) {
                             customCSSTheme.innerText = value;
