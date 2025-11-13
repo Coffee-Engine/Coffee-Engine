@@ -113,20 +113,22 @@ vec3 calculateLightPBR(mat4 light, vec3 albedo, vec3 position, vec3 normal, vec3
 }
 
 vec3 calculateLight(mat4 light, vec3 position, vec3 normal) {
-    vec3 color = vec3(light[1][0],light[1][1],light[1][2]);
-    vec3 facingDirection = vec3(light[2][0],light[2][1],light[2][2]);
+    vec3 color = light[1].xyz;
+    vec3 facingDirection = light[2].xyz;
 
     //General application calculations. Distance^Intensity so that the light gets funkier
-    vec3 relative = vec3(position.x - light[0][0], position.y - light[0][1], position.z - light[0][2]);
+    vec3 relative = position - light[0].xyz;
     vec3 halfway = viewToFrag;
 
     float distance = pow(length(relative),3.0);
+    vec3 direction = normalize(relative);
+
     vec3 calculated = color * (light[0][3] / distance);
-    calculated *= lightDot(normal,-normalize(relative), vec2(0.5, 0.75));
+    calculated *= lightDot(normal,-direction, vec2(0.5, 0.75));
 
     //Now we calculate the final output
     if (facingDirection != vec3(1)) {
-        float spottedDir = lightDot(normalize(relative),facingDirection, vec2(1.0, 0.5));
+        float spottedDir = lightDot(direction, facingDirection, vec2(1.0, 0.5));
         if (spottedDir < 0.0) {
             spottedDir = 0.0;
         }
