@@ -15,6 +15,23 @@
         return element;
     }
 
+    //Quickly sets css variables
+    editor.quickVar = (element, variables) => {
+        if (Array.isArray(element)) {
+            for (let elID in element) {
+                editor.quickVar(element[elID], variables);
+            }
+        }
+
+        if (!(element instanceof HTMLElement)) return element;
+
+        for (let key in variables) {
+            element.style.setProperty(`--${key}`, variables[key]);
+        }
+
+        return element;
+    }
+
 
     //Host/Parasite relationship
     const host = document.createElement("div");

@@ -8,21 +8,21 @@
         #scrollX = 0;
         set scrollX(value) {
             this.#scrollX = value;
-            this.Content.style.setProperty("--scrollX", `${this.scrollX}px`);
+            this.updatePosition();
         }
         get scrollX() { return this.#scrollX; }
 
         #scrollY = 0;
         set scrollY(value) {
             this.#scrollY = value;
-            this.Content.style.setProperty("--scrollY", `${this.scrollY}px`);
+            this.updatePosition();
         }
         get scrollY() { return this.#scrollY; }
 
         #zoom = 2;
         set zoom(value) {
             this.#zoom = Math.max(Math.min(value, 25), 0.25);
-            this.Content.style.setProperty("--zoom", value);
+            this.updatePosition();
         }
         get zoom() { return this.#zoom; }
 
@@ -34,6 +34,15 @@
             this.#tool = value;
         }
         get tool() { return this.#tool; }
+
+        updatePosition() {
+            //Setup some CSS
+            editor.quickVar(this.Content, {
+                "scrollX": `${this.scrollX}px`,
+                "scrollY": `${this.scrollY}px`,
+                "zoom": this.zoom
+            })
+        }
 
         init(container) {
             //Setup Window
@@ -56,9 +65,11 @@
             };
 
             //Setup some CSS
-            this.Content.style.setProperty("--scrollX", `${0}px`);
-            this.Content.style.setProperty("--scrollY", `${0}px`);
-            this.Content.style.setProperty("--zoom", `2`);
+            editor.quickVar(this.Content, {
+                "scrollX": `0px`,
+                "scrollY": `0px`,
+                "zoom": `1`,
+            })
 
             //Setup window functionality
             this.setupLayout(container);
@@ -84,7 +95,9 @@
                 ]
             });
             this.fileDropdown.onchange = (value) => {
-                console.log(value);
+                this.canvas.width = 32;
+                this.canvas.height = 32;
+                this.GL.clearRect(0, 0, this.canvas.width, this.canvas.height);
             }
             this.topBar.appendChild(this.fileDropdown);
 
@@ -222,6 +235,11 @@
                 if (event.ctrlKey) {
                     event.preventDefault();
                     this.zoom += event.deltaY / -100;
+                }
+                else if (event.shiftKey) {
+                    this.scrollX -= (event.deltaY) / this.zoom;
+                    this.scrollY -= (event.deltaX) / this.zoom;
+                    this.zoom += event.deltaZ / -100;
                 }
                 else {
                     this.scrollX -= (event.deltaX) / this.zoom;
