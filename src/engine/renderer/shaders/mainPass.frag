@@ -3,6 +3,8 @@ precision highp float;
 
 layout (location = 0) out vec4 o_color;
 
+in vec2 screenUV;
+
 uniform sampler2D u_color;
 uniform sampler2D u_materialAttributes;
 uniform sampler2D u_emission;
@@ -165,7 +167,6 @@ vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
 
 void main()
 {
-    vec2 screenUV = gl_FragCoord.xy / u_res;
     vec4 matAttributes = texture(u_materialAttributes, screenUV);
     vec3 position = texture(u_position, screenUV).xyz;
     viewToFrag = normalize(u_cameraPosition - position);
