@@ -101,6 +101,7 @@ DaveShade.module = class {
     viewport(X, Y, WIDTH, HEIGHT) { console.error(`"viewport" not defined in module ${this.TYPE}!`) }
     resize(WIDTH, HEIGHT) { console.error(`"resize" not defined in module ${this.TYPE}!`) }
     clear(TARGET) { console.error(`"clear" not defined in module ${this.TYPE}!`) }
+    flush() { console.error(`"flush" not defined in module ${this.TYPE}!`) }
 
     setup(CANVAS, SETTINGS) { console.warn(`${this.TYPE} doesn't have a "setup" function. Does it exist?`) }
     setupTextureReader(CANVAS, SETTINGS) { console.warn(`${this.TYPE} doesn't have a "setupTextureReader" function. Does it exist?`) }
@@ -956,6 +957,9 @@ DaveShade.webGLModule = class extends DaveShade.module {
         this.POINT_COUNT = 0;
         this.GL.clear(TARGET);
     }
+
+    // prettier-ignore
+    flush() { this.GL.flush(); }
 
     // prettier-ignore
     setup(CANVAS, SETTINGS) {
