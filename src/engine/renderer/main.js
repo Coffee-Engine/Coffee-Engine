@@ -484,7 +484,7 @@
             //Our base shaders
             this.mainShaders = {
                 basis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basis.vert", "engine/renderer/shaders/basis.frag"),
-                skyplane: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/sky.frag"),
+                skyplane: await this.daveShade.shaderFromURL("engine/renderer/shaders/sky.vert", "engine/renderer/shaders/sky.frag"),
                 mainPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/mainPass.frag"),
                 postBasis: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/post.frag"),
                 antiAliasPass: await this.daveShade.shaderFromURL("engine/renderer/shaders/basePass.vert", "engine/renderer/shaders/antiAlias.frag"),

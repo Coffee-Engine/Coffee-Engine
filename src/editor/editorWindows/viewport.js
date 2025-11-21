@@ -239,6 +239,8 @@
                 coffeeEngine.inputs.mouse.movementX = 0;
                 coffeeEngine.inputs.mouse.movementY = 0;
 
+                //Flush and loop, doing flush here just to be safe
+                viewport.renderer.daveShade.flush();
                 requestAnimationFrame(loop);
             }
 

@@ -1,9 +1,11 @@
 #version 300 es
 precision highp float;
 
-uniform mat4 u_camera;
-uniform mat4 u_projection;
-uniform vec2 u_res;
+in vec2 screenUV;
+in vec2 projectionMult;
+in vec3 forward;
+in vec3 right;
+in vec3 up;
 
 uniform vec3 horizonColor;
 uniform vec3 skyColor;
@@ -19,17 +21,7 @@ layout (location = 5) out vec4 o_OID;
 
 void main()
 {
-    vec2 screenUV = (gl_FragCoord.xy / u_res);
-    mat4 mixed = u_camera; //* u_projection;
-    vec3 right = vec3(mixed[0][0],mixed[0][1],mixed[0][2]);
-    vec3 up = vec3(mixed[1][0],mixed[1][1],mixed[1][2]);
-    vec3 forward = vec3(mixed[2][0],mixed[2][1],mixed[2][2]);
-
-    screenUV -= vec2(0.5);
-
     //Our position on the sky sphere
-    //We also need to make sure our sky sphere adjusts properly
-    vec2 projectionMult = vec2(u_projection[0][0] * (u_res.x/u_res.y) * 2.0, u_projection[1][1] * 2.0);
     vec3 SkySphere = normalize(forward + ((right * screenUV.x) * projectionMult.x) + ((up * screenUV.y) * projectionMult.y));
     if (SkySphere.y < 0.0) {
         //Inverse the Y
