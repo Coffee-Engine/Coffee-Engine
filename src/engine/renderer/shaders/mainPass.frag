@@ -182,7 +182,8 @@ void main()
 
     vec3 lightColor = u_ambientColor;
 
-    if (matAttributes.z > 0.0 && u_fullBright == 0) {
+    int materialLightType = int(ceil(matAttributes.z));
+    if (materialLightType > 0 && u_fullBright == 0) {
         //Calculate F0
         F0 = mix(vec3(0.04), o_color.xyz, matAttributes.y);
 
@@ -190,9 +191,7 @@ void main()
         lightColor += u_sunColor * lightDot(normal, u_sunDir);
 
         for (int i=0;i<64;i++) {
-            if (i >= u_lightCount) {
-                break;
-            }
+            if (i >= u_lightCount) { break; }
 
             //Stuff required to calculate the end result
             mat4 light = u_lights[i];
@@ -200,11 +199,11 @@ void main()
 
             if (length(position - lightPosition) > (light[0][3] * 2.0)) { continue; }
 
-            if (matAttributes.z > 1.0) {lightColor.xyz += calculateLightPBR(light, o_color.xyz, position, normal, matAttributes.xyz);}
+            if (materialLightType == 2) {lightColor.xyz += calculateLightPBR(light, o_color.xyz, position, normal, matAttributes.xyz);}
             else {lightColor.xyz += calculateLight(light, position, normal);}
         }
 
-        matAttributes.z -= ceil(matAttributes.z) - 1.0;
+        matAttributes.z -= float(materialLightType) - 1.0;
         o_color.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
     }
 
