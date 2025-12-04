@@ -658,6 +658,14 @@
                 quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorCodeHeader", "--code-header", "#bce579"),
                 quickSettingCSSThemeColor(editor.settings.values.CodeMirror, "colorCodeLink", "--code-link", "#ff893a"),
             ],
+            Artimus: [
+                {
+                    target: artimus,
+                    key: "maxHistory",
+                    defaultValue: 10,
+                    type: "int"
+                }
+            ]
         }
     }};
 
