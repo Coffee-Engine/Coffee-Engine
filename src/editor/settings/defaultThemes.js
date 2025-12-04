@@ -15,6 +15,9 @@ editor.defaultThemes = {
         "--link-2": "#997D5B",
         "--link-3": "#99725A",
 
+        "--grid-1": "#584131",
+        "--grid-2": "#46352a",
+
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#503f32",
@@ -53,6 +56,9 @@ editor.defaultThemes = {
         "--link-1": "#12956c",
         "--link-2": "#5bb498",
         "--link-3": "#4bb498",
+
+        "--grid-1": "#313144",
+        "--grid-2": "#444461",
 
         "--warn": "#ffd078",
         "--error": "#ff7878",
@@ -93,6 +99,9 @@ editor.defaultThemes = {
         "--link-2": "#c66f00",
         "--link-3": "#a43e00",
 
+        "--grid-1": "#e6bca1",
+        "--grid-2": "#c79a7e",
+
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#463e32",
@@ -132,6 +141,9 @@ editor.defaultThemes = {
         "--link-2": "#911f67",
         "--link-3": "#7f1b5a",
 
+        "--grid-1": "#262e5a",
+        "--grid-2": "#19214e",
+
         "--warn": "#ffd078",
         "--error": "#ff7878",
         "--warn-text": "#323546",
@@ -170,6 +182,9 @@ editor.defaultThemes = {
         "--link-1": "#bc76a9",
         "--link-2": "#a76996",
         "--link-3": "#87557a",
+
+        "--grid-1": "#313144",
+        "--grid-2": "#444461",
 
         "--warn": "#ffd078",
         "--error": "#ff7878",

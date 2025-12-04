@@ -10,13 +10,13 @@
                 //Make sure the theme isn't custom
                 if (editor.settings.values.Theme.themeColor == "Custom") {
                     document.body.style.setProperty(cssName, value);
-                } else if (editor.settings.values.CodeMirror.themeOverride) {
+                } else if (target.themeOverride) {
                     document.body.style.setProperty(cssName, value);
                 } else {
                     document.body.style.setProperty(cssName, editor.defaultThemes[editor.settings.values.Theme.themeColor][cssName]);
                 }
             },
-            disabled: () => {return !(editor.settings.values.Theme.themeColor == "Custom" || editor.settings.values.CodeMirror.themeOverride)}
+            disabled: () => {return !(editor.settings.values.Theme.themeColor == "Custom" || target.themeOverride)}
         };
     };
 
@@ -660,11 +660,27 @@
             ],
             Artimus: [
                 {
-                    target: artimus,
+                    target: editor.settings.values.Artimus,
                     key: "maxHistory",
                     defaultValue: 10,
                     type: "int"
-                }
+                },
+                {
+                    target: editor.settings.values.Artimus,
+                    key: "themeOverride",
+                    defaultValue: false,
+                    type: "boolean",
+                    onchange: (value, { refreshSelection }, fromBoot) => {
+                        const settingDefs = editor.settingDefs;
+
+                        settingDefs.Artimus[2].onchange(editor.settings.values.Artimus.gridPrimary);
+                        settingDefs.Artimus[3].onchange(editor.settings.values.Artimus.gridPrimary);
+
+                        if (!fromBoot) refreshSelection();
+                    },
+                },
+                quickSettingCSSThemeColor(editor.settings.values.Artimus, "gridPrimary", "--grid-1", "#584131"),
+                quickSettingCSSThemeColor(editor.settings.values.Artimus, "gridSecondary", "--grid-2", "#46352a"),
             ]
         }
     }};
