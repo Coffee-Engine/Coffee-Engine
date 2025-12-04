@@ -213,30 +213,6 @@ input[type="number"] {
     overflow: hidden;
 }
 
-.CUGI-Button {
-    width: 100%;
-    text-align: left;
-    border-width: 0px;
-    padding-left: 8px;
-    padding-right: 8px;
-
-    background-color: var(--artimus-button-normal);
-    transition: 300ms background-color;
-}
-
-.CUGI-Button:hover {
-    background-color: var(--artimus-button-hover);
-}
-
-.CUGI-Button:active {
-    background-color: var(--artimus-button-click);
-    transition: 0ms background-color;
-}
-
-.CUGI-Slider {
-    width: 50%;
-}
-
 @keyframes CUGI-Popup-Open {
     0% {
         max-height: 0%;
