@@ -117,6 +117,9 @@ editor.EnglishLang = {
 
     "engine.settings.category.Artimus": "Artimus",
     "engine.settings.category.Artimus.maxHistory": "Undo History",
+    "engine.settings.category.Artimus.themeOverride": "Override Theme",
+    "engine.settings.category.Artimus.gridSecondary": "Grid Secondary",
+    "engine.settings.category.Artimus.gridSecondary": "Grid Secondary",
 
 
     "engine.generic.back": "Back",
