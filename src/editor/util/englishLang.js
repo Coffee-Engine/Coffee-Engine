@@ -69,6 +69,8 @@ editor.EnglishLang = {
     "engine.settings.category.Theme.warnTextColor": "Warning Text Color",
     "engine.settings.category.Theme.errorTextColor": "Error Text Color",
     "engine.settings.category.Theme.linkColor": "Link Color",
+    "engine.settings.category.Theme.customCSS": "Custom CSS",
+    "engine.settings.category.Theme.customCSSCode": "CSS Code",
 
     "engine.settings.category.Theme.themeColor.Mocha": "Mocha",
     "engine.settings.category.Theme.themeColor.Cocoa": "Cocoa",
@@ -112,6 +114,10 @@ editor.EnglishLang = {
     "engine.settings.category.CodeMirror.colorCodeHeader": "Header",
     "engine.settings.category.CodeMirror.colorCodeLink": "Link",
     "engine.settings.category.CodeMirror.colorComment": "Comment Color",
+
+    "engine.settings.category.Artimus": "Artimus",
+    "engine.settings.category.Artimus.maxHistory": "Undo History",
+
 
     "engine.generic.back": "Back",
     "engine.generic.done": "Done",
