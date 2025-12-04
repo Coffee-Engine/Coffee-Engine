@@ -268,6 +268,8 @@ window.artimus = {
             this.refreshGridPattern(() => {
                 loop();
             });
+
+            this.refreshTools();
         }
 
         refreshGridPattern(then) {
