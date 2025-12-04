@@ -1,0 +1,247 @@
+body {
+    --artimus-eraser-outline: #438eff;
+    --artimus-eraser-inline: #d0d0ff;
+
+    --artimus-grid-1: var(--grid-1);
+    --artimus-grid-2: var(--grid-2);
+
+    --artimus-selection-outline: #438eff;
+
+    --artimus-background-1: var(--background-1);
+    --artimus-background-2: var(--background-3);
+    --artimus-background-3: var(--background-4);
+
+    --artimus-button-normal: var(--background-2);
+    --artimus-button-hover: var(--accent);
+    --artimus-button-click: var(--text-1);
+    --artimus-button-selected: var(--background-4);
+
+    --artimus-text: var(--text-1);
+    --artimus-icon: var(--text-1);
+
+    color: var(--artimus-text);
+}
+
+.artimus-container {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: var(--artimus-background-2);
+}
+
+.artimus-toolbar {
+    display: grid;
+    grid-template-rows: 33.3333% 33.3333% 33.3333%;
+    width: 200px;
+    height: 100%;
+
+    background-color: var(--artimus-background-1);
+
+    max-height: 100%;
+    min-height: 0px;
+}
+
+.artimus-canvasArea {
+    overflow: hidden;
+    position: relative;
+}
+
+.artimus-canvas {
+    image-rendering: pixelated;
+
+    transform: translate(-50%, -50%) scale(var(--zoom)) translate(var(--scrollX), var(--scrollY));
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0%;
+}
+
+.artimus-sideBarList {
+    margin: 8px;
+    padding: 4px;
+
+    border-radius: 16px;
+    background-color: var(--artimus-background-2);
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+}
+
+.artimus-layerHolder {
+    display: grid;
+    grid-template-rows: calc(100% - 30px) 30px;
+}
+
+.artimus-layerWrapper {
+    display: flex;
+}
+
+.artimus-layerList {
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+}
+
+.artimus-layerCreationHolder {
+    height: 24px;
+    display: grid;
+    max-width: 100%;
+    grid-template-columns: calc(100% - 24px) 24px;
+    margin-top: 4px;
+    margin-bottom: 2px;
+}
+
+.artimus-button {
+    background-color: var(--artimus-button-normal);
+    color: var(--artimus-text);
+    transition: 300ms background-color;
+
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--artimus-button-hover);
+    border-radius: 16px;
+}
+
+.artimus-button:hover {
+    background-color: var(--artimus-button-hover);
+}
+
+.artimus-button:active {
+    background-color: var(--artimus-button-click);
+    transition: 0ms background-color;
+}
+
+.artimus-layerCreationButton {
+    border-radius: 8px;
+    border-width: 0px;
+}
+
+.artimus-layerCreationName {
+    width: calc(100% - 12px);
+    border-width: 0px;
+    border-radius: 16px;
+}
+
+.artimus-layerButton {
+    width: auto;
+    aspect-ratio: 1;
+    height: 24px;
+
+    border-radius: 16px;
+    border-width: 0px;
+}
+
+.artimus-sideBarButton {
+    display: flex;
+    width: 100%;
+
+    justify-content: left;
+    align-items: center;
+
+    border-width: 0px;
+    border-radius: 16px;
+
+    margin-bottom: 4px;
+
+    color: var(--artimus-text);
+}
+
+.artimus-sideBarButton-selected {
+    background-color: var(--artimus-button-selected);
+}
+
+.artimus-toolIcon {
+    width: 32px;
+    height: 32px;
+
+    margin-right: 16px;
+
+    pointer-events: none;
+
+    color: var(--artimus-icon);
+}
+
+.artimus-toolLabel {
+    margin: 0px;
+    text-align: center;
+
+    pointer-events: none;
+}
+
+.artimus-layer {
+    margin: 0px;
+}
+
+
+/* CUGI items */
+.artimus-toolbar .CUGI-PropertyHolder {
+    display: flex;
+    margin: 2px;
+    padding: 0px;
+
+    font-family: monospace;
+    font-weight: bold;
+}
+
+input[type="number"] {
+    width: 48px;
+}
+
+.CUGI-Label {
+    margin: 2px;
+}
+
+.CUGI-Popup {
+    position: absolute;
+
+    left: var(--x);
+    top: var(--y);
+
+    background-color: var(--artimus-background-1);
+    border-width: 2px;
+    border-radius: 20px;
+    border-color: var(--artimus-background-3);
+    border-style: solid;
+
+    z-index: 99999;
+
+    animation: 5s CUGI-Popup-Open ease-out;
+    overflow: hidden;
+}
+
+.CUGI-Button {
+    width: 100%;
+    text-align: left;
+    border-width: 0px;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    background-color: var(--artimus-button-normal);
+    transition: 300ms background-color;
+}
+
+.CUGI-Button:hover {
+    background-color: var(--artimus-button-hover);
+}
+
+.CUGI-Button:active {
+    background-color: var(--artimus-button-click);
+    transition: 0ms background-color;
+}
+
+.CUGI-Slider {
+    width: 50%;
+}
+
+@keyframes CUGI-Popup-Open {
+    0% {
+        max-height: 0%;
+    }
+    100% {
+        max-height: 100%;
+    }
+}

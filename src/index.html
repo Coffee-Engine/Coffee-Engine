@@ -6,6 +6,8 @@
         <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0" />
         <title>Coffee Engine</title>
 
+        <link rel="stylesheet" href="editor/css/artimus.css" />
+        <link rel="stylesheet" href="editor/css/themeDeclaration.css" />
         <link rel="stylesheet" href="editor/css/themeDeclaration.css" />
         <link rel="stylesheet" href="editor/css/globalInputs.css" />
         <link rel="stylesheet" href="editor/css/CUGI.css" />
@@ -157,8 +159,22 @@
         <script src="editor/editorWindows/extensionWizard/defaultScript.js"></script>
 
         <!--Art Tools-->
-        <script src="editor/editorWindows/artEditor/window.js"></script>
-        <script src="editor/editorWindows/artEditor/paintBrush.js"></script>
+        <script src="editor/editors/artimus/artimus.js"></script>
+        <script src="editor/editors/artimus/tools/paintBrush.js"></script>
+        <script src="editor/editors/artimus/tools/eraser.js"></script>
+        <script src="editor/editors/artimus/tools/sprayPaint.js"></script>
+        <script src="editor/editors/artimus/tools/line.js"></script>
+        <script src="editor/editors/artimus/tools/curve.js"></script>
+        <script src="editor/editors/artimus/tools/paintBucket.js"></script>
+        <script src="editor/editors/artimus/tools/rectangle.js"></script>
+        <script src="editor/editors/artimus/tools/circle.js"></script>
+        <script src="editor/editors/artimus/tools/jumble.js"></script>
+        <script src="editor/editors/artimus/tools/selectionRectangle.js"></script>
+        <script src="editor/editors/artimus/tools/selectionCircle.js"></script>
+        <script src="editor/editors/artimus/tools/selectionLasso.js"></script>
+
+        <!--The actual art editor-->
+        <script src="editor/editorWindows/artEditor.js"></script>
 
         <!--2 Scene related ones-->
         <script src="editor/editorWindows/sceneTree.js"></script>
@@ -181,7 +197,7 @@
         <script src="editor/pages/bootMan.js"></script>
         <script src="editor/util/coffeeIDB.js"></script>
 
-        <!--Base sugarcube settings-->
+        <!--CUGI items-->
         <script src="editor/editors/CUGI/CUGI.js"></script>
         <script src="editor/editors/CUGI/customElements.js"></script>
         <script src="editor/editors/CUGI/addons/collisionGroups.js"></script>
