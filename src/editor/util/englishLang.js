@@ -593,6 +593,36 @@ editor.EnglishLang = {
     "sugarcube.files.menu.asMenu.JSON": "Table",
     "sugarcube.files.menu.asMenu.byte": "Byte Array",
     "sugarcube.files.menu.asMenu.dataURL": "Data URL",
+    
+    "artimus.tool.paintBrush": "Brush",
+    "artimus.tool.eraser": "Eraser",
+    "artimus.tool.sprayPaint": "Spray Paint",
+    "artimus.tool.line": "Line",
+    "artimus.tool.curve": "Curve",
+    "artimus.tool.paintBucket": "Paint Bucket",
+    "artimus.tool.rectangle": "Rectangle",
+    "artimus.tool.circle": "Circle",
+    "artimus.tool.jumble": "Jumble",
+    "artimus.tool.selectionRectangle": "Selection Rectangle",
+    "artimus.tool.selectionCircle": "Selection Circle",
+    "artimus.tool.selectionLasso": "Selection Lasso",
+
+    "artimus.toolProperty.strokeColor": "Stroke Color",
+    "artimus.toolProperty.fillColor": "Fill Color",
+    "artimus.toolProperty.color": "Color",
+
+    "artimus.toolProperty.strokeSize": "Stroke Size",
+    "artimus.toolProperty.jumbleSize": "Jumble Size",
+
+    "artimus.toolProperty.jumbleWholeSquare": "Jumble Area",
+    "artimus.toolProperty.pixelBrush": "Pixelated",
+    "artimus.toolProperty.respectTransparency": "Do Transparency",
+    
+    "artimus.toolProperty.radius": "Radius",
+    "artimus.toolProperty.points": "Points",
+    "artimus.toolProperty.mix": "Mix",
+    "artimus.toolProperty.cornerRounding": "Rounding",
+
 
     "engine.CUGI.newElement": "New Element",
     "engine.CUGI.key": "Key",

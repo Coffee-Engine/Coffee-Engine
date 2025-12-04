@@ -72,6 +72,10 @@ window.artimus = {
         return `#${hexR}${hexG}${hexB}`;
     },
 
+    translate: (item, context) => {
+        return item;
+    },
+
     tool: class {
         get icon() { return ""; }
 
@@ -530,7 +534,12 @@ window.artimus = {
             this.toolPropertyHolder.innerHTML = "";
 
             if (!this.toolFunction.CUGI) return;
-            this.toolPropertyHolder.appendChild(CUGI.createList(this.toolFunction.CUGI(this)));
+            this.toolPropertyHolder.appendChild(CUGI.createList(this.toolFunction.CUGI(this), {
+                preprocess: (item) => {
+                    item.text = item.text || artimus.translate(item.key || item.translationKey, "toolProperty") || item.key;
+                    return item;
+                }
+            }));
         }
 
         refreshTools() {
@@ -562,7 +571,7 @@ window.artimus = {
 
                 //?Labels are easy but I'm going to group the append with the other append and classNames
                 const label = document.createElement("p");
-                label.innerText = tool.name || toolID;
+                label.innerText = tool.name || artimus.translate(toolID, "tool");
 
                 button.onclick = () => {
                     this.tool = toolID;
