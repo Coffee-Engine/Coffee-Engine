@@ -270,22 +270,30 @@
         </style>
         <div class="dockAndDropdowns">
             <div class="dropdownsTopbar">
-                <dropdown-menu id="coffeeEngineProjectDropdown">
+                <cugi-dropdown id="coffeeEngineProjectDropdown">
                     ${editor.language["editor.dropdown.project"]}
-                    <dropdown-item class="dropdown-menu-fill-down" value="importFiles">${editor.language["editor.dropdown.project.importFiles"]}</dropdown-item>
-                    <dropdown-item class="dropdown-menu-fill-down" value="openLatte">${editor.language["editor.dropdown.project.importLatte"]}</dropdown-item>
+                    <cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.importFiles"] }</cugi-option>
+                    <cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.importLatte"] }</cugi-option>
                     ${
                         !project.isFolder && editor.safeties.filePermissions
                             ? //If we do have the ability to save directly to the same file
-                              `<dropdown-item class="dropdown-menu-fill-down" value="save">${editor.language["editor.dropdown.project.save"]}</dropdown-item>
-                        <dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveSeperate"]}</dropdown-item>`
+                              `<cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.save"] }</cugi-option>
+                        <cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.saveSeperate"] }</cugi-option>`
                             : //Or if we are in a folder/in an enviornment we can't save directly
-                              `<dropdown-item class="dropdown-menu-fill-down" value="saveSeperate">${editor.language["editor.dropdown.project.saveDecaf"]}</dropdown-item>`
+                              `<cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.saveDecaf"] }</cugi-option>`
                     }
-                    <dropdown-item class="dropdown-menu-fill-down" value="settings">${editor.language["editor.dropdown.project.projectSettings"]}
-                </dropdown-item></dropdown-menu><dropdown-menu id="coffeeEngineWindowDropdown">
+                    <cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.projectSettings"] }</cugi-option>
+                </cugi-dropdown>
+                <cugi-dropdown id="coffeeEngineWindowDropdown">
                     ${editor.language["editor.dropdown.window"]}
-                </dropdown-menu><dropdown-menu id="coffeeEngineSceneDropdown">
+                </cugi-dropdown>
+                <cugi-dropdown id="coffeeEngineSceneDropdown">
+                    ${editor.language["editor.dropdown.scene"]}
+                    <cugi-option>{ type: "button", text: editor.language["editor.dropdown.scene.new"] }</cugi-option>
+                    <cugi-option>{ type: "button", text: editor.language["editor.dropdown.scene.save"] }</cugi-option>
+                    <cugi-option>{ type: "button", text: editor.language["editor.dropdown.scene.load"] }</cugi-option>
+                </cugi-dropdown>
+                <dropdown-menu id="coffeeEngineSceneDropdown">
                     ${editor.language["editor.dropdown.scene"]}
                     <dropdown-item class="dropdown-menu-fill-down"  value="new">${editor.language["editor.dropdown.scene.new"]}</dropdown-item>
                     <dropdown-item class="dropdown-menu-fill-down"  value="save">${editor.language["editor.dropdown.scene.save"]}</dropdown-item>
