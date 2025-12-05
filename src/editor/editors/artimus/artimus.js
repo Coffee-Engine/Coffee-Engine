@@ -536,7 +536,7 @@ window.artimus = {
             if (!this.toolFunction.CUGI) return;
             this.toolPropertyHolder.appendChild(CUGI.createList(this.toolFunction.CUGI(this), {
                 preprocess: (item) => {
-                    item.text = item.text || artimus.translate(item.key || item.translationKey, "toolProperty") || item.key;
+                    item.text = artimus.translate(item.translationKey || item.key || item.text, "toolProperty") || item.text || item.key;
                     return item;
                 }
             }));
@@ -583,12 +583,13 @@ window.artimus = {
                     this.selectedElement = button;
                 }
 
+                //Add cugi related things
                 button.CUGI_CONTEXT = () => {
                     return [
-                        { type: "button", text: "use", onclick: () => {
+                        { type: "button", text: "use", translationKey: "use", onclick: () => {
                             button.onclick();
                         }},
-                        { type: "button", text: "useWithDefaults", onclick: () => {
+                        { type: "button", text: "useWithDefaults", translationKey: "useWithDefaults", onclick: () => {
                             button.onclick();
                             this.toolProperties = Object.assign(this.toolProperties, this.toolFunction.properties);
                             this.refreshToolOptions();
@@ -596,6 +597,12 @@ window.artimus = {
                     ];
                 }
 
+                button.CUGI_PREPROCESS = (item) => {
+                    item.text = artimus.translate(item.translationKey || item.key || item.text, "toolDropdown") || item.text || item.key;
+                    return item;
+                }
+
+                //Then setup items
                 button.className = (toolID == this.tool) ? this.toolClass + this.toolClassSelected : this.toolClass;
                 label.className = "artimus-toolLabel";
                 this.toolbox.appendChild(button);

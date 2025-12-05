@@ -623,6 +623,8 @@ editor.EnglishLang = {
     "artimus.toolProperty.mix": "Mix",
     "artimus.toolProperty.cornerRounding": "Rounding",
 
+    "artimus.toolDropdown.useWithDefaults": "Use with defaults",
+    "artimus.toolDropdown.use": "Use",
 
     "engine.CUGI.newElement": "New Element",
     "engine.CUGI.key": "Key",

@@ -72,6 +72,15 @@
                 button.className = "CUGI-Button";
 
                 return button;
+            },
+            link: (data) => {
+                const link = document.createElement("a");
+                link.innerText = data.text || "No text";
+                link.href = data.link || "https://github.com/Coffee-Engine/CUGI";
+                link.className = "CUGI-PropertyName CUGI-Label CUGI-Link"
+
+                return link;
+
             }
         },
 
@@ -79,7 +88,6 @@
         types:{
             float: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || 0;
 
                 //Create our input, make sure it is in degrees if its radians
                 let value = Number(target[key]);
@@ -104,7 +112,6 @@
 
             slider: (data) => {
                 const {target, key} = data;
-                target[key] = target[key] || 0;
 
                 data.min = data.min || 0;
                 data.max = (data.max !== undefined) ? data.max : 100;
@@ -143,7 +150,6 @@
 
             int: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || 0;
 
                 //Create our input
                 const input = CUGI.macros.inputElement("number", { 
@@ -163,7 +169,6 @@
 
             vec2: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || { x: 0, y: 0 };
 
                 const containerDiv = document.createElement("div");
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec2";
@@ -180,7 +185,6 @@
 
             vec3: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || { x: 0, y: 0, z: 0 };
 
                 const containerDiv = document.createElement("div");
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec3";
@@ -199,7 +203,6 @@
 
             vec4: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || { x: 0, y: 0, z: 0, w: 0 };
 
                 const containerDiv = document.createElement("div");
                 containerDiv.className = "CUGI-PropertyHolder CUGI-Vec4";
@@ -220,7 +223,6 @@
 
             string: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || "";
 
                 const input = CUGI.macros.inputElement("text", {
                     value: String(target[key]),
@@ -240,7 +242,6 @@
 
             multiline: (data) => {
                 const {target, key} = data;
-                target[key] = target[key] || "";
 
                 //Create our textarea
                 const input = document.createElement("textarea");
@@ -273,7 +274,6 @@
 
             boolean: (data) => {
                 const { target, key } = data;
-                target[key] = target[key] || false;
 
                 const input = CUGI.macros.inputElement("checkbox", {
                     checked: Boolean(target[key]),
@@ -282,6 +282,18 @@
                 });
 
                 input.onchange = CUGI.macros.onchange(data, input, "checked");
+
+                return input;
+            },
+            
+            color: (data) => {
+                const { target, key } = data;
+
+                const input = CUGI.macros.inputElement("color", {
+                    value: String(target[key])
+                });
+
+                input.onchange = CUGI.macros.onchange(data, input);
 
                 return input;
             },
@@ -332,6 +344,30 @@
                 
                 //Yeah
                 input.value = target[key] || input.children[0].value;
+
+                input.onchange = CUGI.macros.onchange(data, input);
+
+                return input;
+            },
+
+            date: (data) => {
+                const { target, key } = data;
+
+                const input = CUGI.macros.inputElement((data.includeTime) ? "datetime-local" : "date", {
+                    value: String(target[key])
+                });
+
+                input.onchange = CUGI.macros.onchange(data, input);
+
+                return input;
+            },
+
+            time: (data) => {
+                const { target, key } = data;
+
+                const input = CUGI.macros.inputElement("time", {
+                    value: String(target[key])
+                });
 
                 input.onchange = CUGI.macros.onchange(data, input);
 
@@ -439,6 +475,114 @@
             }
 
             return container;
-        }
+        },
+
+        createPopup: (items, parameters, x, y) => {
+            const container = CUGI.createList(items, parameters);
+            container.className = "CUGI-Popup";
+            container.style.setProperty("--x", `${x}px`);
+            container.style.setProperty("--y", `${y}px`);
+
+            document.body.appendChild(container);
+
+            return {
+                container: container,
+                close: () => {
+                    container.parentElement.removeChild(container);
+                },
+                justOpened: true
+            }
+        },
+
+        dropdownClass: class extends HTMLElement {
+            constructor() {
+                super();
+
+                //Get this ready and steaming
+                this.addEventListener("click", () => {
+                    const bounds = this.getClientRects()[0];
+                    let script = "";
+                    
+                    //Loop through children to get options
+                    for (let childID in this.children) {
+                        const child = this.children[childID];
+                        if (child.nodeName == "CUGI-OPTION") {
+                            //From G4G
+                            const optionData = child.innerHTML.replace(/&amp;/g, '&')
+                            .replace(/&lt;/g, '<')
+                            .replace(/&gt;/g, '>')
+                            .replace(/&quot;/g, '"')
+                            .replace(/&#39;/g, "'");
+
+                            if (childID == 0) script += optionData;
+                            else script += `,${optionData}`;
+                        }
+                    }
+
+                    script = `[${script}]`;
+
+                    if (CUGI.currentPopup) {
+                        CUGI.currentPopup.close();
+                        CUGI.currentPopup = null;
+                    }
+
+                    CUGI.currentPopup = CUGI.createPopup(eval(script), {}, bounds.left, bounds.top);
+                });
+            }
+        },
+
+        optionClass: class extends HTMLElement {
+            constructor() {
+                super();
+            }
+
+            connectedCallback() {
+                this.style.visibility = "hidden";
+                this.style.fontSize = "0px";
+            }
+        },
+
+        dropDownCloseExceptions: [
+            HTMLInputElement,
+            HTMLSelectElement,
+            HTMLOptionElement,
+            HTMLTextAreaElement
+        ]
     }
+
+    customElements.define("cugi-dropdown", CUGI.dropdownClass);
+    customElements.define("cugi-option", CUGI.optionClass);
+
+    document.addEventListener("click", event => {
+        //Make an exception for various elements
+        if (CUGI.dropDownCloseExceptions.includes(event.target.constructor)
+        ) return;
+
+        if (CUGI.currentPopup) {
+            if (CUGI.currentPopup.justOpened) {
+                CUGI.currentPopup.justOpened = false;
+                return;
+            }
+
+            CUGI.currentPopup.close();
+            CUGI.currentPopup = null;
+        }
+    });
+
+    document.addEventListener("contextmenu", event => {
+        if (event.originalTarget.CUGI_CONTEXT) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (CUGI.currentPopup) {
+                CUGI.currentPopup.close();
+                CUGI.currentPopup = null;
+            }
+
+            CUGI.currentPopup = CUGI.createPopup(event.originalTarget.CUGI_CONTEXT(), {
+                preprocess: event.originalTarget.CUGI_PREPROCESS
+            }, event.clientX, event.clientY);
+            CUGI.currentPopup.justOpened = false;
+        }
+    });
 })();

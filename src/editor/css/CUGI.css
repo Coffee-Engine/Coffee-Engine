@@ -320,3 +320,51 @@
     font-size: x-large;
     font-family: monospace;
 }
+
+.CUGI-Popup {
+    position: absolute;
+
+    left: var(--x);
+    top: var(--y);
+
+    background-color: var(--artimus-background-1);
+    border-width: 2px;
+    border-radius: 12px;
+    border-color: var(--artimus-background-3);
+    border-style: solid;
+    
+    padding-left: 2px;
+    padding-right: 2px;
+
+    padding-top: 2px;
+    padding-bottom: 2px;
+
+    z-index: 99999;
+
+    animation: 5s CUGI-Popup-Open ease-out;
+    overflow: hidden;
+}
+
+.CUGI-Popup .CUGI-PropertyHolder {
+    margin: 0px;
+    margin-bottom: 2px;
+    margin-top: 2px;
+}
+
+.CUGI-Popup .CUGI-PropertyHolder .CUGI-Button {
+    width: 100%;
+
+    border-width: 0px;
+    padding: 0px;
+    border-radius: 12px;
+    padding: 4px;
+}
+
+@keyframes CUGI-Popup-Open {
+    0% {
+        max-height: 0%;
+    }
+    100% {
+        max-height: 100%;
+    }
+}
