@@ -49,6 +49,8 @@
                 display:grid;
                 grid-template-rows: ${editor.taskbarHeight}px auto;
 
+                animation: 500ms openWindow;
+
                 max-height:100vh;
                 max-width:100vw;
             }
@@ -232,6 +234,22 @@
                 height: 100%;
                 background-color: var(--text-1);
                 transition: all 250ms;
+            }
+
+            @keyframes openWindow {
+                0% {
+                    height:0px;
+                    opacity: 0%;
+                }
+
+                50% {
+                    opacity: 100%;
+                }
+
+                100% {
+                    min-height:0px;
+                    opacity: 100%;
+                }
             }
 
             @keyframes closeWindow {

@@ -341,7 +341,7 @@
 
     z-index: 99999;
 
-    animation: 5s CUGI-Popup-Open ease-out;
+    animation: 250ms CUGI-Popup-Open ease-out;
     overflow: hidden;
 }
 
@@ -362,9 +362,13 @@
 
 @keyframes CUGI-Popup-Open {
     0% {
-        max-height: 0%;
+        scale: 1 0;
+        translate: 0 -50%;
+        opacity: 0%;
     }
     100% {
-        max-height: 100%;
+        scale: 1 1;
+        translate: 0 0%;
+        opacity: 100%;
     }
 }
