@@ -31,6 +31,8 @@
             .dropdownsTopbar {
                 background-color: var(--background-2);
                 z-index: 10;
+
+                display: flex;
             }
 
             .window {

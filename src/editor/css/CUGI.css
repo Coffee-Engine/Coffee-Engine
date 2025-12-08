@@ -372,3 +372,23 @@
         opacity: 100%;
     }
 }
+
+cugi-dropdown {
+    font-size: large;
+    background-color: var(--background-1);
+    margin: 0px;
+    padding: 4px;
+
+    transition: 250ms background-color;
+
+    cursor: pointer;
+}
+
+cugi-dropdown:hover {
+    background-color: var(--background-2);
+}
+
+cugi-dropdown:active {
+    transition: 0ms background-color;
+    background-color: var(--text-1);
+}
