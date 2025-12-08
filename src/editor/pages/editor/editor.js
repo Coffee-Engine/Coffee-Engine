@@ -284,7 +284,7 @@
                     }
                     <cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.projectSettings"] }</cugi-option>
                 </cugi-dropdown>
-                <cugi-dropdown id="coffeeEngineWindowDropdown">
+                <cugi-dropdown id="coffeeEngineWindowDropdown" func="editor.windows.getSpawnableWindows" preprocess="editor.windows.CUGI_PREPROCESS">
                     ${editor.language["editor.dropdown.window"]}
                 </cugi-dropdown>
                 <cugi-dropdown id="coffeeEngineSceneDropdown">

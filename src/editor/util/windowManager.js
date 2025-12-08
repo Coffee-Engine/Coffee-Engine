@@ -54,4 +54,44 @@
         all: {},
         data: {},
     };
+
+    
+    editor.windows.getSpawnableWindows = () => {
+        //Our rturn and serialization
+        const windows = [];
+        const serializationObject = editor.windows.__Serialization;
+
+        Object.keys(serializationObject.all).forEach((windowName) => {
+            if (windowName == "baseWindow") return;
+
+            //If we only allow one window
+            if (serializationObject.data[windowName].onlyOne && editor.windows.existing[windowName]) {
+                if (editor.windows.existing[windowName].length > 0) return;
+            }
+
+            //Add it to the list
+            windows.push({ type: "button", text: editor.language[`editor.window.${windowName}`] || windowName, value: windowName });
+        });
+
+        return windows;
+    };
+
+    editor.windows.CUGI_PREPROCESS = (val) => {
+        const { type, value } = val;
+
+        //Check to see if it's a button
+        if (type == "button") {
+            val.onclick = () => {
+                if (!editor.windows.__Serialization.all[value]) return;
+
+                const createdWindow = new editor.windows.__Serialization.all[value](400, 400);
+                createdWindow.__moveToTop();
+
+                createdWindow.x = window.innerWidth / 2 - 200;
+                createdWindow.y = window.innerHeight / 2 - 200;
+            }            
+        }
+
+        return val;
+    }
 })();

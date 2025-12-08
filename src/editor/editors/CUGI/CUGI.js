@@ -495,8 +495,16 @@
         },
 
         dropdownClass: class extends HTMLElement {
+            static observedAttributes = ["func", "preprocess"];
+
             constructor() {
                 super();
+
+                //remove odd spacing
+                for (let nodeID in this.childNodes) {
+                    const node = this.childNodes[nodeID];
+                    if (node instanceof Text) node.data = node.data.trim();
+                }
 
                 //Get this ready and steaming
                 this.addEventListener("click", () => {
@@ -520,13 +528,15 @@
                     }
 
                     script = `[${script}]`;
+                    if (this.hasAttribute("func")) script += `.concat(${this.getAttribute("func")}())`;
 
                     if (CUGI.currentPopup) {
                         CUGI.currentPopup.close();
                         CUGI.currentPopup = null;
                     }
 
-                    CUGI.currentPopup = CUGI.createPopup(eval(script), {}, bounds.left, bounds.top);
+                    if (this.hasAttribute("preprocess")) CUGI.currentPopup = CUGI.createPopup(eval(script), { preprocess: eval(this.getAttribute("preprocess")) }, bounds.left, bounds.top);
+                    else CUGI.currentPopup = CUGI.createPopup(eval(script), {}, bounds.left, bounds.top);
                 });
             }
         },
