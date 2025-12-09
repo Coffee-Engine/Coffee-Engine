@@ -452,9 +452,12 @@ window.artimus = {
                 this.toolDown = false; 
             });
             this.canvas.addEventListener("mouseout", (event) => { 
-                if (this.toolFunction.preview) this.previewGL.clearRect(0, 0, this.width, this.height);
-                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), this.toolProperties);
-                
+                const position = this.getCanvasPosition(event.clientX, event.clientY);
+                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...position, this.toolProperties);
+                if (this.toolFunction.preview) {
+                    this.previewGL.clearRect(0, 0, this.width, this.height);
+                    this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
+                }
                 //For the undoing
                 if (this.toolDown && this.tool) this.updateLayerHistory();
                 this.toolDown = false;
