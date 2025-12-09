@@ -59,8 +59,6 @@ artimus.tools.sheetTool = class extends artimus.tool {
 
     mode_up_modify(gl, x, y, toolProperties) {
         if (toolProperties.modifyStep == 0) {
-            toolProperties.modifyStep = 1;
-
             for (let sprID in this.workspace.subSprites) {
                 //Fill the rectangle.
                 const sprite = this.workspace.subSprites[sprID];
@@ -68,6 +66,8 @@ artimus.tools.sheetTool = class extends artimus.tool {
                 if (((x >= sprite[0] && x <= sprite[2]) && 
                     (y >= sprite[1] && y <= sprite[3]))) toolProperties.modifySubSprite = sprID;
             }
+
+            if (toolProperties.modifySubSprite) toolProperties.modifyStep = 1;
         }
         else {
             if (toolProperties.start[0] == x && toolProperties.start[1] == y) {
