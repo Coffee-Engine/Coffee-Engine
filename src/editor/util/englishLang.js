@@ -600,6 +600,7 @@ editor.EnglishLang = {
     "artimus.tool.line": "Line",
     "artimus.tool.curve": "Curve",
     "artimus.tool.paintBucket": "Paint Bucket",
+    "artimus.tool.sheetTool": "Atlas Editor",
     "artimus.tool.rectangle": "Rectangle",
     "artimus.tool.circle": "Circle",
     "artimus.tool.jumble": "Jumble",

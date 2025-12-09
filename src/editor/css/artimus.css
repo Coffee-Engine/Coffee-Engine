@@ -19,6 +19,10 @@ body {
     --artimus-text: var(--text-1);
     --artimus-icon: var(--text-1);
 
+    --artimus-subsprite-box: #00ff9d30;
+    --artimus-subsprite-delete: #ff6ca430;
+    --artimus-subsprite-modify: #a46cff30;
+
     color: var(--artimus-text);
 }
 
