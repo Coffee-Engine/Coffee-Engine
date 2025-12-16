@@ -480,10 +480,20 @@
         createPopup: (items, parameters, x, y) => {
             const container = CUGI.createList(items, parameters);
             container.className = "CUGI-Popup";
-            container.style.setProperty("--x", `${x}px`);
-            container.style.setProperty("--y", `${y}px`);
 
             document.body.appendChild(container);
+
+            let { width, height, padding } = getComputedStyle(container);
+            width = Number(width.replaceAll(/[a-zA-Z]/g, ""));
+            height = Number(height.replaceAll(/[a-zA-Z]/g, ""));
+            padding = Number(padding.replaceAll(/[a-zA-Z]/g, ""));
+
+            if (x + (width + padding * 2) > window.innerWidth) container.style.setProperty("--x", `${x - (width + padding * 2)}px`);
+            else container.style.setProperty("--x", `${x}px`);
+
+            if (y + (height + padding * 2) > window.innerHeight) container.style.setProperty("--y", `${y - (height + padding * 2)}px`);
+            else container.style.setProperty("--y", `${y}px`);
+
 
             return {
                 container: container,

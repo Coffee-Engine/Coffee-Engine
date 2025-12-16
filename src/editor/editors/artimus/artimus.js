@@ -76,6 +76,9 @@ window.artimus = {
         return item;
     },
 
+    //Should probably make a default one but for now this works.
+    layerPropertyMenu: (workspace, layer) => {},
+
     tool: class {
         get icon() { return ""; }
 
@@ -94,6 +97,105 @@ window.artimus = {
         }
 
         properties = {};
+    },
+    
+    layer: class {
+
+        blendMode = "source-over";
+        bitmap = null;
+
+        get data() {
+            if (this.dataRaw) return this.dataRaw.data;
+            else return new Uint8Array(4);
+        }
+
+        get width() {
+            if (this.dataRaw) return this.dataRaw.width;
+            else return 1;
+        }
+
+        get height() {
+            if (this.dataRaw) return this.dataRaw.height;
+            else return 1;
+        }
+
+        constructor(width, height, name, workspace) {
+            //Create internal image data
+            this.dataRaw = new ImageData(width, height);
+            
+            this.workspace = workspace;
+            this.name = name || `Layer ${this.workspace.layers.length + 1}`;
+
+            //Do a thing, guarenteed to not exist (hopefully)
+            if (this.workspace.layerExists(name)) {
+                let num = 1;
+                name = (`Layer ${num}`);
+                
+                //Find one that doesn't exist.
+                while (this.workspace.layerExists(name)) {
+                    num++;
+                    name = (`Layer ${num}`);
+                }
+            }
+
+            
+            this.element = this.workspace._createLayerElement(this);
+
+            this.workspace.layers.push(this);
+            this.workspace.layerList.appendChild(this.element);
+
+            this.element.positionID = this.workspace.layers.length - 1;
+
+            //Finally use the new layer
+            this.workspace.setLayer(name);
+        }
+
+        updateBitmap() {
+            if (this.bitmap) this.bitmap.close();
+
+            return new Promise((resolve, reject) => createImageBitmap(this.dataRaw).then(bitmap => {
+                this.bitmap = bitmap;
+                resolve(bitmap);
+            }));
+        }
+
+        dispose(ID) {            
+            //Clean up clean up!
+            this.element.parentElement.removeChild(this.element);
+            this.workspace.layers.splice(ID, 1);
+
+            if (this.bitmap) this.bitmap.close();
+            delete this;
+        }
+
+        resize(active, width, height, editingData) {
+            const layer = (active) ? editingData : this;
+
+            //Get needed attributes for the transfer
+            const output = new ImageData(width, height);
+            const readWidth = Math.min(width, layer.width);
+            const readHeight = Math.min(height, layer.height);
+
+            //Transfer data
+            for (let y = 0; y < readHeight; y++) {
+                for (let x = 0; x < readWidth; x++) {
+                    const lID = ((y * layer.width) + x) * 4;
+                    const oID = ((y * output.width) + x) * 4;
+                    output.data[oID] = layer.data[lID];
+                    output.data[oID + 1] = layer.data[lID + 1];
+                    output.data[oID + 2] = layer.data[lID + 2];
+                    output.data[oID + 3] = layer.data[lID + 3];
+                }
+            }
+            
+            //Blit image data to editing canvas if needed
+            if (active) {
+                this.workspace.GL.putImageData(output, 0, 0);
+            }
+
+            this.dataRaw = output;
+            this.updateBitmap();
+        }
     },
 
     workspace: class {
@@ -244,10 +346,12 @@ window.artimus = {
             //For editing
             this.editingCanvas = document.createElement("canvas");
             this.previewCanvas = document.createElement("canvas");
+            this.compositeCanvas = document.createElement("canvas");
             this.gridCanvas = document.createElement("canvas");
 
             this.GL = this.editingCanvas.getContext("2d", { willReadFrequently: true });
             this.fullviewGL = this.canvas.getContext("2d");
+            this.compositeGL = this.compositeCanvas.getContext("2d");
             this.previewGL = this.previewCanvas.getContext("2d");
             this.gridGL = this.gridCanvas.getContext("2d");
 
@@ -316,28 +420,35 @@ window.artimus = {
             }
         }
 
-        renderLoop(isExport) {
-            if (!isExport) this.fullviewGL.drawImage(this.gridCanvas, 0, 0);
-            else this.fullviewGL.clearRect(0, 0, this.width, this.height);
+        renderLoop() {
+            this.fullviewGL.drawImage(this.gridCanvas, 0, 0);
 
-            for (let layerID in this.layers) {
-                if (layerID == this.currentLayer) this.fullviewGL.drawImage(this.editingCanvas, 0, 0);
-                else {
-                    const bitmap = this.layers[layerID].bitmap;
-                    if (bitmap instanceof ImageBitmap) this.fullviewGL.drawImage(bitmap, 0, 0);
-                }
-            }
+            this.renderComposite();
 
+            this.fullviewGL.drawImage(this.compositeCanvas, 0, 0);
             this.fullviewGL.drawImage(this.previewCanvas, 0, 0);
 
-            //If we have a selection draw the outline
-            if (this.hasSelection && !isExport) {
+            if (this.hasSelection) {
                 this.selectionAnimation = (this.selectionAnimation + 0.1) % 6;
                 this.fullviewGL.setLineDash([4, 2]);
                 this.fullviewGL.lineDashOffset = this.selectionAnimation;
                 this.fullviewGL.strokeStyle = getComputedStyle(document.body).getPropertyValue("--artimus-selection-outline");
                 this.fullviewGL.lineWidth = 1;
                 this.fullviewGL.stroke(this.selectionPath);
+            }
+        }
+
+        renderComposite() {
+            this.compositeGL.clearRect(0, 0, this.width, this.height);
+            for (let layerID in this.layers) {
+                const layer = this.layers[layerID];
+                this.compositeGL.globalCompositeOperation = layer.blendMode || "source-over";
+
+                if (layerID == this.currentLayer) this.compositeGL.drawImage(this.editingCanvas, 0, 0);
+                else {
+                    const bitmap = layer.bitmap;
+                    if (bitmap instanceof ImageBitmap) this.compositeGL.drawImage(bitmap, 0, 0);
+                }
             }
         }
 
@@ -689,7 +800,7 @@ window.artimus = {
                 const label = oldLayer.label;
 
                 //Clean up data and save layer data to previous layer.
-                this.layers[this.#currentLayer] = this.GL.getImageData(0, 0, this.width, this.height);
+                this.layers[this.#currentLayer].dataRaw = this.GL.getImageData(0, 0, this.width, this.height);
                 this.transferLayerData(oldLayer, this.layers[this.#currentLayer]);
 
                 this.updateLayer(this.#currentLayer, () => {
@@ -697,7 +808,7 @@ window.artimus = {
 
                     //Now setup stuff we need/want like blitting the newly selected layer onto the editing canvas
                     const current = this.layers[this.#currentLayer];
-                    this.GL.putImageData(current, 0, 0);
+                    this.GL.putImageData(current.dataRaw, 0, 0);
                     this.layerHistory = [this.GL.getImageData(0, 0, this.width, this.height)];
 
                     label.className = this.layerClass;
@@ -708,34 +819,22 @@ window.artimus = {
             }
         }
 
-        createLayer(name) {
-            name = name || ("Layer " + (this.layers.length + 1));
-            //Do a thing, guarenteed to not exist (hopefully)
-            if (this.layerExists(name)) {
-                let num = 1;
-                name = (`Layer ${num}`);
-                
-                //Find one that doesn't exist.
-                while (this.layerExists(name)) {
-                    num++;
-                    name = (`Layer ${num}`);
-                }
+        getLayer(ID) {
+            if (typeof ID == "string") {
+                const locID = this.layers.findIndex((layer) => layer.name == ID);
+                if (locID != -1) ID = locID;
             }
 
-            const layerData = new ImageData(this.canvas.width, this.canvas.height);
-            createImageBitmap(layerData).then(bitmap => {
-                layerData.name = name;
-                layerData.bitmap = bitmap;
-                
-                const element = this._createLayerElement(layerData);
+            if (typeof ID == "number") {
+                return this.layers[ID];
+            }
 
-                this.layers.push(layerData);
-                this.layerList.appendChild(element);
-                element.positionID = this.layers.length - 1;
+            return;
+        }
 
-                //Finally use the new layer
-                this.setLayer(name);
-            });
+        createLayer(name) {
+            const layer = new artimus.layer(this.canvas.width, this.canvas.height, name || ("Layer " + (this.layers.length + 1)), this);
+            return layer;
         }
 
         _createLayerElement(layerData) {
@@ -750,10 +849,17 @@ window.artimus = {
             label.onclick = () => this.setLayer(element.targetLayer);
             layerData.label = label;
 
-            const removeLayer = document.createElement("button");
-            removeLayer.className = "artimus-button artimus-layerButton";
-            removeLayer.innerText = "×";
-            removeLayer.onclick = () => this.removeLayer(element.targetLayer);
+            label.CUGI_CONTEXT = () => {
+                return [
+                    { type: "button", text: "delete", onclick: () => this.removeLayer(element.targetLayer) },
+                    { type: "button", text: "properties", onclick: () => (artimus.layerPropertyMenu)(this, this.getLayer(element.targetLayer)) }
+                ]
+            }
+
+            label.CUGI_PREPROCESS = (item) => {
+                item.text = artimus.translate(item.translationKey || item.key || item.text, "layerDropdown") || item.text || item.key;
+                return item;
+            }
 
             const upButton = document.createElement("button");
             upButton.className = "artimus-button artimus-layerButton";
@@ -769,7 +875,6 @@ window.artimus = {
                 this.moveLayer(element.targetLayer, -1);
             }
 
-            element.appendChild(removeLayer);
             element.appendChild(upButton);
             element.appendChild(downButton);
             element.appendChild(label);
@@ -836,10 +941,7 @@ window.artimus = {
             }
 
             if (typeof ID == "number") {
-                if (this.layers[ID].bitmap) this.layers[ID].bitmap.close();
-
-                createImageBitmap(this.layers[ID]).then(newBitmap => {
-                    this.layers[ID].bitmap = newBitmap;
+                this.layers[ID].updateBitmap().then(newBitmap => {
                     if (then) then(newBitmap);
                 });
             }
@@ -871,35 +973,7 @@ window.artimus = {
             }
 
             if (typeof ID == "number") {
-                const layer = (this.currentLayer == ID) ? editingData : this.layers[ID];
-                if (this.currentLayer == ID) this.transferLayerData(this.layers[ID], layer);
-
-                //Get needed attributes for the transfer
-                const output = new ImageData(width, height);
-                const readWidth = Math.min(width, layer.width);
-                const readHeight = Math.min(height, layer.height);
-
-                //Transfer data
-                for (let y = 0; y < readHeight; y++) {
-                    for (let x = 0; x < readWidth; x++) {
-                        const lID = ((y * layer.width) + x) * 4;
-                        const oID = ((y * output.width) + x) * 4;
-                        output.data[oID] = layer.data[lID];
-                        output.data[oID + 1] = layer.data[lID + 1];
-                        output.data[oID + 2] = layer.data[lID + 2];
-                        output.data[oID + 3] = layer.data[lID + 3];
-                    }
-                }
-                
-                //Blit image data to editing canvas if needed
-                if (this.currentLayer == ID) {
-                    this.GL.putImageData(output, 0, 0);
-                }
-
-                //Add the layer back and update the bitmap.
-                this.transferLayerData(layer, output);
-                this.layers[ID] = output;
-                this.updateLayer(ID);
+                this.layers[ID].resize(ID == this.currentLayer, width, height, editingData);
             }
         }
 
@@ -915,16 +989,11 @@ window.artimus = {
             if (ID == this.currentLayer) return;
 
             if (typeof ID == "number") {
-                const layer = this.layers[ID];
-
                 if (this.#currentLayer > ID) {
                     this.#currentLayer -= 1;
                 }
-                
-                //Clean up clean up!
-                layer.bitmap.close();
-                layer.element.parentElement.removeChild(layer.element);
-                this.layers.splice(ID, 1);
+
+                this.layers[ID].dispose(ID);
             }
         }
 
@@ -954,6 +1023,9 @@ window.artimus = {
             
             this.gridCanvas.width = width;
             this.gridCanvas.height = height;
+            
+            this.compositeCanvas.width = width;
+            this.compositeCanvas.height = height;
 
             //resize layers
             for (let index = 0; index < this.layers.length; index++) {
@@ -1026,8 +1098,8 @@ window.artimus = {
 
         export() {
             //Before the frame gets render this already gets obliterated lol, so it's a no notice export
-            this.renderLoop(true);
-            return this.canvas.toDataURL();
+            this.renderComposite();
+            return this.compositeCanvas.toDataURL();
         }
 
         exportToPC() {
