@@ -488,6 +488,7 @@
             height = Number(height.replaceAll(/[a-zA-Z]/g, ""));
             padding = Number(padding.replaceAll(/[a-zA-Z]/g, ""));
 
+            //If we are offscreen on either side flip
             if (x + (width + padding * 2) > window.innerWidth) container.style.setProperty("--x", `${x - (width + padding * 2)}px`);
             else container.style.setProperty("--x", `${x}px`);
 
