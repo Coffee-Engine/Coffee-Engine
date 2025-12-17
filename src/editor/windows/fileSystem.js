@@ -295,6 +295,16 @@
 
             element.appendChild(imgElement);
         },
+        scene: (element, path, key) => {
+            return new Promise((resolve) => {
+                editor.elementFromLink("editor/windows/fileSystem/scene.svg").then(svg => {
+                    svg.setAttribute("class", "fileSystem-fileIcon");
+
+                    element.appendChild(svg);
+                    resolve();
+                });
+            })
+        }
     }
 
     const imageTypes = coffeeEngine.formats.image;
