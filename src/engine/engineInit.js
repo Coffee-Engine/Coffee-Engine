@@ -86,6 +86,17 @@ window.coffeeEngine = {
 
     //Our timer
     timer: 0,
+
+    getFileExtension: (path) => {
+        if (!path.includes(".")) return "";
+
+        const split = path.split(".");
+        return split[split.length - 1];
+    },
+
+    formats: {
+        image: ["png", "jpeg", "jpg", "webp", "bmp", "gif", "svg"]
+    }
 };
 
 window.globals = {};

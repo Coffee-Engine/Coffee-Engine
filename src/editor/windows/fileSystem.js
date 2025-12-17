@@ -247,12 +247,21 @@
 
             text.innerText = key;
 
-            editor.elementFromLink("editor/windows/fileSystem/file.svg").then(svg => {
-                svg.setAttribute("class", "fileSystem-fileIcon")
+            const preview = editor.windows.fileExplorer.previews[coffeeEngine.getFileExtension(path)];
+            if (preview) {
+                const returned = preview(element, path, key);
 
-                element.appendChild(svg);
-                element.appendChild(text);
-            });
+                if (returned instanceof Promise) returned.then(() => { element.appendChild(text); });
+                else element.appendChild(text);
+            }
+            else {
+                editor.elementFromLink("editor/windows/fileSystem/file.svg").then(svg => {
+                    svg.setAttribute("class", "fileSystem-fileIcon")
+
+                    element.appendChild(svg);
+                    element.appendChild(text);
+                });
+            }
 
             return element;
         }
@@ -263,6 +272,24 @@
             coffeeEngine.removeEventListener("fileSystemUpdate", this.updateFunction);
         }
     };
+
+    editor.windows.fileExplorer.previews = {
+        img: (element, path, key) => {
+            const imgElement = document.createElement("img");
+            imgElement.className = "fileSystem-fileIcon";
+
+            project.getFileContents(path, "dataURL").then((url) => {
+                imgElement.src = url;
+            });
+
+            element.appendChild(imgElement);
+        },
+    }
+
+    const imageTypes = coffeeEngine.formats.image;
+    for (let extID in imageTypes) {
+        editor.windows.fileExplorer.previews[imageTypes[extID]] = editor.windows.fileExplorer.previews.img;
+    }
 
     editor.windows.__Serialization.register(editor.windows.fileExplorer, "fileExplorer");
 })();

@@ -125,6 +125,23 @@
             });
         },
 
+        getFileContents: (path, as) => {
+            return new Promise((resolve, reject) => {
+                project.getFile(path).then((file) => {
+                    const fileReader = new FileReader();
+
+                    //Return the result when needed
+                    fileReader.onload = () => resolve(fileReader.result);
+
+                    switch (as) {
+                        case "dataURL": fileReader.readAsDataURL(file); break;
+                        case "array": fileReader.readAsArrayBuffer(file); break;                    
+                        default: fileReader.readAsText(file); break;
+                    }
+                });
+            })
+        },
+
         fileExists: (path) => {
             const split = path.split("/");
             let fold = project.fileSystem;

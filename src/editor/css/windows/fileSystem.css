@@ -28,6 +28,10 @@
 }
 
 .fileSystem-fileIcon {
+    width: 1em;
     height: 1em;
+
+    margin-left: 1em; margin-right: 1em;
+    
     pointer-events: none;
 }
