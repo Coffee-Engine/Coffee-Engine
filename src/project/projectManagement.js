@@ -88,6 +88,11 @@
         getFile: (path, returnDefinition) => {
             //I promise you this works
             return new Promise((resolve, reject) => {
+                if (!path) {
+                    resolve(project.fileSystem);
+                    return;
+                } 
+
                 const split = path.split("/");
                 let fold = project.fileSystem;
                 for (let id = 0; id < split.length; id++) {

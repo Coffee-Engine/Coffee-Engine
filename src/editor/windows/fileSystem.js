@@ -1,4 +1,6 @@
 (function () {
+    editor.useCSSFile("editor/css/windows/fileSystem.css", "fileSystem");
+
     editor.windows.fileExplorer = class extends editor.windows.base {
         minWidth = 400;
         minHeight = 200;
@@ -99,11 +101,11 @@
             }
 
             //The main container for the fs
-            let mainContainer = document.createElement("div");
-            mainContainer.style.overflowY = "scroll";
+            this.fileContainer = document.createElement("div");
+            this.fileContainer.style.overflowY = "scroll";
 
             splitHolder.appendChild(buttonHolder);
-            splitHolder.appendChild(mainContainer);
+            splitHolder.appendChild(this.fileContainer);
 
             //Add the split holder
             container.appendChild(splitHolder);
@@ -116,14 +118,14 @@
 
                 refreshButton.onclick = () => {
                     project.fileSystem = {};
-                    mainContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+                    this.fileContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
 
                     //Rescan
                     project.scanFolder(project.directoryHandle, false, project.fileSystem).then(() => {
                         this.currentSystemRoot = project.fileSystem;
                         
-                        mainContainer.innerHTML = "";
-                        this.displayDirectory(this.systemRoot, mainContainer, false);
+                        this.fileContainer.innerHTML = "";
+                        this.displayDirectory(this.systemRoot, this.fileContainer, false);
                     })
                 }
 
@@ -131,188 +133,34 @@
             }
 
             //Add our reading text
-            mainContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
+            this.fileContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             
             //Drag and drop stuff
-            this.makeFileDAD(mainContainer, "");
-
-            //Our display function
-            this.displayDirectory = (directory, parentDiv, even, path) => {
-                path = path || "";
-                const keys = Object.keys(directory).sort();
-
-                const hasNamepspaceID = keys[project.namespaceIdentifier] !== undefined;
-
-                keys.forEach((key) => {
-                    //The coffee engine directory handle
-                    if (key == project.directoryHandleIdentifier || key == project.namespaceIdentifier) return;
-
-                    const element = document.createElement("div");
-                    element.setAttribute("even", even.toString());
-                    element.className = "fileButton";
-
-                    //Check if it is a file, or a folder
-                    if (directory[key] instanceof File || directory[key] instanceof FileSystemFileHandle) {
-                        element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
-                        element.lastClick = 0;
-
-                        const refreshText = () => {
-                            element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
-                            document.removeEventListener("mousedown", refreshText);
-                        };
-
-                        parentDiv.appendChild(element);
-
-                        element.onclick = (event) => {
-                            //Stop propogation
-                            event.stopPropagation();
-                            const split = key.split(".");
-
-                            //Hopefully 66 milliseconds is good requires like fps<5 to break.
-                            if (Date.now() - element.lastClick < 200) editor.sendFileHook(split[split.length - 1], `${path}${key}`);
-                            element.lastClick = Date.now();
-                            editor.selectedNode = directory[key];
-
-                            editor.sendEvent("nodeSelected", { target: directory[key], type: "file", path: `${path}${key}` });
-                        };
-
-                        //Our file dropdown
-                        element.contextFunction = () => {
-                            return [
-                                { text: editor.language["editor.window.fileExplorer.openInCode"], value: "codeEditor" },
-                                { text: editor.language["editor.window.fileExplorer.rename"], value: "rename" },
-                                { text: editor.language["editor.window.fileExplorer.delete"], value: "delete" },
-                            ];
-                        };
-
-                        element.contentAnswer = (value) => {
-                            switch (value) {
-                                //Small QOL option here
-                                case "codeEditor":
-                                    if (editor.windows.existing && editor.windows.existing.codeEditor) {
-                                        const split = key.split(".");
-                                        if (editor.windows.existing.codeEditor[0]) editor.windows.existing.codeEditor[0].openFile(`${path}${key}`, split[split.length - 1]);
-                                    }
-                                    break;
-
-                                case "rename":
-                                    element.innerHTML = `<input type="text" style="padding:0px; margin:0px; width:100%;" value="${key}"></input>`;
-                                    element.children[0].focus();
-                                    element.children[0].onkeydown = (event) => {
-                                        if (event.code == "Enter") {
-                                            project.getFile(`${path}${key}`).then((file) => {
-                                                //As long as this actively doesn't kill the program, I'm fine
-                                                project.setFile(`${path}${element.children[0].value}`, file, file.type).then(() => {
-                                                    project.deleteFile(`${path}${key}`);
-                                                });
-                                            });
-                                            document.removeEventListener("mousedown", refreshText);
-                                        }
-                                    };
-
-                                    document.addEventListener("mousedown", refreshText);
-                                    break;
-
-                                case "delete":
-                                    //Delete the bastard
-                                    project.deleteFile(`${path}${key}`);
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                        };
-                    }
-                    //For folders we do something similar but with another div inside and create a sub directory basin
-                    else {
-                        element.innerHTML = `<p style="padding:0px; margin:0px; pointer-events:none;">${key}</p>`;
-
-                        this.makeFileDAD(element, `${path}${key}/`);
-
-                        //Our folder dropdown
-                        //Notice the sleek difference.
-                        //If somebody would take the time to add folder renaming I will give you a hug.
-                        element.contextFunction = () => {
-                            return [
-                                { text: editor.language["editor.window.fileExplorer.createFile"], value: "newFile" },
-                                { text: editor.language["editor.window.fileExplorer.delete"], value: "delete" },
-                                { text: editor.language["editor.window.fileExplorer.package"], value: "package" },
-                            ];
-                        };
-
-                        element.contentAnswer = (value) => {
-                            switch (value) {
-                                case "newFile": {
-                                    const createdWindow = new editor.windows.fileCreator(400,150);
-                                    createdWindow.__moveToTop();
-                                    createdWindow.x = (window.innerWidth / 2) - 200;
-                                    createdWindow.y = (window.innerHeight / 2) - 100;
-
-                                    createdWindow.path.value = `${path}${key}/newFile.txt`;
-                                    break;
-                                }
-
-                                case "delete":
-                                    //Die
-                                    project.deleteFile(`${path}${key}`);
-                                    break;
-
-                                case "package":
-                                    project.latte.saveLatteFrom(path);
-                                    break;
-
-                                default:
-                                    break;
-                            }
-                        };
-
-                        const lowerDiv = document.createElement("div");
-                        lowerDiv.style.margin = "0px";
-                        lowerDiv.style.padding = "0px";
-                        lowerDiv.style.marginLeft = "4px";
-                        lowerDiv.className = "fileFolder";
-                        element.appendChild(lowerDiv);
-
-                        element.onclick = (event) => {
-                            //Stop propogation
-                            event.stopPropagation();
-                            lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
-
-                            if (lowerDiv.getAttribute("collasped") == "true") lowerDiv.setAttribute("collasped", "false");
-                            else lowerDiv.setAttribute("collasped", "true");
-                        };
-
-                        //Do it in this specific order. or else KABOOM!
-                        parentDiv.appendChild(element);
-
-                        //Special functionality for namepsaces
-                        if (hasNamepspaceID && key == "project:") {
-                            this.displayDirectory(directory[key], lowerDiv, !even, ``);
-                        } else {
-                            this.displayDirectory(directory[key], lowerDiv, !even, `${path}${key}/`);
-                        }
-
-                        lowerDiv.fitHeight = lowerDiv.clientHeight;
-                        lowerDiv.style.setProperty("--fit-height", `${lowerDiv.fitHeight}px`);
-                    }
-                });
-            };
+            this.makeFileDAD(this.fileContainer, "");
+            
+            this.displayDirectory("");
 
             //Our update function
             this.updateFunction = (event) => {
                 if (!event) event = { type: "ALL", src: "COFFEE_ALL" };
                 switch (event.type) {
                     case "ALL": {
-                        mainContainer.innerHTML = "";
-                        this.displayDirectory(this.systemRoot, mainContainer, false);
+                        //Display root when loaded;
+                        this.displayDirectory("");
                         break;
                     }
 
-                    //There is probably a way better way of doing this
+                    //Yes there is
                     case "FILE_ADDED": {
-                        mainContainer.innerHTML = "";
+                        if (!event.src.includes("/") && !this.path) return this.displayDirectory(this.path);
+                        
+                        //Get the folder path
+                        const splitpath = event.src.split("/");
+                        splitpath.splice(splitpath.length - 1, 1);
 
-                        this.displayDirectory(this.systemRoot, mainContainer, false);
+                        if (this.path == splitpath.join("/")) {
+                            this.displayDirectory(this.path);
+                        }
                         break;
                     }
 
@@ -321,10 +169,92 @@
                 }
             };
 
-            this.updateFunction();
-
             //Updating stuff
             this.updateListener = coffeeEngine.addEventListener("fileSystemUpdate", this.updateFunction);
+        }
+
+        selected = null;
+        path = "";
+
+        displayDirectory(path) {
+            this.path = path;
+            this.fileContainer.innerHTML = "";
+            this.selected = null;
+
+            //Since we can change our "root" we need to do this more manually
+            let target = this.currentSystemRoot;
+            if (path) {
+                const searchPath = path.split("/");
+
+                for (let i in searchPath) {
+                    const next = searchPath[i];
+                    if (!(target[next] instanceof File)) target = target[searchPath[i]];
+                    else {
+                        console.warn(`Directory path "${path}" does not exist! File explorer will show nothing.`);
+                        return;
+                    }
+                }
+            }
+
+            for (let key in target) {
+                let element = null;
+
+                if (target[key] instanceof File) element = this.createFileElement(`${path}${(path) ? "/" : ""}${key}`, key);
+                else element = this.createFolderElement(`${path}${(path) ? "/" : ""}${key}`, key);
+
+                this.fileContainer.appendChild(element);
+                
+                element.onclick = () => {
+                    if (this.selected) this.selected.className = "fileSystem-fileElement";
+                    element.className = "fileSystem-fileElement fileSystem-fileElement-selected";
+                    
+                    if (this.selected == element && element.ondouble) element.ondouble();
+
+                    this.selected = element;
+                }
+            }
+        }
+
+        createFolderElement(path, key) {
+            const element = document.createElement("div");
+            const text = document.createElement("p");
+
+            element.className = "fileSystem-fileElement";
+            text.className = "fileSystem-fileText";
+
+            text.innerText = key;
+
+            editor.elementFromLink("editor/windows/fileSystem/folder.svg").then(svg => {
+                svg.setAttribute("class", "fileSystem-fileIcon")
+
+                element.appendChild(svg);
+                element.appendChild(text);
+            });
+
+            element.ondouble = () => {
+                this.displayDirectory(path);
+            }
+
+            return element;
+        }
+
+        createFileElement(path, key) {
+            const element = document.createElement("div");
+            const text = document.createElement("p");
+
+            element.className = "fileSystem-fileElement";
+            text.className = "fileSystem-fileText";
+
+            text.innerText = key;
+
+            editor.elementFromLink("editor/windows/fileSystem/file.svg").then(svg => {
+                svg.setAttribute("class", "fileSystem-fileIcon")
+
+                element.appendChild(svg);
+                element.appendChild(text);
+            });
+
+            return element;
         }
 
         resized() {}

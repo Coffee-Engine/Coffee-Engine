@@ -1,0 +1,4 @@
+.artEditor-content {
+    display: grid;
+    grid-template-rows: 24px 1fr;
+}
