@@ -204,11 +204,11 @@
 
                 this.fileContainer.appendChild(element);
                 
-                element.onclick = () => {
+                element.onclick = (event) => {
                     if (this.selected) this.selected.className = "fileSystem-fileElement";
                     element.className = "fileSystem-fileElement fileSystem-fileElement-selected";
                     
-                    if (this.selected == element && element.ondouble) element.ondouble();
+                    if (this.selected == element && element.ondouble) element.ondouble(event);
 
                     this.selected = element;
                 }
@@ -231,7 +231,7 @@
                 element.appendChild(text);
             });
 
-            element.ondouble = () => {
+            element.ondouble = (event) => {
                 this.displayDirectory(path);
             }
 
@@ -247,7 +247,10 @@
 
             text.innerText = key;
 
-            const preview = editor.windows.fileExplorer.previews[coffeeEngine.getFileExtension(path)];
+            //These will be needed so define them
+            const extension = coffeeEngine.getFileExtension(path);
+            const preview = editor.windows.fileExplorer.previews[extension];
+
             if (preview) {
                 const returned = preview(element, path, key);
 
@@ -256,11 +259,19 @@
             }
             else {
                 editor.elementFromLink("editor/windows/fileSystem/file.svg").then(svg => {
-                    svg.setAttribute("class", "fileSystem-fileIcon")
+                    svg.setAttribute("class", "fileSystem-fileIcon");
 
                     element.appendChild(svg);
                     element.appendChild(text);
                 });
+            }
+
+            element.ondouble = (event) => {
+                const hooks = editor.fileHooks[extension];
+                if (hooks) {
+                    if (hooks.length > 1) {}
+                    else if(hooks.length == 1) hooks[0].function.call(hooks[0].parent, path, extension);
+                };
             }
 
             return element;

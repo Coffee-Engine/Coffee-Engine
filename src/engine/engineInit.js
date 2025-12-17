@@ -95,7 +95,8 @@ window.coffeeEngine = {
     },
 
     formats: {
-        image: ["png", "jpeg", "jpg", "webp", "bmp", "gif", "svg"]
+        image: ["png", "jpeg", "jpg", "webp", "bmp", "gif", "svg"],
+        bitmapImage: ["png", "jpeg", "jpg", "webp", "bmp", "gif"]
     }
 };
 

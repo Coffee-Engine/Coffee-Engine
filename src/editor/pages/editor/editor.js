@@ -374,20 +374,23 @@
         //sugarcube.extensionManager.loadExtension("editor/editors/sugarcube/defaultBlocks/testCat.js");
 
         //Add our scene file hook
-        editor.addFileOpenHook(
+        editor.addFileHook(
             "scene",
             (path) => {
                 coffeeEngine.runtime.currentScene.openScene(path);
             },
-            this
+            this,
+            editor.language["editor.dropdown.scene.load"]
+            
         );
 
-        editor.addFileOpenHook(
+        editor.addFileHook(
             "prefab",
             (path) => {
                 coffeeEngine.runtime.currentScene.openIsolatedPrefab(path);
             },
-            this
+            this,
+            editor.language["editor.dropdown.scene.load"]
         );
 
         //Open the user into the defaultScene (once the project config is loaded)

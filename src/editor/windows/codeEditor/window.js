@@ -244,36 +244,7 @@
 
         //Setup our file hooks
         setupFileHooks() {
-            editor.addFileOpenHook("txt", this.openFile, this);
-            editor.addFileOpenHook("js", this.openFile, this);
-            editor.addFileOpenHook("cjs", this.openFile, this);
-            editor.addFileOpenHook("json", this.openFile, this);
-            editor.addFileOpenHook("cappu", this.openFile, this);
-            editor.addFileOpenHook("cescr", this.openFile, this);
-            editor.addFileOpenHook("glsl", this.openFile, this);
-
-            //Load stuff
-            this.fileReader.onload = () => {
-                const { useBlocklyEditor } = editor.getLanguageDefFromExtension(this.readType);
-                //Swap 'em
-                if (!useBlocklyEditor) {
-                    this.codeMirrorArea.style.visibility = "inherit";
-                    this.blocklyArea.style.visibility = "hidden";
-                    this.usingSugarCube = false;
-
-                    mirrorManager.setScript(this.fileReader.result, editor.languageRedirects[this.readType] || this.readType);
-                    sugarcube.deserialize({});
-                } else {
-                    this.codeMirrorArea.style.visibility = "hidden";
-                    this.blocklyArea.style.visibility = "inherit";
-                    this.usingSugarCube = true;
-
-                    sugarcube.deserialize(JSON.parse(this.fileReader.result));
-                    mirrorManager.setScript("", "");
-                }
-
-                this.title = `${this.filePath} | ${editor.language["editor.window.codeEditor"]}`;
-            };
+            editor.addFileHook(["txt", "js", "cjs", "json", "cappu", "cescr", "glsl"], this.openFile, this);
 
             //If we error hide both editors in punishment
             this.fileReader.onerror = () => {
@@ -294,6 +265,30 @@
             editor.removeOpenFileHook("glsl", this.openFile, this);
         }
 
+        fileLoaded(path, content, extension) {
+            const { useBlocklyEditor } = editor.getLanguageDefFromExtension(extension);
+            this.readType = extension;
+
+            //Swap 'em
+            if (!useBlocklyEditor) {
+                this.codeMirrorArea.style.visibility = "inherit";
+                this.blocklyArea.style.visibility = "hidden";
+                this.usingSugarCube = false;
+
+                mirrorManager.setScript(content, editor.languageRedirects[extension] || extension);
+                sugarcube.deserialize({});
+            } else {
+                this.codeMirrorArea.style.visibility = "hidden";
+                this.blocklyArea.style.visibility = "inherit";
+                this.usingSugarCube = true;
+
+                sugarcube.deserialize(JSON.parse(content));
+                mirrorManager.setScript("", "");
+            }
+
+            this.title = `${path} | ${editor.language["editor.window.codeEditor"]}`;
+        }
+
         openFile(path, extension) {
             //Make sure its lowercase
             extension = extension.toLowerCase();
@@ -301,18 +296,8 @@
             return new Promise((resolve, reject) => {
                 //Grab our file and read it
                 project
-                    .getFile(path)
-                    .then((file) => {
-                        this.fileReader.readAsText(file);
-                        this.readType = extension;
-                        this.filePath = path;
-
-                        this.addScriptToSidebar(path);
-                        resolve();
-                    })
-                    .catch(() => {
-                        reject();
-                    });
+                    .getFileContents(path)
+                    .then((text) => resolve(this.fileLoaded(path, text, extension)))
             });
         }
     };

@@ -28,7 +28,11 @@
                 <cugi-option>{ type: "button", text: editor.language["editor.dropdown.project.importFiles"], value: "importFiles" }</cugi-option>
             </cugi-dropdown>`;
 
-            artimus.inject(editorSpace);
+            this.workspace = artimus.inject(editorSpace);
+        
+            editor.addFileHook(coffeeEngine.formats.bitmapImage, (path) => {
+                project.getFile(path).then(file => this.workspace.importFromPC(file));
+            }, this.workspace, editor.language["editor.window.artEditor"]);
         }
     };
 

@@ -45,6 +45,5 @@
         });
     };
 
-    editor.addFileOpenHook("md", openMD, this);
-    editor.addFileOpenHook("markdown", openMD, this);
+    editor.addFileHook(["md", "markdown"], openMD, this, "Markdown Reader");
 })();
