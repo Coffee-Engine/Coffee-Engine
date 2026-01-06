@@ -1,9 +1,5 @@
 (function () {
     class node extends coffeeEngine.getNode("Node2D") {
-        //Allow for position and scale to be set directly
-        #position = new coffeeEngine.vector2(0, 0);
-        #scale = new coffeeEngine.vector2(1, 1);
-
         chunkSize = new coffeeEngine.vector2(16, 16);
         chunks = {};
 
@@ -76,18 +72,6 @@
             }};
 
             chunk.mesh = coffeeEngine.renderer.daveShade.buffersFromJSON(mesh);
-        }
-
-        constructor() {
-            super();
-            this.position.setter = () => {
-                this.updateMatrix();
-            };
-            this.scale.setter = () => {
-                this.updateMatrix();
-            };
-
-            this.updateMatrix();
         }
 
         getProperties() {
