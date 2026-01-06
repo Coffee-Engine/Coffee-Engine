@@ -591,7 +591,7 @@
     });
 
     document.addEventListener("contextmenu", event => {
-        if (event.originalTarget.CUGI_CONTEXT) {
+        if (event.target && event.target.CUGI_CONTEXT) {
             event.preventDefault();
             event.stopPropagation();
 
@@ -600,8 +600,8 @@
                 CUGI.currentPopup = null;
             }
 
-            CUGI.currentPopup = CUGI.createPopup(event.originalTarget.CUGI_CONTEXT(), {
-                preprocess: event.originalTarget.CUGI_PREPROCESS
+            CUGI.currentPopup = CUGI.createPopup(event.target.CUGI_CONTEXT(), {
+                preprocess: event.target.CUGI_PREPROCESS
             }, event.clientX, event.clientY);
             CUGI.currentPopup.justOpened = false;
         }

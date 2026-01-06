@@ -194,6 +194,18 @@
                         return;
                     }
                 }
+
+                let element = this.createBackElement(path);
+                this.fileContainer.appendChild(element);
+                
+                element.onclick = (event) => {
+                    if (this.selected) this.selected.className = "fileSystem-fileElement";
+                    element.className = "fileSystem-fileElement fileSystem-fileElement-selected";
+                    
+                    if (this.selected == element && element.ondouble) element.ondouble(event);
+
+                    this.selected = element;
+                }
             }
 
             for (let key in target) {
@@ -233,6 +245,31 @@
 
             element.ondouble = (event) => {
                 this.displayDirectory(path);
+            }
+
+            return element;
+        }
+
+        createBackElement(path) {
+            const element = document.createElement("div");
+            const text = document.createElement("p");
+
+            element.className = "fileSystem-fileElement";
+            text.className = "fileSystem-fileText";
+
+            text.innerText = "<< Back";
+
+            editor.elementFromLink("editor/windows/fileSystem/folder.svg").then(svg => {
+                svg.setAttribute("class", "fileSystem-fileIcon")
+
+                element.appendChild(svg);
+                element.appendChild(text);
+            });
+
+            element.ondouble = (event) => {
+                let back = path.split("/");
+                back.splice(back.length - 1, 1);
+                this.displayDirectory(back.join("/"));
             }
 
             return element;

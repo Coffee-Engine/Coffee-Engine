@@ -79,6 +79,46 @@ window.artimus = {
     //Should probably make a default one but for now this works.
     layerPropertyMenu: (workspace, layer) => {},
 
+    //Other stuff
+    extensionToMIME: {
+        "png": "image/png",
+        "jpeg": "image/jpeg",
+        "jpg": "image/jpeg",
+
+        //Eww
+        "webp": "image/webp",
+    },
+
+    //Mostly used in saving but can be used for other purposes, like making a list of global composite operations
+    blendModes: [
+        "source-over",
+        "source-in",
+        "source-out",
+        "source-atop",
+        "destination-over",
+        "destination-in",
+        "destination-out",
+        "destination-atop",
+        "lighter",
+        "copy",
+        "xor",
+        "multiply",
+        "screen",
+        "overlay",
+        "darken",
+        "lighten",
+        "color-dodge",
+        "color-burn",
+        "hard-light",
+        "soft-light",
+        "difference",
+        "exclusion",
+        "hue",
+        "saturation",
+        "color",
+        "luminosity",
+    ],
+
     tool: class {
         get icon() { return ""; }
 
@@ -119,22 +159,22 @@ window.artimus = {
             else return 1;
         }
 
-        constructor(width, height, name, workspace) {
+        constructor(width, height, name, workspace, noSwitch) {
             //Create internal image data
             this.dataRaw = new ImageData(width, height);
             
             this.workspace = workspace;
-            this.name = name || `Layer ${this.workspace.layers.length + 1}`;
+            this.name = name || `${artimus.translate("layer#", "layer").replace("#", this.layers.length + 1)}`;
 
             //Do a thing, guarenteed to not exist (hopefully)
             if (this.workspace.layerExists(name)) {
                 let num = 1;
-                name = (`Layer ${num}`);
+                name = (`${artimus.translate("layer#", "layer").replace("#", num)}`);
                 
                 //Find one that doesn't exist.
                 while (this.workspace.layerExists(name)) {
                     num++;
-                    name = (`Layer ${num}`);
+                    name = (`${artimus.translate("layer#", "layer").replace("#", num)}`);
                 }
             }
 
@@ -147,7 +187,7 @@ window.artimus = {
             this.element.positionID = this.workspace.layers.length - 1;
 
             //Finally use the new layer
-            this.workspace.setLayer(name);
+            if (!noSwitch) this.workspace.setLayer(name);
         }
 
         updateBitmap() {
@@ -269,6 +309,11 @@ window.artimus = {
         selectionPath = new Path2D();
         hasSelection = false;
 
+        //Objects and data needed for the artimus format
+        tEncoder = new TextEncoder();
+        tDecoder = new TextDecoder();
+        magic = Array.from("COFE", char => String(char).charCodeAt(0));
+
         updatePosition() {
             //Setup some CSS
             this.quickVar(this.container, {
@@ -359,7 +404,6 @@ window.artimus = {
             this.createLayer();
 
             this.fileReader = new FileReader();
-            this.fileReader.onload = () => { this.onImageLoad(); };
 
             artimus.activeWorkspaces.push(this);
 
@@ -377,7 +421,7 @@ window.artimus = {
                 loop();
             });
 
-            this.refreshTools();
+            this.refreshTranslation();
         }
 
         refreshGridPattern(then) {
@@ -465,7 +509,6 @@ window.artimus = {
             this.layerCreationHolder = document.createElement("div");
             this.layerCreationName = document.createElement("input");
             this.layerCreationButton = document.createElement("button");
-            this.layerCreationName.placeholder = "layer";
             this.layerCreationButton.innerText = "✓";
 
             this.canvasArea = document.createElement("div");
@@ -636,6 +679,13 @@ window.artimus = {
             })
         }
 
+        refreshTranslation() {
+            this.layerCreationName.placeholder = artimus.translate("inputPlaceholder", "layer");
+
+            this.refreshTools();
+            this.refreshToolOptions();
+        }
+
         //Canvas movement
         setCanvasPosition(x, y) {
             this.#scrollX = -x;
@@ -789,34 +839,40 @@ window.artimus = {
 
         //Layer manipulation, for use inside of the library itself but exposed for people to use for their own purposes
         setLayer(ID, then) {
-            if (typeof ID == "string") {
-                const locID = this.layers.findIndex((layer) => layer.name == ID);
-                if (locID != -1) ID = locID;
-            }
+            return new Promise((resolve, reject) => {
+                if (typeof ID == "string") {
+                    const locID = this.layers.findIndex((layer) => layer.name == ID);
+                    if (locID != -1) ID = locID;
+                }
 
-            if (typeof ID == "number") {
-                //Save current data to the layer position
-                const oldLayer = this.layers[this.#currentLayer];
-                const label = oldLayer.label;
+                if (typeof ID == "number") {
+                    //Save current data to the layer position
+                    const oldLayer = this.layers[this.#currentLayer];
+                    const label = oldLayer.label;
 
-                //Clean up data and save layer data to previous layer.
-                this.layers[this.#currentLayer].dataRaw = this.GL.getImageData(0, 0, this.width, this.height);
-                this.transferLayerData(oldLayer, this.layers[this.#currentLayer]);
+                    //Clean up data and save layer data to previous layer.
+                    this.layers[this.#currentLayer].dataRaw = this.GL.getImageData(0, 0, this.width, this.height);
+                    this.transferLayerData(oldLayer, this.layers[this.#currentLayer]);
 
-                this.updateLayer(this.#currentLayer, () => {
-                    this.#currentLayer = ID;
+                    this.updateLayer(this.#currentLayer, () => {
+                        this.#currentLayer = ID;
 
-                    //Now setup stuff we need/want like blitting the newly selected layer onto the editing canvas
-                    const current = this.layers[this.#currentLayer];
-                    this.GL.putImageData(current.dataRaw, 0, 0);
-                    this.layerHistory = [this.GL.getImageData(0, 0, this.width, this.height)];
+                        //Now setup stuff we need/want like blitting the newly selected layer onto the editing canvas
+                        const current = this.layers[this.#currentLayer];
+                        this.GL.putImageData(current.dataRaw, 0, 0);
+                        this.layerHistory = [this.GL.getImageData(0, 0, this.width, this.height)];
 
-                    label.className = this.layerClass;
-                    current.label.className = this.layerClass + this.layerClassSelected;
+                        label.className = this.layerClass;
+                        current.label.className = this.layerClass + this.layerClassSelected;
 
-                    if (then) then();
-                });
-            }
+                        if (then) then();
+                        resolve();
+                    });
+                }
+                else {
+                    reject(`Couldn't find or update layer ${ID}`);
+                }
+            });
         }
 
         getLayer(ID) {
@@ -832,8 +888,8 @@ window.artimus = {
             return;
         }
 
-        createLayer(name) {
-            const layer = new artimus.layer(this.canvas.width, this.canvas.height, name || ("Layer " + (this.layers.length + 1)), this);
+        createLayer(name, noSwitch) {
+            const layer = new artimus.layer(this.canvas.width, this.canvas.height, name || (`${artimus.translate("layer#", "layer").replace("#", this.layers.length + 1)}`), this, noSwitch);
             return layer;
         }
 
@@ -935,16 +991,22 @@ window.artimus = {
         }
 
         updateLayer(ID, then) {
-            if (typeof ID == "string") {
-                const locID = this.layers.findIndex((layer) => layer.name == ID);
-                if (locID != -1) ID = locID;
-            }
+            return new Promise((resolve, reject) => {
+                if (typeof ID == "string") {
+                    const locID = this.layers.findIndex((layer) => layer.name == ID);
+                    if (locID != -1) ID = locID;
+                }
 
-            if (typeof ID == "number") {
-                this.layers[ID].updateBitmap().then(newBitmap => {
-                    if (then) then(newBitmap);
-                });
-            }
+                if (typeof ID == "number") {
+                    this.layers[ID].updateBitmap().then(newBitmap => {
+                        if (then) then(newBitmap);
+                        resolve(newBitmap);
+                    });
+                }
+                else {
+                    reject(`Couldn't find or update layer ${ID}`);
+                }
+            });
         }
 
         //For updating the undo history
@@ -1078,35 +1140,250 @@ window.artimus = {
             this.historyIndex = 0;
             this.layerHistory = [];
         }
+        
+        //Import
+        importArtimus(input) {
+            const data = new Uint8Array(input);
 
-        importFromPC(image) {
-            this.fileReader.readAsDataURL(image);
-        }
+            //Make sure it is an artimus image
+            if (
+                data[0] == this.magic[0] &&
+                data[1] == this.magic[1] &&
+                data[2] == this.magic[2] &&
+                data[3] == this.magic[3]
+            ) {
+                this.new(
+                (data[5] << 16) + (data[6] << 8) + (data[7]),
+                (data[8] << 16) + (data[9] << 8) + (data[10]),
+                () => {
+                    //Count bytes needed
+                    const bytesPerLayer = this.width * this.height * 4;
+                    const layerCount = (data[11] << 8) + data[12];
+                    let idx = 12;
 
-        onImageLoad() {
-            const image = new Image();
-            image.onload = () => {
-                this.new(image.width, image.height, () => {
-                    this.setLayer(0, () => {
-                        this.GL.drawImage(image, 0, 0);
+                    //Loop through layers
+                    this.layers[0].name = NaN;
+                    for (let layer = 0; layer < layerCount; layer++) {
+                        //Decode name and blend mode
+                        const nameLength = (data[idx + 1] << 16) + (data[idx + 2] << 8) + (data[idx + 3]);
+                        const blendMode = artimus.blendModes[data[idx + 4]];
+                        idx += 4;
+
+                        //Extract name bytes and decode
+                        let name = [];
+                        for (let i = 0; i < nameLength; i++) {
+                            name.push(data[idx + i + 1]);
+                        }
+
+                        idx += name.length;
+                        name = this.tDecoder.decode(new Uint8Array(name));
+
+                        //Parse the image now
+                        let imageData = new Uint8ClampedArray(bytesPerLayer);
+                        let filled = 0;
+
+                        while (filled < bytesPerLayer) {
+                            const stripSize = (data[idx + 1] << 8) + (data[idx + 2]);
+                            const stripColor = [
+                                data[idx + 3],
+                                data[idx + 4],
+                                data[idx + 5],
+                                data[idx + 6]
+                            ];
+
+                            let extended = Array(stripSize);
+                            extended.fill(stripColor);
+                            imageData.set(extended.flat(2), filled);
+                            filled += stripSize * 4;
+
+                            idx += 6;
+                        }
+
+                        this.createLayer(name, true);
+
+                        //Set layer data
+                        this.layers[layer + 1].dataRaw = new ImageData(imageData, this.width, this.height);
+                        this.layers[layer + 1].blendMode = blendMode;
+
+                        this.updateLayer(layer + 1);
+                    }
+
+                    this.setLayer(1).then(() => {
+                        this.removeLayer(0)
+                        this.setLayer(0);
                     });
                 });
             }
-
-            image.src = this.fileReader.result;
+            else console.error("Artimus File invalid!");
         }
 
-        export() {
-            //Before the frame gets render this already gets obliterated lol, so it's a no notice export
-            this.renderComposite();
-            return this.compositeCanvas.toDataURL();
+        importTypes = {
+            "artimus": "readAsArrayBuffer"
+        };
+
+        importFromPC(image) {
+            let extension = image.name.split(".");
+            extension = extension[extension.length - 1];
+            
+            this.fileReader.onload = () => { this.onImageLoad(this.fileReader.result, extension); };
+            this.fileReader[this.importTypes[extension] || "readAsDataURL"](image);
         }
 
-        exportToPC() {
+        onImageLoad(data, extension) {
+            switch (extension) {
+                case "art":
+                case "artimus":
+                    this.importArtimus(data);
+                    break;
+            
+                default:
+                    const image = new Image();
+                    image.onload = () => {
+                        this.new(image.width, image.height, () => {
+                            this.setLayer(0, () => {
+                                this.GL.drawImage(image, 0, 0);
+                            });
+                        });
+                    }
+
+                    image.src = data;
+                    break;
+            }
+        }
+
+        //Artimus data
+        exportArtimus() {
+            return new Promise((resolve, reject) => {
+                //Just a simple measure of how many bytes we will need to take up
+                let bytesPerLayer = this.width * this.height * 4;
+                const layerCount = this.layers.length;
+                
+                //==-- HEADER FORMAT --==//
+                //Magic  : 4 bytes : Should be COFE
+                //Format : 1 byte  : For versioning and revisions
+                //Width  : 3 bytes
+                //Height : 3 bytes
+                //Layers : 2 bytes
+                let data = [
+                    ...this.magic,
+                    1,
+                    
+                    //Conver both width and height into their 3 byte components
+                    (this.width & 0xff0000) >> 16,
+                    (this.width & 0x00ff00) >> 8,
+                    (this.width & 0x0000ff),
+                    
+                    (this.height & 0xff0000) >> 16,
+                    (this.height & 0x00ff00) >> 8,
+                    (this.height & 0x0000ff),
+
+                    //And the layer count
+                    (layerCount & 0xff00) >> 8,
+                    (layerCount & 0x00ff),
+                ];
+
+                //==-- LAYER FORMAT --==//
+                //Name Length : 3 bytes : Nobody should be more than 16777216 bytes... Right?
+                //Blend Mode  : 1 byte
+                //Name String : N bytes
+                //Data        : A bytes
+                for (let layerID in this.layers) {
+                    const {name, blendMode, dataRaw} = this.layers[layerID];
+                    const encodedName = this.tEncoder.encode(name);
+                    
+                    //Add layer header
+                    data.push(
+                        (encodedName.length & 0xff0000) >> 16,
+                        (encodedName.length & 0x00ff00) >> 8,
+                        (encodedName.length & 0x0000ff),
+
+                        artimus.blendModes.indexOf(blendMode) || 0,
+                        ...encodedName,
+                    );
+
+                    //Now parse the layer data
+                    const colours = dataRaw.data;
+                    let colour = [-1, -1, -1, -1];
+                    let count = 0;
+
+                    console.log(`Reading ${bytesPerLayer} bytes, for ${name}`);
+
+                    //==-- DATA FORMAT --==//
+                    //COUNT : 2 bytes
+                    //COLOR : 4 bytes
+                    for (let i = 0; i < bytesPerLayer; i+=4) {
+                        //Count colours
+                        if ((
+                            colour[0] == colours[i] &&
+                            colour[1] == colours[i + 1] &&
+                            colour[2] == colours[i + 2] &&
+                            colour[3] == colours[i + 3]) &&
+                            (count + 1) < Math.pow(2, 16)
+                        ) count++;
+                        else {
+                            //If the colour is not the same, or we are almost out of space we can begin anew
+                            if (count > 0) {
+                                data.push(
+                                    (count & 0xff00) >> 8,
+                                    (count & 0x00ff),
+
+                                    ...colour
+                                )
+                            }
+
+                            //The begin anew part
+                            colour = [colours[i], colours[i + 1], colours[i + 2], colours[i + 3]];
+                            count = 1;
+                        }
+                    }
+
+                    //Push the data once we hit the edge
+                    data.push(
+                        (count & 0xff00) >> 8,
+                        (count & 0x00ff),
+
+                        ...colour
+                    )
+                }
+
+                //With the slight, and somewhat strange compression I added above I'm sure this will be good
+                const file = new Uint8Array(data);
+                this.fileReader.onload = () => resolve(this.fileReader.result);
+                this.fileReader.readAsDataURL(new Blob([file]));
+            });
+        }
+
+        //Export
+        export(format) {
+            return new Promise((resolve, reject) => {
+                format = format || "artimus";
+
+                //Just render the frame, and update the layer
+                this.renderComposite();
+
+                //Force update it aswell
+                this.setLayer(this.currentLayer).then(() => {
+                    switch (format) {
+                        case "art":
+                        case "artimus":
+                            return this.exportArtimus().then(item => resolve(item));
+                        
+                        default:
+                            return resolve(this.compositeCanvas.toDataURL(artimus.extensionToMIME[format] || artimus.extensionToMIME.png));
+                    }
+                });
+            });
+        }
+
+        exportToPC(format) {
+            format = format || "artimus";
+
             const link = document.createElement("a");
-            link.href = this.export();
-            link.download = "picture.png";
-            link.click();
+            this.export(format).then(value => {
+                link.href = value;
+                link.download = `picture.${format}`;
+                link.click();
+            });
         }
     },
 

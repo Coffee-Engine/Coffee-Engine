@@ -43,7 +43,7 @@ artimus.tools.curve = class extends artimus.tools.line {
                 rx = Math.floor(rx);
                 ry = Math.floor(ry);
 
-                this.drawLine(gl, lx, ly, rx, ry, toolProperties);
+                super.drawLine(gl, lx, ly, rx, ry, toolProperties);
                 lx = rx;
                 ly = ry;
             }
