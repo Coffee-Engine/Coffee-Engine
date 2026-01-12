@@ -174,7 +174,7 @@ void main()
     //if (matAttributes.z < 0.0) {
     //    position -= vec3(u_camera[3][0],u_camera[3][1],u_camera[3][2]);
     //}
-    vec3 normal = normalize(texture(u_normal,screenUV).xyz);
+    vec3 normal = (texture(u_normal,screenUV).xyz - 0.5) * 2.0;
 
     o_color = texture(u_color,screenUV);
     if (o_color.w > 1.0) {

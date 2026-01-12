@@ -1,24 +1,4 @@
 (function () {
-    //Uniforms provided by the engine for the engine.
-    coffeeEngine.renderer.engineUniforms = [
-        //Transformations
-        "u_model", 
-        "u_projection", 
-        "u_camera", 
-        "u_wFactor", 
-        "u_aspectRatio", 
-        
-        //Other stuff
-        "u_colorMod", 
-        "u_res", 
-        "u_objectID", 
-        "u_time", 
-        
-        //Post processing
-        "u_initial", 
-        "u_screen", 
-        "u_renderPass"
-    ];
     
     //Just set up the renderer. Not much to do here.
     coffeeEngine.rendererClass = class {
@@ -26,6 +6,27 @@
         canvas = null;
         drawBufferSizeMul = 1;
         currentCamera = null;
+        
+        //Uniforms provided by the engine for the engine.
+        engineUniforms = [
+            //Transformations
+            "u_model", 
+            "u_projection", 
+            "u_camera", 
+            "u_wFactor", 
+            "u_aspectRatio", 
+            
+            //Other stuff
+            "u_colorMod", 
+            "u_res", 
+            "u_objectID", 
+            "u_time", 
+            
+            //Post processing
+            "u_initial", 
+            "u_screen", 
+            "u_renderPass"
+        ]
 
         mainShaders = {};
 
@@ -520,28 +521,28 @@
                 //Colors
                 this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
                 //Material Attributes
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
                 //Emission
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
                 //Position
                 this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
                 //Normal
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT,
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGB,
                 this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
                 this.daveShade.RENDERBUFFER_TYPE.DEPTH,
             ]);
 
             //Our buffers
             this.post0 = this.daveShade.createFramebuffer(this.canvas.width, this.canvas.height, [
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA
             ]);
 
             this.post1 = this.daveShade.createFramebuffer(this.canvas.width, this.canvas.height, [
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA
             ]);
 
             this.storeBuffer = this.daveShade.createFramebuffer(this.canvas.width, this.canvas.height, [
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA
             ]);
         }
 

@@ -1079,6 +1079,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
         this.RENDERBUFFER_TYPE.TEXTURE_RGBA = this._quickColorBuffer(this.GL.RGBA, this.GL.RGBA, this.GL.UNSIGNED_BYTE);
         if (this.GL_VERSION > 1) {
             this.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT = this._quickColorBuffer(this.GL.RGBA16F, this.GL.RGBA, this.GL.FLOAT);
+            this.RENDERBUFFER_TYPE.TEXTURE_RGBA_FLOAT_32 = this._quickColorBuffer(this.GL.RGBA32F, this.GL.RGBA, this.GL.FLOAT);
             this.RENDERBUFFER_TYPE.TEXTURE_R = this._quickColorBuffer(this.GL.R8, this.GL.RED, this.GL.UNSIGNED_BYTE);
             this.RENDERBUFFER_TYPE.TEXTURE_R_FLOAT = this._quickColorBuffer(this.GL.R16F, this.GL.RED, this.GL.FLOAT);
         }
