@@ -2,6 +2,8 @@ window.artimus = {
     tools: {},
     maxHistory: 10,
 
+    defaultArrow: `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="67.79628" height="19.99114" viewBox="0,0,67.79628,19.99114"><g transform="translate(-206.10043,-170.79353)"><g fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-miterlimit="10"><path d="M272.39671,189.28467c-0.45144,-8.7306 -24.09936,-17.06276 -32.46692,-16.99068c-7.9521,0.06851 -31.96292,7.81916 -32.32935,16.92539c-0.00186,0.04618 16.25066,-3.22684 32.24773,-3.1737c16.40198,0.05449 32.55854,3.43226 32.54855,3.23898z" /></g></g></svg>`,
+
     degreeToRad: (deg) => (deg * (3.1415962 / 180)),
     radToDegree: (rad) => (rad * (180 / 3.1415962)),
 
@@ -137,12 +139,14 @@ window.artimus = {
         }
 
         properties = {};
+        constructive = true;
     },
     
     layer: class {
 
         blendMode = "source-over";
         bitmap = null;
+        visibility = true;
 
         get data() {
             if (this.dataRaw) return this.dataRaw.data;
@@ -242,25 +246,27 @@ window.artimus = {
         //Scrolling
         #scrollX = 0;
         set scrollX(value) {
-            this.#scrollX = value;
+            this.#scrollX = Math.min(Math.max(this.width / -2, value), this.width / 2);
             this.updatePosition();
         }
         get scrollX() { return this.#scrollX; }
 
         #scrollY = 0;
         set scrollY(value) {
-            this.#scrollY = value;
+            this.#scrollY = Math.min(Math.max(this.height / -2, value), this.height / 2);
             this.updatePosition();
         }
         get scrollY() { return this.#scrollY; }
 
         #zoom = 2;
+        invZoom = 1;
         set zoom(value) {
             this.#zoom = Math.max(Math.min(value, 25), 0.25);
             this.updatePosition();
         }
         get zoom() { return this.#zoom; }
 
+        //Tools
         #tool = ""
         toolFunction = {};
         set tool(value) {
@@ -280,6 +286,7 @@ window.artimus = {
 
         toolProperties = {};
 
+        //Canvas
         #width = 300;
         set width(value) { this.resize(value, this.height); }
         get width() { return this.#width; }
@@ -287,7 +294,11 @@ window.artimus = {
         #height = 150;
         set height(value) { this.resize(this.width, value); }
         get height() { return this.#height; }
+        
+        dirty = true;
 
+        //Layers
+        layerHiddenAnimation = 0;
         #currentLayer = 0;
         set currentLayer(value) {
             this.setLayer(value);
@@ -296,23 +307,30 @@ window.artimus = {
             return this.#currentLayer;
         }
 
+        //History
         layerHistory = [];
         historyIndex = 0;
 
+        //CSS classes
         toolClass = "artimus-button artimus-sideBarButton artimus-tool ";
         layerClass = "artimus-button artimus-sideBarButton artimus-layer ";
-        toolClassSelected = "artimus-sideBarButton-selected artimus-tool-selected ";
-        layerClassSelected = "artimus-sideBarButton-selected artimus-layer-selected ";
+        toolClassSelected = "artimus-button-selected artimus-tool-selected ";
+        layerClassSelected = "artimus-button-selected artimus-layer-selected ";
 
+        //Selection stuff
         selection = [];
         selectionAnimation = 0;
         selectionPath = new Path2D();
         hasSelection = false;
 
+        //And finally...
+        projectStorage = {};
+
         //Objects and data needed for the artimus format
         tEncoder = new TextEncoder();
         tDecoder = new TextDecoder();
         magic = Array.from("COFE", char => String(char).charCodeAt(0));
+        jsonMagic = Array.from("JSON", char => String(char).charCodeAt(0));
 
         updatePosition() {
             //Setup some CSS
@@ -320,9 +338,11 @@ window.artimus = {
                 "scrollX": `${this.scrollX}px`,
                 "scrollY": `${this.scrollY}px`,
                 "zoom": this.zoom,
-                "canvasWidth": this.width,
-                "canvasHeight": this.height
+                "canvasWidth": `${this.width}px`,
+                "canvasHeight": `${this.height}px`
             });
+            
+            this.invZoom = 1 / this.#zoom;
         }
 
         //General helper functions ported from Coffee Engine
@@ -395,10 +415,10 @@ window.artimus = {
             this.gridCanvas = document.createElement("canvas");
 
             this.GL = this.editingCanvas.getContext("2d", { willReadFrequently: true });
-            this.fullviewGL = this.canvas.getContext("2d");
+            this.fullviewGL = this.canvas.getContext("2d", { alpha: false, desynchronized: true });
             this.compositeGL = this.compositeCanvas.getContext("2d");
             this.previewGL = this.previewCanvas.getContext("2d");
-            this.gridGL = this.gridCanvas.getContext("2d");
+            this.gridGL = this.gridCanvas.getContext("2d", { alpha: false });
 
             this.resize(640, 480);
             this.createLayer();
@@ -408,17 +428,21 @@ window.artimus = {
             artimus.activeWorkspaces.push(this);
 
             const workspace = this;
-            const loop = () => {
+
+            let start = 0;
+            const loop = (ts) => {
                 if (!workspace) return;
 
-                workspace.renderLoop.call(workspace);
+                workspace.renderLoop.call(workspace, (ts - start) / 1000);
                 requestAnimationFrame(loop);
+
+                start = ts;
             }
 
             //Setup our grid then loop
             this.setGridSize(4);
             this.refreshGridPattern(() => {
-                loop();
+                loop(0.016);
             });
 
             this.refreshTranslation();
@@ -464,16 +488,28 @@ window.artimus = {
             }
         }
 
-        renderLoop() {
+        renderLoop(delta) {
             this.fullviewGL.drawImage(this.gridCanvas, 0, 0);
 
-            this.renderComposite();
+            if (this.dirty) {
+                this.renderComposite();
+                this.dirty = false;
+            }
 
             this.fullviewGL.drawImage(this.compositeCanvas, 0, 0);
+
+            //Render hidden layers
+            if (!this.getLayerVisibility(this.currentLayer)) {
+                this.layerHiddenAnimation += delta * 5.0;
+                this.fullviewGL.globalAlpha = (Math.sin(this.layerHiddenAnimation) * 0.25) + 0.6;
+                this.fullviewGL.drawImage(this.editingCanvas, 0, 0);
+                this.fullviewGL.globalAlpha = 1;
+            }
+
             this.fullviewGL.drawImage(this.previewCanvas, 0, 0);
 
             if (this.hasSelection) {
-                this.selectionAnimation = (this.selectionAnimation + 0.1) % 6;
+                this.selectionAnimation = (this.selectionAnimation + (delta * 7.5)) % 6;
                 this.fullviewGL.setLineDash([4, 2]);
                 this.fullviewGL.lineDashOffset = this.selectionAnimation;
                 this.fullviewGL.strokeStyle = getComputedStyle(document.body).getPropertyValue("--artimus-selection-outline");
@@ -482,16 +518,18 @@ window.artimus = {
             }
         }
 
-        renderComposite() {
+        renderComposite(final) {
             this.compositeGL.clearRect(0, 0, this.width, this.height);
             for (let layerID in this.layers) {
                 const layer = this.layers[layerID];
                 this.compositeGL.globalCompositeOperation = layer.blendMode || "source-over";
 
-                if (layerID == this.currentLayer) this.compositeGL.drawImage(this.editingCanvas, 0, 0);
-                else {
-                    const bitmap = layer.bitmap;
-                    if (bitmap instanceof ImageBitmap) this.compositeGL.drawImage(bitmap, 0, 0);
+                if (layer.visibility) {
+                    if (layerID == this.currentLayer) this.compositeGL.drawImage(this.editingCanvas, 0, 0);
+                    else {
+                        const bitmap = layer.bitmap;
+                        if (bitmap instanceof ImageBitmap) this.compositeGL.drawImage(bitmap, 0, 0);
+                    }
                 }
             }
         }
@@ -558,6 +596,201 @@ window.artimus = {
             this.updatePosition();
         }
 
+        //Control stuffs
+        fingersDown = 0;
+        panning = false;
+        controlSets = {
+            kbMouse: {
+                mouseDown: (event) => {
+                    switch (event.button) {
+                        case 0:
+                            if (event.target != this.canvas) return;
+                            if (this.toolFunction.mouseDown && !this.toolDown) this.toolFunction.mouseDown(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), this.toolProperties);
+                            this.toolDown = true;
+                            break;
+
+                        case 2:
+                            if (event.target != this.canvas) return;
+                            const [red, green, blue, alpha] = this.GL.getImageData(...this.getCanvasPosition(event.clientX, event.clientY, true), 1, 1).data;
+                            const converted = artimus.RGBtoHex({ r:red, g:green, b:blue, a:alpha });
+
+                            //The three typical colours
+                            this.toolProperties.strokeColor = converted;
+                            this.toolProperties.fillColor = converted;
+                            this.toolProperties.color = converted;
+
+                            //Refresh options
+                            this.refreshToolOptions();
+                            break;
+
+                        case 1:
+                            this.panning = true;
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                },
+
+                mouseUp: (event) => {
+                    switch (event.button) {
+                        case 0:
+                            const position = this.getCanvasPosition(event.clientX, event.clientY);
+                            if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...position, this.toolProperties);
+                            if (this.toolFunction.preview) {
+                                this.previewGL.clearRect(0, 0, this.width, this.height);
+                                this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
+                            }
+                            
+                            //For the undoing
+                            if (this.toolDown && this.tool && this.toolFunction.constructive) {
+                                this.updateLayerHistory();
+                                this.dirty = true;
+                            }
+                            this.toolDown = false; 
+                            break;
+                        
+                        case 1:
+                            this.panning = false;
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    
+                    
+                },
+
+                mouseMove: (event) => {
+                    if (this.panning) {
+                        this.scrollX += event.movementX * this.invZoom;
+                        this.scrollY += event.movementY * this.invZoom;
+                    }
+
+                    const position = this.getCanvasPosition(event.clientX, event.clientY);
+                    
+                    if (this.toolFunction.preview) {
+                        //For previews
+                        this.previewGL.clearRect(0, 0, this.width, this.height);
+                        this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
+                    }
+
+                    if (this.toolDown && this.toolFunction.mouseMove) {
+                        this.toolFunction.mouseMove(this.GL, ...position, event.movementX * this.invZoom, event.movementY * this.invZoom, this.toolProperties);
+                        if (this.toolFunction.constructive) this.dirty = true;
+                    }
+                },
+
+                mouseWheel: (event) => {
+                    if (event.ctrlKey) {
+                        event.preventDefault();
+                        this.zoom += event.deltaY / -100;
+                    }
+                    else if (event.shiftKey) {
+                        this.scrollX -= (event.deltaY) * this.invZoom;
+                        this.scrollY -= (event.deltaX) * this.invZoom;
+                        this.zoom += event.deltaZ / -100;
+                    }
+                    else {
+                        this.scrollX -= (event.deltaX) * this.invZoom;
+                        this.scrollY -= (event.deltaY) * this.invZoom;
+                        this.zoom += event.deltaZ / -100;
+                    }
+                }
+            },
+
+            //Mobile support
+            touch: {
+                lastDrewX: 0,
+                lastDrewY: 0,
+                touches: {},
+                
+                fingerDown: (event) => {
+                    event.preventDefault();
+                    this.fingersDown++;
+
+                    //Update the touches
+                    for (let touchID in Array.from(event.changedTouches)) {
+                        const touch = event.changedTouches[touchID];
+                        
+                        this.controlSets.touch.touches[touch.identifier] = {
+                            lx: touch.clientX,
+                            ly: touch.clientY
+                        }
+                    }
+                },
+
+                fingerMove: (event) => {
+                    const firstTouch = event.changedTouches[0];
+                    const touches = Array.from(event.changedTouches);
+                    
+                    switch ((this.toolFunction) ? this.fingersDown : 0) {
+                        //Panning
+                        default:
+                            for (let touchID in touches) {
+                                const touch = touches[touchID];
+                                const heldData = this.controlSets.touch.touches[touch.identifier];
+                                this.scrollX += (touch.clientX - heldData.lx) * (this.invZoom / this.fingersDown);
+                                this.scrollY += (touch.clientY - heldData.ly) * (this.invZoom / this.fingersDown);
+                            }
+                            break;
+
+                        //Drawing
+                        case 1:
+                            if (event.target != this.canvas) return;
+
+                            const position = this.getCanvasPosition(firstTouch.clientX, firstTouch.clientY);
+                            const heldData = this.controlSets.touch.touches[touch.identifier];
+
+                            //Initilize drawing if we haven't
+                            if (!this.toolDown) {
+                                if (this.toolFunction.mouseDown && !this.toolDown) this.toolFunction.mouseDown(this.GL, ...position, this.toolProperties);
+                                this.toolDown = true;
+                            }
+                            else {
+                                const position = this.getCanvasPosition(firstTouch.clientX, firstTouch.clientY);
+                    
+                                if (this.toolFunction.preview) {
+                                    //For previews
+                                    this.previewGL.clearRect(0, 0, this.width, this.height);
+                                    this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
+                                }
+
+                                if (this.toolDown && this.toolFunction.mouseMove) this.toolFunction.mouseMove(this.GL, ...position, (firstTouch.clientX - heldData.lx) * this.invZoom, (firstTouch.clientY - heldData.ly) * this.invZoom, this.toolProperties);
+                            }
+
+                            this.controlSets.touch.lastDrewX = firstTouch.clientX;
+                            this.controlSets.touch.lastDrewY = firstTouch.clientY;
+                            break;
+                    }
+                    
+                    //Update the touches
+                    for (let touchID in Array.from(event.changedTouches)) {
+                        const touch = event.changedTouches[touchID];
+                        
+                        this.controlSets.touch.touches[touch.identifier] = {
+                            lx: touch.clientX,
+                            ly: touch.clientY
+                        }
+                    }
+                    event.preventDefault();
+                },
+
+                fingerUp: (event) => {
+                    this.fingersDown--;
+
+                    if (this.fingersDown == 0 && this.toolDown) {
+                        if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...this.getCanvasPosition(this.controlSets.touch.lastDrewX, this.controlSets.touch.lastDrewY), this.toolProperties);
+                        if (this.toolFunction.preview) this.previewGL.clearRect(0, 0, this.width, this.height);
+                        
+                        //For the undoing
+                        if (this.tool) this.updateLayerHistory();
+                        this.toolDown = false; 
+                    }
+                }
+            }
+        }
+
         addControls() {
             //Drawing
             this.canvas.addEventListener("contextmenu", (event) => {
@@ -565,106 +798,14 @@ window.artimus = {
                 event.stopPropagation();
             });
 
-            this.canvas.addEventListener("mousedown", (event) => {
-                switch (event.button) {
-                    case 0:
-                        if (this.toolFunction.mouseDown && !this.toolDown) this.toolFunction.mouseDown(this.GL, ...this.getCanvasPosition(event.clientX, event.clientY), this.toolProperties);
-                        this.toolDown = true;
-                        break;
+            this.canvasArea.addEventListener("mousedown", this.controlSets.kbMouse.mouseDown);
+            this.container.addEventListener("mouseup", this.controlSets.kbMouse.mouseUp);
+            this.canvasArea.addEventListener("mousemove", this.controlSets.kbMouse.mouseMove);
+            this.canvasArea.addEventListener("wheel", this.controlSets.kbMouse.mouseWheel, { passive: false });
 
-                    case 2:
-                        const [red, green, blue, alpha] = this.GL.getImageData(...this.getCanvasPosition(event.clientX, event.clientY, true), 1, 1).data;
-                        const converted = artimus.RGBtoHex({ r:red, g:green, b:blue, a:alpha });
-
-                        //The three typical colours
-                        this.toolProperties.strokeColor = converted;
-                        this.toolProperties.fillColor = converted;
-                        this.toolProperties.color = converted;
-
-                        //Refresh options
-                        this.refreshToolOptions();
-                        break;
-                
-                    default:
-                        break;
-                }
-            });
-
-            //For instances of the mouse being up or gone we want to clear the preview GL.
-            this.canvas.addEventListener("mouseup", (event) => {
-                if (event.button != 0) return;
-                
-                const position = this.getCanvasPosition(event.clientX, event.clientY);
-                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...position, this.toolProperties);
-                if (this.toolFunction.preview) {
-                    this.previewGL.clearRect(0, 0, this.width, this.height);
-                    this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
-                }
-                
-                //For the undoing
-                if (this.toolDown && this.tool) this.updateLayerHistory();
-                this.toolDown = false; 
-            });
-            this.canvas.addEventListener("mouseout", (event) => { 
-                const position = this.getCanvasPosition(event.clientX, event.clientY);
-                if (this.toolFunction.mouseUp && this.toolDown) this.toolFunction.mouseUp(this.GL, ...position, this.toolProperties);
-                if (this.toolFunction.preview) {
-                    this.previewGL.clearRect(0, 0, this.width, this.height);
-                    this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
-                }
-                //For the undoing
-                if (this.toolDown && this.tool) this.updateLayerHistory();
-                this.toolDown = false;
-            });
-            this.canvas.addEventListener("mousemove", (event) => {
-                const position = this.getCanvasPosition(event.clientX, event.clientY);
-                
-                if (this.toolFunction.preview) {
-                    //For previews
-                    this.previewGL.clearRect(0, 0, this.width, this.height);
-                    this.toolFunction.preview(this.previewGL, ...position, this.toolProperties);
-                }
-
-                if (this.toolDown && this.toolFunction.mouseMove) this.toolFunction.mouseMove(this.GL, ...position, event.movementX / this.zoom, event.movementY / this.zoom, this.toolProperties);
-            });
-
-            //Add movement
-            this.container.addEventListener("mousedown", (event) => {
-                if (event.button == 1) {
-                    const moveEvent = (event) => {
-                        this.scrollX += event.movementX / this.zoom;
-                        this.scrollY += event.movementY / this.zoom;
-                    }
-
-                    const upEvent = (event) => {
-                        if (event.button == 1) {
-                            document.removeEventListener("mousemove", moveEvent);
-                            document.removeEventListener("mouseup", upEvent);
-                        }
-                    }
-
-                    //Bind events
-                    document.addEventListener("mousemove", moveEvent);
-                    document.addEventListener("mouseup", upEvent)
-                }
-            });
-
-            this.canvasArea.addEventListener("wheel", (event) => {
-                if (event.ctrlKey) {
-                    event.preventDefault();
-                    this.zoom += event.deltaY / -100;
-                }
-                else if (event.shiftKey) {
-                    this.scrollX -= (event.deltaY) / this.zoom;
-                    this.scrollY -= (event.deltaX) / this.zoom;
-                    this.zoom += event.deltaZ / -100;
-                }
-                else {
-                    this.scrollX -= (event.deltaX) / this.zoom;
-                    this.scrollY -= (event.deltaY) / this.zoom;
-                    this.zoom += event.deltaZ / -100;
-                }
-            }, { passive: false });
+            this.canvasArea.addEventListener("touchstart", this.controlSets.touch.fingerDown);
+            this.canvasArea.addEventListener("touchmove", this.controlSets.touch.fingerMove);
+            this.canvasArea.addEventListener("touchend", this.controlSets.touch.fingerUp);
 
             document.addEventListener("keydown", (event) => {
                 if (event.key.toLowerCase() == "z" && event.ctrlKey) {
@@ -840,10 +981,7 @@ window.artimus = {
         //Layer manipulation, for use inside of the library itself but exposed for people to use for their own purposes
         setLayer(ID, then) {
             return new Promise((resolve, reject) => {
-                if (typeof ID == "string") {
-                    const locID = this.layers.findIndex((layer) => layer.name == ID);
-                    if (locID != -1) ID = locID;
-                }
+                ID = this.getLayerIndex(ID);
 
                 if (typeof ID == "number") {
                     //Save current data to the layer position
@@ -873,6 +1011,19 @@ window.artimus = {
                     reject(`Couldn't find or update layer ${ID}`);
                 }
             });
+        }
+
+        getLayerIndex(ID) {
+            if (typeof ID == "string") {
+                const locID = this.layers.findIndex((layer) => layer.name == ID);
+                if (locID != -1) ID = locID;
+            }
+
+            if (typeof ID == "number") {
+                return ID;
+            }
+
+            return;
         }
 
         getLayer(ID) {
@@ -905,6 +1056,7 @@ window.artimus = {
             label.onclick = () => this.setLayer(element.targetLayer);
             layerData.label = label;
 
+            //Create CUGI bindings for the button, more specifically the label
             label.CUGI_CONTEXT = () => {
                 return [
                     { type: "button", text: "delete", onclick: () => this.removeLayer(element.targetLayer) },
@@ -917,32 +1069,64 @@ window.artimus = {
                 return item;
             }
 
+            //This button changes depending on whether or not the layer was hidden
+            const hideButton = document.createElement("button");
+            hideButton.className = "artimus-button artimus-layerButton";
+            hideButton.innerText = "👁";
+            hideButton.onclick = () => {
+                this.setLayerVisibility(element.targetLayer, !this.getLayerVisibility(element.targetLayer));
+                hideButton.className = "artimus-button artimus-layerButton " + ((this.getLayerVisibility(element.targetLayer)) ? "" : "artimus-button-selected")
+            }
+
+            //This is the thing that holds the buttons that allow 
+            // you to move the layer up and down, 
+            // I may replace this with a drag and drop thing in the future
+            const layerButtonHolder = document.createElement("div");
+            layerButtonHolder.className = "artimus-layerButtonHolder";
+
             const upButton = document.createElement("button");
-            upButton.className = "artimus-button artimus-layerButton";
-            upButton.innerText = "^";
+            upButton.className = "artimus-button artimus-layerButton artimus-layerButton-thin";
+            upButton.appendChild(this.elementFromString(artimus.defaultArrow));
             upButton.onclick = () => {
                 this.moveLayer(element.targetLayer, 1);
             }
 
+            upButton.children[0].classList = "artimus-layerArrow artimus-layerArrow-up";
+
             const downButton = document.createElement("button");
-            downButton.className = "artimus-button artimus-layerButton";
-            downButton.innerText = "v";
+            downButton.className = "artimus-button artimus-layerButton artimus-layerButton-thin";
+            downButton.appendChild(this.elementFromString(artimus.defaultArrow));
             downButton.onclick = () => {
                 this.moveLayer(element.targetLayer, -1);
             }
 
-            element.appendChild(upButton);
-            element.appendChild(downButton);
+            downButton.children[0].classList = "artimus-layerArrow artimus-layerArrow-down";
+
+            layerButtonHolder.appendChild(upButton);
+            layerButtonHolder.appendChild(downButton);
+
+            element.appendChild(hideButton);
+            element.appendChild(layerButtonHolder);
             element.appendChild(label);
 
             return element;
         }
 
+        setLayerVisibility(ID, to) {
+            ID = this.getLayerIndex(ID);
+
+            if (typeof ID == "number") this.layers[ID].visibility = to == true;
+        }
+
+        getLayerVisibility(ID) {
+            ID = this.getLayerIndex(ID);
+
+            if (typeof ID == "number") return this.layers[ID].visibility;
+            return false;
+        }
+
         moveLayer(ID, by) {
-            if (typeof ID == "string") {
-                const locID = this.layers.findIndex((layer) => layer.name == ID);
-                if (locID != -1) ID = locID;
-            }
+            ID = this.getLayerIndex(ID);
 
             if (typeof ID == "number") {
                 const target = ID + by;
@@ -992,15 +1176,13 @@ window.artimus = {
 
         updateLayer(ID, then) {
             return new Promise((resolve, reject) => {
-                if (typeof ID == "string") {
-                    const locID = this.layers.findIndex((layer) => layer.name == ID);
-                    if (locID != -1) ID = locID;
-                }
+                ID = this.getLayerIndex(ID);
 
                 if (typeof ID == "number") {
                     this.layers[ID].updateBitmap().then(newBitmap => {
                         if (then) then(newBitmap);
                         resolve(newBitmap);
+                        this.dirty = true;
                     });
                 }
                 else {
@@ -1009,7 +1191,51 @@ window.artimus = {
             });
         }
 
-        //For updating the undo history
+        colorsOfLayer(ID, includeAlpha) {
+            ID = this.getLayerIndex(ID);
+
+            if (typeof ID == "number") {
+                const dataRaw = this.layers[ID].dataRaw;
+
+                includeAlpha = (typeof includeAlpha == "boolean") ? includeAlpha : true;
+
+                //Faster than a generator and a map.filter to use data.reduce
+                let layerColours = dataRaw.data.reduce((ac, _, ind) => {
+                    //Check for two things, we are the R value, and that we aren't alpha if we are not looking for alpha
+                    if (ind % 4 == 0 && (includeAlpha || dataRaw.data[ind + 3] > 0)) ac.add((
+                        (includeAlpha) ? (dataRaw.data[ind + 3] << 24 >>> 0) : 0 + 
+                        (dataRaw.data[ind + 2] << 16 >>> 0) + 
+                        (dataRaw.data[ind + 1] << 8 >>> 0) + 
+                        dataRaw.data[ind]
+                    ));
+                    return ac;
+                }, new Set());
+
+                console.log(layerColours);
+
+                //Map the value back. ^ up there is really noisy
+                if (includeAlpha) {
+                    layerColours = [...layerColours].map((val) => [
+                        val & 0x000000ff,
+                        (val & 0x0000ff00) >>> 8,
+                        (val & 0x00ff0000) >>> 16,
+                        (val & 0xff000000) >>> 24
+                    ]);
+                }
+                else {
+                    layerColours = [...layerColours].map((val) => [
+                        val & 0x000000ff,
+                        (val & 0x0000ff00) >>> 8,
+                        (val & 0x00ff0000) >>> 16
+                    ]);
+                }
+
+                return layerColours;
+            }
+
+            return [];
+        }
+
         updateLayerHistory() {
             if (this.historyIndex > 0) {
                 this.layerHistory.splice(0, this.historyIndex);
@@ -1104,6 +1330,8 @@ window.artimus = {
             this.gridGL.fillStyle = this.gridPattern;
             this.gridGL.fillRect(0, 0, this.width, this.height);
 
+            this.scrollX = this.scrollX;
+            this.scrollY = this.scrollY;
             this.updatePosition();
         }
 
@@ -1122,6 +1350,9 @@ window.artimus = {
         }
 
         new(width, height, then) {
+            this.scrollX = 0;
+            this.scrollY = 0;
+
             //Remove layers
             this.#currentLayer = 0;
             for (let ID = this.layers.length - 1; ID > 0; ID--) {
@@ -1141,7 +1372,382 @@ window.artimus = {
             this.layerHistory = [];
         }
         
-        //Import
+        //Artimus Files
+        //==-- MODES --==//
+        //0 : Standard : All colours 6 bytes per strip
+        //      COUNT : 2 bytes
+        //      COLOR : 4 bytes
+        //1 : 256 palette : 256 colours max, 3 bytes per strip, beginning header with 1 + n bytes
+        //      -- Header
+        //      COLORS : 1 byte
+        //      PALETTE : N * 4 bytes
+        //      -- Contents
+        //      COUNT : 2 bytes
+        //      COLOR : 1 byte
+        //2 : Single Color : 1 colour max, yknow this one is self explanitory...
+        //     COLOR : 4 bytes
+        //3 : Single Color, w alpha : 1 colour max, yknow this one is self explanitory...
+        //      -- Header
+        //      COLOR : 3 bytes
+        //      -- Contents
+        //      COUNT : 2 bytes
+        //      ALPHA : 1 byte
+        encodingModes = [
+            //FC
+            (data, bytesPerLayer, palette, colours) => {
+                let colour = [-1, -1, -1, -1];
+                let count = 0;
+                let savedBytes = 0;
+
+                for (let i = 0; i < bytesPerLayer; i+=4) {
+                    //Count colours
+                    if ((
+                        colour[0] == colours[i] &&
+                        colour[1] == colours[i + 1] &&
+                        colour[2] == colours[i + 2] &&
+                        colour[3] == colours[i + 3]) &&
+                        (count + 1) < Math.pow(2, 16)
+                    ) count++;
+                    else {
+                        //If the colour is not the same, or we are almost out of space we can begin anew
+                        if (count > 0) {
+                            data.push(
+                                (count & 0xff00) >> 8,
+                                (count & 0x00ff),
+
+                                ...colour
+                            )
+                        }
+                        
+                        savedBytes += 6;
+
+                        //The begin anew part
+                        colour = [colours[i], colours[i + 1], colours[i + 2], colours[i + 3]];
+                        count = 1;
+                    }
+                }
+
+                //Push the data once we hit the edge
+                data.push(
+                    (count & 0xff00) >> 8,
+                    (count & 0x00ff),
+
+                    ...colour
+                )
+
+                savedBytes += 6;
+                return savedBytes;
+            },
+            
+            //256 color
+            (data, bytesPerLayer, palette, colours) => {
+                let colour = [-1, -1, -1, -1];
+                let count = 0;
+                let savedBytes = 0;
+
+                //Start from 0 to get full range
+                data.push(palette.length - 1);
+                data.push(palette.flat(1));
+
+                for (let i = 0; i < bytesPerLayer; i+=4) {
+                    //Count colours
+                    if ((
+                        colour[0] == colours[i] &&
+                        colour[1] == colours[i + 1] &&
+                        colour[2] == colours[i + 2] &&
+                        colour[3] == colours[i + 3]) &&
+                        (count + 1) < Math.pow(2, 16)
+                    ) count++;
+                    else {
+                        //If the colour is not the same, or we are almost out of space we can begin anew
+                        if (count > 0) {
+                            data.push(
+                                (count & 0xff00) >> 8,
+                                (count & 0x00ff),
+
+                                palette.findIndex((val) => (
+                                    val[0] == colour[0] && 
+                                    val[1] == colour[1] &&
+                                    val[2] == colour[2] &&
+                                    val[3] == colour[3]
+                                ))
+                            )
+                        }
+                        
+                        savedBytes += 6;
+
+                        //The begin anew part
+                        colour = [colours[i], colours[i + 1], colours[i + 2], colours[i + 3]];
+                        count = 1;
+                    }
+                }
+
+                //Push the data once we hit the edge
+                data.push(
+                    (count & 0xff00) >> 8,
+                    (count & 0x00ff),
+
+                    palette.findIndex((val) => (
+                        val[0] == colour[0] && 
+                        val[1] == colour[1] &&
+                        val[2] == colour[2] &&
+                        val[3] == colour[3]
+                    ))
+                )
+
+                savedBytes += 6;
+                return savedBytes;
+            },
+
+            //1 Color... pretty simple
+            (data, bytesPerLayer, palette, colours) => {
+                data.push(...palette[0]);
+                return 4;
+            },
+
+            //1 color with alpha channel
+            (data, bytesPerLayer, palette, colours) => {
+                let alpha = -1;
+                let count = 0;
+                let savedBytes = 0;
+
+                //Start from 0 to get full range
+                data.push(...palette[0]);
+
+                for (let i = 0; i < bytesPerLayer; i+=4) {
+                    //Count colours
+                    if ((alpha == colours[i + 3]) &&
+                        (count + 1) < Math.pow(2, 16)
+                    ) count++;
+                    else {
+                        //If the alpha is not the same, or we are almost out of space we can begin anew
+                        if (count > 0) {
+                            data.push(
+                                (count & 0xff00) >> 8,
+                                (count & 0x00ff),
+                                alpha
+                            )
+                        }
+                        
+                        savedBytes += 7;
+
+                        //The begin anew part
+                        alpha = colours[i + 3];
+                        count = 1;
+                    }
+                }
+
+                //Push the data once we hit the edge
+                data.push(
+                    (count & 0xff00) >> 8,
+                    (count & 0x00ff),
+                    alpha
+                )
+
+                savedBytes += 6;
+                return savedBytes;
+            }
+        ]
+
+        //These align with encoding modes
+        decodingModes = [
+            (data, imageData, index, bytesPerLayer) => {
+                let filled = 0;
+
+                while (filled < bytesPerLayer) {
+                    const stripSize = (data[index + 1] << 8) + (data[index + 2]);
+                    const stripColor = [
+                        data[index + 3],
+                        data[index + 4],
+                        data[index + 5],
+                        data[index + 6]
+                    ];
+
+                    let extended = Array(stripSize);
+                    extended.fill(stripColor);
+                    imageData.set(extended.flat(2), filled);
+                    filled += stripSize * 4;
+
+                    index += 6;
+                }
+
+                return index;
+            },
+            
+            (data, imageData, index, bytesPerLayer) => {
+                let filled = 0;
+
+                const palette = [];
+                const paletteSize = data[index + 1] + 1;
+
+                index++;
+                for (let i = 0; i < paletteSize; i++) { 
+                    palette.push([data[index + 1], data[index + 2], data[index + 3], data[index + 4]]);
+                    index += 4;
+                }
+
+                while (filled < bytesPerLayer) {
+                    const stripSize = (data[index + 1] << 8) + (data[index + 2]);
+
+                    let extended = Array(stripSize);
+                    extended.fill(palette[data[index + 3]]);
+                    imageData.set(extended.flat(2), filled);
+                    filled += stripSize * 4;
+
+                    index += 3;
+                }
+
+                return index;
+            },
+
+            (data, imageData, index, bytesPerLayer) => {
+                const colour = [data[index + 1], data[index + 2], data[index + 3], data[index + 4]]
+
+                let extended = Array(bytesPerLayer / 4);
+                extended.fill(colour);
+                imageData.set(extended.flat(2), 0);
+
+                return index + 4;
+            },
+            
+            (data, imageData, index, bytesPerLayer) => {
+                let filled = 0;
+
+                const colour = [data[index + 1], data[index + 2], data[index + 3]]
+                index += 3;
+
+                while (filled < bytesPerLayer) {
+                    const stripSize = (data[index + 1] << 8) + (data[index + 2]);
+
+                    let extended = Array(stripSize);
+                    extended.fill([...colour, data[index + 3]]);
+                    imageData.set(extended.flat(2), filled);
+                    filled += stripSize * 4;
+
+                    index += 3;
+                }
+
+                return index;
+            },
+        ]
+
+        //These align with the artimus format
+        layerReaders = [
+            1, //Numbers redirect so 0 would redirect to 1
+            (data, layer, bytesPerLayer, index) => {
+                //Decode name and blend mode
+                const nameLength = (data[index + 1] << 16) + (data[index + 2] << 8) + (data[index + 3]);
+                const blendMode = artimus.blendModes[data[index + 4]];
+                index += 4;
+
+                //Extract name bytes and decode
+                let name = [];
+                for (let i = 0; i < nameLength; i++) {
+                    name.push(data[index + i + 1]);
+                }
+
+                index += name.length;
+                name = this.tDecoder.decode(new Uint8Array(name));
+
+                //Parse the image now
+                let imageData = new Uint8ClampedArray(bytesPerLayer);
+                let filled = 0;
+
+                while (filled < bytesPerLayer) {
+                    const stripSize = (data[index + 1] << 8) + (data[index + 2]);
+                    const stripColor = [
+                        data[index + 3],
+                        data[index + 4],
+                        data[index + 5],
+                        data[index + 6]
+                    ];
+
+                    let extended = Array(stripSize);
+                    extended.fill(stripColor);
+                    imageData.set(extended.flat(2), filled);
+                    filled += stripSize * 4;
+
+                    index += 6;
+                }
+
+                this.createLayer(name, true);
+
+                //Set layer data
+                this.layers[layer + 1].dataRaw = new ImageData(imageData, this.width, this.height);
+                this.layers[layer + 1].blendMode = blendMode;
+
+                this.updateLayer(layer + 1);
+
+                return index;
+            },
+            //Format v2
+            (data, layer, bytesPerLayer, index) => {
+                //Decode name and blend mode
+                const nameLength = (data[index + 1] << 16) + (data[index + 2] << 8) + (data[index + 3]);
+                const encodingMode = data[index + 4];
+                const blendMode = artimus.blendModes[data[index + 5]];
+                index += 5;
+
+                //Extract name bytes and decode
+                let name = [];
+                for (let i = 0; i < nameLength; i++) {
+                    name.push(data[index + i + 1]);
+                }
+
+                index += name.length;
+                name = this.tDecoder.decode(new Uint8Array(name));
+
+                //Parse the image now
+                let imageData = new Uint8ClampedArray(bytesPerLayer);
+                
+                index = this.decodingModes[encodingMode](data, imageData, index, bytesPerLayer);
+
+                this.createLayer(name, true);
+
+                //Set layer data
+                this.layers[layer + 1].dataRaw = new ImageData(imageData, this.width, this.height);
+                this.layers[layer + 1].blendMode = blendMode;
+
+                this.updateLayer(layer + 1);
+
+                return index;
+            },
+            //Format v2
+            (data, layer, bytesPerLayer, index) => {
+                //Decode name and blend mode
+                const nameLength = (data[index + 1] << 16) + (data[index + 2] << 8) + (data[index + 3]);
+                const encodingMode = data[index + 4];
+                const visibility = data[index + 5] == 1;
+                const blendMode = artimus.blendModes[data[index + 6]];
+                index += 6;
+
+                //Extract name bytes and decode
+                let name = [];
+                for (let i = 0; i < nameLength; i++) {
+                    name.push(data[index + i + 1]);
+                }
+
+                index += name.length;
+                name = this.tDecoder.decode(new Uint8Array(name));
+
+                //Parse the image now
+                let imageData = new Uint8ClampedArray(bytesPerLayer);
+                
+                index = this.decodingModes[encodingMode](data, imageData, index, bytesPerLayer);
+
+                this.createLayer(name, true);
+
+                //Set layer data
+                this.layers[layer + 1].dataRaw = new ImageData(imageData, this.width, this.height);
+                this.layers[layer + 1].blendMode = blendMode;
+
+                this.updateLayer(layer + 1);
+                this.setLayerVisibility(layer + 1, visibility);
+
+                return index;
+            },
+        ];
+        
         importArtimus(input) {
             const data = new Uint8Array(input);
 
@@ -1159,64 +1765,142 @@ window.artimus = {
                     //Count bytes needed
                     const bytesPerLayer = this.width * this.height * 4;
                     const layerCount = (data[11] << 8) + data[12];
+                    const format = (data[4]);
+
+                    console.log(`Artimus format is ${format}!`);
+
                     let idx = 12;
 
-                    //Loop through layers
+                    //layer 1 is set to NaN as to not confuse it with an actual layer
                     this.layers[0].name = NaN;
+                    
+                    //Loop through layers, and read them with whatever format of reader is needed;
+                    let layerReader = this.layerReaders[format];
+                    if (typeof layerReader == "number") this.layerReaders[layerReader];
+                    if (typeof layerReader != "function") {
+                        console.log(`Invalid layer reader ${layerReader} with origin of ${this.layerReaders[format]} on format ${format}`);
+                        return;
+                    }
+
                     for (let layer = 0; layer < layerCount; layer++) {
-                        //Decode name and blend mode
-                        const nameLength = (data[idx + 1] << 16) + (data[idx + 2] << 8) + (data[idx + 3]);
-                        const blendMode = artimus.blendModes[data[idx + 4]];
-                        idx += 4;
-
-                        //Extract name bytes and decode
-                        let name = [];
-                        for (let i = 0; i < nameLength; i++) {
-                            name.push(data[idx + i + 1]);
-                        }
-
-                        idx += name.length;
-                        name = this.tDecoder.decode(new Uint8Array(name));
-
-                        //Parse the image now
-                        let imageData = new Uint8ClampedArray(bytesPerLayer);
-                        let filled = 0;
-
-                        while (filled < bytesPerLayer) {
-                            const stripSize = (data[idx + 1] << 8) + (data[idx + 2]);
-                            const stripColor = [
-                                data[idx + 3],
-                                data[idx + 4],
-                                data[idx + 5],
-                                data[idx + 6]
-                            ];
-
-                            let extended = Array(stripSize);
-                            extended.fill(stripColor);
-                            imageData.set(extended.flat(2), filled);
-                            filled += stripSize * 4;
-
-                            idx += 6;
-                        }
-
-                        this.createLayer(name, true);
-
-                        //Set layer data
-                        this.layers[layer + 1].dataRaw = new ImageData(imageData, this.width, this.height);
-                        this.layers[layer + 1].blendMode = blendMode;
-
-                        this.updateLayer(layer + 1);
+                        idx = layerReader(data, layer, bytesPerLayer, idx);
                     }
 
                     this.setLayer(1).then(() => {
                         this.removeLayer(0)
                         this.setLayer(0);
                     });
+
+                    if (
+                        data[idx + 1] == this.jsonMagic[0] &&
+                        data[idx + 2] == this.jsonMagic[1] &&
+                        data[idx + 3] == this.jsonMagic[2] &&
+                        data[idx + 4] == this.jsonMagic[3]
+                    ) {
+                        idx += 4;
+                        
+                        try {
+                            const parsed = JSON.parse(this.tDecoder.decode(data.slice(idx + 1, data.length)));
+                            this.projectStorage = parsed;
+                        } catch (error) {
+                            console.error("Json header could possibly be corrupted :(");
+                        }
+                    }
                 });
             }
             else console.error("Artimus File invalid!");
         }
 
+
+        exportArtimus() {
+            return new Promise((resolve, reject) => {
+                //Just a simple measure of how many bytes we will need to take up
+                let bytesPerLayer = this.width * this.height * 4;
+                const layerCount = this.layers.length;
+                
+                //==-- HEADER FORMAT --==//
+                //Magic  : 4 bytes : Should be COFE
+                //Format : 1 byte  : For versioning and revisions
+                //Width  : 3 bytes
+                //Height : 3 bytes
+                //Layers : 2 bytes
+                let data = new Array(
+                    ...this.magic,
+                    3,
+                    
+                    //Conver both width and height into their 3 byte components
+                    (this.width & 0xff0000) >> 16,
+                    (this.width & 0x00ff00) >> 8,
+                    (this.width & 0x0000ff),
+                    
+                    (this.height & 0xff0000) >> 16,
+                    (this.height & 0x00ff00) >> 8,
+                    (this.height & 0x0000ff),
+
+                    //And the layer count
+                    (layerCount & 0xff00) >> 8,
+                    (layerCount & 0x00ff),
+                );
+
+                //==-- LAYER FORMAT --==//
+                //Name Length : 3 bytes : Nobody should be more than 16777216 bytes... Right?
+                //Encoding Mode : 1 byte
+                //Visibility    : 1 byte : Will probably be shared with individual transparency in the future
+                //Blend Mode  : 1 byte
+                //Name String : N bytes
+                //Data        : A bytes
+                for (let layerID in this.layers) {
+                    const {name, blendMode, dataRaw, visibility} = this.layers[layerID];
+                    const encodedName = this.tEncoder.encode(name);
+
+                    //Get colors for determining an encoding method. See VV for a list
+                                                                //==-- MODES --==//
+                    let layerColours = this.colorsOfLayer(Number(layerID));
+                    let noAlphaColours = this.colorsOfLayer(Number(layerID), false);
+                    let preferAlpha = true;
+
+                    //Find the mode finally
+                    let encodingMode = 0;
+                    if (layerColours.length == 1) encodingMode = 2; // Solid colour
+                    else if (noAlphaColours.length == 1) { preferAlpha = false; encodingMode = 3; }// Single Colour w Alpha
+                    else if (layerColours.length <= 256) encodingMode = 1; // Paletted
+                    
+                    console.log(`Saving layer ${name} with mode ${encodingMode}`)
+                    //Add layer header
+                    data.push(
+                        (encodedName.length & 0xff0000) >> 16,
+                        (encodedName.length & 0x00ff00) >> 8,
+                        (encodedName.length & 0x0000ff),
+                        (encodingMode & 0xff),
+
+                        (visibility) ? 1 : 0,
+
+                        artimus.blendModes.indexOf(blendMode) || 0,
+                        ...encodedName,
+                    );
+
+                    //Now parse the layer data
+                    console.log(`Reading ${bytesPerLayer} bytes, for ${name}`);
+
+                    const savedBytes = this.encodingModes[encodingMode](data, bytesPerLayer, (preferAlpha) ? layerColours : noAlphaColours, dataRaw.data) || "unknown";
+
+                    console.log(`Layer ${name} compressed to ${savedBytes} bytes`);
+                }
+
+                data.push(
+                    ...this.jsonMagic,
+
+                    ...this.tEncoder.encode(JSON.stringify(this.projectStorage))
+                )
+
+                //With the slight, and somewhat strange compression I added above I'm sure this will be good
+                const file = new Uint8Array(data.flat(5));
+                this.fileReader.onload = () => resolve(this.fileReader.result);
+                this.fileReader.readAsDataURL(new Blob([file]));
+            });
+        }
+
+        //Image import export
         importTypes = {
             "artimus": "readAsArrayBuffer"
         };
@@ -1251,115 +1935,12 @@ window.artimus = {
             }
         }
 
-        //Artimus data
-        exportArtimus() {
-            return new Promise((resolve, reject) => {
-                //Just a simple measure of how many bytes we will need to take up
-                let bytesPerLayer = this.width * this.height * 4;
-                const layerCount = this.layers.length;
-                
-                //==-- HEADER FORMAT --==//
-                //Magic  : 4 bytes : Should be COFE
-                //Format : 1 byte  : For versioning and revisions
-                //Width  : 3 bytes
-                //Height : 3 bytes
-                //Layers : 2 bytes
-                let data = [
-                    ...this.magic,
-                    1,
-                    
-                    //Conver both width and height into their 3 byte components
-                    (this.width & 0xff0000) >> 16,
-                    (this.width & 0x00ff00) >> 8,
-                    (this.width & 0x0000ff),
-                    
-                    (this.height & 0xff0000) >> 16,
-                    (this.height & 0x00ff00) >> 8,
-                    (this.height & 0x0000ff),
-
-                    //And the layer count
-                    (layerCount & 0xff00) >> 8,
-                    (layerCount & 0x00ff),
-                ];
-
-                //==-- LAYER FORMAT --==//
-                //Name Length : 3 bytes : Nobody should be more than 16777216 bytes... Right?
-                //Blend Mode  : 1 byte
-                //Name String : N bytes
-                //Data        : A bytes
-                for (let layerID in this.layers) {
-                    const {name, blendMode, dataRaw} = this.layers[layerID];
-                    const encodedName = this.tEncoder.encode(name);
-                    
-                    //Add layer header
-                    data.push(
-                        (encodedName.length & 0xff0000) >> 16,
-                        (encodedName.length & 0x00ff00) >> 8,
-                        (encodedName.length & 0x0000ff),
-
-                        artimus.blendModes.indexOf(blendMode) || 0,
-                        ...encodedName,
-                    );
-
-                    //Now parse the layer data
-                    const colours = dataRaw.data;
-                    let colour = [-1, -1, -1, -1];
-                    let count = 0;
-
-                    console.log(`Reading ${bytesPerLayer} bytes, for ${name}`);
-
-                    //==-- DATA FORMAT --==//
-                    //COUNT : 2 bytes
-                    //COLOR : 4 bytes
-                    for (let i = 0; i < bytesPerLayer; i+=4) {
-                        //Count colours
-                        if ((
-                            colour[0] == colours[i] &&
-                            colour[1] == colours[i + 1] &&
-                            colour[2] == colours[i + 2] &&
-                            colour[3] == colours[i + 3]) &&
-                            (count + 1) < Math.pow(2, 16)
-                        ) count++;
-                        else {
-                            //If the colour is not the same, or we are almost out of space we can begin anew
-                            if (count > 0) {
-                                data.push(
-                                    (count & 0xff00) >> 8,
-                                    (count & 0x00ff),
-
-                                    ...colour
-                                )
-                            }
-
-                            //The begin anew part
-                            colour = [colours[i], colours[i + 1], colours[i + 2], colours[i + 3]];
-                            count = 1;
-                        }
-                    }
-
-                    //Push the data once we hit the edge
-                    data.push(
-                        (count & 0xff00) >> 8,
-                        (count & 0x00ff),
-
-                        ...colour
-                    )
-                }
-
-                //With the slight, and somewhat strange compression I added above I'm sure this will be good
-                const file = new Uint8Array(data);
-                this.fileReader.onload = () => resolve(this.fileReader.result);
-                this.fileReader.readAsDataURL(new Blob([file]));
-            });
-        }
-
-        //Export
         export(format) {
             return new Promise((resolve, reject) => {
                 format = format || "artimus";
 
                 //Just render the frame, and update the layer
-                this.renderComposite();
+                this.renderComposite(true);
 
                 //Force update it aswell
                 this.setLayer(this.currentLayer).then(() => {
