@@ -521,7 +521,7 @@
                 //Colors
                 this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
                 //Material Attributes
-                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
+                this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGB,
                 //Emission
                 this.daveShade.RENDERBUFFER_TYPE.TEXTURE_RGBA,
                 //Position

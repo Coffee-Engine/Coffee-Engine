@@ -1,5 +1,5 @@
 #version 300 es
-precision highp float;
+precision mediump float;
 
 //SHADER DEFINED UNIFORMS
 
@@ -45,7 +45,7 @@ void main()
     LIGHT_AFFECTION = 1.0;
     COLOR = v_color;
     EMISSION = vec3(0);
-    ROUGHNESS = 0.0;
+    ROUGHNESS = 1.0;
     SPECULAR = 0.0;
     UV = v_texCoord;
     NORMAL = v_normal;
@@ -63,17 +63,11 @@ void main()
         discard;
     }
 
-    #ifdef is_PBR
-    if (LIGHT_AFFECTION > 0.0) {
-        LIGHT_AFFECTION += 1.0;
-    }
-    #endif
-
     //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
     o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,o_color.w);
     o_emission = vec4(EMISSION, o_color.w);
     o_position = vec4(v_position, o_color.w);
-    o_normal = vec4((NORMAL / 2.0) + 0.5, o_color.w);
+    o_normal = vec4((NORMAL * 0.5) + 0.5, o_color.w);
 
     o_matAtr *= o_color.w;
     o_emission *= o_color.w;

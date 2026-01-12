@@ -37,7 +37,7 @@ void main()
     
     o_color.w = 1.0;
     o_emission = vec4(0);
-    o_matAtr = vec4(-1,0,0,1);
+    o_matAtr = vec4(0,0,0,1);
     o_position = vec4(SkySphere,1);
     o_normal = vec4(0);
     o_OID = vec4(0,0,0,1);

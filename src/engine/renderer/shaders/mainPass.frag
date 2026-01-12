@@ -1,5 +1,5 @@
 #version 300 es
-precision highp float;
+precision mediump float;
 
 layout (location = 0) out vec4 o_color;
 
@@ -167,7 +167,7 @@ vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
 
 void main()
 {
-    vec4 matAttributes = texture(u_materialAttributes, screenUV);
+    vec3 matAttributes = texture(u_materialAttributes, screenUV).xyz * vec3(1.0, 1.0, 2.0);
     vec3 position = texture(u_position, screenUV).xyz;
     viewToFrag = normalize(u_cameraPosition - position);
 
@@ -200,12 +200,10 @@ void main()
 
             if (length(position - lightPosition) > (light[0][3] * 2.0)) { continue; }
 
-            if (materialLightType == 2) {lightColor.xyz += calculateLightPBR(light, o_color.xyz, position, normal, matAttributes.xyz);}
-            else {lightColor.xyz += calculateLight(light, position, normal);}
+            lightColor.xyz += calculateLightPBR(light, o_color.xyz, position, normal, matAttributes.xyz);
         }
 
-        matAttributes.z -= float(materialLightType) - 1.0;
-        o_color.xyz *= mix(vec3(1.0),lightColor,matAttributes.z);
+        o_color.xyz *= mix(vec3(1.0), lightColor, matAttributes.z);
     }
 
     o_color += texture(u_emission,screenUV);

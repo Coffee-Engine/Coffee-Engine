@@ -1,5 +1,5 @@
 #version 300 es
-precision highp float;
+precision mediump float;
 
 uniform sampler2D u_initial;
 uniform sampler2D u_screen;
