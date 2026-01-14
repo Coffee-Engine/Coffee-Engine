@@ -140,7 +140,8 @@ void main()
 {
     vec3 matAttributes = texture(u_materialAttributes, screenUV).xyz * vec3(1.0, 1.0, 2.0);
     vec3 position = texture(u_position, screenUV).xyz;
-    viewToFrag = normalize(u_cameraPosition - position);
+    viewToFrag = -normalize(-u_cameraPosition - position);
+    o_color.xyz = viewToFrag;
 
     //if (matAttributes.z < 0.0) {
     //    position -= vec3(u_camera[3][0],u_camera[3][1],u_camera[3][2]);
@@ -182,7 +183,7 @@ void main()
     int fogType = int(u_fogData[0][0]);
 
     if (fogType > 0 && matAttributes.z > 0.0) {
-        float distance = length(-position - u_cameraPosition);
+        float distance = length(-u_cameraPosition - position);
         vec3 fogColour = vec3(0);
         if (fogType == 1) { fogColour = fogDefault(distance, viewToFrag, u_fogData); }
         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }

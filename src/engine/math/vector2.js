@@ -101,6 +101,9 @@
         serialize() {
             return { "/-_-PROTOTYPE-_-/": "vector2", value: this.webGLValue() };
         }
+
+        toVector3(z) { return coffeeEngine.vector3(this.x, this.y, z || 0); }
+        toVector4(z, w) { return coffeeEngine.vector4(this.x, this.y, z || 0, w || 0); }
     };
 
     coffeeEngine.vector2.deserialize = (property, data) => {

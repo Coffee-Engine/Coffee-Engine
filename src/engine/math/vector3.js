@@ -123,9 +123,8 @@
             return { "/-_-PROTOTYPE-_-/": "vector3", value: this.webGLValue() };
         }
 
-        toVector4() {
-            return new coffeeEngine.vector4(this.x, this.y, this.z, 1);
-        }
+        toVector2() { return new coffeeEngine.vector2(this.x, this.y); }
+        toVector4(w) { return new coffeeEngine.vector4(this.x, this.y, this.z, (w === undefined) ? 1 : w); }
     };
 
     coffeeEngine.vector3.deserialize = (property, data) => {

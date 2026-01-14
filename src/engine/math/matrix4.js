@@ -247,11 +247,12 @@
         }
 
         getTranslation() {
-            const returned = new coffeeEngine.vector3(0,0,0);
+            const returned = new coffeeEngine.vector4(0,0,0,0);
             returned.x = this.contents[0][3];
             returned.y = this.contents[1][3];
             returned.z = this.contents[2][3];
-            return returned;
+
+            return this.inverse().multiplyVector(returned).toVector3();
         }
 
         getScale() {
