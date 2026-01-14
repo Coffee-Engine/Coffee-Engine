@@ -54,12 +54,10 @@
             // prettier-ignore
             if (!coffeeEngine.isEditor) {
                 if (this.activeCamera) {
-                    const translatedWorld = this.mixedMatrix.getTranslation();
                     const canvas = coffeeEngine.renderer.daveshade.CANVAS;
 
                     this.cameraData.matrix = this.matrix.multiply(this.parent.mixedMatrix.inverse());
                     this.cameraData.projection = coffeeEngine.matrix4.projection(this.fov, 1, 0.01, 1000);
-                    this.cameraData.position = translatedWorld;
                     this.cameraData.rotationEuler = this.rotation;
                     this.cameraData.wFactor = [(this.orthographic) ? 0 : 1, this.zoom, this.nearPlane];
                     this.cameraData.aspectRatio = canvas.width / canvas.height;

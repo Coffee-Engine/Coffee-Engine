@@ -114,35 +114,6 @@ vec3 calculateLightPBR(mat4 light, vec3 albedo, vec3 position, vec3 normal, vec3
     return (kD * albedo / 3.1415962 + specular) * radiance * NdotL; 
 }
 
-vec3 calculateLight(mat4 light, vec3 position, vec3 normal) {
-    vec3 color = light[1].xyz;
-    vec3 facingDirection = light[2].xyz;
-
-    //General application calculations. Distance^Intensity so that the light gets funkier
-    vec3 relative = position - light[0].xyz;
-    vec3 halfway = viewToFrag;
-
-    float distance = pow(length(relative),3.0);
-    vec3 direction = normalize(relative);
-
-    vec3 calculated = color * (light[0][3] / distance);
-    calculated *= lightDot(normal,-direction, vec2(0.5, 0.75));
-
-    //Now we calculate the final output
-    if (facingDirection != vec3(1)) {
-        float spottedDir = lightDot(direction, facingDirection, vec2(1.0, 0.5));
-        if (spottedDir < 0.0) {
-            spottedDir = 0.0;
-        }
-    
-        spottedDir = pow(spottedDir, 2.0 * light[2][3]);
-
-        calculated *= spottedDir;
-    }
-
-    return calculated;
-}
-
 //Default fog
 vec3 fogDefault(float distance, vec3 toPoint, mat3 fogData) {
     float mixAmount = min(1.0, //Make it clamp
@@ -209,20 +180,14 @@ void main()
     o_color += texture(u_emission,screenUV);
 
     int fogType = int(u_fogData[0][0]);
-    //Handle sky plane
-    if (matAttributes.x < -0.1) {
-        position = (position * 1000.0) + u_cameraPosition;
-        viewToFrag = normalize(u_cameraPosition - position);
-    }
 
-    if (fogType > 0) {
-        float distance = length(position - u_cameraPosition);
+    if (fogType > 0 && matAttributes.z > 0.0) {
+        float distance = length(-position - u_cameraPosition);
         vec3 fogColour = vec3(0);
         if (fogType == 1) { fogColour = fogDefault(distance, viewToFrag, u_fogData); }
         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
         else if (fogType == 3) { fogColour = fogDefault((vec4(position,1) * u_camera).z, viewToFrag, u_fogData); }
 
-        if (matAttributes.x < -0.1) { o_color.xyz = mix(o_color.xyz, fogColour, u_fogData[2][1]); }
-        else { o_color.xyz = fogColour; }
+        if (matAttributes.z == 0.0) { o_color.xyz = mix(o_color.xyz, fogColour, u_fogData[2][1]); }
     }
 }

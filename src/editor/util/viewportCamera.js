@@ -94,6 +94,7 @@
             this.cameraData.matrix = coffeeEngine.matrix4.identity().rotation(this.rotation).translate(this.position);
             this.cameraData.projection = coffeeEngine.matrix4.projection(90, 1, 0.001, 1000);
 
+            this.cameraData.position = this.position.flip();
             this.cameraData.resolution = [this.renderer.canvas.width, this.renderer.canvas.height];
             this.cameraData.aspectRatio = this.cameraData.resolution[0] / this.cameraData.resolution[1];
             this.cameraData.wFactor = [this.wFactor, this.zoom, 0.05];
