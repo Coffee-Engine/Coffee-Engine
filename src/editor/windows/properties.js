@@ -1,56 +1,27 @@
 (function () {
     editor.windows.properties = class extends editor.windows.base {
-        init(container) {
-            this.title = editor.language["editor.window.properties"];
-            this.fileReader = new FileReader();
+        typeManagers = {
+            file: (target, type, path, refreshListing) => {
+                const extension = coffeeEngine.getFileExtension(target.name);
+                let { size, name } = target.size
 
-            const myself = this;
+                this.Content.innerHTML = "";
+                
+                const fileName = document.createElement("h2");
+                fileName.innerText = name;
 
-            editor.addEventListener("nodeSelected", (node) => {
-                myself.refreshListing(node);
-            });
-        }
-
-        //Gets the proper listing for object's properties
-        async refreshListing({ target, type, path }, repeat) {
-            this.Content.innerHTML = "";
-
-            //? Just hope to Zues this works
-            //if (target["/__coffeeEngine_CurrentlyParsing__/"]) target["/__coffeeEngine_CurrentlyParsing__/"] = null;
-
-            //The two things we ?Maybe? need;
-            let editorHost = target;
-            let onchange;
-
-            //Specifically for these file types
-            const refreshListing = () => {
-                this.refreshListing({ target: target, type: type, path: path }, true);
-            }
-
-            //If we are a file display our name in the property panel
-            //If our file has an editor get the property
-            if (type == "file") {
-                //Split the filename and get the file extension
-                const split = target.name.split(".");
-                const extension = split[split.length - 1];
-
-                //Fix for folder fs
-                let fileSize = target.size;
-                if (target instanceof FileSystemFileHandle) {
-                    target = await target.getFile();
-                    fileSize = target.size;
-                }
-
-                //Declare what file we are editing inside of the div
-                this.Content.innerHTML = `<h2 style="text-align:center;">${target.name}</h2><h3 style="text-align:center;">${Math.floor(fileSize / 100) / 10}KB</h3>`;
+                const fileSize = document.createElement("h3");
+                fileSize.innerText = `${Math.floor(size / 100) / 10}KB`;
 
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    editorHost = editor.filePropertyEditors[extension]({ panel: this, refreshListing: refreshListing, path: path });
+                    let host = editor.filePropertyEditors[extension](this, refreshListing, path);
+
+                    console.log(host);
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyValue, propertyDef) => {
-                        editorHost.onPropertyChange(propertyValue, propertyDef);
+                        host.onPropertyChange(propertyValue, propertyDef);
                         project.setFile(path, JSON.stringify(propertyDef.target));
                     };
 
@@ -59,36 +30,55 @@
                         //Read and parse if nessasary? Necesary? needed... needed.
                         this.fileReader.onload = () => {
                             this.ParsedObject = JSON.parse(this.fileReader.result) || {};
-                            this.display(this.ParsedObject, editorHost.getProperties(this.ParsedObject, !repeat), onchange, editorHost);
+                            host.getProperties(this.ParsedObject).then((CUGIMenu) => {
+                                this.display(this.ParsedObject, CUGIMenu, onchange, host);
+                            });
                         };
 
                         this.fileReader.readAsText(target); 
                     }
-                    else this.display(this.ParsedObject, editorHost.getProperties(this.ParsedObject, !repeat), onchange, editorHost);
+                    else host.getProperties(this.ParsedObject).then((CUGIMenu) => {
+                        this.display(this.ParsedObject, CUGIMenu, onchange, host);
+                    });
 
                     this.Current = target;
                 }
+            },
 
+            node: (target, type, path, refreshListing) => {
+                //If we are a node do our basic node things
+                const myself = this;
+                const baseProperties = editorHost.getProperties(refreshListing, false);
+                let extraProperties = [];
+
+                //If we are a scene node just display our properties
+                onchange = ( value, { key, target } ) => {
+                    //Global on change!!!
+                    if (!(target instanceof coffeeEngine.getNode("Node"))) return;
+                    
+                    //If we modify the script of a node do our best to parse the properties
+                    if (key == "script") {
+                        this.readScriptedTarget(baseProperties, value);
+                    }
+                }
+
+                //Display our properties
+                if (target instanceof coffeeEngine.getNode("Node") && target.script) this.readScriptedTarget(baseProperties, target.script);
+                else this.display(target, [...baseProperties, ...extraProperties], onchange);
+            }
+        }
+
+        readScriptedTarget(baseProperties, scriptPath) {
+            //Reset our extra properties
+            extraProperties = [];
+
+            if (!scriptPath) {
+                this.display(target, [...baseProperties, ...extraProperties], onchange);
                 return;
             }
 
-            //If we are a node do our basic node things
-            const myself = this;
-            const baseProperties = editorHost.getProperties(refreshListing, false);
-            let extraProperties = [];
-
-            const readScript = async (scriptPath) => {
-                //Reset our extra properties
-                extraProperties = [];
-
-                if (!scriptPath) {
-                    this.display(target, [...baseProperties, ...extraProperties], onchange);
-                    return;
-                }
-
-                //Get our properties
-                const { properties } = await coffeeEngine.behaviorManager.behaviorPropertiesFromFile(scriptPath, true);
-
+            //Get our properties
+            coffeeEngine.behaviorManager.behaviorPropertiesFromFile(scriptPath, true).then(({ properties }) => {
                 for (let propertyID in properties) {
                     const property = properties[propertyID];
 
@@ -102,22 +92,36 @@
                 //Refresh listing
                 myself.Content.innerHTML = "";
                 this.display(target, [...baseProperties, ...extraProperties], onchange);
-            }
+            });
+        }
 
-            //If we are a scene node just display our properties
-            onchange = ( value, { key, target } ) => {
-                //Global on change!!!
-                if (!(target instanceof coffeeEngine.getNode("Node"))) return;
-                
-                //If we modify the script of a node do our best to parse the properties
-                if (key == "script") {
-                    readScript(value);
-                }
-            }
+        init(container) {
+            this.title = editor.language["editor.window.properties"];
+            this.fileReader = new FileReader();
 
-            //Display our properties
-            if (target instanceof coffeeEngine.getNode("Node") && target.script) readScript(target.script);
-            else this.display(target, [...baseProperties, ...extraProperties], onchange);
+            const myself = this;
+
+            editor.addEventListener("nodeSelected", (node) => {
+                myself.refreshListing(node);
+            });
+        }
+
+        //Gets the proper listing for object's properties
+        refreshListing(target, repeat) {
+            this.Content.innerHTML = "";
+
+            //? Just hope to Zues this works
+            //If we are a file display our name in the property panel
+            //If our file has an editor get the property
+            if (!target) target = this.lastTarget;
+
+            if (!target) return;
+
+            if (this.typeManagers[target.type]) this.typeManagers[target.type](target.target, target.type, target.path, () => {
+                this.refreshListing(target || this.lastTarget, true);
+            });
+
+            this.lastTarget = target;
         }
 
         //Our display function, does some partial parsing then displays the output

@@ -135,9 +135,7 @@
             //Add our reading text
             this.fileContainer.innerHTML = editor.language["editor.window.fileExplorer.reading"];
             
-            //Drag and drop stuff
-            this.makeFileDAD(this.fileContainer, "");
-            
+            //Drag and drop stuff            
             this.displayDirectory("");
 
             //Our update function
@@ -221,10 +219,15 @@
                     element.className = "fileSystem-fileElement fileSystem-fileElement-selected";
                     
                     if (this.selected == element && element.ondouble) element.ondouble(event);
+                    else {
+                        editor.sendEvent("nodeSelected", { target: target[key], type: (target[key] instanceof File) ? "file" : "folder", path: `${path}${key}` });
+                    }
 
                     this.selected = element;
                 }
             }
+
+            this.makeFileDAD(this.fileContainer, path);
         }
 
         createFolderElement(path, key) {

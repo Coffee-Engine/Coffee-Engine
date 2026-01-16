@@ -1,5 +1,16 @@
 (function () {
-    let shader = { uniforms: {} };
+    const materialMustHaves = [
+        { name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: {} },
+        { name: "cullMode", translationKey: "engine.fileProperties.Shader.cullMode", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+            { text: editor.language["engine.fileProperties.Shader.cullMode.neither"], value: 2 },
+            { text: editor.language["engine.fileProperties.Shader.cullMode.front"], value: 1 },
+            { text: editor.language["engine.fileProperties.Shader.cullMode.back"], value: 0 },
+        ]},
+        { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
+            { text: editor.language["engine.nodeProperties.Sprite.filtering.nearest"], value: "NEAREST"},
+            { text: editor.language["engine.nodeProperties.Sprite.filtering.linear"], value: "LINEAR"},
+        ]},
+    ];
 
     coffeeEngine.renderer.uniformTypesToCUGI = {
         35670: { name: "", type: coffeeEngine.PropertyTypes.BOOLEAN },
@@ -22,46 +33,34 @@
 
     const matEditor = ({ panel, refreshListing, path }) => {
         return {
-            getProperties: (material, initial) => {
-                //Get shaders
-                let baseShaders = {};
-                Object.keys(coffeeEngine.renderer.mainShaders).map((key) => {
-                    baseShaders[`${key}.glsl`] = key;
-                    return key;
-                });
-
-                let uniforms = [];
-                for (const uniform in shader.uniforms) {
-                    if (coffeeEngine.renderer.engineUniforms.includes(uniform)) continue;
-
-                    //* Band aid and duct tape solution
-                    uniforms.push(Object.assign({}, coffeeEngine.renderer.uniformTypesToCUGI[shader.uniforms[uniform].type]));
-                    uniforms[uniforms.length - 1].name = uniform;
-                }
-
-                //Get our shader variables if this isn't our first rodeo
-                if (initial) {
-                    coffeeEngine.renderer.fileToShader(material.shader).then((shaderOBJ) => {
-                        shader = shaderOBJ;
-                        refreshListing();
-                    }).catch(() => {
-                        shader = { uniforms: {} };
-                        refreshListing();
+            getProperties: (material) => {
+                return new Promise((resolve, reject) => {
+                    //Get shaders
+                    let baseShaders = {};
+                    Object.keys(coffeeEngine.renderer.mainShaders).map((key) => {
+                        baseShaders[`${key}.glsl`] = key;
+                        return key;
                     });
-                }
 
-                return [
-                    { name: "shader", translationKey: "engine.fileProperties.Shader.shader", type: coffeeEngine.PropertyTypes.FILE, fileType: "glsl", systemRoot: { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem } },
-                    { name: "cullMode", translationKey: "engine.fileProperties.Shader.cullMode", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
-                        { text: editor.language["engine.fileProperties.Shader.cullMode.neither"], value: 2 },
-                        { text: editor.language["engine.fileProperties.Shader.cullMode.front"], value: 1 },
-                        { text: editor.language["engine.fileProperties.Shader.cullMode.back"], value: 0 },
-                    ]},
-                    { name: "filtering", translationKey: "engine.nodeProperties.Sprite.filtering", type: coffeeEngine.PropertyTypes.DROPDOWN, items: [
-                        { text: editor.language["engine.nodeProperties.Sprite.filtering.nearest"], value: "NEAREST"},
-                        { text: editor.language["engine.nodeProperties.Sprite.filtering.linear"], value: "LINEAR"},
-                    ]},
-                ].concat(uniforms);
+                    //Update system root
+                    materialMustHaves[0].systemRoot = { "/____NAMESPACE__IDENTIFIER____/": true, "coffee:": baseShaders, "project:": project.fileSystem };
+
+                    coffeeEngine.renderer.fileToShader(material.shader).then((shaderOBJ) => {
+                        let shader = shaderOBJ;
+
+                        let uniforms = [];
+                        for (const uniform in shader.uniforms) {
+                            if (coffeeEngine.renderer.engineUniforms.includes(uniform)) continue;
+
+                            //* Non band-aid and duct-tape solution.
+                            uniforms.push({...coffeeEngine.renderer.uniformTypesToCUGI[shader.uniforms[uniform].type], name: uniform});
+                        }
+
+                        resolve(materialMustHaves.concat(uniforms));
+                    }).catch(() => {
+                        resolve(materialMustHaves);
+                    }); 
+                })
             },
             onPropertyChange: (value, data) => {
                 const { target, key } = data;
@@ -69,6 +68,7 @@
                 switch (key) {
                     case "shader":
                         //If its the shader that changes change the shader
+                        console.log(refreshListing);
                         coffeeEngine.renderer.fileToShader(value).then((shaderOBJ) => {
                             shader = shaderOBJ;
                             if (liveMaterial) liveMaterial.shader = shaderOBJ;

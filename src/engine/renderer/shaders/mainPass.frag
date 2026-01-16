@@ -88,11 +88,9 @@ vec3 calculateLightPBR(mat4 light, vec3 albedo, vec3 position, vec3 normal, vec3
     // cook-torrance brdf
     float NDF = DistributionGGX(normal, halfway, matAttributes.x);        
     float G   = GeometrySmith(normal, viewToFrag, lightToFrag, matAttributes.x);      
-    vec3 F    = fresnelSchlick(max(dot(matAttributes, viewToFrag), 0.0), F0);       
+    vec3 F    = fresnelSchlick(max(dot(halfway, viewToFrag), 0.0), F0);       
     
-    vec3 kS = F;
-    vec3 kD = vec3(1.0) - kS;
-    kD *= 1.0 - matAttributes.y;	  
+    vec3 kD = (vec3(1.0) - F) * (1.0 - matAttributes.y);
     
     vec3 numerator    = NDF * G * F;
     float denominator = 4.0 * max(dot(normal, viewToFrag), 0.0) * max(dot(normal, lightToFrag), 0.0) + 0.0001;
@@ -140,8 +138,7 @@ void main()
 {
     vec3 matAttributes = texture(u_materialAttributes, screenUV).xyz * vec3(1.0, 1.0, 2.0);
     vec3 position = texture(u_position, screenUV).xyz;
-    viewToFrag = -normalize(-u_cameraPosition - position);
-    o_color.xyz = viewToFrag;
+    viewToFrag = -normalize(position + u_cameraPosition);
 
     //if (matAttributes.z < 0.0) {
     //    position -= vec3(u_camera[3][0],u_camera[3][1],u_camera[3][2]);
@@ -183,7 +180,7 @@ void main()
     int fogType = int(u_fogData[0][0]);
 
     if (fogType > 0 && matAttributes.z > 0.0) {
-        float distance = length(-u_cameraPosition - position);
+        float distance = length(position + u_cameraPosition);
         vec3 fogColour = vec3(0);
         if (fogType == 1) { fogColour = fogDefault(distance, viewToFrag, u_fogData); }
         else if (fogType == 2) { fogColour = fogPBR(distance, viewToFrag, u_fogData); }
@@ -191,4 +188,6 @@ void main()
 
         if (matAttributes.z == 0.0) { o_color.xyz = mix(o_color.xyz, fogColour, u_fogData[2][1]); }
     }
+
+    //o_color.xyz = viewToFrag;
 }

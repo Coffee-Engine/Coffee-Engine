@@ -107,7 +107,8 @@
                             fold[split[id]]
                                 .getFile()
                                 .then((file) => {
-                                    resolve(file);
+                                    if (target instanceof FileSystemFileHandle) target.getFile().then((rFile) => resolve(rFile));
+                                    else resolve(file);
                                 })
                                 .catch("can't get file");
                         } else {
