@@ -1,9 +1,9 @@
 (function () {
     editor.windows.properties = class extends editor.windows.base {
         typeManagers = {
-            file: (target, type, path, refreshListing) => {
+            file: (target, path, origData) => {
                 const extension = coffeeEngine.getFileExtension(target.name);
-                let { size, name } = target.size
+                let { size, name } = target;
 
                 this.Content.innerHTML = "";
                 
@@ -13,11 +13,12 @@
                 const fileSize = document.createElement("h3");
                 fileSize.innerText = `${Math.floor(size / 100) / 10}KB`;
 
+                this.Content.appendChild(fileName);
+                this.Content.appendChild(fileSize);
+
                 //Check for a property editor
                 if (editor.filePropertyEditors[extension]) {
-                    let host = editor.filePropertyEditors[extension](this, refreshListing, path);
-
-                    console.log(host);
+                    let host = editor.fetchFilePropertyEditor(this, path, origData, extension);
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyValue, propertyDef) => {
@@ -27,15 +28,16 @@
 
                     //Check to make sure we don't already have this parsed and read
                     if (this.Current != target) {
+                        let fileReader = new FileReader();
                         //Read and parse if nessasary? Necesary? needed... needed.
-                        this.fileReader.onload = () => {
-                            this.ParsedObject = JSON.parse(this.fileReader.result) || {};
+                        fileReader.onload = () => {
+                            this.ParsedObject = JSON.parse(fileReader.result) || {};
                             host.getProperties(this.ParsedObject).then((CUGIMenu) => {
                                 this.display(this.ParsedObject, CUGIMenu, onchange, host);
                             });
                         };
 
-                        this.fileReader.readAsText(target); 
+                        fileReader.readAsText(target); 
                     }
                     else host.getProperties(this.ParsedObject).then((CUGIMenu) => {
                         this.display(this.ParsedObject, CUGIMenu, onchange, host);
@@ -45,83 +47,74 @@
                 }
             },
 
-            node: (target, type, path, refreshListing) => {
+            node: (target, path, origData) => {
                 //If we are a node do our basic node things
-                const myself = this;
-                const baseProperties = editorHost.getProperties(refreshListing, false);
+                const baseProperties = target.getProperties(this.refreshListing, false);
                 let extraProperties = [];
 
                 //If we are a scene node just display our properties
-                onchange = ( value, { key, target } ) => {
-                    //Global on change!!!
-                    if (!(target instanceof coffeeEngine.getNode("Node"))) return;
-                    
-                    //If we modify the script of a node do our best to parse the properties
-                    if (key == "script") {
-                        this.readScriptedTarget(baseProperties, value);
+                onchange = ( value, data ) => {
+                    if (data) {
+                        const target = data.target;
+                        const key = data.key ? data.key : "";
+
+                        //Global on change!!!
+                        if (!(target instanceof coffeeEngine.getNode("Node"))) return;
+                        
+                        //If we modify the script of a node do our best to parse the properties
+                        if (key == "script") {
+                            this.refreshListing(origData);
+                        }
                     }
                 }
 
                 //Display our properties
-                if (target instanceof coffeeEngine.getNode("Node") && target.script) this.readScriptedTarget(baseProperties, target.script);
+                //If we have a script get script properties
+                if (target instanceof coffeeEngine.getNode("Node")) {
+                    //Reset our extra properties
+                    let extraProperties = [];
+
+                    if (!target.script) {
+                        this.display(target, baseProperties, onchange);
+                        return;
+                    }
+
+                    //Get our properties
+                    const myself = this;
+                    coffeeEngine.behaviorManager.behaviorPropertiesFromFile(target.script, true).then(({ properties }) => {
+                        for (let propertyID in properties) {
+                            const property = properties[propertyID];
+
+                            //Configure our properties
+                            property.key = property.name;
+                            property.target = target.__scriptStartupProps;
+
+                            extraProperties.push(property);
+                        }
+                            
+                        //Refresh listing
+                        myself.Content.innerHTML = "";
+                        this.display(target, [...baseProperties, ...extraProperties], onchange);
+                    });
+                }
                 else this.display(target, [...baseProperties, ...extraProperties], onchange);
             }
         }
 
-        readScriptedTarget(baseProperties, scriptPath) {
-            //Reset our extra properties
-            extraProperties = [];
-
-            if (!scriptPath) {
-                this.display(target, [...baseProperties, ...extraProperties], onchange);
-                return;
-            }
-
-            //Get our properties
-            coffeeEngine.behaviorManager.behaviorPropertiesFromFile(scriptPath, true).then(({ properties }) => {
-                for (let propertyID in properties) {
-                    const property = properties[propertyID];
-
-                    //Configure our properties
-                    property.key = property.name;
-                    property.target = target.__scriptStartupProps;
-
-                    extraProperties.push(property);
-                }
-                    
-                //Refresh listing
-                myself.Content.innerHTML = "";
-                this.display(target, [...baseProperties, ...extraProperties], onchange);
-            });
+        onNodeSelected(node) {
+            this.refreshListing(node);
         }
 
         init(container) {
             this.title = editor.language["editor.window.properties"];
-            this.fileReader = new FileReader();
 
-            const myself = this;
-
-            editor.addEventListener("nodeSelected", (node) => {
-                myself.refreshListing(node);
-            });
+            editor.addEventListener("nodeSelected", this.onNodeSelected, this);
         }
 
         //Gets the proper listing for object's properties
-        refreshListing(target, repeat) {
+        refreshListing(target) {
             this.Content.innerHTML = "";
-
-            //? Just hope to Zues this works
-            //If we are a file display our name in the property panel
-            //If our file has an editor get the property
-            if (!target) target = this.lastTarget;
-
-            if (!target) return;
-
-            if (this.typeManagers[target.type]) this.typeManagers[target.type](target.target, target.type, target.path, () => {
-                this.refreshListing(target || this.lastTarget, true);
-            });
-
-            this.lastTarget = target;
+            if (this.typeManagers[target.type]) this.typeManagers[target.type](target.target, target.path, target);
         }
 
         //Our display function, does some partial parsing then displays the output
@@ -180,9 +173,7 @@
         resized() {}
 
         dispose() {
-            editor.removeEventListener("nodeSelected", () => {
-                myself.refreshListing();
-            });
+            editor.removeEventListener("nodeSelected", this.onNodeSelected);
         }
     };
 

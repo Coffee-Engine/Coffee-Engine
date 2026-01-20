@@ -631,7 +631,7 @@
                         }
                     }
 
-                    if (this.shader.uniforms.u_time) this.shader.uniforms.u_time.value = coffeeEngine.timer;
+                    if (this.shader.uniforms.u_time !== undefined) this.shader.uniforms.u_time.value = coffeeEngine.timer;
                 }
             }
         }

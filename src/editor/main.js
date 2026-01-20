@@ -54,10 +54,25 @@ window.editor = {
         editor.fileHooks[fileExtension].splice(foundIndex, 1);
     },
 
-    registerFilePropertyEditor: (fileExtension, callback) => {
+    filePropertyEditor: class {
+        constructor(panel, refreshListing, path) {
+            this.panel = panel;
+            this.refreshListing = refreshListing;
+            this.path = path;
+        }
+
+        onPropertyChange(value, data) {}
+    },
+
+    registerFilePropertyEditor: (fileExtension, cls) => {
         //No overriding
         if (editor.filePropertyEditors[fileExtension]) return;
-        editor.filePropertyEditors[fileExtension] = callback;
+        editor.filePropertyEditors[fileExtension] = cls;
+    },
+
+    fetchFilePropertyEditor: (panel, path, origData, fileExtension) => {
+        fileExtension = (typeof fileExtension == "string") ? fileExtension : coffeeEngine.getFileExtension(path);
+        if (editor.filePropertyEditors[fileExtension]) return new editor.filePropertyEditors[fileExtension](panel, () => panel.refreshListing.call(panel, origData), path);
     },
 
     changePage: () => {
@@ -72,36 +87,61 @@ window.editor = {
         }
     },
 
-    addEventListener: (event, func) => {
-        if (typeof editor.events[event] != "object") return;
+    addEventListener: (event, func, callee) => {
+        if (!Array.isArray(editor.events[event])) return;
 
-        editor.events[event].push(func);
+
+        if (callee) editor.events[event].push([callee, func]);
+        else editor.events[event].push(func);
         return func;
     },
 
     hasEventListener: (event, func) => {
-        if (typeof editor.events[event] != "object") return;
+        if (!Array.isArray(editor.events[event])) return;
 
-        return editor.events[event].includes(func);
+        if (editor.events[event].includes(func)) return true;
+
+        //Otherwise check for events with callees.
+        const index = editor.events[event].findIndex((val) => {
+            if (Array.isArray(val)) {
+                if (val[1] == func) return true;
+            }
+            return false;
+        });
+
+        return index != -1;
     },
 
     removeEventListener: (event, func) => {
-        if (typeof editor.events[event] != "object") return;
+        if (!Array.isArray(editor.events[event])) return;
 
+        //First do a shallow search, if we find it. Then bingo
         if (editor.events[event].includes(func)) {
-            editor.events[event].slice(editor.events[event].indexOf(func));
+            editor.events[event].splice(editor.events[event].indexOf(func), 1);
+            return;
         }
+
+        //Otherwise check for events with callees.
+        const index = editor.events[event].findIndex((val) => {
+            if (Array.isArray(val)) {
+                if (val[1] == func) return true;
+            }
+            return false;
+        });
+
+        if (index != -1) editor.events[event].splice(index, 1);
     },
 
     sendEvent: (event, data) => {
-        if (typeof editor.events[event] != "object") return;
+        if (!Array.isArray(editor.events[event])) return;
 
         if (event == "nodeSelected") {
             editor.lastSelectedNode = data.target;
         }
 
         editor.events[event].forEach((event) => {
-            event(data);
+            if (Array.isArray(event)) event[1].call(event[0], data);
+            else if (typeof event == "function") event(data);
         });
     },
 
