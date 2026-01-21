@@ -22,8 +22,11 @@
 
                     //Special properties for this aka Saving the file
                     onchange = (propertyValue, propertyDef) => {
+                        console.log(propertyValue, propertyDef);
                         host.onPropertyChange(propertyValue, propertyDef);
-                        project.setFile(path, JSON.stringify(propertyDef.target));
+                        project.setFile(path, JSON.stringify(this.ParsedObject)).then(() => {
+                            console.log("material saved", this.ParsedObject);
+                        });
                     };
 
                     //Check to make sure we don't already have this parsed and read

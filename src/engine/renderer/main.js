@@ -459,14 +459,14 @@
                 const path = param[0];
                 param[0] = null;
                 this.fileToTexture(path).then((texture) => {
-                    param[0] = texture;
+                    param = texture;
                 });
             };
 
             this.specialHandling[this.daveShade.TYPES.SAMPLER_2D] = (param, key, shader, material) => {
                 //Set the texture filtering.
-                if (param[0].setFiltering) param[0].setFiltering(this.daveShade.FILTERING[material.filtering || "NEAREST"]);
-                shader.uniforms[key].value = param[0].texture;
+                if (param[0].setFiltering) param.setFiltering(this.daveShade.FILTERING[material.filtering || "NEAREST"]);
+                shader.uniforms[key].value = param.TEXTURE;
             };
         }
 

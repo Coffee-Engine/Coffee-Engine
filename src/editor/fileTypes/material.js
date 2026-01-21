@@ -56,7 +56,7 @@
 
                         //* Non band-aid and duct-tape solution.
                         const uniformType = this.uniformTypesToCUGI[shaderOBJ.uniforms[uniform].type];
-                        if (uniformType) uniforms.push({...uniformType});
+                        if (uniformType) uniforms.push({...uniformType, name: uniform, target: material.params, uniformType: shaderOBJ.uniforms[uniform].type });
                     }
                     resolve([...this.materialMustHaves, ...uniforms]);
                 }).catch(() => {
@@ -66,6 +66,8 @@
         }
 
         onPropertyChange(value, data) {
+            if (!data) return;
+
             const { target, key } = data;
             const liveMaterial = coffeeEngine.renderer.materialStorage[this.path];
             switch (key) {
@@ -91,16 +93,13 @@
                     break;
             
                 default:
-                    coffeeEngine.renderer.fileToShader(target.shader).then((shaderOBJ) => {
-                        //Just set the parameters for everything else
-                        target.params = target.params || {};
-                        target.params[key] = [value, shaderOBJ.uniforms[key].type];
-                        
-                        if (liveMaterial) {
-                            if (!liveMaterial.params[key]) liveMaterial.params[key] = [value, shaderOBJ.uniforms[key].type];
-                            else liveMaterial.params[key][0] = value;
-                        }
-                    })
+                    //Just set the parameters for everything else
+                    target[key] = [value, data.uniformType];
+                    
+                    if (liveMaterial) {
+                        if (!liveMaterial.params[key]) liveMaterial.params[key] = [value, data.uniformType];
+                        else liveMaterial.params[key][0] = value;
+                    }
                     break;
             }
         }
