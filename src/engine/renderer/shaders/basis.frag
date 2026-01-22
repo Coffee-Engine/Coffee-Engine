@@ -62,16 +62,13 @@ void main()
     if (o_color.w <= 0.0125) {
         discard;
     }
-
-    //Let the user do additive if they are 𝓐𝓓𝓓𝓘𝓒𝓣𝓘𝓥𝓔
     o_matAtr = vec4(ROUGHNESS,SPECULAR,LIGHT_AFFECTION,o_color.w);
     o_emission = vec4(EMISSION, o_color.w);
     o_position = vec4(v_position, o_color.w);
-    o_normal = vec4((NORMAL * 0.5) + 0.5, o_color.w);
+    o_normal = vec4((NORMAL * 0.5) + 0.5, 1.0);
 
-    o_matAtr *= o_color.w;
-    o_emission *= o_color.w;
-    //o_normal *= o_color.w;
+    o_matAtr.xyz *= o_color.w;
+    o_emission.xyz *= o_color.w;
 
     o_OID = vec4(v_OID,1.0);
 }

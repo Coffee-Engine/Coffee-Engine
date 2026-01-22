@@ -99,6 +99,8 @@
                     if (liveMaterial) {
                         if (!liveMaterial.params[key]) liveMaterial.params[key] = [value, data.uniformType];
                         else liveMaterial.params[key][0] = value;
+
+                        liveMaterial.refresh();
                     }
                     break;
             }

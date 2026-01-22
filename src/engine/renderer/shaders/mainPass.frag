@@ -136,7 +136,7 @@ vec3 fogPBR(float distance, vec3 toPoint, mat3 fogData) {
 
 void main()
 {
-    vec3 matAttributes = texture(u_materialAttributes, screenUV).xyz * vec3(1.0, 1.0, 2.0);
+    vec3 matAttributes = texture(u_materialAttributes, screenUV).xyz;
     vec3 position = texture(u_position, screenUV).xyz;
     viewToFrag = -normalize(position + u_cameraPosition);
 
@@ -188,6 +188,4 @@ void main()
 
         if (matAttributes.z == 0.0) { o_color.xyz = mix(o_color.xyz, fogColour, u_fogData[2][1]); }
     }
-
-    //o_color.xyz = viewToFrag;
 }

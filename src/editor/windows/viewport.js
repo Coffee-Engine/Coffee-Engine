@@ -291,8 +291,8 @@
 
         resized() {
             const clientSize = this.canvas.getBoundingClientRect();
-            this.canvas.width = clientSize.width;
-            this.canvas.height = clientSize.height;
+            this.canvas.width = clientSize.width || this.width;
+            this.canvas.height = clientSize.height || this.height;
             this.renderer.resize(this.canvas.width, this.canvas.height);
         }
     };

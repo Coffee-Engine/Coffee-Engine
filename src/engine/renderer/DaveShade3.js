@@ -361,6 +361,7 @@ DaveShade.webGLModule = class extends DaveShade.module {
             }
 
             if (uniformInfo.type == 35678) {
+                SHADER.UNIFORMS[uniformName].SAMPLER_LOCATION = this.GL[`TEXTURE${SHADER.TEXTURE_COUNT}`];
                 SHADER.UNIFORMS[uniformName].SAMPLER_ID = SHADER.TEXTURE_COUNT;
                 SHADER.TEXTURE_COUNT += 1;
             }
@@ -1048,19 +1049,19 @@ DaveShade.webGLModule = class extends DaveShade.module {
 
         //Finally the textures, these ones are a little more complicated
         this.SETTERS[this.GL.SAMPLER_2D] = (LOCATION, VALUE, UNIFORM_INFO) => {
-            this.GL.activeTexture(this.GL[`TEXTURE${UNIFORM_INFO.SAMPLER_ID}`]);
+            this.GL.activeTexture(UNIFORM_INFO.SAMPLER_LOCATION);
             this.GL.bindTexture(this.GL.TEXTURE_2D, VALUE);
             this.GL.uniform1i(LOCATION, UNIFORM_INFO.SAMPLER_ID);
         }
 
         this.SETTERS[this.GL.SAMPLER_CUBE] = (LOCATION, VALUE, UNIFORM_INFO) => {
-            this.GL.activeTexture(this.GL[`TEXTURE${UNIFORM_INFO.SAMPLER_ID}`]);
+            this.GL.activeTexture(UNIFORM_INFO.SAMPLER_LOCATION);
             this.GL.bindTexture(this.GL.TEXTURE_CUBE_MAP, VALUE);
             this.GL.uniform1i(LOCATION, UNIFORM_INFO.SAMPLER_ID);
         }
 
         this.SETTERS[this.GL.SAMPLER_3D] = (LOCATION, VALUE, UNIFORM_INFO) => {
-            this.GL.activeTexture(this.GL[`TEXTURE${UNIFORM_INFO.SAMPLER_ID}`]);
+            this.GL.activeTexture(UNIFORM_INFO.SAMPLER_LOCATION);
             this.GL.bindTexture(this.GL.TEXTURE_3D, VALUE);
             this.GL.uniform1i(LOCATION, UNIFORM_INFO.SAMPLER_ID);
         }

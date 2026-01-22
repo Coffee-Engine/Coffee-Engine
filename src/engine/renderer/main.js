@@ -459,14 +459,14 @@
                 const path = param[0];
                 param[0] = null;
                 this.fileToTexture(path).then((texture) => {
-                    param = texture;
+                    param[0] = texture;
                 });
             };
 
             this.specialHandling[this.daveShade.TYPES.SAMPLER_2D] = (param, key, shader, material) => {
                 //Set the texture filtering.
-                if (param[0].setFiltering) param.setFiltering(this.daveShade.FILTERING[material.filtering || "NEAREST"]);
-                shader.uniforms[key].value = param.TEXTURE;
+                if (param[0].setFiltering) param[0].setFiltering(this.daveShade.FILTERING[material.filtering || "NEAREST"]);
+                shader.uniforms[key].value = param[0].TEXTURE;
             };
         }
 
@@ -595,14 +595,24 @@
 
                 this.cullMode = Number(cullMode);
                 this.filtering = filtering || "NEAREST";
+
+                this.refresh();
+            }
+
+            refresh() {
+                const filledKeys = Object.keys(this.params);
+                this.nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
+
+                for (const key in this.params) {
+                    const param = this.params[key];
+                    if (typeof param[0] === "string") this.renderer.typeConversions[param[1]](param);
+                }
             }
 
             use() {
                 //Loop through our params and set the keys
                 if (this.shader) {
-                    const filledKeys = Object.keys(this.params);
-                    const nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
-
+                    
                     this.renderer.daveShade.cullFace(this.cullData[this.cullMode]);
 
                     for (const key in this.params) {
@@ -617,8 +627,8 @@
                     }
 
                     //Set non filled keys
-                    for (const keyID in nonFilledKeys) {
-                        const key = this.shader.uniforms[nonFilledKeys[keyID]];
+                    for (const keyID in this.nonFilledKeys) {
+                        const key = this.shader.uniforms[this.nonFilledKeys[keyID]];
                         const hints = key.hints;
                         switch (key.type) {
                             case 35678:
