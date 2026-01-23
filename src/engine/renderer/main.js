@@ -568,7 +568,7 @@
 
                 //Add cull data
                 this.cullData = {
-                    0: undefined,
+                    0: renderer.daveShade.SIDE.NEITHER,
                     1: renderer.daveShade.SIDE.BACK,
                     2: renderer.daveShade.SIDE.FRONT
                 }
@@ -601,7 +601,7 @@
 
             refresh() {
                 const filledKeys = Object.keys(this.params);
-                this.nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!filledKeys.includes(key)) || (this.params[key][0] == null)});
+                this.nonFilledKeys = Object.keys(this.shader.uniforms).filter((key) => {return (!this.renderer.engineUniforms.includes(key)) || (!filledKeys.includes(key)) || (this.params[key][0] == null)});
 
                 for (const key in this.params) {
                     const param = this.params[key];
@@ -612,7 +612,7 @@
             use() {
                 //Loop through our params and set the keys
                 if (this.shader) {
-                    
+                    console.log("stuff")
                     this.renderer.daveShade.cullFace(this.cullData[this.cullMode]);
 
                     for (const key in this.params) {
@@ -627,6 +627,7 @@
                     }
 
                     //Set non filled keys
+                    console.log(this.nonFilledKeys)
                     for (const keyID in this.nonFilledKeys) {
                         const key = this.shader.uniforms[this.nonFilledKeys[keyID]];
                         const hints = key.hints;
@@ -642,6 +643,7 @@
                     }
 
                     if (this.shader.uniforms.u_time !== undefined) this.shader.uniforms.u_time.value = coffeeEngine.timer;
+                    console.log("end stuff")
                 }
             }
         }

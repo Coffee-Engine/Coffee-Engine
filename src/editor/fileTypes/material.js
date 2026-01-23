@@ -94,14 +94,22 @@
             
                 default:
                     //Just set the parameters for everything else
-                    target[key] = [value, data.uniformType];
-                    
-                    if (liveMaterial) {
-                        if (!liveMaterial.params[key]) liveMaterial.params[key] = [value, data.uniformType];
-                        else liveMaterial.params[key][0] = value;
-
-                        liveMaterial.refresh();
+                    if (!value) {
+                        delete target[key];
+                        if (liveMaterial) {
+                            delete liveMaterial.params[key]
+                        }
                     }
+                    else {
+                        target[key] = [value, data.uniformType];
+                        
+                        if (liveMaterial) {
+                            if (!liveMaterial.params[key]) liveMaterial.params[key] = [value, data.uniformType];
+                            else liveMaterial.params[key][0] = value;
+                        }
+                    }
+                    
+                    liveMaterial.refresh();
                     break;
             }
         }

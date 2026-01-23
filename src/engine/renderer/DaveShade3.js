@@ -254,6 +254,7 @@ DaveShade.framebuffer = class {
 };
 
 //Texture class, with compatibility things
+let counter = 0;
 DaveShade.texture = class {
     TEXTURE = null;
     get texture() { return this.TEXTURE; }
@@ -1049,7 +1050,9 @@ DaveShade.webGLModule = class extends DaveShade.module {
 
         //Finally the textures, these ones are a little more complicated
         this.SETTERS[this.GL.SAMPLER_2D] = (LOCATION, VALUE, UNIFORM_INFO) => {
+            console.log(this.GL.getParameter(this.GL.ACTIVE_TEXTURE));
             this.GL.activeTexture(UNIFORM_INFO.SAMPLER_LOCATION);
+            console.log(this.GL.getParameter(this.GL.ACTIVE_TEXTURE));
             this.GL.bindTexture(this.GL.TEXTURE_2D, VALUE);
             this.GL.uniform1i(LOCATION, UNIFORM_INFO.SAMPLER_ID);
         }
