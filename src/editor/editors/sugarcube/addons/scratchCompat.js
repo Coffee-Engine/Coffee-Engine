@@ -11,7 +11,7 @@ window.Scratch = {
         },
     },
     translate: (string) => {
-        return string;
+        return editor.language[`ext_${string}`] || string;
     },
     extensions: {
         register: (cls) => {
@@ -22,5 +22,22 @@ window.Scratch = {
     TargetType: {},
     BlockType: sugarcube.BlockType,
     ArgumentType: sugarcube.ArgumentType,
+
+    //The can list
+    canDownload: () => { return new Promise((resolve) => { resolve(true) })},
+    canEmbed: () => { return new Promise((resolve) => { resolve(true) })},
+    canFetch: () => { return new Promise((resolve) => { resolve(true) })},
+    canGeolocate: () => { return new Promise((resolve) => { resolve(true) })},
+    canNotify: () => { return new Promise((resolve) => { resolve(true) })},
+    canOpenWindow: () => { return new Promise((resolve) => { resolve(true) })},
+    canReadClipboard: () => { return new Promise((resolve) => { resolve(true) })},
+    canRecordAudio: () => { return new Promise((resolve) => { resolve(true) })},
+    canRecordVideo: () => { return new Promise((resolve) => { resolve(true) })},
+    canRedirect: () => { return new Promise((resolve) => { resolve(true) })},
+    canScreenshotCamera: () => { return new Promise((resolve) => { resolve(true) })},
+    canUnsandbox: () => { return new Promise((resolve) => { resolve(true) })},
+
+    fetch: (url, param) => { return fetch(url, param) }
+    //I need to implement download
 };
 Scratch.translate.setup = () => {};
